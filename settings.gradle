@@ -1,2 +1,9 @@
 rootProject.name='Monumento'
 include ':app'
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+  settingsDir,
+  'monumento_module/.android/include_flutter.groovy'
+))
+
+include ':monumento_module'
