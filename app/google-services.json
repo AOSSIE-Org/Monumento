@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "79939387137",
+    "firebase_url": "https://monumento-project-b0dc8.firebaseio.com",
+    "project_id": "monumento-project-b0dc8",
+    "storage_bucket": "monumento-project-b0dc8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:79939387137:android:1207eb9e7c086a6115a500",
+        "android_client_info": {
+          "package_name": "com.jddeep.monumento"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "79939387137-unor4pj8jj1simc61d0crnrqfgb0gqop.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jddeep.monumento",
+            "certificate_hash": "3d956e5735dc3b0ea48e9be2debd1e1acce95d9d"
+          }
+        },
+        {
+          "client_id": "79939387137-4oatk9regjm7pdmr3lp1odm4k2okpgpq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeVYNSHcWjP0Je1aSn9EwLRMPHltVtB0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "79939387137-4oatk9regjm7pdmr3lp1odm4k2okpgpq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
