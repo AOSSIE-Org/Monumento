@@ -21,6 +21,8 @@
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-0.1.1+2/android" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.1/android" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_web-0.9.1+1/android" />
+            <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.9/android" />
+            <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-0.0.4+3/android" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
