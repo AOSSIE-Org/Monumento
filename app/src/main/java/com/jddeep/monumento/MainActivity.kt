@@ -1,11 +1,15 @@
 package com.jddeep.monumento
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.embedding.engine.plugins.shim.ShimPluginRegistry
+import io.flutter.plugins.GeneratedPluginRegistrant
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FlutterActivity() {
 
     private val SPLASH_TIME_OUT: Long = 3000
 
@@ -14,9 +18,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         Handler().postDelayed({
-            startActivity(FlutterActivity.createDefaultIntent(this))
+            startActivity(createDefaultIntent(this))
             finish()
         }, SPLASH_TIME_OUT)
+    }
 
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        GeneratedPluginRegistrant.registerWith(flutterEngine)
     }
 }

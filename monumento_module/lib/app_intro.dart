@@ -1,0 +1,93 @@
+import 'package:flutter/material.dart';
+import 'package:intro_views_flutter/Models/page_view_model.dart';
+import 'package:intro_views_flutter/intro_views_flutter.dart';
+import 'package:monumento/main.dart';
+
+class AppIntroPage extends StatefulWidget {
+  @override
+  _AppIntroPageState createState() => _AppIntroPageState();
+}
+
+class _AppIntroPageState extends State<AppIntroPage> {
+  final introPages = [
+    PageViewModel(
+        title: Text('EXPLORE'),
+        titleTextStyle: TextStyle(
+            color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w700),
+        body: Text('Travel around the world and visit different monuments'),
+        bodyTextStyle: TextStyle(color: Colors.white),
+        mainImage: Container(
+          margin: EdgeInsets.all(8),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              image: DecorationImage(
+                  image: AssetImage('assets/explore.jpg'), fit: BoxFit.cover)),
+        ),
+        bubbleBackgroundColor: Colors.amberAccent),
+    PageViewModel(
+        title: Text('KNOW'),
+        titleTextStyle: TextStyle(
+            color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w700),
+        body: Text(
+            'Know all about the monuments visited by you and people around the world'),
+        bodyTextStyle: TextStyle(color: Colors.white),
+        mainImage: Container(
+          margin: EdgeInsets.all(8),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              image: DecorationImage(
+                  image: AssetImage('assets/know.png'), fit: BoxFit.cover)),
+        ),
+        bubbleBackgroundColor: Colors.amberAccent),
+    PageViewModel(
+        title: Text('SHARE'),
+        titleTextStyle: TextStyle(
+            color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w700),
+        body: Text(
+            'Share about the places and monuments you visit with other people on the app'),
+        bodyTextStyle: TextStyle(color: Colors.white),
+        mainImage: Container(
+          margin: EdgeInsets.all(8),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+              color: Colors.grey[100],
+              image: DecorationImage(
+                  image: AssetImage('assets/share.png'), fit: BoxFit.contain)),
+        ),
+        bubbleBackgroundColor: Colors.amberAccent),
+  ];
+
+  void onClose() {
+    Navigator.of(context).pushReplacement(new PageRouteBuilder(
+        maintainState: true,
+        opaque: true,
+        // TODO: HomePage to be replaced by Login/Register screens.
+        pageBuilder: (context, _, __) => MyHomePage(title: 'Monumento'),
+        transitionDuration: const Duration(seconds: 2),
+        transitionsBuilder: (context, anim1, anim2, child) {
+          return new FadeTransition(
+            child: child,
+            opacity: anim1,
+          );
+        }));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Builder(
+        builder: (context) => IntroViewsFlutter(
+          introPages,
+          background: Colors.amber,
+          onTapDoneButton: () => onClose(),
+          pageButtonTextStyles: TextStyle(
+            color: Colors.white,
+            fontSize: 18.0,
+          ),
+        ),
+      ),
+    );
+  }
+}
