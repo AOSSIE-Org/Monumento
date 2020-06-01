@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:monumento/app_intro.dart';
 
 void main() => runApp(MyApp());
 
@@ -8,9 +10,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Monumento',
-      theme: ThemeData(primarySwatch: Colors.amber,
-      ),
-      home: MyHomePage(title: 'Monumento'),
+      theme: ThemeData(
+          primarySwatch: Colors.amber,
+          fontFamily: GoogleFonts.montserrat().fontFamily),
+      home:
+          AppIntroPage(), //TODO: Check Logged in User and navigate accordingly
     );
   }
 }
@@ -25,22 +29,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
-    // TODO: Develop app screens starting from here
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title, style: TextStyle(color: Colors.white)),
       ),
       body: Center(
         child: Text(
-              'Welcome to Monumento!',
-            ),
+          'Welcome to Monumento!',
+        ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
-        child: Icon(Icons.home),
+        onPressed: () {},
+        child: Icon(
+          Icons.home,
+          color: Colors.white,
+        ),
       ),
     );
   }
