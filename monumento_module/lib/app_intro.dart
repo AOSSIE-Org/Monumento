@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intro_views_flutter/Models/page_view_model.dart';
 import 'package:intro_views_flutter/intro_views_flutter.dart';
-import 'package:monumento/main.dart';
+import 'package:monumento/login_screen.dart';
 
 class AppIntroPage extends StatefulWidget {
   @override
@@ -63,8 +63,7 @@ class _AppIntroPageState extends State<AppIntroPage> {
     Navigator.of(context).pushReplacement(new PageRouteBuilder(
         maintainState: true,
         opaque: true,
-        // TODO: HomePage to be replaced by Login/Register screens.
-        pageBuilder: (context, _, __) => MyHomePage(title: 'Monumento'),
+        pageBuilder: (context, _, __) => LoginScreen(),
         transitionDuration: const Duration(seconds: 2),
         transitionsBuilder: (context, anim1, anim2, child) {
           return new FadeTransition(
