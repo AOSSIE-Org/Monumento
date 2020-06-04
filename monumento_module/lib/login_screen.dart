@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:monumento/main.dart';
+import 'package:monumento/register_screen.dart';
 import 'constants.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -291,7 +292,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: () {
         print('Sign Up Button Pressed');
-        // TODO: Link Sign Up Page
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => SignUpScreen()));
       },
       child: RichText(
         text: TextSpan(
