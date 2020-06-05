@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart';
-import 'main.dart';
+import 'home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -112,10 +112,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           print('SignUp Button Pressed');
           signUp(_emailController.text, _passwordController.text).then((user) {
             if (user != null)
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyHomePage(title: 'Monumento')));
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()));
             else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
