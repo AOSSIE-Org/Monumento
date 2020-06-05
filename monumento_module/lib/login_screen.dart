@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:monumento/main.dart';
+import 'package:monumento/home_screen.dart';
 import 'package:monumento/register_screen.dart';
 import 'constants.dart';
 
@@ -186,10 +186,8 @@ class _LoginScreenState extends State<LoginScreen> {
           emailSignIn(_emailController.text, _passwordController.text)
               .then((user) {
             if (user != null)
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyHomePage(title: 'Monumento')));
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()));
             else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
@@ -242,10 +240,8 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () {
           signInWithGoogle().then((user) {
             if (user != null)
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyHomePage(title: 'Monumento')));
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (context) => HomeScreen()));
             else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
