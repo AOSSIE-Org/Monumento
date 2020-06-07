@@ -1,3 +1,7 @@
+import 'dart:collection';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_id/device_id.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -111,10 +115,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         onPressed: () {
           print('SignUp Button Pressed');
           signUp(_emailController.text, _passwordController.text).then((user) {
-            if (user != null)
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
-            else {
+            if (user != null) {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => HomeScreen(
+                            user: user,
+                          )));
+            } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
                 content: Text(
