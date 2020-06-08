@@ -1,8 +1,23 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:device_id/device_id.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/app_intro.dart';
+import 'home_screen.dart';
 
-void main() => runApp(MyApp());
+FirebaseUser _loggedInUser;
+bool _isLoggedIn = false;
+
+Future<Null> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (await FirebaseAuth.instance.currentUser() != null) {
+    print('LOGGED IN: ' + FirebaseAuth.instance.currentUser().toString());
+    _loggedInUser = await FirebaseAuth.instance.currentUser();
+    _isLoggedIn = true;
+  }
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -13,8 +28,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.amber,
           fontFamily: GoogleFonts.montserrat().fontFamily),
-      home:
-          AppIntroPage(), //TODO: Check Logged in User and navigate accordingly
+      home: _isLoggedIn
+          ? HomeScreen(
+              user: _loggedInUser,
+            )
+          : AppIntroPage(),
     );
   }
 }

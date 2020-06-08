@@ -1,8 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/utils/popular_carousel.dart';
 
 class HomeScreen extends StatefulWidget {
+  final FirebaseUser user;
+  HomeScreen({this.user});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -10,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   int _currentTab = 0;
+  final _key = GlobalKey<ScaffoldState>();
   List<IconData> _icons = [
     Icons.airplanemode_active,
     Icons.hotel,
@@ -41,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       body: SafeArea(
         child: Stack(
           children: <Widget>[
@@ -69,8 +75,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Align(
                   alignment: Alignment.bottomRight,
                   child: FloatingActionButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // TODO: Navigate to Monument Detector page
+//                      await FirebaseAuth.instance.signOut().whenComplete(() => Navigator.pop(context));
+                      _key.currentState.showSnackBar(SnackBar(
+                        content: Text('${widget.user.uid ?? 'null'}'),
+                      ));
                     },
                     backgroundColor: Colors.amber,
                     child: Icon(Icons.account_balance, color: Colors.white),
