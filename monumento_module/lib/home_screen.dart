@@ -43,6 +43,27 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  List<DocumentSnapshot> popMonumentDocs = new List();
+
+  Future getPopularMonuments() async {
+    await Firestore.instance
+        .collection('popular_monuments')
+        .getDocuments()
+        .then((docs) {
+      popMonumentDocs = docs.documents;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPopularMonuments().whenComplete(() {
+      setState(() {
+        print('Popular Monuments Received!');
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,9 +86,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 SizedBox(height: 20.0),
-                PopularMonumentsCarousel(),
+                PopularMonumentsCarousel(
+                  popMonumentDocs: popMonumentDocs,
+                ),
                 SizedBox(height: 20.0),
-                PopularMonumentsCarousel(),
+                PopularMonumentsCarousel(
+                  popMonumentDocs: popMonumentDocs,
+                ),
               ],
             ),
             Padding(
@@ -79,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       // TODO: Navigate to Monument Detector page
 //                      await FirebaseAuth.instance.signOut().whenComplete(() => Navigator.pop(context));
                       _key.currentState.showSnackBar(SnackBar(
-                        content: Text('${widget.user.uid ?? 'null'}'),
+                        content: Text('${popMonumentDocs.length ?? 'null'}'),
                       ));
                     },
                     backgroundColor: Colors.amber,
