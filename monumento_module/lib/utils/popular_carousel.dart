@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class PopularMonumentsCarousel extends StatelessWidget {
+  final List<DocumentSnapshot> popMonumentDocs;
+  PopularMonumentsCarousel({this.popMonumentDocs});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,7 +40,7 @@ class PopularMonumentsCarousel extends StatelessWidget {
           height: 300.0,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: 4,
+            itemCount: popMonumentDocs.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {},
@@ -65,23 +69,24 @@ class PopularMonumentsCarousel extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  '${5} Visits',
+                                  popMonumentDocs[index].data['name'] ??
+                                      'Monument',
                                   style: TextStyle(
                                     fontSize: 22.0,
                                     fontWeight: FontWeight.w600,
                                     letterSpacing: 1.2,
                                   ),
                                 ),
-                                Text(
-                                  'Description',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                ),
+//                                Text(
+//                                  popMonumentDocs[index].data['name']??'',
+//                                  style: TextStyle(
+//                                    color: Colors.grey,
+//                                  ),
+//                                ),
                               ],
                             ),
                           ),
@@ -101,13 +106,18 @@ class PopularMonumentsCarousel extends StatelessWidget {
                         ),
                         child: Stack(
                           children: <Widget>[
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20.0),
-                              child: Image(
-                                height: 180.0,
-                                width: 180.0,
-                                image: AssetImage('assets/know.png'),
-                                fit: BoxFit.cover,
+                            Hero(
+                              tag: popMonumentDocs[index].data['name'] ??
+                                  'monument',
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20.0),
+                                child: Image(
+                                  height: 180.0,
+                                  width: 180.0,
+                                  image: NetworkImage(
+                                      popMonumentDocs[index].data['image']),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                             Positioned(
@@ -117,7 +127,8 @@ class PopularMonumentsCarousel extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    'City',
+                                    popMonumentDocs[index].data['city'] ??
+                                        'City',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 24.0,
@@ -134,7 +145,9 @@ class PopularMonumentsCarousel extends StatelessWidget {
                                       ),
                                       SizedBox(width: 5.0),
                                       Text(
-                                        'Country',
+                                        popMonumentDocs[index]
+                                                .data['country'] ??
+                                            'Country',
                                         style: TextStyle(
                                           color: Colors.white,
                                         ),
