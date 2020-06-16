@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class PopularMonumentsCarousel extends StatelessWidget {
   final List<DocumentSnapshot> popMonumentDocs;
-  PopularMonumentsCarousel({this.popMonumentDocs});
+  final Function changeTab;
+  PopularMonumentsCarousel({this.popMonumentDocs, this.changeTab});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,10 @@ class PopularMonumentsCarousel extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () => print('See All'),
+                onTap: () {
+                  print('See All');
+                  changeTab(1);
+                  },
                 child: Text(
                   'See All',
                   style: TextStyle(
