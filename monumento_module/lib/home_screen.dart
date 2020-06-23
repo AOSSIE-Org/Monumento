@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:monumento/explore_screen.dart';
 import 'package:monumento/utils/popular_carousel.dart';
 
@@ -71,6 +72,16 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  static const platform = const MethodChannel("monument_detector");
+
+  _navToMonumentDetector() async {
+    try {
+      await platform.invokeMethod("navMonumentDetector");
+    } on PlatformException catch (e) {
+      print("Failed to navigate to Monument Detector: '${e.message}'.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,11 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   alignment: Alignment.bottomRight,
                   child: FloatingActionButton(
                     onPressed: () async {
-                      // TODO: Navigate to Monument Detector page
-//                      await FirebaseAuth.instance.signOut().whenComplete(() => Navigator.pop(context));
-                      _key.currentState.showSnackBar(SnackBar(
-                        content: Text('${popMonumentDocs.length ?? 'null'}'),
-                      ));
+                      _navToMonumentDetector();
                     },
                     backgroundColor: Colors.amber,
                     child: Icon(Icons.account_balance, color: Colors.white),
