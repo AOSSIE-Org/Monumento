@@ -15,7 +15,6 @@
             <option value="$PROJECT_DIR$/monumento_module/.android/Flutter" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.13.5/android" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-0.1.1+2/android" />
-            <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/device_id-0.2.0/android" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth-0.16.0/android" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_auth_web-0.1.2/android" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.4.4+3/android" />
