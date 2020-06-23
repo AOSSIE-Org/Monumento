@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:monumento/explore_screen.dart';
 import 'package:monumento/utils/popular_carousel.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -64,11 +66,30 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void changeScreen(int tabIndex){
+    setState(() {
+      _currentTab = tabIndex;
+    });
+  }
+
+  static const platform = const MethodChannel("monument_detector");
+
+  _navToMonumentDetector() async {
+    try {
+      await platform.invokeMethod("navMonumentDetector");
+    } on PlatformException catch (e) {
+      print("Failed to navigate to Monument Detector: '${e.message}'.");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _key,
-      body: SafeArea(
+      body: _currentTab == 1?
+          ExploreScreen(monumentList: popMonumentDocs,)
+      :
+      SafeArea(
         child: Stack(
           children: <Widget>[
             ListView(
@@ -88,6 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 20.0),
                 PopularMonumentsCarousel(
                   popMonumentDocs: popMonumentDocs,
+                  changeTab: changeScreen,
                 ),
                 SizedBox(height: 20.0),
                 PopularMonumentsCarousel(
@@ -101,11 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   alignment: Alignment.bottomRight,
                   child: FloatingActionButton(
                     onPressed: () async {
-                      // TODO: Navigate to Monument Detector page
-//                      await FirebaseAuth.instance.signOut().whenComplete(() => Navigator.pop(context));
-                      _key.currentState.showSnackBar(SnackBar(
-                        content: Text('${popMonumentDocs.length ?? 'null'}'),
-                      ));
+                      _navToMonumentDetector();
                     },
                     backgroundColor: Colors.amber,
                     child: Icon(Icons.account_balance, color: Colors.white),
