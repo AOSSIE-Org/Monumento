@@ -11,10 +11,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
+import com.google.ar.core.Anchor;
+import com.google.ar.core.HitResult;
+import com.google.ar.core.Plane;
+import com.google.ar.sceneform.AnchorNode;
 import com.google.ar.sceneform.rendering.ModelRenderable;
+import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
+import com.google.ar.sceneform.ux.TransformableNode;
 
 public class ARFragment extends AppCompatActivity {
 
@@ -35,17 +42,58 @@ public class ARFragment extends AppCompatActivity {
         setContentView(R.layout.activity_a_r_fragment);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.ux_fragment);
 
+//        ModelRenderable.builder()
+//                .setSource(this, Uri.parse("taj.sfb"))
+//                .build()
+//                .thenAccept(renderable -> lampPostRenderable = renderable)
+//                .exceptionally(throwable -> {
+//                    Toast toast =
+//                            Toast.makeText(this, "Unable to load andy renderable", Toast.LENGTH_LONG);
+//                    toast.setGravity(Gravity.CENTER, 0, 0);
+//                    toast.show();
+//                    return null;
+//                });
+
+        arFragment.setOnTapArPlaneListener(
+                (HitResult hitresult, Plane plane, MotionEvent motionevent) -> {
+//                    if (lampPostRenderable == null){
+//                        return;
+//                    }
+
+                    Anchor anchor = hitresult.createAnchor();
+                    placeObject(arFragment, anchor, Uri.parse("src/main/res/raw/taj.sfb"));
+//                    AnchorNode anchorNode = new AnchorNode(anchor);
+//                    anchorNode.setParent(arFragment.getArSceneView().getScene());
+//
+//                    TransformableNode lamp = new TransformableNode(arFragment.getTransformationSystem());
+//                    lamp.setParent(anchorNode);
+//                    lamp.setRenderable(lampPostRenderable);
+//                    lamp.select();
+                }
+        );
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void placeObject(ArFragment arFragment, Anchor anchor, Uri uri) {
         ModelRenderable.builder()
-                .setSource(this, Uri.parse("LampPost.sfb"))
+                .setSource(arFragment.getContext(), uri)
                 .build()
-                .thenAccept(renderable -> lampPostRenderable = renderable)
+                .thenAccept(modelRenderable -> addNodeToScene(arFragment, anchor, modelRenderable))
                 .exceptionally(throwable -> {
-                    Toast toast =
-                            Toast.makeText(this, "Unable to load andy renderable", Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER, 0, 0);
-                    toast.show();
-                    return null;
-                });
+                            Toast.makeText(arFragment.getContext(), "Error:" + throwable.getMessage(), Toast.LENGTH_LONG).show();
+                            return null;
+                        }
+
+                );
+    }
+
+    private void addNodeToScene(ArFragment arFragment, Anchor anchor, Renderable renderable) {
+        AnchorNode anchorNode = new AnchorNode(anchor);
+        TransformableNode node = new TransformableNode(arFragment.getTransformationSystem());
+        node.setRenderable(renderable);
+        node.setParent(anchorNode);
+        arFragment.getArSceneView().getScene().addChild(anchorNode);
+        node.select();
     }
 
     public static boolean checkIsSupportedDeviceOrFinish(final Activity activity) {
