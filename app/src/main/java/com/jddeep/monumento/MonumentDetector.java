@@ -65,7 +65,6 @@ public class MonumentDetector extends AppCompatActivity {
         takePicture = findViewById(R.id.takePicture);
         imageUploadProgress = findViewById(R.id.imageProgress);
         imageView = findViewById(R.id.imageView);
-//        spinnerVisionAPI = findViewById(R.id.spinnerVisionAPI);
         visionAPIData = findViewById(R.id.visionAPIData);
 
         feature = new Feature();
@@ -76,6 +75,8 @@ public class MonumentDetector extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 takePictureFromCamera();
+                //TODO: Link SceneformFragment from this Activity after monument gets detected
+//                startActivity(new Intent(MonumentDetector.this, SceneformFragment.class));
             }
         });
     }
