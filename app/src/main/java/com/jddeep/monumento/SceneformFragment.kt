@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -29,7 +30,11 @@ class SceneformFragment : AppCompatActivity() {
     private var isFabActive: Boolean = true
 
     private val monumentModelMap : HashMap<String, String> = hashMapOf(
-        "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf"
+        "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
+        "Eiffel Tower" to "https://poly.googleusercontent.com/downloads/c/fp/1594030093589633/aIpJchqtRTg/6vC-ZtW57Jh/EFT.gltf",
+        "Statue of Liberty" to "https://poly.googleusercontent.com/downloads/c/fp/1594203800428477/ef9Yd09Doxh/6iB-aRbRXqD/model.gltf",
+        "Collosseum" to "https://poly.googleusercontent.com/downloads/c/fp/1594117136139223/cVtCnH0tnHJ/fdSQ8NwCQDK/model.gltf",
+        "Leaning Tower of Pisa" to "https://poly.googleusercontent.com/downloads/c/fp/1592733756165702/9hcSqLXC58h/afqTiZoEw8O/f42649ee9cd14a7db955bdcee2d21ac3.gltf"
     )
 
 
@@ -49,14 +54,16 @@ class SceneformFragment : AppCompatActivity() {
 
         // Using POLY for the AR models
         // https://github.com/jddeep/monument-models/raw/master/models/taj.gltf
-        floatingActionButton.setOnClickListener { monumentModelMap["Taj Mahal"]?.let { model ->
+        floatingActionButton.setOnClickListener { monumentModelMap["Leaning Tower of Pisa"]?.let { model ->
             addObject(
                 model
             )
-            showFab(false)
             isFabActive = false
+            showFab(isFabActive)
         } }
         showFab(false)
+
+        nav_wiki_btn.setOnClickListener { Log.e("SceneFrag: ", "Wiki btn pressed") }
     }
 
     @SuppressLint("RestrictedApi")
@@ -67,6 +74,9 @@ class SceneformFragment : AppCompatActivity() {
         } else {
             floatingActionButton.isEnabled = false
             floatingActionButton.visibility = View.GONE
+            if(!isFabActive){
+                model_loading_pb.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -184,5 +194,9 @@ class SceneformFragment : AppCompatActivity() {
         transformableNode.setParent(anchorNode)
         fragment.arSceneView.scene.addChild(anchorNode)
         transformableNode.select()
+        if(!isFabActive){
+            model_loading_pb.visibility = View.GONE
+            nav_wiki_btn.visibility = View.VISIBLE
+        }
     }
 }

@@ -28,4 +28,34 @@
         app:layout_constraintStart_toStartOf="parent"
         android:src="@drawable/ic_monumento"/>
 
+    <ProgressBar
+        android:id="@+id/model_loading_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/sceneform_frag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/nav_wiki_btn"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:text="Wikipedia"
+        android:textColor="@android:color/white"
+        app:rippleColor="@color/colorAccent"
+        android:backgroundTint="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="@+id/sceneform_frag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:cornerRadius="15dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
