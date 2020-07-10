@@ -56,4 +56,27 @@
             android:layout_margin="16dp"
             android:padding="4dp"
             />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/nav_ar_frag_btn"
+        android:layout_width="185dp"
+        android:layout_height="60dp"
+        android:text="TAP TO AUGMENT"
+        android:textColor="@android:color/white"
+        app:rippleColor="@color/colorAccent"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:cornerRadius="15dp"/>
+
+    <TextView
+        android:id="@+id/augment_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:visibility="gone"
+        android:text="You can now visualize the monument in AR!"
+        />
     </LinearLayout>

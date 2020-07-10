@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
@@ -54,9 +55,11 @@ public class MonumentDetector extends AppCompatActivity {
     ProgressBar imageUploadProgress;
     ImageView imageView;
     TextView visionAPIData;
+    MaterialButton arFragBtn;
+    TextView arInfoTv;
 
     private Feature feature;
-    private String api = "LANDMARK_DETECTION";
+    private static final String api = "LANDMARK_DETECTION";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +69,9 @@ public class MonumentDetector extends AppCompatActivity {
         imageUploadProgress = findViewById(R.id.imageProgress);
         imageView = findViewById(R.id.imageView);
         visionAPIData = findViewById(R.id.visionAPIData);
+        arFragBtn = findViewById(R.id.nav_ar_frag_btn);
+        arInfoTv = findViewById(R.id.augment_text);
+        arFragBtn.setOnClickListener(v -> startActivity(new Intent(MonumentDetector.this, SceneformFragment.class)));
 
         feature = new Feature();
         feature.setType(api);
@@ -75,8 +81,6 @@ public class MonumentDetector extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 takePictureFromCamera();
-                //TODO: Link SceneformFragment from this Activity after monument gets detected
-//                startActivity(new Intent(MonumentDetector.this, SceneformFragment.class));
             }
         });
     }
@@ -172,6 +176,8 @@ public class MonumentDetector extends AppCompatActivity {
             protected void onPostExecute(String result) {
                 visionAPIData.setText(result);
                 imageUploadProgress.setVisibility(View.INVISIBLE);
+                arFragBtn.setVisibility(View.VISIBLE);
+                arInfoTv.setVisibility(View.VISIBLE);
             }
         }.execute();
     }
@@ -207,7 +213,7 @@ public class MonumentDetector extends AppCompatActivity {
 
         if (entityAnnotation != null) {
             for (EntityAnnotation entity : entityAnnotation) {
-                message = message + "    " + entity.getDescription() + " " + entity.getScore();
+                message = entity.getDescription();
                 message += "\n";
             }
         } else {
