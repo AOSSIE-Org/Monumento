@@ -35,27 +35,63 @@
         app:layout_constraintBottom_toBottomOf="@+id/sceneform_frag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="150dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:visibility="gone"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/nav_wiki_btn"
-        android:layout_width="175dp"
-        android:layout_height="60dp"
-        android:text="Wikipedia"
-        android:textColor="@android:color/white"
-        app:rippleColor="@color/colorAccent"
-        android:backgroundTint="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="@+id/sceneform_frag"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:visibility="gone"
-        android:theme="@style/Theme.MaterialComponents.Light"
-        app:cornerRadius="15dp"/>
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/nav_wiki_btn"-->
+<!--        android:layout_width="175dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:text="Wikipedia"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        app:rippleColor="@color/colorAccent"-->
+<!--        android:backgroundTint="@color/colorPrimaryDark"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/sceneform_frag"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:visibility="gone"-->
+<!--        android:theme="@style/Theme.MaterialComponents.Light"-->
+<!--        app:cornerRadius="15dp"/>-->
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/slidePanelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        app:umanoPanelHeight="120dp"
+        app:umanoShadowHeight="4dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="16dp"
+                >
+
+                <WebView
+                    android:id="@+id/wikiWv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </androidx.core.widget.NestedScrollView>
+
+
+        </RelativeLayout>
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

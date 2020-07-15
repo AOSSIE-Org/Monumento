@@ -60,6 +60,7 @@ public class MonumentDetector extends AppCompatActivity {
 
     private Feature feature;
     private static final String api = "LANDMARK_DETECTION";
+    private static String monument = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +72,11 @@ public class MonumentDetector extends AppCompatActivity {
         visionAPIData = findViewById(R.id.visionAPIData);
         arFragBtn = findViewById(R.id.nav_ar_frag_btn);
         arInfoTv = findViewById(R.id.augment_text);
-        arFragBtn.setOnClickListener(v -> startActivity(new Intent(MonumentDetector.this, SceneformFragment.class)));
+        arFragBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(MonumentDetector.this, SceneformFragment.class);
+            intent.putExtra("monument", monument);
+            startActivity(intent);
+        });
 
         feature = new Feature();
         feature.setType(api);
@@ -198,6 +203,7 @@ public class MonumentDetector extends AppCompatActivity {
 
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
 
+        Log.e("Responses: ", response.getResponses().toString());
         AnnotateImageResponse imageResponses = response.getResponses().get(0);
 
         List<EntityAnnotation> entityAnnotations;
@@ -212,13 +218,12 @@ public class MonumentDetector extends AppCompatActivity {
         String message = "";
 
         if (entityAnnotation != null) {
-            for (EntityAnnotation entity : entityAnnotation) {
-                message = entity.getDescription();
-                message += "\n";
-            }
+                message = entityAnnotation.get(0).getDescription();
+                Log.e("messageMon: ", message);
         } else {
             message = "Nothing Found";
         }
+        monument = message.trim();
         return message;
     }
 }

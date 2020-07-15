@@ -22,7 +22,6 @@
             android:name="com.google.ar.core"
             android:value="required" />
 
-        <activity android:name=".ARFragment" />
         <activity android:name=".MonumentDetector" />
         <activity android:name=".MainActivity">
             <intent-filter>
