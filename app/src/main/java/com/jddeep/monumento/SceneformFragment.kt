@@ -20,6 +20,8 @@ import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
 import kotlinx.android.synthetic.main.sceneform_fragment.*
+import java.util.*
+import kotlin.collections.HashMap
 
 class SceneformFragment : AppCompatActivity() {
 
@@ -28,12 +30,13 @@ class SceneformFragment : AppCompatActivity() {
     private var isTracking: Boolean = false
     private var isHitting: Boolean = false
     private var isFabActive: Boolean = true
+    private var monument: String = ""
 
     private val monumentModelMap : HashMap<String, String> = hashMapOf(
         "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
-        "Eiffel Tower" to "https://poly.googleusercontent.com/downloads/c/fp/1594030093589633/aIpJchqtRTg/6vC-ZtW57Jh/EFT.gltf",
+        "Eiffel Tower" to "https://poly.googleusercontent.com/downloads/c/fp/1594652332676840/cPeRoB-RS0Q/4Z73gO10xW3/scene.gltf",
         "Statue of Liberty" to "https://poly.googleusercontent.com/downloads/c/fp/1594203800428477/ef9Yd09Doxh/6iB-aRbRXqD/model.gltf",
-        "Collosseum" to "https://poly.googleusercontent.com/downloads/c/fp/1594117136139223/cVtCnH0tnHJ/fdSQ8NwCQDK/model.gltf",
+        "Colosseum" to "https://poly.googleusercontent.com/downloads/c/fp/1594117136139223/cVtCnH0tnHJ/fdSQ8NwCQDK/model.gltf",
         "Leaning Tower of Pisa" to "https://poly.googleusercontent.com/downloads/c/fp/1592733756165702/9hcSqLXC58h/afqTiZoEw8O/f42649ee9cd14a7db955bdcee2d21ac3.gltf"
     )
 
@@ -45,6 +48,17 @@ class SceneformFragment : AppCompatActivity() {
 
         arFragment = sceneform_frag as ArFragment
 
+        val bundle = intent.extras
+        monument = bundle?.get("monument").toString()
+        Log.e("SceneformMonument: ", monument)
+
+        wikiWv.settings.loadsImagesAutomatically = true
+        wikiWv.isNestedScrollingEnabled = true
+        wikiWv.isVerticalScrollBarEnabled = true
+        wikiWv.isHorizontalScrollBarEnabled = true
+        wikiWv.settings.builtInZoomControls = true
+//        wikiWv.settings.javaScriptEnabled = true
+        wikiWv.loadUrl("https://en.m.wikipedia.org/wiki/Taj_Mahal")
         // Adds a listener to the ARSceneView
         // Called before processing each frame
         arFragment.arSceneView.scene.addOnUpdateListener { frameTime ->
@@ -54,7 +68,10 @@ class SceneformFragment : AppCompatActivity() {
 
         // Using POLY for the AR models
         // https://github.com/jddeep/monument-models/raw/master/models/taj.gltf
-        floatingActionButton.setOnClickListener { monumentModelMap["Leaning Tower of Pisa"]?.let { model ->
+        floatingActionButton.setOnClickListener {
+            val modelKey = getModelKey(monument)
+            Log.e("ModelKey: ", modelKey)
+            monumentModelMap[modelKey]?.let { model ->
             addObject(
                 model
             )
@@ -63,7 +80,23 @@ class SceneformFragment : AppCompatActivity() {
         } }
         showFab(false)
 
-        nav_wiki_btn.setOnClickListener { Log.e("SceneFrag: ", "Wiki btn pressed") }
+//        nav_wiki_btn.setOnClickListener {
+//            Log.e("SceneFrag: ", "Wiki btn pressed")
+//            slidePanelLayout.panelHeight = 1500
+//        }
+    }
+
+    private fun getModelKey(monument: String?): String{
+        val default = "Leaning Tower of Pisa"
+        if(monument.isNullOrEmpty()) return default
+
+        return when(monument.trim()) {
+            "Taj Mahal" -> "Taj Mahal"
+            "Eiffel Tower" -> "Eiffel Tower"
+            "Statue of Liberty" -> "Statue of Liberty"
+            "Colosseum" -> "Colosseum"
+            else -> default
+        }
     }
 
     @SuppressLint("RestrictedApi")
@@ -196,7 +229,7 @@ class SceneformFragment : AppCompatActivity() {
         transformableNode.select()
         if(!isFabActive){
             model_loading_pb.visibility = View.GONE
-            nav_wiki_btn.visibility = View.VISIBLE
+//            nav_wiki_btn.visibility = View.VISIBLE
         }
     }
 }
