@@ -52,6 +52,8 @@ class SceneformFragment : AppCompatActivity() {
         monument = bundle?.get("monument").toString()
         Log.e("SceneformMonument: ", monument)
 
+        slidePanelLayout.setDragView(wikiTv)
+
         wikiWv.settings.loadsImagesAutomatically = true
         wikiWv.isNestedScrollingEnabled = true
         wikiWv.isVerticalScrollBarEnabled = true
