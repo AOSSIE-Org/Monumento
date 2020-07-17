@@ -8,6 +8,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
+import java.io.Serializable
 
 class MainActivity : FlutterActivity() {
 
@@ -37,12 +38,19 @@ class MainActivity : FlutterActivity() {
         MethodChannel(flutterEngine.dartExecutor, CHANNEL).setMethodCallHandler { call, _ ->
             Log.e("Main Activity", "Method Channel called")
             if (call.method == "navMonumentDetector") {
-                navMonumentDetector()
+                val monumentsListMap = call.argument<List<Map<String, String>>>("monumentsList")
+                Log.e(
+                    "MainActivityList: ",
+                    monumentsListMap?.toString() ?: "null"
+                )
+                navMonumentDetector(monumentsListMap)
             }
         }
     }
 
-    private fun navMonumentDetector() {
-        startActivity(Intent(this, MonumentDetector::class.java))
+    private fun navMonumentDetector(monumentsListMap: List<Map<String, String>>?) {
+        val intent = Intent(this, MonumentDetector::class.java)
+        intent.putExtra("monumentsListMap", monumentsListMap as Serializable)
+        startActivity(intent)
     }
 }

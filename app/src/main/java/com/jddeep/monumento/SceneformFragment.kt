@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.graphics.Point
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
@@ -19,9 +19,8 @@ import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.sceneform_fragment.*
-import java.util.*
-import kotlin.collections.HashMap
 
 class SceneformFragment : AppCompatActivity() {
 
@@ -31,6 +30,7 @@ class SceneformFragment : AppCompatActivity() {
     private var isHitting: Boolean = false
     private var isFabActive: Boolean = true
     private var monument: String = ""
+    private lateinit var monumentListMap: List<Map<String, String>>
 
     private val monumentModelMap : HashMap<String, String> = hashMapOf(
         "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
@@ -51,6 +51,8 @@ class SceneformFragment : AppCompatActivity() {
         val bundle = intent.extras
         monument = bundle?.get("monument").toString()
         Log.e("SceneformMonument: ", monument)
+        monumentListMap = bundle?.getSerializable("monumentListMap") as List<Map<String, String>>
+        Log.e("SFmonumentListMap: ",  monumentListMap[0].toString())
 
         slidePanelLayout.setDragView(wikiTv)
 
@@ -60,7 +62,7 @@ class SceneformFragment : AppCompatActivity() {
         wikiWv.isHorizontalScrollBarEnabled = true
         wikiWv.settings.builtInZoomControls = true
 //        wikiWv.settings.javaScriptEnabled = true
-        wikiWv.loadUrl("https://en.m.wikipedia.org/wiki/Taj_Mahal")
+        wikiWv.loadUrl(getWikiUrl(monument.trim()))
         // Adds a listener to the ARSceneView
         // Called before processing each frame
         arFragment.arSceneView.scene.addOnUpdateListener { frameTime ->
@@ -87,6 +89,19 @@ class SceneformFragment : AppCompatActivity() {
 //            slidePanelLayout.panelHeight = 1500
 //        }
     }
+
+    private fun getWikiUrl(monument: String?): String{
+        var wikiUrl: String = "https://en.m.wikipedia.org/wiki/Main_Page"
+        if(monument.isNullOrEmpty() || monument == "Nothing Found") return wikiUrl
+        for(monumentMap in monumentListMap) {
+            if (monumentMap["name"] == monument) {
+                wikiUrl = monumentMap["wiki"] as String
+                break
+            }
+        }
+        return wikiUrl
+        }
+
 
     private fun getModelKey(monument: String?): String{
         val default = "Leaning Tower of Pisa"
