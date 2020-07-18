@@ -46,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<DocumentSnapshot> popMonumentDocs = new List();
+  List<Map<String, dynamic>> monumentMapList = new List();
 
   Future getPopularMonuments() async {
     await Firestore.instance
@@ -53,6 +54,9 @@ class _HomeScreenState extends State<HomeScreen> {
         .getDocuments()
         .then((docs) {
       popMonumentDocs = docs.documents;
+      for(DocumentSnapshot doc in popMonumentDocs){
+        monumentMapList.add(doc.data);
+      }
     });
   }
 
@@ -76,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _navToMonumentDetector() async {
     try {
-      await platform.invokeMethod("navMonumentDetector");
+      await platform.invokeMethod("navMonumentDetector",
+          {"monumentsList":monumentMapList});
     } on PlatformException catch (e) {
       print("Failed to navigate to Monument Detector: '${e.message}'.");
     }

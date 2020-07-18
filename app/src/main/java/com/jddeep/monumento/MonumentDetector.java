@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -35,13 +36,16 @@ import com.google.api.services.vision.v1.model.BatchAnnotateImagesResponse;
 import com.google.api.services.vision.v1.model.EntityAnnotation;
 import com.google.api.services.vision.v1.model.Feature;
 import com.google.api.services.vision.v1.model.Image;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MonumentDetector extends AppCompatActivity {
 
@@ -66,6 +70,21 @@ public class MonumentDetector extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monument_detector);
 
+        List<Map<String, String>> monumentListMap = (List<Map<String, String>>)getIntent()
+                .getSerializableExtra("monumentsListMap");
+
+        SlidingUpPanelLayout spl = new SlidingUpPanelLayout(this);
+        spl.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                if(event.getY() > 300.0f) v.setVisibility(View.INVISIBLE);
+                else v.setVisibility(View.INVISIBLE);
+                return true;
+            }
+        });
+
+        Log.e("MonumentDetectorList: ", monumentListMap != null ? monumentListMap.toString() : "null");
+
         takePicture = findViewById(R.id.takePicture);
         imageUploadProgress = findViewById(R.id.imageProgress);
         imageView = findViewById(R.id.imageView);
@@ -75,6 +94,7 @@ public class MonumentDetector extends AppCompatActivity {
         arFragBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MonumentDetector.this, SceneformFragment.class);
             intent.putExtra("monument", monument);
+            intent.putExtra("monumentListMap", (Serializable) monumentListMap);
             startActivity(intent);
         });
 
