@@ -116,10 +116,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   popMonumentDocs: popMonumentDocs,
                   changeTab: changeScreen,
                 ),
-                SizedBox(height: 20.0),
-                PopularMonumentsCarousel(
-                  popMonumentDocs: popMonumentDocs,
-                ),
+// TODO: Visited Monuments Carousel here
+//                SizedBox(height: 20.0),
+//                PopularMonumentsCarousel(
+//                  popMonumentDocs: popMonumentDocs,
+//                ),
               ],
             ),
             Padding(

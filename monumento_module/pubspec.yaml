@@ -32,6 +32,7 @@ dependencies:
   google_sign_in:
   intro_views_flutter:
   google_fonts:
+  webview_flutter:
 
 dev_dependencies:
   flutter_test:
