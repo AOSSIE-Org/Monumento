@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:monumento/detail_screen.dart';
 
 class PopularMonumentsCarousel extends StatelessWidget {
   final List<DocumentSnapshot> popMonumentDocs;
@@ -47,7 +48,11 @@ class PopularMonumentsCarousel extends StatelessWidget {
             itemCount: popMonumentDocs.length,
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => DetailScreen(monument: popMonumentDocs[index],))
+                  );
+                },
                 child: Container(
                   margin: EdgeInsets.all(10.0),
                   width: 210.0,

@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_core-0.4.4+3/android" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.5.1/android" />
             <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-1.6.9/android" />
+            <option value="$PROJECT_DIR$/../development/flutter/.pub-cache/hosted/pub.dartlang.org/webview_flutter-0.3.22+1/android" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
