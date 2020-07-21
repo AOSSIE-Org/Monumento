@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -19,6 +20,19 @@ class _DetailScreenState extends State<DetailScreen> {
     }
     stars.trim();
     return Text(stars);
+  }
+
+  static const platform = const MethodChannel("ar_fragment");
+
+  _navToARFragment() async {
+    List<Map<String, dynamic>> monumentMapList = new List();
+    monumentMapList.add(widget.monument.data);
+    try {
+      await platform.invokeMethod("navArFragment",
+      {"monumentListMap":monumentMapList});
+    } on PlatformException catch (e) {
+      print("Failed to navigate to AR Fragment: '${e.message}'.");
+    }
   }
 
   @override
@@ -61,6 +75,15 @@ class _DetailScreenState extends State<DetailScreen> {
                       iconSize: 30.0,
                       color: Colors.white,
                       onPressed: () => Navigator.pop(context),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.account_balance),
+                      iconSize: 30.0,
+                      color: Colors.amber,
+                      tooltip: 'Visit in 3D AR',
+                      onPressed: () async{
+                        _navToARFragment();
+                      },
                     ),
                   ],
                 ),
