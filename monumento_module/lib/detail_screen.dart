@@ -13,6 +13,8 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  final _key = GlobalKey<ScaffoldState>();
+
   Text _buildRatingStars(int rating) {
     String stars = '';
     for (int i = 0; i < rating; i++) {
@@ -35,9 +37,40 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
+  void _bookmark() async {
+    String document = "user_id";
+    String collection = "bookmarks";
+    Map<String, dynamic> map = new Map();
+    map["auth_id"] = "user_id";
+    map["name"] = widget.monument.data['name'];
+    map["image"] = widget.monument.data['image'];
+    map["wiki"] = widget.monument.data['wiki'];
+    map["country"] = widget.monument.data['country'];
+    map["city"] = widget.monument.data['city'];
+
+    DocumentReference documentReference = Firestore.instance.collection(collection).document();
+    Firestore.instance.runTransaction((transaction) async {
+      await transaction
+          .set(documentReference, map)
+          .catchError((e) {})
+          .whenComplete(() {
+            print('Bookmarked!');
+            _key.currentState.showSnackBar(SnackBar(
+              backgroundColor: Colors.amber,
+              content: Text('Monument Bookmarked!',
+              style: TextStyle(color: Colors.white),
+              ),
+            ));
+      });
+    }).catchError((e) {
+      print(e.toString());
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       body: Column(
         children: <Widget>[
           Stack(
@@ -76,14 +109,28 @@ class _DetailScreenState extends State<DetailScreen> {
                       color: Colors.white,
                       onPressed: () => Navigator.pop(context),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.account_balance),
-                      iconSize: 30.0,
-                      color: Colors.amber,
-                      tooltip: 'Visit in 3D AR',
-                      onPressed: () async{
-                        _navToARFragment();
-                      },
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.bookmark),
+                          padding: EdgeInsets.only(right: 5.0),
+                          iconSize: 30.0,
+                          color: Colors.white,
+                          tooltip: 'Bookmark',
+                          onPressed: () {
+                            _bookmark();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.account_balance),
+                          iconSize: 30.0,
+                          color: Colors.amber,
+                          tooltip: 'Visit in 3D AR',
+                          onPressed: () async{
+                            _navToARFragment();
+                          },
+                        ),
+                      ],
                     ),
                   ],
                 ),

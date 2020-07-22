@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:monumento/bookmark_screen.dart';
 import 'package:monumento/explore_screen.dart';
+import 'package:monumento/utils/bookmark_carousel.dart';
 import 'package:monumento/utils/popular_carousel.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -94,6 +96,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _currentTab == 1?
           ExploreScreen(monumentList: popMonumentDocs,)
       :
+      _currentTab == 2?
+          BookmarkScreen(monumentList: new List(),)
+      :
       SafeArea(
         child: Stack(
           children: <Widget>[
@@ -116,8 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   popMonumentDocs: popMonumentDocs,
                   changeTab: changeScreen,
                 ),
-// TODO: Visited Monuments Carousel here
-//                SizedBox(height: 20.0),
+                SizedBox(height: 20.0),
+BookmarkCarousel(
+  bookmarkedMonumentDocs: new List(),
+  changeTab: changeScreen,
+)
 //                PopularMonumentsCarousel(
 //                  popMonumentDocs: popMonumentDocs,
 //                ),
