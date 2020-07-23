@@ -62,6 +62,18 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  List<DocumentSnapshot> bookmarkedMonumentDocs = new List();
+
+  Future getBookmarkedMonuments() async {
+    await Firestore.instance
+        .collection('bookmarks')
+        .where("auth_id", isEqualTo: widget.user.uid)
+        .getDocuments()
+        .then((docs) {
+      bookmarkedMonumentDocs = docs.documents;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
         print('Popular Monuments Received!');
       });
     });
+//    getBookmarkedMonuments().whenComplete(() {
+//      setState(() {
+//        print('Bookmarks fetched!');
+//      });
+//    });
   }
 
   void changeScreen(int tabIndex){
@@ -91,13 +108,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    getBookmarkedMonuments().whenComplete(() {
+      setState(() {
+        print('Bookmarks refresh!');
+      });
+    });
     return Scaffold(
       key: _key,
       body: _currentTab == 1?
           ExploreScreen(monumentList: popMonumentDocs,)
       :
       _currentTab == 2?
-          BookmarkScreen(monumentList: new List(),)
+          BookmarkScreen(monumentList: bookmarkedMonumentDocs,)
       :
       SafeArea(
         child: Stack(
@@ -119,16 +141,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 20.0),
                 PopularMonumentsCarousel(
                   popMonumentDocs: popMonumentDocs,
+                  user: widget.user,
                   changeTab: changeScreen,
                 ),
                 SizedBox(height: 20.0),
 BookmarkCarousel(
-  bookmarkedMonumentDocs: new List(),
+  bookmarkedMonumentDocs: bookmarkedMonumentDocs,
   changeTab: changeScreen,
 )
-//                PopularMonumentsCarousel(
-//                  popMonumentDocs: popMonumentDocs,
-//                ),
               ],
             ),
             Padding(

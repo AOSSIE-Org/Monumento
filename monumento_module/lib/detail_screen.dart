@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class DetailScreen extends StatefulWidget {
   final DocumentSnapshot monument;
+  final FirebaseUser user;
+  final bool isBookMarked;
 
-  DetailScreen({this.monument});
+  DetailScreen({this.monument, this.user, this.isBookMarked});
 
   @override
   _DetailScreenState createState() => _DetailScreenState();
@@ -41,7 +44,7 @@ class _DetailScreenState extends State<DetailScreen> {
     String document = "user_id";
     String collection = "bookmarks";
     Map<String, dynamic> map = new Map();
-    map["auth_id"] = "user_id";
+    map["auth_id"] = widget.user.uid;
     map["name"] = widget.monument.data['name'];
     map["image"] = widget.monument.data['image'];
     map["wiki"] = widget.monument.data['wiki'];
@@ -88,7 +91,8 @@ class _DetailScreenState extends State<DetailScreen> {
                   ],
                 ),
                 child: Hero(
-                  tag: widget.monument.data['name'],
+                  tag: widget.isBookMarked?
+                  widget.monument.data["wiki"]??'monument-tag': widget.monument.data['name']??'monument',
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
                     child: Image(
@@ -111,6 +115,9 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                     Row(
                       children: <Widget>[
+                        widget.isBookMarked?
+                        SizedBox.shrink()
+                        :
                         IconButton(
                           icon: Icon(Icons.bookmark),
                           padding: EdgeInsets.only(right: 5.0),
