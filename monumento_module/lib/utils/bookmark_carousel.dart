@@ -67,7 +67,7 @@ class BookmarkCarousel extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => DetailScreen(monument: bookmarkedMonumentDocs[index],))
+                      MaterialPageRoute(builder: (_) => DetailScreen(monument: bookmarkedMonumentDocs[index],isBookMarked: true,))
                   );
                 },
                 child: Container(
@@ -133,8 +133,8 @@ class BookmarkCarousel extends StatelessWidget {
                         child: Stack(
                           children: <Widget>[
                             Hero(
-                              tag: bookmarkedMonumentDocs[index].data['name'] ??
-                                  'monument',
+                              tag: bookmarkedMonumentDocs[index].data['wiki'] ??
+                                  'monument-tag',
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20.0),
                                 child: Image(

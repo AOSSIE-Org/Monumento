@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:monumento/detail_screen.dart';
 
 class PopularMonumentsCarousel extends StatelessWidget {
   final List<DocumentSnapshot> popMonumentDocs;
+  final FirebaseUser user;
   final Function changeTab;
-  PopularMonumentsCarousel({this.popMonumentDocs, this.changeTab});
+  PopularMonumentsCarousel({this.popMonumentDocs, this.user, this.changeTab});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +52,11 @@ class PopularMonumentsCarousel extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => DetailScreen(monument: popMonumentDocs[index],))
+                  MaterialPageRoute(builder: (_) => DetailScreen(
+                    monument: popMonumentDocs[index],
+                  user: user,
+                  isBookMarked: false,
+                  ))
                   );
                 },
                 child: Container(
