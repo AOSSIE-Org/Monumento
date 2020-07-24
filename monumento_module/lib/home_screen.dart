@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:monumento/bookmark_screen.dart';
 import 'package:monumento/explore_screen.dart';
+import 'package:monumento/profile_screen.dart';
 import 'package:monumento/utils/bookmark_carousel.dart';
 import 'package:monumento/utils/popular_carousel.dart';
 
@@ -16,36 +17,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
   int _currentTab = 0;
   final _key = GlobalKey<ScaffoldState>();
-  List<IconData> _icons = [
-    Icons.airplanemode_active,
-    Icons.hotel,
-    Icons.directions_walk,
-    Icons.directions_bike,
-  ];
-
-  Widget _buildIcon(int index) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: Container(
-        height: 60.0,
-        width: 60.0,
-        decoration: BoxDecoration(
-          color: _selectedIndex == index ? Colors.amber : Colors.white,
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        child: Icon(_icons[index],
-            size: 25.0,
-            color: _selectedIndex == index ? Colors.white : Colors.amber),
-      ),
-    );
-  }
 
   List<DocumentSnapshot> popMonumentDocs = new List();
   List<Map<String, dynamic>> monumentMapList = new List();
@@ -74,19 +47,37 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  DocumentSnapshot profileSnapshot;
+  Future getProfileData() async{
+    await Firestore.instance
+        .collection('users')
+        .where("auth_id", isEqualTo: widget.user.uid)
+        .limit(1)
+        .getDocuments()
+        .then((docs) {
+          if(docs != null && docs.documents.length != 0)
+      profileSnapshot = docs.documents[0];
+    });
+  }
+
   @override
   void initState() {
     super.initState();
+    getProfileData().whenComplete(() {
+      setState(() {
+        print('Profile Data Received!');
+      });
+    });
     getPopularMonuments().whenComplete(() {
       setState(() {
         print('Popular Monuments Received!');
       });
     });
-//    getBookmarkedMonuments().whenComplete(() {
-//      setState(() {
-//        print('Bookmarks fetched!');
-//      });
-//    });
+    getBookmarkedMonuments().whenComplete(() {
+      setState(() {
+        print('Bookmarks fetched!');
+      });
+    });
   }
 
   void changeScreen(int tabIndex){
@@ -108,11 +99,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getBookmarkedMonuments().whenComplete(() {
-      setState(() {
-        print('Bookmarks refresh!');
-      });
-    });
+//    getBookmarkedMonuments().whenComplete(() {
+//      setState(() {
+//        print('Bookmarks refresh!');
+//      });
+//    });
     return Scaffold(
       key: _key,
       body: _currentTab == 1?
@@ -121,6 +112,11 @@ class _HomeScreenState extends State<HomeScreen> {
       _currentTab == 2?
           BookmarkScreen(monumentList: bookmarkedMonumentDocs,)
       :
+          _currentTab == 3?
+              UserProfilePage(user: widget.user,
+                profileSnapshot: profileSnapshot,
+                bookmarkedMonuments: bookmarkedMonumentDocs,)
+          :
       SafeArea(
         child: Stack(
           children: <Widget>[

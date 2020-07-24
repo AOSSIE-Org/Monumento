@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -58,6 +59,32 @@ class _LoginScreenState extends State<LoginScreen> {
     assert(user.uid == currentUser.uid);
 
     return user;
+  }
+
+  Future<bool> createUser(FirebaseUser user) async{
+    String collection = "users";
+    Map<String, dynamic> map = new Map();
+    map["auth_id"] = user.uid;
+    map["name"] = user.displayName??'Monumento User';
+    map["prof_pic"] = user.photoUrl??'';
+    map["status"] = 'Monumento-nian';
+    map["email"] = _emailController.text.trim();
+    map["password"] = _passwordController.text.trim();
+
+    DocumentReference documentReference = Firestore.instance.collection(collection).document();
+    Firestore.instance.runTransaction((transaction) async {
+      await transaction
+          .set(documentReference, map)
+          .catchError((e) {return false;})
+          .whenComplete(() {
+        print('User Created!');
+        return true;
+      });
+    }).catchError((e) {
+      print(e.toString());
+      return false;
+    });
+    return true;
   }
 
   Widget _buildEmailTF() {
@@ -244,12 +271,30 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () {
           signInWithGoogle().then((user) {
             if (user != null) {
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomeScreen(
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                backgroundColor: Colors.white,
+                content: Text('Signing In! Please wait...',
+                  style: TextStyle(color: Colors.amber),
+                ),
+              ));
+              createUser(user).then((value) {
+                if(value)
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomeScreen(
                             user: user,
                           )));
+                else _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  backgroundColor: Colors.white,
+                  content: Text(
+                    'Error! Please Try Again Later...',
+                    style: TextStyle(
+                        color: Colors.amber,
+                        fontFamily: GoogleFonts.montserrat().fontFamily),
+                  ),
+                ));
+              });
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
@@ -344,7 +389,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.yellow,
+                      Colors.yellow[600],
                       Colors.amber,
                     ],
                     stops: [0.4, 0.9],
