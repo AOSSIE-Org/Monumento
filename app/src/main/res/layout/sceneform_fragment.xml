@@ -35,6 +35,25 @@
         android:layout_height="match_parent"
         >
 
+        <LinearLayout
+            android:id="@+id/noModelLl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/noModelTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingVertical="8dp"
+                android:text="No 3D-Model Available!"
+                android:textColor="@android:color/black"
+                android:textSize="22dp"/>
+        </LinearLayout>
+
     <fragment
         android:id="@+id/sceneform_frag"
         android:name="com.google.ar.sceneform.ux.ArFragment"

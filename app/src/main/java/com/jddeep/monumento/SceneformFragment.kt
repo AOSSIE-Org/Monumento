@@ -29,10 +29,11 @@ class SceneformFragment : AppCompatActivity() {
     private var isTracking: Boolean = false
     private var isHitting: Boolean = false
     private var isFabActive: Boolean = true
+    private var noModel: Boolean = false
     private var monument: String = ""
     private lateinit var monumentListMap: List<Map<String, String>>
 
-    private val monumentModelMap : HashMap<String, String> = hashMapOf(
+    private val monumentModelMap: HashMap<String, String> = hashMapOf(
         "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
         "Eiffel Tower" to "https://poly.googleusercontent.com/downloads/c/fp/1594652332676840/cPeRoB-RS0Q/4Z73gO10xW3/scene.gltf",
         "Statue of Liberty" to "https://poly.googleusercontent.com/downloads/c/fp/1594203800428477/ef9Yd09Doxh/6iB-aRbRXqD/model.gltf",
@@ -41,6 +42,7 @@ class SceneformFragment : AppCompatActivity() {
     )
 
 
+    @SuppressLint("RestrictedApi")
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +54,7 @@ class SceneformFragment : AppCompatActivity() {
         monument = bundle?.get("monument").toString()
         Log.e("SceneformMonument: ", monument)
         monumentListMap = bundle?.getSerializable("monumentListMap") as List<Map<String, String>>
-        Log.e("SFmonumentListMap: ",  monumentListMap[0].toString())
+        Log.e("SFmonumentListMap: ", monumentListMap[0].toString())
 
         slidePanelLayout.setDragView(wikiTv)
 
@@ -70,10 +72,19 @@ class SceneformFragment : AppCompatActivity() {
             onUpdate()
         }
 
+        val modelKey = getModelKey(monument)
+        if(modelKey.isEmpty()) {
+            noModel = true
+            arFragment.arSceneView.visibility = View.GONE
+            floatingActionButton.visibility = View.GONE
+            model_loading_pb.visibility = View.GONE
+            noModelLl.visibility = View.VISIBLE
+            noModelTv.text = "No 3D-Model for '${monument.trim()}'"
+        }
+
         // Using POLY for the AR models
         // https://github.com/jddeep/monument-models/raw/master/models/taj.gltf
         floatingActionButton.setOnClickListener {
-            val modelKey = getModelKey(monument)
             Log.e("ModelKey: ", modelKey)
             monumentModelMap[modelKey]?.let { model ->
             addObject(
@@ -82,6 +93,7 @@ class SceneformFragment : AppCompatActivity() {
             isFabActive = false
             showFab(isFabActive)
         } }
+        if(!noModel)
         showFab(false)
 
 //        nav_wiki_btn.setOnClickListener {
@@ -90,24 +102,24 @@ class SceneformFragment : AppCompatActivity() {
 //        }
     }
 
-    private fun getWikiUrl(monument: String?): String{
+    private fun getWikiUrl(monument: String?): String {
         var wikiUrl: String = "https://en.m.wikipedia.org/wiki/Main_Page"
-        if(monument.isNullOrEmpty() || monument == "Nothing Found") return wikiUrl
-        for(monumentMap in monumentListMap) {
+        if (monument.isNullOrEmpty() || monument == "Nothing Found") return wikiUrl
+        for (monumentMap in monumentListMap) {
             if (monumentMap["name"] == monument) {
                 wikiUrl = monumentMap["wiki"] as String
                 break
             }
         }
         return wikiUrl
-        }
+    }
 
 
-    private fun getModelKey(monument: String?): String{
-        val default = "Leaning Tower of Pisa"
-        if(monument.isNullOrEmpty()) return default
+    private fun getModelKey(monument: String?): String {
+        val default = ""
+        if (monument.isNullOrEmpty()) return default
 
-        return when(monument.trim()) {
+        return when (monument.trim()) {
             "Taj Mahal" -> "Taj Mahal"
             "Eiffel Tower" -> "Eiffel Tower"
             "Statue of Liberty" -> "Statue of Liberty"
@@ -124,7 +136,7 @@ class SceneformFragment : AppCompatActivity() {
         } else {
             floatingActionButton.isEnabled = false
             floatingActionButton.visibility = View.GONE
-            if(!isFabActive){
+            if (!isFabActive) {
                 model_loading_pb.visibility = View.VISIBLE
             }
         }
@@ -137,8 +149,8 @@ class SceneformFragment : AppCompatActivity() {
         if (isTracking) {
             val hitTestChanged = updateHitTest()
             if (hitTestChanged) {
-                if(isFabActive)
-                showFab(isHitting)
+                if (isFabActive)
+                    showFab(isHitting)
             }
         }
 
@@ -210,18 +222,22 @@ class SceneformFragment : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.N)
     private fun placeObject(fragment: ArFragment, anchor: Anchor, model: String) {
         ModelRenderable.builder()
-            .setSource(fragment.context, RenderableSource.builder().setSource(
-                fragment.context,
-                Uri.parse(model),
-                RenderableSource.SourceType.GLTF2)
-                .build())
+            .setSource(
+                fragment.context, RenderableSource.builder().setSource(
+                    fragment.context,
+                    Uri.parse(model),
+                    RenderableSource.SourceType.GLTF2
+                )
+                    .build()
+            )
             .setRegistryId(model)
             .build()
             .thenAccept {
                 addNodeToScene(fragment, anchor, it)
             }
             .exceptionally {
-                Toast.makeText(this@SceneformFragment, "Error"+it.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@SceneformFragment, "Error" + it.message, Toast.LENGTH_SHORT)
+                    .show()
                 return@exceptionally null
             }
     }
@@ -244,7 +260,7 @@ class SceneformFragment : AppCompatActivity() {
         transformableNode.setParent(anchorNode)
         fragment.arSceneView.scene.addChild(anchorNode)
         transformableNode.select()
-        if(!isFabActive){
+        if (!isFabActive) {
             model_loading_pb.visibility = View.GONE
 //            nav_wiki_btn.visibility = View.VISIBLE
         }

@@ -95,10 +95,12 @@ class BookmarkCarousel extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(
+                            Padding(
+                            padding: const EdgeInsets.only(top: 20.0),
+                                child: Text(
                                   bookmarkedMonumentDocs[index].data['name'] ??
                                       'Monument',
                                   style: TextStyle(
@@ -107,12 +109,16 @@ class BookmarkCarousel extends StatelessWidget {
                                     letterSpacing: 1.2,
                                   ),
                                 ),
-//                                Text(
-//                                  popMonumentDocs[index].data['name']??'',
-//                                  style: TextStyle(
-//                                    color: Colors.grey,
-//                                  ),
-//                                ),
+                            ),
+                                Text(
+                                    'Tap to Explore',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.amber,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
