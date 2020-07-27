@@ -73,11 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
         print('Popular Monuments Received!');
       });
     });
-    getBookmarkedMonuments().whenComplete(() {
-      setState(() {
-        print('Bookmarks fetched!');
-      });
-    });
+//    getBookmarkedMonuments().whenComplete(() {
+//      setState(() {
+//        print('Bookmarks fetched!');
+//      });
+//    });
   }
 
   void changeScreen(int tabIndex){
@@ -99,18 +99,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-//    getBookmarkedMonuments().whenComplete(() {
-//      setState(() {
-//        print('Bookmarks refresh!');
-//      });
-//    });
     return Scaffold(
       key: _key,
       body: _currentTab == 1?
-          ExploreScreen(monumentList: popMonumentDocs,)
+          ExploreScreen(user: widget.user, monumentList: popMonumentDocs,)
       :
       _currentTab == 2?
-          BookmarkScreen(monumentList: bookmarkedMonumentDocs,)
+          BookmarkScreen(user: widget.user, monumentList: bookmarkedMonumentDocs,)
       :
           _currentTab == 3?
               UserProfilePage(user: widget.user,
@@ -118,7 +113,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 bookmarkedMonuments: bookmarkedMonumentDocs,)
           :
       SafeArea(
-        child: Stack(
+        child: (popMonumentDocs.length==0)?
+            Center(
+              child: Container(
+                height: 50.0,
+                width: 50.0,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                ),
+              ),
+            ):
+        Stack(
           children: <Widget>[
             ListView(
               padding: EdgeInsets.symmetric(vertical: 30.0),
@@ -141,9 +146,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   changeTab: changeScreen,
                 ),
                 SizedBox(height: 20.0),
-BookmarkCarousel(
-  bookmarkedMonumentDocs: bookmarkedMonumentDocs,
-  changeTab: changeScreen,
+StreamBuilder<QuerySnapshot>(
+  stream: Firestore.instance
+      .collection('bookmarks')
+      .where("auth_id", isEqualTo: widget.user.uid).snapshots(),
+  builder: (context, snapshot) {
+    if(snapshot.hasError) return Center(
+      child: Text('Failed to load Bookmarks!',
+        style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 22.0,
+          color: Colors.grey
+        ),
+      ),
+    );
+    switch(snapshot.connectionState) {
+      case ConnectionState.waiting:
+        return SizedBox.shrink();
+      default:
+    if (snapshot != null && snapshot.data.documents != null) {
+      bookmarkedMonumentDocs = snapshot.data.documents;
+    }
+    return BookmarkCarousel(
+      bookmarkedMonumentDocs: (snapshot == null || !(snapshot.hasData) ||
+          snapshot.data.documents == null) ?
+      bookmarkedMonumentDocs :
+      snapshot.data.documents,
+      changeTab: changeScreen,
+    );
+  }
+  }
 )
               ],
             ),

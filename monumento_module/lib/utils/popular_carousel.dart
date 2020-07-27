@@ -84,24 +84,30 @@ class PopularMonumentsCarousel extends StatelessWidget {
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Text(
-                                  popMonumentDocs[index].data['name'] ??
-                                      'Monument',
-                                  style: TextStyle(
-                                    fontSize: 22.0,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 1.2,
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 20.0),
+                                  child: Text(
+                                    popMonumentDocs[index].data['name'] ??
+                                        'Monument',
+                                    style: TextStyle(
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 1.2,
+                                    ),
                                   ),
                                 ),
-//                                Text(
-//                                  popMonumentDocs[index].data['name']??'',
-//                                  style: TextStyle(
-//                                    color: Colors.grey,
-//                                  ),
-//                                ),
+                                Text(
+                                    'Tap to Explore',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.amber,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.w600
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
