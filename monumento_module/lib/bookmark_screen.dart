@@ -67,6 +67,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                             height: MediaQuery.of(context).size.height * 0.2,
                             width: MediaQuery.of(context).size.width * 0.3,
                             decoration: BoxDecoration(
+                                color: Colors.grey,
                                 borderRadius: BorderRadius.only(
                                     topLeft: Radius.circular(20.0),
                                     bottomLeft: Radius.circular(20.0)

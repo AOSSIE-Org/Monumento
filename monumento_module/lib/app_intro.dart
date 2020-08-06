@@ -42,11 +42,11 @@ class _AppIntroPageState extends State<AppIntroPage> {
         ),
         bubbleBackgroundColor: Colors.amberAccent),
     PageViewModel(
-        title: Text('SHARE'),
+        title: Text('VISUALIZE'),
         titleTextStyle: TextStyle(
             color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w700),
         body: Text(
-            'Share about the places and monuments you visit with other people on the app'),
+            'Check out what the monuments actually look like up close in Augmented Reality'),
         bodyTextStyle: TextStyle(color: Colors.white),
         mainImage: Container(
           margin: EdgeInsets.all(8),
@@ -54,7 +54,7 @@ class _AppIntroPageState extends State<AppIntroPage> {
           decoration: BoxDecoration(
               color: Colors.grey[100],
               image: DecorationImage(
-                  image: AssetImage('assets/share.png'), fit: BoxFit.contain)),
+                  image: AssetImage('assets/ar_image.jpg'), fit: BoxFit.cover)),
         ),
         bubbleBackgroundColor: Colors.amberAccent),
   ];

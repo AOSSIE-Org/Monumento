@@ -148,13 +148,17 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(
-                      widget.monument.data['name'],
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 35.0,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 1.2,
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: Text(
+                        widget.monument.data['name'],
+                        maxLines: 3,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 1.2,
+                        ),
                       ),
                     ),
                     Row(

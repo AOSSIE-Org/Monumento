@@ -93,7 +93,7 @@ class PopularMonumentsCarousel extends StatelessWidget {
                                     popMonumentDocs[index].data['name'] ??
                                         'Monument',
                                     style: TextStyle(
-                                      fontSize: 22.0,
+                                      fontSize: 21.0,
                                       fontWeight: FontWeight.w600,
                                       letterSpacing: 1.2,
                                     ),
