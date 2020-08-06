@@ -3,7 +3,12 @@ include ':app'
 setBinding(new Binding([gradle: this]))
 evaluate(new File(
   settingsDir,
-  'monumento_module/.android/include_flutter.groovy'
+  '../monumento_flutter_module/.android/include_flutter.groovy'
 ))
-
-include ':monumento_module'
+//setBinding(new Binding([gradle: this]))
+//evaluate(new File(
+//  settingsDir,
+//  'monumento_module/.android/include_flutter.groovy'
+//))
+//
+//include ':monumento_module'

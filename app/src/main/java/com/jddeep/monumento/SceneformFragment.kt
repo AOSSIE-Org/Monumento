@@ -124,6 +124,7 @@ class SceneformFragment : AppCompatActivity() {
             "Eiffel Tower" -> "Eiffel Tower"
             "Statue of Liberty" -> "Statue of Liberty"
             "Colosseum" -> "Colosseum"
+            "Leaning Tower of Pisa" -> "Leaning Tower of Pisa"
             else -> default
         }
     }

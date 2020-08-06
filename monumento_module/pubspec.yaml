@@ -52,7 +52,7 @@ flutter:
   assets:
     - assets/explore.jpg
     - assets/know.png
-    - assets/share.png
+    - assets/ar_image.jpg
     - assets/google.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

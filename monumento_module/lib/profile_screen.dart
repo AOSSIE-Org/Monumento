@@ -39,37 +39,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
               ),
             ),
           ),
-//      decoration: BoxDecoration(
-//        image: DecorationImage(
-//          image: AssetImage('assets/taj_mahal.jpeg'),
-//          fit: BoxFit.cover,
-//        ),
-//      ),
         ),
-//        Align(
-//          alignment: Alignment.topRight,
-//          child: Padding(
-//            padding: EdgeInsets.only(top: 30.0, right: 20.0),
-//            child: IconButton(
-//              icon: Icon(Icons.power_settings_new, color: Colors.red,),
-//              tooltip: 'Log Out',
-//              iconSize: 35.0,
-//              onPressed: () async{
-//                _key.currentState.showSnackBar(SnackBar(
-//                  backgroundColor: Colors.amber,
-//                  content: Text('Logging Out!',
-//                    style: TextStyle(color: Colors.white),
-//                  ),
-//                ));
-//                await FirebaseAuth.instance.signOut().whenComplete(() {
-//                  Navigator.pushReplacement(context,
-//                      MaterialPageRoute(builder: (_) => LoginScreen())
-//                  );
-//                });
-//              },
-//            ),
-//          ),
-//        )
       ],
     );
   }
@@ -230,56 +200,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
   }
 
-  Widget _buildButtons() {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: InkWell(
-              onTap: () => print("followed"),
-              child: Container(
-                height: 40.0,
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                ),
-                child: Center(
-                  child: Text(
-                    "FOLLOW",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 10.0),
-          Expanded(
-            child: InkWell(
-              onTap: () => print("Message"),
-              child: Container(
-                height: 40.0,
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                ),
-                child: Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text(
-                      "MESSAGE",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -288,7 +208,17 @@ class _UserProfilePageState extends State<UserProfilePage> {
       body: Stack(
         children: <Widget>[
           _buildCoverImage(screenSize, context),
-          SafeArea(
+          (widget.profileSnapshot == null || widget.profileSnapshot.data == null)?
+          Center(
+            child: Container(
+              height: 50.0,
+              width: 50.0,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+              ),
+            ),
+          ):
+    SafeArea(
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[

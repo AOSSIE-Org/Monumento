@@ -28,6 +28,7 @@ class MyApp extends StatelessWidget {
     ]);
     return MaterialApp(
       title: 'Monumento',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.amber,
           fontFamily: GoogleFonts.montserrat().fontFamily),
