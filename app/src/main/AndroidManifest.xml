@@ -7,7 +7,7 @@
 
     <uses-feature
         android:name="android.hardware.camera.ar"
-        android:required="true" />
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -27,7 +27,7 @@
 
         <meta-data
             android:name="com.google.ar.core"
-            android:value="required" />
+            android:value="required=false" />
 
         <activity android:name=".MonumentDetector" />
         <activity android:name=".MainActivity">

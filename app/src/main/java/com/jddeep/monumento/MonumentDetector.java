@@ -191,9 +191,9 @@ public class MonumentDetector extends AppCompatActivity {
                     BatchAnnotateImagesResponse response = annotateRequest.execute();
                     return convertResponseToString(response);
                 } catch (GoogleJsonResponseException e) {
-                    Log.d(TAG, "failed to make API request because " + e.getContent());
+                    Log.e(TAG, "failed to make API request because " + e.getContent());
                 } catch (IOException e) {
-                    Log.d(TAG, "failed to make API request because of other IOException " + e.getMessage());
+                    Log.e(TAG, "failed to make API request because of other IOException " + e.getMessage());
                 }
                 return "Cloud Vision API request failed. Check logs for details.";
             }
@@ -223,7 +223,10 @@ public class MonumentDetector extends AppCompatActivity {
 
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
 
+//        if(response != null && response.getResponses() != null)
         Log.e("Responses: ", response.getResponses().toString());
+        assert response != null;
+        assert response.getResponses() != null;
         AnnotateImageResponse imageResponses = response.getResponses().get(0);
 
         List<EntityAnnotation> entityAnnotations;

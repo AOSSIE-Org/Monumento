@@ -1,6 +1,9 @@
 package com.jddeep.monumento
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.app.ActivityManager
+import android.content.Context
 import android.graphics.Point
 import android.net.Uri
 import android.os.Build
@@ -10,6 +13,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
@@ -32,6 +36,7 @@ class SceneformFragment : AppCompatActivity() {
     private var noModel: Boolean = false
     private var monument: String = ""
     private lateinit var monumentListMap: List<Map<String, String>>
+    private val MIN_OPENGL_VERSION = 3.0
 
     private val monumentModelMap: HashMap<String, String> = hashMapOf(
         "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
@@ -47,6 +52,7 @@ class SceneformFragment : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sceneform_fragment)
+        if(!checkIsSupportedDeviceOrFinish(this)) return
 
         arFragment = sceneform_frag as ArFragment
 
@@ -265,5 +271,26 @@ class SceneformFragment : AppCompatActivity() {
             model_loading_pb.visibility = View.GONE
 //            nav_wiki_btn.visibility = View.VISIBLE
         }
+    }
+
+    private fun checkIsSupportedDeviceOrFinish(activity: Activity): Boolean{
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
+            Toast.makeText(applicationContext, "AR Not Supported on old Android version!", Toast.LENGTH_SHORT)
+                .show()
+
+            activity.finish()
+            return false;
+        }
+
+        val openGlVersion = (activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
+            .deviceConfigurationInfo.glEsVersion
+        if(openGlVersion.toDouble() < MIN_OPENGL_VERSION){
+            Toast.makeText(applicationContext, "AR Not Supported on old OpenGL version!", Toast.LENGTH_SHORT)
+                .show()
+
+            activity.finish()
+            return false
+        }
+        return true
     }
 }
