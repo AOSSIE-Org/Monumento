@@ -73,11 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
         print('Popular Monuments Received!');
       });
     });
-//    getBookmarkedMonuments().whenComplete(() {
-//      setState(() {
-//        print('Bookmarks fetched!');
-//      });
-//    });
   }
 
   void changeScreen(int tabIndex){

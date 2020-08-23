@@ -69,7 +69,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   Widget _buildFullName() {
     TextStyle _nameTextStyle = TextStyle(
-//      fontFamily: GoogleFonts.averageSans().fontFamily,
       color: Colors.black,
       fontSize: 28.0,
       fontWeight: FontWeight.w700,
@@ -98,35 +97,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
           fontWeight: FontWeight.w300,
         ),
       ),
-    );
-  }
-
-  Widget _buildStatItem(String label, String count) {
-    TextStyle _statLabelTextStyle = TextStyle(
-//      fontFamily: GoogleFonts.averageSans().fontFamily,
-      color: Colors.black,
-      fontSize: 16.0,
-      fontWeight: FontWeight.w200,
-    );
-
-    TextStyle _statCountTextStyle = TextStyle(
-      color: Colors.amber,
-      fontSize: 24.0,
-      fontWeight: FontWeight.bold,
-    );
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          count,
-          style: _statCountTextStyle,
-        ),
-        Text(
-          label,
-          style: _statLabelTextStyle,
-        ),
-      ],
     );
   }
 
@@ -194,7 +164,6 @@ class _UserProfilePageState extends State<UserProfilePage> {
       child: Text(
         "Last Visited:",
         style: TextStyle(
-//            fontFamily: GoogleFonts.averageSans().fontFamily,
             fontSize: 16.0),
       ),
     );

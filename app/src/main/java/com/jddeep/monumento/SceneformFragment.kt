@@ -13,7 +13,6 @@ import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import com.google.ar.core.Anchor
 import com.google.ar.core.HitResult
 import com.google.ar.core.Plane
@@ -23,7 +22,6 @@ import com.google.ar.sceneform.assets.RenderableSource
 import com.google.ar.sceneform.rendering.ModelRenderable
 import com.google.ar.sceneform.ux.ArFragment
 import com.google.ar.sceneform.ux.TransformableNode
-import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import kotlinx.android.synthetic.main.sceneform_fragment.*
 
 class SceneformFragment : AppCompatActivity() {
@@ -52,7 +50,7 @@ class SceneformFragment : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.sceneform_fragment)
-        if(!checkIsSupportedDeviceOrFinish(this)) return
+        if (!checkIsSupportedDeviceOrFinish(this)) return
 
         arFragment = sceneform_frag as ArFragment
 
@@ -69,7 +67,6 @@ class SceneformFragment : AppCompatActivity() {
         wikiWv.isVerticalScrollBarEnabled = true
         wikiWv.isHorizontalScrollBarEnabled = true
         wikiWv.settings.builtInZoomControls = true
-//        wikiWv.settings.javaScriptEnabled = true
         wikiWv.loadUrl(getWikiUrl(monument.trim()))
         // Adds a listener to the ARSceneView
         // Called before processing each frame
@@ -79,7 +76,7 @@ class SceneformFragment : AppCompatActivity() {
         }
 
         val modelKey = getModelKey(monument)
-        if(modelKey.isEmpty()) {
+        if (modelKey.isEmpty()) {
             noModel = true
             arFragment.arSceneView.visibility = View.GONE
             floatingActionButton.visibility = View.GONE
@@ -89,18 +86,18 @@ class SceneformFragment : AppCompatActivity() {
         }
 
         // Using POLY for the AR models
-        // https://github.com/jddeep/monument-models/raw/master/models/taj.gltf
         floatingActionButton.setOnClickListener {
             Log.e("ModelKey: ", modelKey)
             monumentModelMap[modelKey]?.let { model ->
-            addObject(
-                model
-            )
-            isFabActive = false
-            showFab(isFabActive)
-        } }
-        if(!noModel)
-        showFab(false)
+                addObject(
+                    model
+                )
+                isFabActive = false
+                showFab(isFabActive)
+            }
+        }
+        if (!noModel)
+            showFab(false)
 
 //        nav_wiki_btn.setOnClickListener {
 //            Log.e("SceneFrag: ", "Wiki btn pressed")
@@ -273,9 +270,13 @@ class SceneformFragment : AppCompatActivity() {
         }
     }
 
-    private fun checkIsSupportedDeviceOrFinish(activity: Activity): Boolean{
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
-            Toast.makeText(applicationContext, "AR Not Supported on old Android version!", Toast.LENGTH_SHORT)
+    private fun checkIsSupportedDeviceOrFinish(activity: Activity): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Toast.makeText(
+                applicationContext,
+                "AR Not Supported on old Android version!",
+                Toast.LENGTH_SHORT
+            )
                 .show()
 
             activity.finish()
@@ -284,8 +285,12 @@ class SceneformFragment : AppCompatActivity() {
 
         val openGlVersion = (activity.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager)
             .deviceConfigurationInfo.glEsVersion
-        if(openGlVersion.toDouble() < MIN_OPENGL_VERSION){
-            Toast.makeText(applicationContext, "AR Not Supported on old OpenGL version!", Toast.LENGTH_SHORT)
+        if (openGlVersion.toDouble() < MIN_OPENGL_VERSION) {
+            Toast.makeText(
+                applicationContext,
+                "AR Not Supported on old OpenGL version!",
+                Toast.LENGTH_SHORT
+            )
                 .show()
 
             activity.finish()
