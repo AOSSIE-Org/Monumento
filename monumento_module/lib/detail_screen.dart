@@ -41,7 +41,6 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   void _bookmark() async {
-    String document = "user_id";
     String collection = "bookmarks";
     Map<String, dynamic> map = new Map();
     map["auth_id"] = widget.user.uid;

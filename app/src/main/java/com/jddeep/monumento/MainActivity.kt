@@ -18,19 +18,11 @@ class MainActivity : FlutterActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
         val flutterEngine = FlutterEngine(this)
         flutterEngine.dartExecutor
             .executeDartEntrypoint(
                 DartExecutor.DartEntrypoint.createDefault()
             )
-
-//        Handler().postDelayed({
-//            startActivity(createDefaultIntent(this))
-//            finish()
-//        }, SPLASH_TIME_OUT)
-
-
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -49,11 +41,11 @@ class MainActivity : FlutterActivity() {
         }
         MethodChannel(flutterEngine.dartExecutor, CHANNEL_TWO).setMethodCallHandler { call, _ ->
             Log.e("Main Activity", "Method Channel TWO called")
-            if(call.method == "navArFragment") {
+            if (call.method == "navArFragment") {
                 val monument = call.argument<List<Map<String, String>>>("monumentListMap")
                     .let {
                         it?.get(0)?.get("name")?.trim()
-                }
+                    }
                 Log.e(
                     "MainActivityMonument: ",
                     monument ?: "null"
@@ -74,7 +66,7 @@ class MainActivity : FlutterActivity() {
         startActivity(intent)
     }
 
-    private fun navArFragment(monument: String?, monumentListMap: List<Map<String, String>>?){
+    private fun navArFragment(monument: String?, monumentListMap: List<Map<String, String>>?) {
         val intent = Intent(this, SceneformFragment::class.java)
         intent.putExtra("monument", monument)
         intent.putExtra("monumentListMap", monumentListMap as Serializable)

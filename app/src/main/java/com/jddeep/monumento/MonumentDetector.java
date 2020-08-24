@@ -1,10 +1,5 @@
 package com.jddeep.monumento;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -19,6 +14,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -65,19 +65,20 @@ public class MonumentDetector extends AppCompatActivity {
     private Feature feature;
     private static final String api = "LANDMARK_DETECTION";
     private static String monument = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monument_detector);
 
-        List<Map<String, String>> monumentListMap = (List<Map<String, String>>)getIntent()
+        List<Map<String, String>> monumentListMap = (List<Map<String, String>>) getIntent()
                 .getSerializableExtra("monumentsListMap");
 
         SlidingUpPanelLayout spl = new SlidingUpPanelLayout(this);
         spl.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View v, DragEvent event) {
-                if(event.getY() > 300.0f) v.setVisibility(View.INVISIBLE);
+                if (event.getY() > 300.0f) v.setVisibility(View.INVISIBLE);
                 else v.setVisibility(View.INVISIBLE);
                 return true;
             }
@@ -223,10 +224,9 @@ public class MonumentDetector extends AppCompatActivity {
 
     private String convertResponseToString(BatchAnnotateImagesResponse response) {
 
-//        if(response != null && response.getResponses() != null)
+        if (response == null || response.getResponses() == null) return "";
+
         Log.e("Responses: ", response.getResponses().toString());
-        assert response != null;
-        assert response.getResponses() != null;
         AnnotateImageResponse imageResponses = response.getResponses().get(0);
 
         List<EntityAnnotation> entityAnnotations;
@@ -241,8 +241,8 @@ public class MonumentDetector extends AppCompatActivity {
         String message = "";
 
         if (entityAnnotation != null) {
-                message = entityAnnotation.get(0).getDescription();
-                Log.e("messageMon: ", message);
+            message = entityAnnotation.get(0).getDescription();
+            Log.e("messageMon: ", message);
         } else {
             message = "Nothing Found";
         }

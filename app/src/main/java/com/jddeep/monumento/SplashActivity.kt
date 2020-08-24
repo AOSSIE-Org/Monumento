@@ -1,9 +1,9 @@
 package com.jddeep.monumento
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import androidx.appcompat.app.AppCompatActivity
 
 class SplashActivity : AppCompatActivity() {
     private val SPLASH_TIME_OUT: Long = 3000
@@ -12,7 +12,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash)
 
-                Handler().postDelayed({
+        Handler().postDelayed({
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }, SPLASH_TIME_OUT)
