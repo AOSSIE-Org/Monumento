@@ -3,6 +3,10 @@
 ## Student - Jaideep Prasad
 ## Links  
 - Project : https://gitlab.com/aossie/monumento
+- Live Demo Videos :
+1. [Monument Detector-AR Visualize Walkthrough](https://slack-files.com/T3TUG13EX-F019APESKN1-bdac3e1d88)
+2. [Logout-Login Walkthrough](https://slack-files.com/T3TUG13EX-F01A20DPYDN-11cfcad6a2)
+3. [Overall App Walkthrough](https://slack-files.com/T3TUG13EX-F019JAMSS12-e715faf11b)
 
 ## Monumento 
 
