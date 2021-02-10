@@ -213,12 +213,12 @@ class _LoginScreenState extends State<LoginScreen> {
           emailSignIn(_emailController.text, _passwordController.text)
               .then((user) {
             if (user != null) {
-              Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                       builder: (context) => HomeScreen(
                             user: user,
-                          )));
+                          )),(Route<dynamic> route) => false);
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
@@ -279,12 +279,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ));
               createUser(user).then((value) {
                 if(value)
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                           builder: (context) => HomeScreen(
                             user: user,
-                          )));
+                          )),(Route<dynamic> route) => false);
                 else _scaffoldKey.currentState.showSnackBar(SnackBar(
                   backgroundColor: Colors.white,
                   content: Text(
