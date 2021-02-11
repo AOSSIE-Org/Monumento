@@ -219,12 +219,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ));
               createUser(user).then((value) {
                 if(value)
-                Navigator.pushReplacement(
+                Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
                         builder: (context) => HomeScreen(
                           user: user,
-                        )));
+                        )),(Route<dynamic> route) => false);
                 else _scaffoldKey.currentState.showSnackBar(SnackBar(
                   backgroundColor: Colors.white,
                   content: Text(
