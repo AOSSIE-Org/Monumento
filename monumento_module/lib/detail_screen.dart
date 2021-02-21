@@ -3,11 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:async';
 
 class DetailScreen extends StatefulWidget {
   final DocumentSnapshot monument;
   final FirebaseUser user;
-  final bool isBookMarked;
+  bool isBookMarked;
 
   DetailScreen({this.monument, this.user, this.isBookMarked});
 
@@ -17,6 +18,8 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   final _key = GlobalKey<ScaffoldState>();
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
 
   Text _buildRatingStars(int rating) {
     String stars = '';
@@ -27,46 +30,104 @@ class _DetailScreenState extends State<DetailScreen> {
     return Text(stars);
   }
 
+  num _stackToView;
+  @override
+  void initState() {
+    super.initState();
+    getBookMarkStatus();
+    _stackToView = 1;
+  }
+
+  Future<bool> getBookMarkStatus() async {
+    String collection = "bookmarks";
+    QuerySnapshot query = await Firestore.instance
+        .collection(collection)
+        .where("auth_id", isEqualTo: widget.user.uid)
+        .getDocuments();
+    query.documents.forEach((element) {
+      if (element.data['name'] == widget.monument.data['name'] &&
+          element.data['country'] == widget.monument.data['country'] &&
+          element.data['city'] == widget.monument.data['city'])
+        setState(() {
+          widget.isBookMarked = true;
+        });
+      return true;
+    });
+    return false;
+  }
+
+  Future<void> _delectbookmark() async {
+    String collection = "bookmarks";
+    QuerySnapshot query = await Firestore.instance
+        .collection(collection)
+        .where("auth_id", isEqualTo: widget.user.uid)
+        .getDocuments();
+    query.documents.forEach((element) {
+      if (element.data['name'] == widget.monument.data['name'] &&
+          element.data['country'] == widget.monument.data['country'] &&
+          element.data['city'] == widget.monument.data['city']) {
+        element.reference.delete();
+      }
+    });
+    setState(() {
+      widget.isBookMarked = false;
+    });
+  }
+
+  void _handleLoad(String value) {
+    setState(() {
+      _stackToView = 0;
+    });
+  }
+
   static const platform = const MethodChannel("ar_fragment");
 
   _navToARFragment() async {
     List<Map<String, dynamic>> monumentMapList = new List();
     monumentMapList.add(widget.monument.data);
     try {
-      await platform.invokeMethod("navArFragment",
-      {"monumentListMap":monumentMapList});
+      await platform
+          .invokeMethod("navArFragment", {"monumentListMap": monumentMapList});
     } on PlatformException catch (e) {
       print("Failed to navigate to AR Fragment: '${e.message}'.");
     }
   }
 
   void _bookmark() async {
-    String collection = "bookmarks";
-    Map<String, dynamic> map = new Map();
-    map["auth_id"] = widget.user.uid;
-    map["name"] = widget.monument.data['name'];
-    map["image"] = widget.monument.data['image'];
-    map["wiki"] = widget.monument.data['wiki'];
-    map["country"] = widget.monument.data['country'];
-    map["city"] = widget.monument.data['city'];
+    await getBookMarkStatus();
+    if (!widget.isBookMarked) {
+      String collection = "bookmarks";
+      Map<String, dynamic> map = new Map();
+      map["auth_id"] = widget.user.uid;
+      map["name"] = widget.monument.data['name'];
+      map["image"] = widget.monument.data['image'];
+      map["wiki"] = widget.monument.data['wiki'];
+      map["country"] = widget.monument.data['country'];
+      map["city"] = widget.monument.data['city'];
 
-    DocumentReference documentReference = Firestore.instance.collection(collection).document();
-    Firestore.instance.runTransaction((transaction) async {
-      await transaction
-          .set(documentReference, map)
-          .catchError((e) {})
-          .whenComplete(() {
-            print('Bookmarked!');
-            _key.currentState.showSnackBar(SnackBar(
-              backgroundColor: Colors.amber,
-              content: Text('Monument Bookmarked!',
+      DocumentReference documentReference =
+          Firestore.instance.collection(collection).document();
+      Firestore.instance.runTransaction((transaction) async {
+        await transaction
+            .set(documentReference, map)
+            .catchError((e) {})
+            .whenComplete(() {
+          setState(() {
+            widget.isBookMarked = true;
+          });
+          print('Bookmarked!');
+          _key.currentState.showSnackBar(SnackBar(
+            backgroundColor: Colors.amber,
+            content: Text(
+              'Monument Bookmarked!',
               style: TextStyle(color: Colors.white),
-              ),
-            ));
+            ),
+          ));
+        });
+      }).catchError((e) {
+        print(e.toString());
       });
-    }).catchError((e) {
-      print(e.toString());
-    });
+    }
   }
 
   @override
@@ -90,8 +151,9 @@ class _DetailScreenState extends State<DetailScreen> {
                   ],
                 ),
                 child: Hero(
-                  tag: widget.isBookMarked?
-                  widget.monument.data["wiki"]??'monument-tag': widget.monument.data['name']??'monument',
+                  tag: widget.isBookMarked
+                      ? widget.monument.data["wiki"] ?? 'monument-tag'
+                      : widget.monument.data['name'] ?? 'monument',
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
                     child: Image(
@@ -114,17 +176,21 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                     Row(
                       children: <Widget>[
-                        widget.isBookMarked?
-                        SizedBox.shrink()
-                        :
+                        /*widget.isBookMarked
+                            ? SizedBox.shrink()
+                            :*/
                         IconButton(
                           icon: Icon(Icons.bookmark),
                           padding: EdgeInsets.only(right: 5.0),
                           iconSize: 30.0,
-                          color: Colors.white,
+                          color:
+                              widget.isBookMarked ? Colors.amber : Colors.white,
                           tooltip: 'Bookmark',
-                          onPressed: () {
-                            _bookmark();
+                          onPressed: () async {
+                            if (!widget.isBookMarked) {
+                              await _bookmark();
+                            } else
+                              await _delectbookmark();
                           },
                         ),
                         IconButton(
@@ -132,7 +198,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           iconSize: 30.0,
                           color: Colors.amber,
                           tooltip: 'Visit in 3D AR',
-                          onPressed: () async{
+                          onPressed: () async {
                             _navToARFragment();
                           },
                         ),
@@ -193,12 +259,38 @@ class _DetailScreenState extends State<DetailScreen> {
             ],
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-          child: WebView(
-            initialUrl: widget.monument.data['wiki'],
-            gestureNavigationEnabled: true,
-          ),
-          ),
+              height: MediaQuery.of(context).size.height * 0.5,
+              child:
+                  /*WebView(
+              initialUrl: widget.monument.data['wiki'],
+              gestureNavigationEnabled: true,
+            ),*/
+                  IndexedStack(
+                index: _stackToView,
+                children: [
+                  Column(
+                    children: <Widget>[
+                      Expanded(
+                          child: WebView(
+                        javascriptMode: JavascriptMode.unrestricted,
+                        initialUrl: widget.monument.data['wiki'],
+                        gestureNavigationEnabled: true,
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.complete(webViewController);
+                        },
+                        onPageFinished: _handleLoad,
+                      )),
+                    ],
+                  ),
+                  Container(
+                    color: Colors.white,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                ],
+              )),
         ],
       ),
     );
