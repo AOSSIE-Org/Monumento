@@ -119,6 +119,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
           FutureBuilder(
               future: getBookmarkedMonuments(),
               builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting)
+                  return Center(child: CircularProgressIndicator());
                 if (!snapshot.hasData || snapshot.data.length <= 0)
                   return Container(
                     child: Center(
@@ -128,11 +130,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                           fontWeight: FontWeight.w700, fontSize: 26.0),
                     )),
                   );
-                else if (snapshot.connectionState == ConnectionState.waiting)
-                  return Center(
-                      child: CircularProgressIndicator(
-                    backgroundColor: Colors.amber,
-                  ));
+
                 widget.monumentList = snapshot.data;
                 return ListView.builder(
                   scrollDirection: Axis.vertical,
