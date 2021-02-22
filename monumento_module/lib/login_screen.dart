@@ -21,6 +21,292 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
+  Future<QuerySnapshot> check(String email) async {
+    final String collection = "users";
+    QuerySnapshot documentReference = await Firestore.instance
+        .collection(collection)
+        .where("email", isEqualTo: email)
+        .getDocuments();
+    print(documentReference.documents.length);
+    if (documentReference.documents.length > 0) return documentReference;
+    return null;
+  }
+
+  /*Future<bool> forgetPasswordChange(
+      QuerySnapshot query, BuildContext context) async {
+    TextEditingController _passwordcheck = TextEditingController(text: "");
+    TextEditingController _passwordcheck1 = TextEditingController(text: " ");
+    await showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (_) => AlertDialog(
+              elevation: 10,
+              title: Text(" Hey , ${query.documents[0].data['name']}"),
+              content: Container(
+                height: 300,
+                width: 400,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Password',
+                      style: TextStyle(
+                        color: Colors.amber,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      decoration: kBoxDecorationStyle,
+                      height: 50.0,
+                      child: TextField(
+                        key: UniqueKey(),
+                        //TODO: Email Validation
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _passwordcheck,
+                        style: TextStyle(
+                          color: Colors.amber,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 14.0),
+                          prefixIcon: Icon(
+                            Icons.email,
+                            size: 23,
+                            color: Colors.amber,
+                          ),
+                          hintText: 'Enter new Password',
+                          hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.amber,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15.0),
+                    Text(
+                      'New-Password',
+                      style: TextStyle(
+                        color: Colors.amber,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      decoration: kBoxDecorationStyle,
+                      height: 50.0,
+                      child: TextField(
+                        key: UniqueKey(),
+                        //TODO: Email Validation
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _passwordcheck1,
+                        style: TextStyle(
+                          color: Colors.amber,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 14.0),
+                          prefixIcon: Icon(
+                            Icons.email,
+                            size: 23,
+                            color: Colors.amber,
+                          ),
+                          hintText: 'Re-Enter your Password',
+                          hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.amber,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15.0),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RaisedButton(
+                          color: Colors.orange,
+                          onPressed: () async {
+                            print(_passwordcheck.text);
+                            if (_passwordcheck.text == _passwordcheck1.text &&
+                                _passwordcheck.text.length > 0) {
+                              var _email = query.documents[0].data["auth_id"];
+                              final FirebaseAuth _auth = FirebaseAuth.instance;
+
+                              _auth
+                                  .sendPasswordResetEmail(email: _email)
+                                  .then((_) {
+                                print("Your password changed Succesfully ");
+                              }).catchError((err) {
+                                print("You can't change the Password" +
+                                    err.toString());
+                              });
+                            }
+
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              elevation: 20,
+                              backgroundColor: Colors.white,
+                              content: Text(
+                                'Please enter Same Password',
+                                style: TextStyle(
+                                    color: Colors.amber,
+                                    fontFamily:
+                                        GoogleFonts.montserrat().fontFamily),
+                              ),
+                            ));
+                            _passwordcheck.clear();
+                            _passwordcheck1.clear();
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2)),
+                          padding: const EdgeInsets.all(10),
+                          child: Container(
+                            child: Text(
+                              "Submit",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ));
+  }*/
+
+  Future<bool> forgetPassword(BuildContext context) async {
+    TextEditingController _passwordcheck = TextEditingController(text: "");
+
+    await showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (_) => AlertDialog(
+              elevation: 10,
+              title: Text('Forget Password'),
+              content: Container(
+                height: 200,
+                width: 400,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      'Email',
+                      style: TextStyle(
+                        color: Colors.amber,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 10.0),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      decoration: kBoxDecorationStyle,
+                      height: 50.0,
+                      child: TextField(
+                        //TODO: Email Validation
+                        keyboardType: TextInputType.emailAddress,
+                        controller: _passwordcheck,
+                        style: TextStyle(
+                          color: Colors.amber,
+                        ),
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.only(top: 14.0),
+                          prefixIcon: Icon(
+                            Icons.email,
+                            size: 23,
+                            color: Colors.amber,
+                          ),
+                          hintText: 'Enter your Email',
+                          hintStyle: TextStyle(
+                              fontSize: 14,
+                              color: Colors.amber,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 15.0),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RaisedButton(
+                          color: Colors.orange,
+                          onPressed: () async {
+                            print(_passwordcheck.text);
+                            SystemChannels.textInput
+                                .invokeMethod('TextInput.hide');
+
+                            if (_passwordcheck.text.length > 1) {
+                              var _check =
+                                  await check(_passwordcheck.text.trim());
+                              if (_check != null) {
+                                Navigator.of(context).pop();
+                                final FirebaseAuth _auth =
+                                    FirebaseAuth.instance;
+                                _auth
+                                    .sendPasswordResetEmail(
+                                        email: _passwordcheck.text.trim())
+                                    .then((value) {
+                                  _scaffoldKey.currentState
+                                      .showSnackBar(SnackBar(
+                                    elevation: 20,
+                                    duration: Duration(seconds: 2),
+                                    backgroundColor: Colors.white,
+                                    content: Text(
+                                      'Hey ${_check.documents[0].data['name']},Check your Email ',
+                                      style: TextStyle(
+                                          color: Colors.amber,
+                                          fontFamily: GoogleFonts.montserrat()
+                                              .fontFamily),
+                                    ),
+                                  ));
+                                  print("check your email Please");
+                                  _passwordcheck.clear();
+                                }).catchError((err) => print(err));
+                                return true;
+                              }
+                              _passwordcheck.clear();
+
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                elevation: 20,
+                                duration: Duration(seconds: 1),
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  'Please enter a registered email ',
+                                  style: TextStyle(
+                                      color: Colors.amber,
+                                      fontFamily:
+                                          GoogleFonts.montserrat().fontFamily),
+                                ),
+                              ));
+
+                              return false;
+                            }
+                          },
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(2)),
+                          padding: const EdgeInsets.all(10),
+                          child: Container(
+                            child: Text(
+                              "Submit",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ));
+  }
 
   Future<FirebaseUser> emailSignIn(String email, String password) async {
     try {
@@ -61,22 +347,22 @@ class _LoginScreenState extends State<LoginScreen> {
     return user;
   }
 
-  Future<bool> createUser(FirebaseUser user) async{
+  Future<bool> createUser(FirebaseUser user) async {
     String collection = "users";
     Map<String, dynamic> map = new Map();
     map["auth_id"] = user.uid;
-    map["name"] = user.displayName??'Monumento User';
-    map["prof_pic"] = user.photoUrl??'';
+    map["name"] = user.displayName ?? 'Monumento User';
+    map["prof_pic"] = user.photoUrl ?? '';
     map["status"] = 'Monumento-nian';
     map["email"] = _emailController.text.trim();
     map["password"] = _passwordController.text.trim();
 
-    DocumentReference documentReference = Firestore.instance.collection(collection).document();
+    DocumentReference documentReference =
+        Firestore.instance.collection(collection).document();
     Firestore.instance.runTransaction((transaction) async {
-      await transaction
-          .set(documentReference, map)
-          .catchError((e) {return false;})
-          .whenComplete(() {
+      await transaction.set(documentReference, map).catchError((e) {
+        return false;
+      }).whenComplete(() {
         print('User Created!');
         return true;
       });
@@ -164,7 +450,10 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       alignment: Alignment.centerRight,
       child: FlatButton(
-        onPressed: () => print('Forgot Password Button Pressed'),
+        onPressed: () async {
+          print('Forgot Password Button Pressed');
+          await forgetPassword(context);
+        },
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
           'Forgot Password?',
@@ -218,7 +507,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   MaterialPageRoute(
                       builder: (context) => HomeScreen(
                             user: user,
-                          )),(Route<dynamic> route) => false);
+                          )),
+                  (Route<dynamic> route) => false);
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
@@ -273,27 +563,30 @@ class _LoginScreenState extends State<LoginScreen> {
             if (user != null) {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
-                content: Text('Signing In! Please wait...',
+                content: Text(
+                  'Signing In! Please wait...',
                   style: TextStyle(color: Colors.amber),
                 ),
               ));
               createUser(user).then((value) {
-                if(value)
+                if (value)
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                           builder: (context) => HomeScreen(
-                            user: user,
-                          )),(Route<dynamic> route) => false);
-                else _scaffoldKey.currentState.showSnackBar(SnackBar(
-                  backgroundColor: Colors.white,
-                  content: Text(
-                    'Error! Please Try Again Later...',
-                    style: TextStyle(
-                        color: Colors.amber,
-                        fontFamily: GoogleFonts.montserrat().fontFamily),
-                  ),
-                ));
+                                user: user,
+                              )),
+                      (Route<dynamic> route) => false);
+                else
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    backgroundColor: Colors.white,
+                    content: Text(
+                      'Error! Please Try Again Later...',
+                      style: TextStyle(
+                          color: Colors.amber,
+                          fontFamily: GoogleFonts.montserrat().fontFamily),
+                    ),
+                  ));
               });
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
