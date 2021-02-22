@@ -237,6 +237,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         RaisedButton(
                           color: Colors.orange,
                           onPressed: () async {
+                            _scaffoldKey.currentState.hideCurrentSnackBar();
                             print(_passwordcheck.text);
                             SystemChannels.textInput
                                 .invokeMethod('TextInput.hide');
@@ -255,10 +256,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   _scaffoldKey.currentState
                                       .showSnackBar(SnackBar(
                                     elevation: 20,
-                                    duration: Duration(seconds: 2),
+                                    duration: Duration(seconds: 3),
                                     backgroundColor: Colors.white,
                                     content: Text(
-                                      'Hey ${_check.documents[0].data['name']},Check your Email ',
+                                      'Hey ${_check.documents[0].data['name']},reset password link sent to your email ',
                                       style: TextStyle(
                                           color: Colors.amber,
                                           fontFamily: GoogleFonts.montserrat()
