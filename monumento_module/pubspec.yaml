@@ -33,6 +33,8 @@ dependencies:
   intro_views_flutter:
   google_fonts:
   webview_flutter:
+  image_picker:
+  firebase_storage:
 
 dev_dependencies:
   flutter_test:
@@ -47,7 +49,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add Flutter specific assets to your application, add an assets section, 
+  # To add Flutter specific assets to your application, add an assets section,
   # like this:
   assets:
     - assets/explore.jpg
@@ -80,7 +82,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
 
   # This section identifies your Flutter project as a module meant for
   # embedding in a native host app.  These identifiers should _not_ ordinarily
