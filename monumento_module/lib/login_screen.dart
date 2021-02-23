@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:monumento/home_screen.dart';
 import 'package:monumento/register_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'constants.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -18,6 +19,21 @@ class _LoginScreenState extends State<LoginScreen> {
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  @override
+  void initState() {
+    super.initState();
+    _prefs.then((SharedPreferences prefs) {
+      setState(() {
+        _rememberMe = prefs.getBool('remember') ?? false;
+        _emailController.text = prefs.getString('email') ?? '';
+        _passwordController.text = prefs.getString('password') ?? '';
+      });
+      print("email" + _emailController.text);
+    });
+    print("${_rememberMe}=>true");
+  }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -355,6 +371,20 @@ class _LoginScreenState extends State<LoginScreen> {
           print('Login Button Pressed');
           emailSignIn(_emailController.text, _passwordController.text)
               .then((user) {
+            if (_emailController.text.length >= 2 &&
+                _passwordController.text.length > 1) {
+              _prefs.then((SharedPreferences prefs) {
+                if (_rememberMe) {
+                  prefs.setBool('remember', true);
+                  prefs.setString('email', _emailController.text);
+                  prefs.setString('password', _passwordController.text);
+                } else {
+                  prefs.setBool('remember', false);
+                  prefs.setString('email', null);
+                  prefs.setString('password', null);
+                }
+              });
+            }
             if (user != null) {
               Navigator.pushAndRemoveUntil(
                   context,
