@@ -15,32 +15,36 @@ class PopularMonumentsCarousel extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Popular Monuments',
-                style: TextStyle(
-                  fontSize: 19.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  print('See All');
-                  changeTab(1);
-                  },
-                child: Text(
-                  'See All',
+          child: Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Text(
+                  'Popular Monuments',
                   style: TextStyle(
-                    color: Colors.amber,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.0,
+                    fontSize: 19.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    print('See All');
+                    changeTab(1);
+                    },
+                  child: Text(
+                    'See All',
+                    style: TextStyle(
+                      color: Colors.amber,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.0,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         Container(

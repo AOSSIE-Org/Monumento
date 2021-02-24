@@ -9,6 +9,7 @@ class BookmarkScreen extends StatefulWidget {
   List<DocumentSnapshot> monumentList;
 
   BookmarkScreen({this.user, this.monumentList});
+
   @override
   _BookmarkScreenState createState() => _BookmarkScreenState();
 }
@@ -56,6 +57,20 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 return InkWell(
                   onTap: () {
                     print(widget.monumentList);
+      body: widget.monumentList.length == 0
+          ? Container(
+              child: Center(
+                  child: Text(
+                'No Bookmarks!',
+                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 26.0),
+              )),
+            )
+          : ListView.builder(
+              scrollDirection: Axis.vertical,
+              itemCount: widget.monumentList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -96,6 +111,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                             width: 10.0,
                           ),
                           Container(
+                          Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,6 +125,10 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                 Container(
                                   width:
                                       MediaQuery.of(context).size.width * 0.57,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Container(
                                   child: Text(
                                     widget.monumentList[index].data['city'] +
                                         ', ' +
@@ -118,6 +138,11 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                     style: TextStyle(
                                       fontSize: 18.0,
                                     ),
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                                 Row(
@@ -140,6 +165,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                               ],
                             ),
                           )
+                          ),
                         ],
                       ),
                     ),
@@ -148,6 +174,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
               },
             );
           }),
+              }),
     );
   }
 }
