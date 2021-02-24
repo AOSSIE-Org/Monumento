@@ -18,11 +18,15 @@ class BookmarkCarousel extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(
-                'Bookmarked Monuments',
-                style: TextStyle(
-                  fontSize: 19.0,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  'Bookmarked Monuments',
+                  style: TextStyle(
+                    fontSize: 19.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               GestureDetector(
