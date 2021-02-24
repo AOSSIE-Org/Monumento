@@ -190,6 +190,7 @@ StreamBuilder<QuerySnapshot>(
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedLabelStyle: TextStyle(color: Colors.amber),
         currentIndex: _currentTab,
         elevation: 10.0,
         selectedItemColor: Colors.amber,
@@ -205,7 +206,7 @@ StreamBuilder<QuerySnapshot>(
               size: 30.0,
               color: Colors.grey,
             ),
-            title: Text('Home', style: TextStyle(color: Colors.amber)),
+            label:'Home',
             activeIcon: Icon(
               Icons.home,
               size: 35.0,
@@ -218,7 +219,7 @@ StreamBuilder<QuerySnapshot>(
               size: 30.0,
               color: Colors.grey,
             ),
-            title: Text('Popular', style: TextStyle(color: Colors.amber)),
+            label: 'Popular',
             activeIcon: Icon(
               Icons.apps,
               size: 35.0,
@@ -231,7 +232,7 @@ StreamBuilder<QuerySnapshot>(
               size: 30.0,
               color: Colors.grey,
             ),
-            title: Text('Bookmarks', style: TextStyle(color: Colors.amber)),
+            label:'Bookmarks',
             activeIcon: Icon(
               Icons.bookmark,
               size: 35.0,
@@ -244,7 +245,7 @@ StreamBuilder<QuerySnapshot>(
               size: 30.0,
               color: Colors.grey,
             ),
-            title: Text('Profile', style: TextStyle(color: Colors.amber)),
+            label:'Profile',
             activeIcon: Icon(
               Icons.person_outline,
               size: 35.0,
