@@ -46,7 +46,7 @@ The allowed ```<types>``` are :
 
 ### Feature Requests and Bug Reports
 
-When you file a feature request or when you are submitting a bug report to the [issue tracker](https://gitlab.com/aossie/aossie-scholar/issues), make sure you add steps to reproduce it. Especially if that bug is some weird/rare one.
+When you file a feature request or when you are submitting a bug report to the [issue tracker](https://gitlab.com/aossie/monumento/-/issues), make sure you add steps to reproduce it. Especially if that bug is some weird/rare one.
 
 ### Before Creating a MR request
 
