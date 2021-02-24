@@ -14,8 +14,6 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  final String _fullName = "Jaideep Prasad";
-  final String _status = "Software Developer";
   final String _bio =
       "\"Hi, I am a vagabond and love to visit different monuments.\"";
   final _key = GlobalKey<ScaffoldState>();
