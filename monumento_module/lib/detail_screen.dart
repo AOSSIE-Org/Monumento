@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:monumento/GoogleMap.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
 
@@ -250,10 +251,17 @@ class _DetailScreenState extends State<DetailScreen> {
               Positioned(
                 right: 20.0,
                 bottom: 20.0,
-                child: Icon(
-                  Icons.location_on,
-                  color: Colors.white70,
-                  size: 25.0,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (context) => GoogleMapPage(
+                            address: widget.monument.data["name"])));
+                  },
+                  child: Icon(
+                    Icons.location_on,
+                    color: Colors.white70,
+                    size: 25.0,
+                  ),
                 ),
               ),
             ],
