@@ -17,6 +17,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _statusController = TextEditingController();
   var _passwordController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isseen = false;
+  @override
+  void initState() {
+    super.initState();
+    isseen = false;
+  }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -152,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
-            obscureText: true,
+            obscureText: !isseen,
             keyboardType: TextInputType.visiblePassword,
             controller: _passwordController,
             style: TextStyle(
@@ -167,6 +173,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               hintText: 'Enter your Password',
               hintStyle: kHintTextStyle,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  // Based on passwordVisible state choose the icon
+                  isseen ? Icons.visibility : Icons.visibility_off,
+                  color: Theme.of(context).primaryColorDark,
+                ),
+                onPressed: () {
+                  // Update the state i.e. toogle the state of passwordVisible variable
+                  setState(() {
+                    isseen = !isseen;
+                  });
+                },
+              ),
             ),
           ),
         ),
@@ -174,7 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future<bool> createUser(FirebaseUser user) async{
+  Future<bool> createUser(FirebaseUser user) async {
     String collection = "users";
     Map<String, dynamic> map = new Map();
     map["auth_id"] = user.uid;
@@ -184,12 +203,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     map["email"] = _emailController.text.trim();
     map["password"] = _passwordController.text.trim();
 
-    DocumentReference documentReference = Firestore.instance.collection(collection).document();
+    DocumentReference documentReference =
+        Firestore.instance.collection(collection).document();
     Firestore.instance.runTransaction((transaction) async {
-      await transaction
-          .set(documentReference, map)
-          .catchError((e) {return false;})
-          .whenComplete(() {
+      await transaction.set(documentReference, map).catchError((e) {
+        return false;
+      }).whenComplete(() {
         print('SignedUp!');
         return true;
       });
@@ -213,27 +232,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
             if (user != null) {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
-                content: Text('Signing Up! Please wait...',
+                content: Text(
+                  'Signing Up! Please wait...',
                   style: TextStyle(color: Colors.amber),
                 ),
               ));
               createUser(user).then((value) {
-                if(value)
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomeScreen(
-                          user: user,
-                        )),(Route<dynamic> route) => false);
-                else _scaffoldKey.currentState.showSnackBar(SnackBar(
-                  backgroundColor: Colors.white,
-                  content: Text(
-                    'Error! Please Try Again Later...',
-                    style: TextStyle(
-                        color: Colors.amber,
-                        fontFamily: GoogleFonts.montserrat().fontFamily),
-                  ),
-                ));
+                if (value)
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => HomeScreen(
+                                user: user,
+                              )),
+                      (Route<dynamic> route) => false);
+                else
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    backgroundColor: Colors.white,
+                    content: Text(
+                      'Error! Please Try Again Later...',
+                      style: TextStyle(
+                          color: Colors.amber,
+                          fontFamily: GoogleFonts.montserrat().fontFamily),
+                    ),
+                  ));
               });
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -296,11 +318,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: SingleChildScrollView(
                   physics: AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.only(
-                    left: 40.0,
-                    right: 40.0,
-                    bottom: 110.0,
-                    top: 60.0
-                  ),
+                      left: 40.0, right: 40.0, bottom: 110.0, top: 60.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
