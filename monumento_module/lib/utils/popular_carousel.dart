@@ -32,7 +32,7 @@ class PopularMonumentsCarousel extends StatelessWidget {
                   onTap: () {
                     print('See All');
                     changeTab(1);
-                    },
+                  },
                   child: Text(
                     'See All',
                     style: TextStyle(
@@ -55,13 +55,14 @@ class PopularMonumentsCarousel extends StatelessWidget {
             itemBuilder: (BuildContext context, int index) {
               return GestureDetector(
                 onTap: () {
-                  Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => DetailScreen(
-                    monument: popMonumentDocs[index],
-                  user: user,
-                  isBookMarked: false,
-                  ))
-                  );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => DetailScreen(
+                                monument: popMonumentDocs[index],
+                                user: user,
+                                isBookMarked: false,
+                              )));
                 },
                 child: Container(
                   margin: EdgeInsets.all(10.0),
@@ -93,25 +94,28 @@ class PopularMonumentsCarousel extends StatelessWidget {
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.only(top: 20.0),
-                                  child: Text(
-                                    popMonumentDocs[index].data['name'] ??
-                                        'Monument',
-                                    style: TextStyle(
-                                      fontSize: 21.0,
-                                      fontWeight: FontWeight.w600,
-                                      letterSpacing: 1.2,
+                                  child: FittedBox(
+                                    child: Text(
+                                      popMonumentDocs[index].data['name'] ??
+                                          'Monument',
+                                      style: TextStyle(
+                                        fontSize: 21.0,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 1.2,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
                                     ),
                                   ),
                                 ),
                                 Text(
-                                    'Tap to Explore',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                  'Tap to Explore',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
                                       color: Colors.amber,
                                       fontSize: 15.0,
-                                      fontWeight: FontWeight.w600
-                                    ),
-                                  ),
+                                      fontWeight: FontWeight.w600),
+                                ),
                               ],
                             ),
                           ),
