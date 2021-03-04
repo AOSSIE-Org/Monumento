@@ -6,7 +6,7 @@ import 'detail_screen.dart';
 
 class BookmarkScreen extends StatefulWidget {
   final FirebaseUser user;
-  final List<DocumentSnapshot> monumentList;
+  List<DocumentSnapshot> monumentList;
 
   BookmarkScreen({this.user, this.monumentList});
 
@@ -15,6 +15,14 @@ class BookmarkScreen extends StatefulWidget {
 }
 
 class _BookmarkScreenState extends State<BookmarkScreen> {
+  Future getBookmarkedMonuments() async {
+    QuerySnapshot query = await Firestore.instance
+        .collection('bookmarks')
+        .where("auth_id", isEqualTo: widget.user.uid)
+        .getDocuments();
+    return query.documents;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,20 +35,29 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
               fontSize: 19.0, fontWeight: FontWeight.bold, color: Colors.amber),
         ),
       ),
-      body: widget.monumentList.length == 0
-          ? Container(
-              child: Center(
-                  child: Text(
-                'No Bookmarks!',
-                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 26.0),
-              )),
-            )
-          : ListView.builder(
+
+      body: FutureBuilder(
+          future: getBookmarkedMonuments(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting)
+              return Center(child: CircularProgressIndicator());
+            if (!snapshot.hasData || snapshot.data.length <= 0)
+              return Container(
+                child: Center(
+                    child: Text(
+                  'No Bookmarks!',
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 26.0),
+                )),
+              );
+
+            widget.monumentList = snapshot.data;
+            return ListView.builder(
               scrollDirection: Axis.vertical,
               itemCount: widget.monumentList.length,
               itemBuilder: (BuildContext context, int index) {
-                return GestureDetector(
+                return InkWell(
                   onTap: () {
+                    print(widget.monumentList);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -80,6 +97,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                           SizedBox(
                             width: 10.0,
                           ),
+
+                          Container(
                           Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -90,6 +109,10 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                   style: TextStyle(
                                       fontSize: 20.0,
                                       fontWeight: FontWeight.w700),
+                                ),
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.57,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -99,7 +122,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                         ', ' +
                                         widget.monumentList[index]
                                             .data['country'],
-                                    maxLines: 1,
+                                    maxLines: 3,
                                     style: TextStyle(
                                       fontSize: 18.0,
                                     ),
@@ -125,13 +148,14 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                 ),
                               ],
                             ),
+
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }),
+
+<<<<<<< monumento_module/lib/bookmark_screen.dart
+              },
+            );
+          }),
+
     );
   }
 }

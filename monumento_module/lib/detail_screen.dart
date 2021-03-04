@@ -2,13 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:monumento/GoogleMap.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
 
 class DetailScreen extends StatefulWidget {
   final DocumentSnapshot monument;
   final FirebaseUser user;
-  final bool isBookMarked;
+  bool isBookMarked;
 
   DetailScreen({this.monument, this.user, this.isBookMarked});
 
@@ -20,18 +21,9 @@ class _DetailScreenState extends State<DetailScreen> {
   final _key = GlobalKey<ScaffoldState>();
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
-  num _stackToView;
-  @override
-  void initState() {
-    super.initState();
-    _stackToView = 1;
-  }
+     
 
-  void _handleLoad(String value) {
-    setState(() {
-      _stackToView = 0;
-    });
-  }
+ 
 
   Text _buildRatingStars(int rating) {
     String stars = '';
@@ -40,6 +32,56 @@ class _DetailScreenState extends State<DetailScreen> {
     }
     stars.trim();
     return Text(stars);
+  }
+
+  num _stackToView;
+  @override
+  void initState() {
+    super.initState();
+    getBookMarkStatus();
+    _stackToView = 1;
+  }
+
+  Future<bool> getBookMarkStatus() async {
+    String collection = "bookmarks";
+    QuerySnapshot query = await Firestore.instance
+        .collection(collection)
+        .where("auth_id", isEqualTo: widget.user.uid)
+        .getDocuments();
+    query.documents.forEach((element) {
+      if (element.data['name'] == widget.monument.data['name'] &&
+          element.data['country'] == widget.monument.data['country'] &&
+          element.data['city'] == widget.monument.data['city'])
+        setState(() {
+          widget.isBookMarked = true;
+        });
+      return true;
+    });
+    return false;
+  }
+
+  Future<void> _delectbookmark() async {
+    String collection = "bookmarks";
+    QuerySnapshot query = await Firestore.instance
+        .collection(collection)
+        .where("auth_id", isEqualTo: widget.user.uid)
+        .getDocuments();
+    query.documents.forEach((element) {
+      if (element.data['name'] == widget.monument.data['name'] &&
+          element.data['country'] == widget.monument.data['country'] &&
+          element.data['city'] == widget.monument.data['city']) {
+        element.reference.delete();
+      }
+    });
+    setState(() {
+      widget.isBookMarked = false;
+    });
+  }
+
+  void _handleLoad(String value) {
+    setState(() {
+      _stackToView = 0;
+    });
   }
 
   static const platform = const MethodChannel("ar_fragment");
@@ -56,34 +98,40 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   void _bookmark() async {
-    String collection = "bookmarks";
-    Map<String, dynamic> map = new Map();
-    map["auth_id"] = widget.user.uid;
-    map["name"] = widget.monument.data['name'];
-    map["image"] = widget.monument.data['image'];
-    map["wiki"] = widget.monument.data['wiki'];
-    map["country"] = widget.monument.data['country'];
-    map["city"] = widget.monument.data['city'];
+    await getBookMarkStatus();
+    if (!widget.isBookMarked) {
+      String collection = "bookmarks";
+      Map<String, dynamic> map = new Map();
+      map["auth_id"] = widget.user.uid;
+      map["name"] = widget.monument.data['name'];
+      map["image"] = widget.monument.data['image'];
+      map["wiki"] = widget.monument.data['wiki'];
+      map["country"] = widget.monument.data['country'];
+      map["city"] = widget.monument.data['city'];
 
-    DocumentReference documentReference =
-        Firestore.instance.collection(collection).document();
-    Firestore.instance.runTransaction((transaction) async {
-      await transaction
-          .set(documentReference, map)
-          .catchError((e) {})
-          .whenComplete(() {
-        print('Bookmarked!');
-        _key.currentState.showSnackBar(SnackBar(
-          backgroundColor: Colors.amber,
-          content: Text(
-            'Monument Bookmarked!',
-            style: TextStyle(color: Colors.white),
-          ),
-        ));
-      });
-    }).catchError((e) {
-      print(e.toString());
-    });
+      DocumentReference documentReference =
+          Firestore.instance.collection(collection).document();
+      Firestore.instance.runTransaction((transaction) async {
+        await transaction
+            .set(documentReference, map)
+            .catchError((e) {})
+            .whenComplete(() {
+          setState(() {
+            widget.isBookMarked = true;
+          });
+          print('Bookmarked!');
+          _key.currentState.showSnackBar(SnackBar(
+            backgroundColor: Colors.amber,
+            content: Text(
+              'Monument Bookmarked!',
+              style: TextStyle(color: Colors.white),
+            ),
+          ));
+        });
+      }).catchError((e) {
+        print(e.toString());
+
+    
   }
 
   @override
@@ -132,18 +180,20 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                     Row(
                       children: <Widget>[
-                        widget.isBookMarked
-                            ? SizedBox.shrink()
-                            : IconButton(
-                                icon: Icon(Icons.bookmark),
-                                padding: EdgeInsets.only(right: 5.0),
-                                iconSize: 30.0,
-                                color: Colors.white,
-                                tooltip: 'Bookmark',
-                                onPressed: () {
-                                  _bookmark();
-                                },
-                              ),
+                        IconButton(
+                          icon: Icon(Icons.bookmark),
+                          padding: EdgeInsets.only(right: 5.0),
+                          iconSize: 30.0,
+                          color:
+                              widget.isBookMarked ? Colors.amber : Colors.white,
+                          tooltip: 'Bookmark',
+                          onPressed: () async {
+                            if (!widget.isBookMarked) {
+                              await _bookmark();
+                            } else
+                              await _delectbookmark();
+                          },
+                        ),                        
                         IconButton(
                           icon: Icon(Icons.account_balance),
                           iconSize: 30.0,
@@ -201,10 +251,17 @@ class _DetailScreenState extends State<DetailScreen> {
               Positioned(
                 right: 20.0,
                 bottom: 20.0,
-                child: Icon(
-                  Icons.location_on,
-                  color: Colors.white70,
-                  size: 25.0,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (context) => GoogleMapPage(
+                            address: widget.monument.data["name"])));
+                  },
+                  child: Icon(
+                    Icons.location_on,
+                    color: Colors.white70,
+                    size: 25.0,
+                  ),
                 ),
               ),
             ],
@@ -212,10 +269,6 @@ class _DetailScreenState extends State<DetailScreen> {
           Container(
               height: MediaQuery.of(context).size.height * 0.5,
               child:
-                  /* WebView(
-            initialUrl: widget.monument.data['wiki'],
-            gestureNavigationEnabled: true,
-          ),*/
                   IndexedStack(
                 index: _stackToView,
                 children: [
