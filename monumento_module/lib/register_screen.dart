@@ -17,6 +17,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _statusController = TextEditingController();
   var _passwordController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isseen = false;
+  @override
+  void initState() {
+    super.initState();
+    isseen = false;
+  }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -152,7 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
-            obscureText: true,
+            obscureText: !isseen,
             keyboardType: TextInputType.visiblePassword,
             controller: _passwordController,
             style: TextStyle(
@@ -167,6 +173,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               hintText: 'Enter your Password',
               hintStyle: kHintTextStyle,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  // Based on passwordVisible state choose the icon
+                  isseen ? Icons.visibility : Icons.visibility_off,
+                  color: Theme.of(context).primaryColorDark,
+                ),
+                onPressed: () {
+                  // Update the state i.e. toogle the state of passwordVisible variable
+                  setState(() {
+                    isseen = !isseen;
+                  });
+                },
+              ),
             ),
           ),
         ),
