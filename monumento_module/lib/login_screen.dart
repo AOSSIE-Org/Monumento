@@ -18,6 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   var _emailController = TextEditingController();
   var _passwordController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isseen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isseen = false;
+  }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -61,22 +68,22 @@ class _LoginScreenState extends State<LoginScreen> {
     return user;
   }
 
-  Future<bool> createUser(FirebaseUser user) async{
+  Future<bool> createUser(FirebaseUser user) async {
     String collection = "users";
     Map<String, dynamic> map = new Map();
     map["auth_id"] = user.uid;
-    map["name"] = user.displayName??'Monumento User';
-    map["prof_pic"] = user.photoUrl??'';
+    map["name"] = user.displayName ?? 'Monumento User';
+    map["prof_pic"] = user.photoUrl ?? '';
     map["status"] = 'Monumento-nian';
     map["email"] = _emailController.text.trim();
     map["password"] = _passwordController.text.trim();
 
-    DocumentReference documentReference = Firestore.instance.collection(collection).document();
+    DocumentReference documentReference =
+        Firestore.instance.collection(collection).document();
     Firestore.instance.runTransaction((transaction) async {
-      await transaction
-          .set(documentReference, map)
-          .catchError((e) {return false;})
-          .whenComplete(() {
+      await transaction.set(documentReference, map).catchError((e) {
+        return false;
+      }).whenComplete(() {
         print('User Created!');
         return true;
       });
@@ -138,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
           height: 60.0,
           child: TextField(
             //TODO: Password Validation
-            obscureText: true,
+            obscureText: !isseen,
             keyboardType: TextInputType.visiblePassword,
             controller: _passwordController,
             style: TextStyle(
@@ -153,6 +160,19 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               hintText: 'Enter your Password',
               hintStyle: kHintTextStyle,
+              suffixIcon: IconButton(
+                icon: Icon(
+                  // Based on passwordVisible state choose the icon
+                  !isseen ? Icons.visibility_off : Icons.visibility,
+                  color: Theme.of(context).primaryColorDark,
+                ),
+                onPressed: () {
+                  // Update the state i.e. toogle the state of passwordVisible variable
+                  setState(() {
+                    isseen = !isseen;
+                  });
+                },
+              ),
             ),
           ),
         ),
@@ -212,13 +232,18 @@ class _LoginScreenState extends State<LoginScreen> {
           print('Login Button Pressed');
           emailSignIn(_emailController.text, _passwordController.text)
               .then((user) {
+            if (isseen)
+              setState(() {
+                isseen = !isseen;
+              });
             if (user != null) {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                       builder: (context) => HomeScreen(
                             user: user,
-                          )),(Route<dynamic> route) => false);
+                          )),
+                  (Route<dynamic> route) => false);
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
@@ -273,27 +298,30 @@ class _LoginScreenState extends State<LoginScreen> {
             if (user != null) {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
-                content: Text('Signing In! Please wait...',
+                content: Text(
+                  'Signing In! Please wait...',
                   style: TextStyle(color: Colors.amber),
                 ),
               ));
               createUser(user).then((value) {
-                if(value)
+                if (value)
                   Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                           builder: (context) => HomeScreen(
-                            user: user,
-                          )),(Route<dynamic> route) => false);
-                else _scaffoldKey.currentState.showSnackBar(SnackBar(
-                  backgroundColor: Colors.white,
-                  content: Text(
-                    'Error! Please Try Again Later...',
-                    style: TextStyle(
-                        color: Colors.amber,
-                        fontFamily: GoogleFonts.montserrat().fontFamily),
-                  ),
-                ));
+                                user: user,
+                              )),
+                      (Route<dynamic> route) => false);
+                else
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    backgroundColor: Colors.white,
+                    content: Text(
+                      'Error! Please Try Again Later...',
+                      style: TextStyle(
+                          color: Colors.amber,
+                          fontFamily: GoogleFonts.montserrat().fontFamily),
+                    ),
+                  ));
               });
             } else {
               _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -340,6 +368,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildSignupBtn() {
     return GestureDetector(
       onTap: () {
+        if (isseen)
+          setState(() {
+            isseen = !isseen;
+          });
         print('Sign Up Button Pressed');
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => SignUpScreen()));
