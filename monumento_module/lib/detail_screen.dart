@@ -21,6 +21,7 @@ class _DetailScreenState extends State<DetailScreen> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
+
   Text _buildRatingStars(int rating) {
     String stars = '';
     for (int i = 0; i < rating; i++) {
@@ -125,10 +126,9 @@ class _DetailScreenState extends State<DetailScreen> {
           ));
         });
       }).catchError((e) {
-        print(e.toString());
-      });
-    }
-  }
+        print(e.toString())})
+    
+  }}
 
   @override
   Widget build(BuildContext context) {
@@ -176,9 +176,6 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                     Row(
                       children: <Widget>[
-                        /*widget.isBookMarked
-                            ? SizedBox.shrink()
-                            :*/
                         IconButton(
                           icon: Icon(Icons.bookmark),
                           padding: EdgeInsets.only(right: 5.0),
@@ -193,6 +190,7 @@ class _DetailScreenState extends State<DetailScreen> {
                               await _delectbookmark();
                           },
                         ),
+                   
                         IconButton(
                           icon: Icon(Icons.account_balance),
                           iconSize: 30.0,
@@ -261,10 +259,6 @@ class _DetailScreenState extends State<DetailScreen> {
           Container(
               height: MediaQuery.of(context).size.height * 0.5,
               child:
-                  /*WebView(
-              initialUrl: widget.monument.data['wiki'],
-              gestureNavigationEnabled: true,
-            ),*/
                   IndexedStack(
                 index: _stackToView,
                 children: [
