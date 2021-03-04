@@ -105,8 +105,8 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                   SizedBox(
                                     width: 10.0,
                                   ),
-                                  Container(
-                                      child: Expanded(
+                                  Expanded(
+                                      child: Container(
                                           child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceAround,
