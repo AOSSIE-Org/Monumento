@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:async';
 
 class DetailScreen extends StatefulWidget {
   final DocumentSnapshot monument;
@@ -17,6 +18,20 @@ class DetailScreen extends StatefulWidget {
 
 class _DetailScreenState extends State<DetailScreen> {
   final _key = GlobalKey<ScaffoldState>();
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
+  num _stackToView;
+  @override
+  void initState() {
+    super.initState();
+    _stackToView = 1;
+  }
+
+  void _handleLoad(String value) {
+    setState(() {
+      _stackToView = 0;
+    });
+  }
 
   Text _buildRatingStars(int rating) {
     String stars = '';
@@ -33,8 +48,8 @@ class _DetailScreenState extends State<DetailScreen> {
     List<Map<String, dynamic>> monumentMapList = new List();
     monumentMapList.add(widget.monument.data);
     try {
-      await platform.invokeMethod("navArFragment",
-      {"monumentListMap":monumentMapList});
+      await platform
+          .invokeMethod("navArFragment", {"monumentListMap": monumentMapList});
     } on PlatformException catch (e) {
       print("Failed to navigate to AR Fragment: '${e.message}'.");
     }
@@ -50,19 +65,21 @@ class _DetailScreenState extends State<DetailScreen> {
     map["country"] = widget.monument.data['country'];
     map["city"] = widget.monument.data['city'];
 
-    DocumentReference documentReference = Firestore.instance.collection(collection).document();
+    DocumentReference documentReference =
+        Firestore.instance.collection(collection).document();
     Firestore.instance.runTransaction((transaction) async {
       await transaction
           .set(documentReference, map)
           .catchError((e) {})
           .whenComplete(() {
-            print('Bookmarked!');
-            _key.currentState.showSnackBar(SnackBar(
-              backgroundColor: Colors.amber,
-              content: Text('Monument Bookmarked!',
-              style: TextStyle(color: Colors.white),
-              ),
-            ));
+        print('Bookmarked!');
+        _key.currentState.showSnackBar(SnackBar(
+          backgroundColor: Colors.amber,
+          content: Text(
+            'Monument Bookmarked!',
+            style: TextStyle(color: Colors.white),
+          ),
+        ));
       });
     }).catchError((e) {
       print(e.toString());
@@ -90,8 +107,9 @@ class _DetailScreenState extends State<DetailScreen> {
                   ],
                 ),
                 child: Hero(
-                  tag: widget.isBookMarked?
-                  widget.monument.data["wiki"]??'monument-tag': widget.monument.data['name']??'monument',
+                  tag: widget.isBookMarked
+                      ? widget.monument.data["wiki"] ?? 'monument-tag'
+                      : widget.monument.data['name'] ?? 'monument',
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
                     child: Image(
@@ -114,25 +132,24 @@ class _DetailScreenState extends State<DetailScreen> {
                     ),
                     Row(
                       children: <Widget>[
-                        widget.isBookMarked?
-                        SizedBox.shrink()
-                        :
-                        IconButton(
-                          icon: Icon(Icons.bookmark),
-                          padding: EdgeInsets.only(right: 5.0),
-                          iconSize: 30.0,
-                          color: Colors.white,
-                          tooltip: 'Bookmark',
-                          onPressed: () {
-                            _bookmark();
-                          },
-                        ),
+                        widget.isBookMarked
+                            ? SizedBox.shrink()
+                            : IconButton(
+                                icon: Icon(Icons.bookmark),
+                                padding: EdgeInsets.only(right: 5.0),
+                                iconSize: 30.0,
+                                color: Colors.white,
+                                tooltip: 'Bookmark',
+                                onPressed: () {
+                                  _bookmark();
+                                },
+                              ),
                         IconButton(
                           icon: Icon(Icons.account_balance),
                           iconSize: 30.0,
                           color: Colors.amber,
                           tooltip: 'Visit in 3D AR',
-                          onPressed: () async{
+                          onPressed: () async {
                             _navToARFragment();
                           },
                         ),
@@ -193,12 +210,38 @@ class _DetailScreenState extends State<DetailScreen> {
             ],
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.5,
-          child: WebView(
+              height: MediaQuery.of(context).size.height * 0.5,
+              child:
+                  /* WebView(
             initialUrl: widget.monument.data['wiki'],
             gestureNavigationEnabled: true,
-          ),
-          ),
+          ),*/
+                  IndexedStack(
+                index: _stackToView,
+                children: [
+                  Column(
+                    children: <Widget>[
+                      Expanded(
+                          child: WebView(
+                        javascriptMode: JavascriptMode.unrestricted,
+                        initialUrl: widget.monument.data['wiki'],
+                        gestureNavigationEnabled: true,
+                        onWebViewCreated:
+                            (WebViewController webViewController) {
+                          _controller.complete(webViewController);
+                        },
+                        onPageFinished: _handleLoad,
+                      )),
+                    ],
+                  ),
+                  Container(
+                    color: Colors.white,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                ],
+              )),
         ],
       ),
     );
