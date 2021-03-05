@@ -55,8 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
         .limit(1)
         .getDocuments()
         .then((docs) {
-          if(docs != null && docs.documents.length != 0)
-      profileSnapshot = docs.documents[0];
+      if(docs != null && docs.documents.length != 0)
+        profileSnapshot = docs.documents[0];
     });
   }
 
@@ -91,33 +91,50 @@ class _HomeScreenState extends State<HomeScreen> {
       print("Failed to navigate to Monument Detector: '${e.message}'.");
     }
   }
+  static const platform2 = const MethodChannel('samples.flutter.dev/battery');
+  String _batteryLevel = 'Unknown battery level.';
+
+  Future<void> _getBatteryLevel() async {
+    String batteryLevel;
+    try {
+      final int result = await platform2.invokeMethod('getBatteryLevel');
+      batteryLevel = 'Battery level at $result % .';
+    } on PlatformException catch (e) {
+      batteryLevel = "Failed to get battery level: '${e.message}'.";
+    }
+
+    setState(() {
+      _batteryLevel = batteryLevel;
+      _key.currentState.showSnackBar(SnackBar(content: Text(_batteryLevel)));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _key,
       body: _currentTab == 1?
-          ExploreScreen(user: widget.user, monumentList: popMonumentDocs,)
-      :
+      ExploreScreen(user: widget.user, monumentList: popMonumentDocs,)
+          :
       _currentTab == 2?
-          BookmarkScreen(user: widget.user, monumentList: bookmarkedMonumentDocs,)
-      :
-          _currentTab == 3?
-              UserProfilePage(user: widget.user,
-                profileSnapshot: profileSnapshot,
-                bookmarkedMonuments: bookmarkedMonumentDocs,)
+      BookmarkScreen(user: widget.user, monumentList: bookmarkedMonumentDocs,)
+          :
+      _currentTab == 3?
+      UserProfilePage(user: widget.user,
+        profileSnapshot: profileSnapshot,
+        bookmarkedMonuments: bookmarkedMonumentDocs,)
           :
       SafeArea(
         child: (popMonumentDocs.length==0)?
-            Center(
-              child: Container(
-                height: 50.0,
-                width: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
-                ),
-              ),
-            ):
+        Center(
+          child: Container(
+            height: 50.0,
+            width: 50.0,
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+            ),
+          ),
+        ):
         Stack(
           children: <Widget>[
             ListView(
@@ -141,37 +158,37 @@ class _HomeScreenState extends State<HomeScreen> {
                   changeTab: changeScreen,
                 ),
                 SizedBox(height: 20.0),
-StreamBuilder<QuerySnapshot>(
-  stream: Firestore.instance
-      .collection('bookmarks')
-      .where("auth_id", isEqualTo: widget.user.uid).snapshots(),
-  builder: (context, snapshot) {
-    if(snapshot.hasError) return Center(
-      child: Text('Failed to load Bookmarks!',
-        style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 22.0,
-          color: Colors.grey
-        ),
-      ),
-    );
-    switch(snapshot.connectionState) {
-      case ConnectionState.waiting:
-        return SizedBox.shrink();
-      default:
-    if (snapshot != null && snapshot.data.documents != null) {
-      bookmarkedMonumentDocs = snapshot.data.documents;
-    }
-    return BookmarkCarousel(
-      bookmarkedMonumentDocs: (snapshot == null || !(snapshot.hasData) ||
-          snapshot.data.documents == null) ?
-      bookmarkedMonumentDocs :
-      snapshot.data.documents,
-      changeTab: changeScreen,
-    );
-  }
-  }
-)
+                StreamBuilder<QuerySnapshot>(
+                    stream: Firestore.instance
+                        .collection('bookmarks')
+                        .where("auth_id", isEqualTo: widget.user.uid).snapshots(),
+                    builder: (context, snapshot) {
+                      if(snapshot.hasError) return Center(
+                        child: Text('Failed to load Bookmarks!',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 22.0,
+                              color: Colors.grey
+                          ),
+                        ),
+                      );
+                      switch(snapshot.connectionState) {
+                        case ConnectionState.waiting:
+                          return SizedBox.shrink();
+                        default:
+                          if (snapshot != null && snapshot.data.documents != null) {
+                            bookmarkedMonumentDocs = snapshot.data.documents;
+                          }
+                          return BookmarkCarousel(
+                            bookmarkedMonumentDocs: (snapshot == null || !(snapshot.hasData) ||
+                                snapshot.data.documents == null) ?
+                            bookmarkedMonumentDocs :
+                            snapshot.data.documents,
+                            changeTab: changeScreen,
+                          );
+                      }
+                    }
+                )
               ],
             ),
             Padding(
@@ -188,6 +205,13 @@ StreamBuilder<QuerySnapshot>(
             )
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          _getBatteryLevel();
+        },
+        backgroundColor: Colors.amber,
+        child: Icon(Icons.account_balance, color: Colors.white),
       ),
       bottomNavigationBar: BottomNavigationBar(
         selectedLabelStyle: TextStyle(color: Colors.amber),

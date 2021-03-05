@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		24408D02C0D250317EF881AB /* Pods_ios_monumento.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AF5961A5167E9FB65F1824 /* Pods_ios_monumento.framework */; };
+		A21FA8FC25F2294E00EE2BE2 /* 3DObjects in Resources */ = {isa = PBXBuildFile; fileRef = A21FA8FB25F2294E00EE2BE2 /* 3DObjects */; };
 		A2CB6A8A25F20396003BACF5 /* MonumentImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CB6A8925F20396003BACF5 /* MonumentImageViewController.swift */; };
 		A2CB6A9125F208B0003BACF5 /* GoogleCloudAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CB6A9025F208B0003BACF5 /* GoogleCloudAPI.swift */; };
 		A2CB6A9425F2097E003BACF5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2CB6A9325F2097E003BACF5 /* GoogleService-Info.plist */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		27AF5961A5167E9FB65F1824 /* Pods_ios_monumento.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_monumento.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A21FA8FB25F2294E00EE2BE2 /* 3DObjects */ = {isa = PBXFileReference; lastKnownFileType = folder; path = 3DObjects; sourceTree = "<group>"; };
 		A2CB6A8925F20396003BACF5 /* MonumentImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonumentImageViewController.swift; sourceTree = "<group>"; };
 		A2CB6A9025F208B0003BACF5 /* GoogleCloudAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleCloudAPI.swift; sourceTree = "<group>"; };
 		A2CB6A9325F2097E003BACF5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 		A2DCC31425F1762300C2739E /* ios-monumento */ = {
 			isa = PBXGroup;
 			children = (
+				A21FA8FB25F2294E00EE2BE2 /* 3DObjects */,
 				A2CB6A9325F2097E003BACF5 /* GoogleService-Info.plist */,
 				A2DCC31525F1762300C2739E /* AppDelegate.swift */,
 				A2DCC31725F1762300C2739E /* SceneDelegate.swift */,
@@ -162,6 +165,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A2DCC32225F1762400C2739E /* LaunchScreen.storyboard in Resources */,
+				A21FA8FC25F2294E00EE2BE2 /* 3DObjects in Resources */,
 				A2CB6A9425F2097E003BACF5 /* GoogleService-Info.plist in Resources */,
 				A2DCC31F25F1762400C2739E /* Assets.xcassets in Resources */,
 				A2DCC31D25F1762300C2739E /* Main.storyboard in Resources */,

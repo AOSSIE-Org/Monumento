@@ -34,6 +34,7 @@ class ARSceneViewController: UIViewController,URLSessionDownloadDelegate{
 //                    self.addTapGestureToSceneView()
 //
 //               }
+        addTapGestureToSceneView()
 
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -73,7 +74,7 @@ class ARSceneViewController: UIViewController,URLSessionDownloadDelegate{
             let y = translation.y
             let z = translation.z
             
-            guard let shipScene = SCNScene(named: "ship.scn"),
+            guard let shipScene = SCNScene(named: "3DObjects/ship.scn"),
                 let shipNode = shipScene.rootNode.childNode(withName: "ship", recursively: false)
                 else { return }
             

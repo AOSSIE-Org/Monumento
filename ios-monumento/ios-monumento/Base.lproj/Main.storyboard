@@ -45,41 +45,44 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="83Y-MM-eWh">
-                                <rect key="frame" x="0.0" y="319" width="414" height="259"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="83Y-MM-eWh">
+                                <rect key="frame" x="0.0" y="183" width="414" height="571"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zln-DH-SQ3">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="400"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="400" id="oMk-BK-jBI"/>
+                                        </constraints>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fok-dJ-YrW">
-                                        <rect key="frame" x="0.0" y="128" width="414" height="30"/>
+                                        <rect key="frame" x="0.0" y="408" width="414" height="30"/>
                                         <state key="normal" title="Capture"/>
                                         <connections>
                                             <action selector="onCaptureButtonPress:" destination="LuK-Oh-VP4" eventType="touchUpInside" id="xiq-9E-f5k"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G4b-eM-XjD">
-                                        <rect key="frame" x="0.0" y="158" width="414" height="30"/>
+                                        <rect key="frame" x="0.0" y="446" width="414" height="30"/>
                                         <state key="normal" title="Detect Monument"/>
                                         <connections>
                                             <action selector="detectMonumentButtonPressed:" destination="LuK-Oh-VP4" eventType="touchUpInside" id="xf9-dX-vUy"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Monument" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RNp-rz-KCa">
-                                        <rect key="frame" x="0.0" y="188" width="414" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="484" width="414" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HJG-kd-oD9">
-                                        <rect key="frame" x="0.0" y="208.5" width="414" height="30"/>
+                                        <rect key="frame" x="0.0" y="512.5" width="414" height="30"/>
                                         <state key="normal" title="Augment"/>
                                         <connections>
                                             <action selector="augmentButtonPressed:" destination="LuK-Oh-VP4" eventType="touchUpInside" id="5gC-nj-Kz3"/>
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Model" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OcR-rK-D2B">
-                                        <rect key="frame" x="0.0" y="238.5" width="414" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="550.5" width="414" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -91,9 +94,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="ccA-Y2-bUP" firstAttribute="trailing" secondItem="83Y-MM-eWh" secondAttribute="trailing" id="NLT-fV-Stt"/>
-                            <constraint firstItem="83Y-MM-eWh" firstAttribute="top" secondItem="ccA-Y2-bUP" secondAttribute="top" constant="275" id="Pq3-VX-teY"/>
                             <constraint firstItem="83Y-MM-eWh" firstAttribute="leading" secondItem="ccA-Y2-bUP" secondAttribute="leading" id="XOr-fb-6gZ"/>
-                            <constraint firstItem="ccA-Y2-bUP" firstAttribute="bottom" secondItem="83Y-MM-eWh" secondAttribute="bottom" constant="284" id="dD9-c9-V49"/>
+                            <constraint firstItem="ccA-Y2-bUP" firstAttribute="bottom" secondItem="83Y-MM-eWh" secondAttribute="bottom" constant="108" id="asV-5g-t0P"/>
+                            <constraint firstItem="83Y-MM-eWh" firstAttribute="top" secondItem="ccA-Y2-bUP" secondAttribute="top" constant="139" id="mMh-Vx-vVx"/>
                         </constraints>
                     </view>
                     <connections>

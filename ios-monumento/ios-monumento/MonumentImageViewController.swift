@@ -36,7 +36,8 @@ class MonumentImageViewController: UIViewController, UINavigationControllerDeleg
     
     
     @IBAction func detectMonumentButtonPressed(_ sender: Any) {
-        GoogleCloudAPI().detect { [self] (detectedLandmark) in
+        if(capturedImage.image != nil){
+        GoogleCloudAPI().detect(image: capturedImage.image!) { [self] (detectedLandmark) in
             if(detectedLandmark != nil){
             detectedMonument.text = detectedLandmark?.text
             detectedMonument.isHidden = false
@@ -53,6 +54,7 @@ class MonumentImageViewController: UIViewController, UINavigationControllerDeleg
             }
             
         }
+        }
     }
     
     @IBOutlet weak var detectMonumentButton: UIButton!
@@ -60,7 +62,7 @@ class MonumentImageViewController: UIViewController, UINavigationControllerDeleg
     @IBAction func onCaptureButtonPress(_ sender: Any) {
         
         let vc = UIImagePickerController()
-        vc.sourceType = .photoLibrary
+        vc.sourceType = .camera
         vc.allowsEditing = true
         vc.delegate = self
         present(vc, animated: true)
@@ -73,6 +75,7 @@ class MonumentImageViewController: UIViewController, UINavigationControllerDeleg
         augmentButton.isHidden = true
         detectedMonument.isHidden = true
         noModel.isHidden = true
+        detectMonumentButton.isHidden = true
 //        detectMonumentButton.isHidden = true
 
         // Do any additional setup after loading the view.
@@ -84,7 +87,9 @@ class MonumentImageViewController: UIViewController, UINavigationControllerDeleg
             print("No image found")
             return
         }
+        
         capturedImage.image = image;
+        detectMonumentButton.isHidden = false
 
         // print out the image size as a test
         print(image.size)
