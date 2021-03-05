@@ -1,0 +1,464 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		24408D02C0D250317EF881AB /* Pods_ios_monumento.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27AF5961A5167E9FB65F1824 /* Pods_ios_monumento.framework */; };
+		A2CB6A8A25F20396003BACF5 /* MonumentImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CB6A8925F20396003BACF5 /* MonumentImageViewController.swift */; };
+		A2CB6A9125F208B0003BACF5 /* GoogleCloudAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2CB6A9025F208B0003BACF5 /* GoogleCloudAPI.swift */; };
+		A2CB6A9425F2097E003BACF5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A2CB6A9325F2097E003BACF5 /* GoogleService-Info.plist */; };
+		A2DCC31625F1762300C2739E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2DCC31525F1762300C2739E /* AppDelegate.swift */; };
+		A2DCC31825F1762300C2739E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2DCC31725F1762300C2739E /* SceneDelegate.swift */; };
+		A2DCC31A25F1762300C2739E /* ARSceneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2DCC31925F1762300C2739E /* ARSceneViewController.swift */; };
+		A2DCC31D25F1762300C2739E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2DCC31B25F1762300C2739E /* Main.storyboard */; };
+		A2DCC31F25F1762400C2739E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2DCC31E25F1762400C2739E /* Assets.xcassets */; };
+		A2DCC32225F1762400C2739E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A2DCC32025F1762400C2739E /* LaunchScreen.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		27AF5961A5167E9FB65F1824 /* Pods_ios_monumento.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ios_monumento.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2CB6A8925F20396003BACF5 /* MonumentImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonumentImageViewController.swift; sourceTree = "<group>"; };
+		A2CB6A9025F208B0003BACF5 /* GoogleCloudAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleCloudAPI.swift; sourceTree = "<group>"; };
+		A2CB6A9325F2097E003BACF5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		A2DCC31225F1762300C2739E /* ios-monumento.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ios-monumento.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2DCC31525F1762300C2739E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A2DCC31725F1762300C2739E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		A2DCC31925F1762300C2739E /* ARSceneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSceneViewController.swift; sourceTree = "<group>"; };
+		A2DCC31C25F1762300C2739E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A2DCC31E25F1762400C2739E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2DCC32125F1762400C2739E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		A2DCC32325F1762400C2739E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B416859BE78722213786A7D5 /* Pods-ios-monumento.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-monumento.debug.xcconfig"; path = "Target Support Files/Pods-ios-monumento/Pods-ios-monumento.debug.xcconfig"; sourceTree = "<group>"; };
+		E7A671087993F5611FF0B7C0 /* Pods-ios-monumento.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios-monumento.release.xcconfig"; path = "Target Support Files/Pods-ios-monumento/Pods-ios-monumento.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A2DCC30F25F1762300C2739E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				24408D02C0D250317EF881AB /* Pods_ios_monumento.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		53D59C268D38BB0AD9C2297E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B416859BE78722213786A7D5 /* Pods-ios-monumento.debug.xcconfig */,
+				E7A671087993F5611FF0B7C0 /* Pods-ios-monumento.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		A2DCC30925F1762300C2739E = {
+			isa = PBXGroup;
+			children = (
+				A2DCC31425F1762300C2739E /* ios-monumento */,
+				A2DCC31325F1762300C2739E /* Products */,
+				53D59C268D38BB0AD9C2297E /* Pods */,
+				F4C9FB5A512633D82E056D87 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		A2DCC31325F1762300C2739E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A2DCC31225F1762300C2739E /* ios-monumento.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A2DCC31425F1762300C2739E /* ios-monumento */ = {
+			isa = PBXGroup;
+			children = (
+				A2CB6A9325F2097E003BACF5 /* GoogleService-Info.plist */,
+				A2DCC31525F1762300C2739E /* AppDelegate.swift */,
+				A2DCC31725F1762300C2739E /* SceneDelegate.swift */,
+				A2DCC31925F1762300C2739E /* ARSceneViewController.swift */,
+				A2DCC31B25F1762300C2739E /* Main.storyboard */,
+				A2DCC31E25F1762400C2739E /* Assets.xcassets */,
+				A2DCC32025F1762400C2739E /* LaunchScreen.storyboard */,
+				A2DCC32325F1762400C2739E /* Info.plist */,
+				A2CB6A8925F20396003BACF5 /* MonumentImageViewController.swift */,
+				A2CB6A9025F208B0003BACF5 /* GoogleCloudAPI.swift */,
+			);
+			path = "ios-monumento";
+			sourceTree = "<group>";
+		};
+		F4C9FB5A512633D82E056D87 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				27AF5961A5167E9FB65F1824 /* Pods_ios_monumento.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A2DCC31125F1762300C2739E /* ios-monumento */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A2DCC32625F1762400C2739E /* Build configuration list for PBXNativeTarget "ios-monumento" */;
+			buildPhases = (
+				213DFB52B274E5CB198D26FF /* [CP] Check Pods Manifest.lock */,
+				CFEFB26877AFE776E1B80084 /* [CP-User] Run Flutter Build monumento Script */,
+				A2DCC30E25F1762300C2739E /* Sources */,
+				A2DCC30F25F1762300C2739E /* Frameworks */,
+				A2DCC31025F1762300C2739E /* Resources */,
+				53C9FA39388E02ABFE00C09B /* [CP] Embed Pods Frameworks */,
+				6212BAC5CCF55E42213F1ECF /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ios-monumento";
+			productName = "ios-monumento";
+			productReference = A2DCC31225F1762300C2739E /* ios-monumento.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A2DCC30A25F1762300C2739E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					A2DCC31125F1762300C2739E = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = A2DCC30D25F1762300C2739E /* Build configuration list for PBXProject "ios-monumento" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A2DCC30925F1762300C2739E;
+			productRefGroup = A2DCC31325F1762300C2739E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A2DCC31125F1762300C2739E /* ios-monumento */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A2DCC31025F1762300C2739E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2DCC32225F1762400C2739E /* LaunchScreen.storyboard in Resources */,
+				A2CB6A9425F2097E003BACF5 /* GoogleService-Info.plist in Resources */,
+				A2DCC31F25F1762400C2739E /* Assets.xcassets in Resources */,
+				A2DCC31D25F1762300C2739E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		213DFB52B274E5CB198D26FF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ios-monumento-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		53C9FA39388E02ABFE00C09B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ios-monumento/Pods-ios-monumento-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ios-monumento/Pods-ios-monumento-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ios-monumento/Pods-ios-monumento-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6212BAC5CCF55E42213F1ECF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ios-monumento/Pods-ios-monumento-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ios-monumento/Pods-ios-monumento-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ios-monumento/Pods-ios-monumento-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		CFEFB26877AFE776E1B80084 /* [CP-User] Run Flutter Build monumento Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/../monumento_module/.metadata",
+				"${SRCROOT}/../monumento_module/.ios/Flutter/App.framework/App",
+				"${SRCROOT}/../monumento_module/.ios/Flutter/engine/Flutter.framework/Flutter",
+				"${SRCROOT}/../monumento_module/.ios/Flutter/flutter_export_environment.sh",
+			);
+			name = "[CP-User] Run Flutter Build monumento Script";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nset -u\nsource \"${SRCROOT}/../monumento_module/.ios/Flutter/flutter_export_environment.sh\"\n\"$FLUTTER_ROOT\"/packages/flutter_tools/bin/xcode_backend.sh build";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A2DCC30E25F1762300C2739E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2DCC31A25F1762300C2739E /* ARSceneViewController.swift in Sources */,
+				A2DCC31625F1762300C2739E /* AppDelegate.swift in Sources */,
+				A2DCC31825F1762300C2739E /* SceneDelegate.swift in Sources */,
+				A2CB6A8A25F20396003BACF5 /* MonumentImageViewController.swift in Sources */,
+				A2CB6A9125F208B0003BACF5 /* GoogleCloudAPI.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A2DCC31B25F1762300C2739E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A2DCC31C25F1762300C2739E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		A2DCC32025F1762400C2739E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A2DCC32125F1762400C2739E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A2DCC32425F1762400C2739E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A2DCC32525F1762400C2739E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A2DCC32725F1762400C2739E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B416859BE78722213786A7D5 /* Pods-ios-monumento.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R3WJ8R6AWT;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				INFOPLIST_FILE = "ios-monumento/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "aossie.ios-monumento";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A2DCC32825F1762400C2739E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E7A671087993F5611FF0B7C0 /* Pods-ios-monumento.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = R3WJ8R6AWT;
+				INFOPLIST_FILE = "ios-monumento/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "aossie.ios-monumento";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A2DCC30D25F1762300C2739E /* Build configuration list for PBXProject "ios-monumento" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A2DCC32425F1762400C2739E /* Debug */,
+				A2DCC32525F1762400C2739E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A2DCC32625F1762400C2739E /* Build configuration list for PBXNativeTarget "ios-monumento" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A2DCC32725F1762400C2739E /* Debug */,
+				A2DCC32825F1762400C2739E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A2DCC30A25F1762300C2739E /* Project object */;
+}

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Scene View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController storyboardIdentifier="ARSceneViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="BYZ-38-t0r" customClass="ARSceneViewController" customModule="ios_monumento" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ec4-KA-JlC">
+                                <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                            </arscnView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Ec4-KA-JlC" secondAttribute="bottom" id="15x-oI-kBp"/>
+                            <constraint firstItem="Ec4-KA-JlC" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="8Fl-Vf-OkN"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Ec4-KA-JlC" secondAttribute="trailing" id="Jg3-jw-F1y"/>
+                            <constraint firstItem="Ec4-KA-JlC" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="RKx-T5-kaH"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="sceneView" destination="Ec4-KA-JlC" id="8Nu-69-4JZ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="35" y="79"/>
+        </scene>
+        <!--Monument Image View Controller-->
+        <scene sceneID="Q9f-Pi-kau">
+            <objects>
+                <viewController storyboardIdentifier="MonumentCaptureViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="LuK-Oh-VP4" customClass="MonumentImageViewController" customModule="ios_monumento" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="EQn-aE-T3a">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="83Y-MM-eWh">
+                                <rect key="frame" x="0.0" y="319" width="414" height="259"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zln-DH-SQ3">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="128"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Fok-dJ-YrW">
+                                        <rect key="frame" x="0.0" y="128" width="414" height="30"/>
+                                        <state key="normal" title="Capture"/>
+                                        <connections>
+                                            <action selector="onCaptureButtonPress:" destination="LuK-Oh-VP4" eventType="touchUpInside" id="xiq-9E-f5k"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G4b-eM-XjD">
+                                        <rect key="frame" x="0.0" y="158" width="414" height="30"/>
+                                        <state key="normal" title="Detect Monument"/>
+                                        <connections>
+                                            <action selector="detectMonumentButtonPressed:" destination="LuK-Oh-VP4" eventType="touchUpInside" id="xf9-dX-vUy"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Monument" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RNp-rz-KCa">
+                                        <rect key="frame" x="0.0" y="188" width="414" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HJG-kd-oD9">
+                                        <rect key="frame" x="0.0" y="208.5" width="414" height="30"/>
+                                        <state key="normal" title="Augment"/>
+                                        <connections>
+                                            <action selector="augmentButtonPressed:" destination="LuK-Oh-VP4" eventType="touchUpInside" id="5gC-nj-Kz3"/>
+                                        </connections>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Model" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OcR-rK-D2B">
+                                        <rect key="frame" x="0.0" y="238.5" width="414" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ccA-Y2-bUP"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ccA-Y2-bUP" firstAttribute="trailing" secondItem="83Y-MM-eWh" secondAttribute="trailing" id="NLT-fV-Stt"/>
+                            <constraint firstItem="83Y-MM-eWh" firstAttribute="top" secondItem="ccA-Y2-bUP" secondAttribute="top" constant="275" id="Pq3-VX-teY"/>
+                            <constraint firstItem="83Y-MM-eWh" firstAttribute="leading" secondItem="ccA-Y2-bUP" secondAttribute="leading" id="XOr-fb-6gZ"/>
+                            <constraint firstItem="ccA-Y2-bUP" firstAttribute="bottom" secondItem="83Y-MM-eWh" secondAttribute="bottom" constant="284" id="dD9-c9-V49"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="augmentButton" destination="HJG-kd-oD9" id="AJb-hJ-tfL"/>
+                        <outlet property="capturedImage" destination="zln-DH-SQ3" id="lN7-Kb-RNz"/>
+                        <outlet property="detectMonumentButton" destination="G4b-eM-XjD" id="SNP-9O-UpK"/>
+                        <outlet property="detectedMonument" destination="RNp-rz-KCa" id="Z3I-l0-JOb"/>
+                        <outlet property="noModel" destination="OcR-rK-D2B" id="ggd-M3-c5Y"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cfP-gg-G3S" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-830" y="-13"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
