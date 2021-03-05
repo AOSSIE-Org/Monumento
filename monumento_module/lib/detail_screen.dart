@@ -263,34 +263,32 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ],
           ),
-          Container(
-              height: MediaQuery.of(context).size.height * 0.5,
+          Expanded(
               child: IndexedStack(
-                index: _stackToView,
-                children: [
-                  Column(
-                    children: <Widget>[
-                      Expanded(
-                          child: WebView(
-                        javascriptMode: JavascriptMode.unrestricted,
-                        initialUrl: widget.monument.data['wiki'],
-                        gestureNavigationEnabled: true,
-                        onWebViewCreated:
-                            (WebViewController webViewController) {
-                          _controller.complete(webViewController);
-                        },
-                        onPageFinished: _handleLoad,
-                      )),
-                    ],
-                  ),
-                  Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
+            index: _stackToView,
+            children: [
+              Column(
+                children: <Widget>[
+                  Expanded(
+                      child: WebView(
+                    javascriptMode: JavascriptMode.unrestricted,
+                    initialUrl: widget.monument.data['wiki'],
+                    gestureNavigationEnabled: true,
+                    onWebViewCreated: (WebViewController webViewController) {
+                      _controller.complete(webViewController);
+                    },
+                    onPageFinished: _handleLoad,
+                  )),
                 ],
-              )),
+              ),
+              Container(
+                color: Colors.white,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ],
+          )),
         ],
       ),
     );
