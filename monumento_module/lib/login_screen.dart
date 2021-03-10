@@ -183,9 +183,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildForgotPasswordBtn() {
     return Container(
       alignment: Alignment.centerRight,
-      child: FlatButton(
+      child: TextButton(
+        style: TextButton.styleFrom(padding: EdgeInsets.only(right: 0.0),),
         onPressed: () => print('Forgot Password Button Pressed'),
-        padding: EdgeInsets.only(right: 0.0),
         child: Text(
           'Forgot Password?',
           style: kLabelStyle,
@@ -225,9 +225,15 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        splashColor: Colors.lightGreen,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 5.0,
+          padding: EdgeInsets.all(15.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          primary: Colors.white,
+        ),
         onPressed: () {
           print('Login Button Pressed');
           emailSignIn(_emailController.text, _passwordController.text)
@@ -245,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           )),
                   (Route<dynamic> route) => false);
             } else {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
                 content: Text(
                   'Please enter a registered email and password!',
@@ -257,11 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
             }
           }).whenComplete(() => print('Email Sign in process complete'));
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.white,
+
         child: Text(
           'LOGIN',
           style: TextStyle(
@@ -296,7 +298,7 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () {
           signInWithGoogle().then((user) {
             if (user != null) {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
                 content: Text(
                   'Signing In! Please wait...',
@@ -313,7 +315,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               )),
                       (Route<dynamic> route) => false);
                 else
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor: Colors.white,
                     content: Text(
                       'Error! Please Try Again Later...',
@@ -324,7 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ));
               });
             } else {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
                 content: Text(
                   'Google Sign-In failed!',

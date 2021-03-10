@@ -217,7 +217,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     padding: EdgeInsets.all(4.0),
                     child: Text('Log Out', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
                     onPressed: () async{
-                      _key.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: Colors.amber,
                         content: Text('Logging Out!',
                           style: TextStyle(color: Colors.white),

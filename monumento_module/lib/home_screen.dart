@@ -20,8 +20,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentTab = 0;
   final _key = GlobalKey<ScaffoldState>();
 
-  List<DocumentSnapshot> popMonumentDocs = new List();
-  List<Map<String, dynamic>> monumentMapList = new List();
+  List<DocumentSnapshot> popMonumentDocs = [];
+  List<Map<String, dynamic>> monumentMapList = [];
 
   Future getPopularMonuments() async {
     await Firestore.instance
@@ -35,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  List<DocumentSnapshot> bookmarkedMonumentDocs = new List();
+  List<DocumentSnapshot> bookmarkedMonumentDocs = [];
 
   Future getBookmarkedMonuments() async {
     await Firestore.instance

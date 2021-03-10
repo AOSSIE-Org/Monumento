@@ -223,14 +223,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        splashColor: Colors.lightGreen,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: 5.0,
+          padding: EdgeInsets.all(15.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          primary: Colors.white,
+        ),
         onPressed: () {
           print('SignUp Button Pressed');
           signUp(_emailController.text, _passwordController.text).then((user) {
             if (user != null) {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
                 content: Text(
                   'Signing Up! Please wait...',
@@ -247,7 +253,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               )),
                       (Route<dynamic> route) => false);
                 else
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor: Colors.white,
                     content: Text(
                       'Error! Please Try Again Later...',
@@ -258,7 +264,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ));
               });
             } else {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: Colors.white,
                 content: Text(
                   'Error while Signing up!',
@@ -270,11 +276,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             }
           });
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.white,
         child: Text(
           'REGISTER',
           style: TextStyle(

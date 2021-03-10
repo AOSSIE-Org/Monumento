@@ -84,7 +84,7 @@ class _DetailScreenState extends State<DetailScreen> {
   static const platform = const MethodChannel("ar_fragment");
 
   _navToARFragment() async {
-    List<Map<String, dynamic>> monumentMapList = new List();
+    List<Map<String, dynamic>> monumentMapList = [];
     monumentMapList.add(widget.monument.data);
     try {
       await platform
@@ -94,7 +94,7 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
-  void _bookmark() async {
+  Future<void> _bookmark() async {
     await getBookMarkStatus();
     if (!widget.isBookMarked) {
       String collection = "bookmarks";
@@ -117,7 +117,7 @@ class _DetailScreenState extends State<DetailScreen> {
             widget.isBookMarked = true;
           });
           print('Bookmarked!');
-          _key.currentState.showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: Colors.amber,
             content: Text(
               'Monument Bookmarked!',
