@@ -106,56 +106,61 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                     width: 10.0,
                                   ),
                                   Expanded(
-                                      child: Container(
-                                          child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceAround,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: <Widget>[
-                                        Text(
-                                          widget
-                                              .monumentList[index].data['name'],
-                                          style: TextStyle(
-                                              fontSize: 20.0,
-                                              fontWeight: FontWeight.w700),
-                                        ),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.57,
-                                          child: Text(
+                                    child: Container(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          Text(
                                             widget.monumentList[index]
-                                                    .data['city'] +
-                                                ', ' +
-                                                widget.monumentList[index]
-                                                    .data['country'],
-                                            maxLines: 3,
+                                                .data['name'],
                                             style: TextStyle(
-                                              fontSize: 18.0,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
+                                                fontSize: 20.0,
+                                                fontWeight: FontWeight.w700),
                                           ),
-                                        ),
-                                        Row(
-                                          children: <Widget>[
-                                            Text(
-                                              'Explore more',
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.57,
+                                            child: Text(
+                                              widget.monumentList[index]
+                                                      .data['city'] +
+                                                  ', ' +
+                                                  widget.monumentList[index]
+                                                      .data['country'],
+                                              maxLines: 3,
                                               style: TextStyle(
-                                                  color: Colors.amber,
-                                                  fontWeight: FontWeight.bold),
+                                                fontSize: 18.0,
+                                              ),
+                                              overflow: TextOverflow.ellipsis,
                                             ),
-                                            SizedBox(
-                                              width: 6.0,
-                                            ),
-                                            Icon(
-                                              Icons.chevron_right,
-                                              color: Colors.amber,
-                                            )
-                                          ],
-                                        ),
-                                      ])))
+                                          ),
+                                          Row(
+                                            children: <Widget>[
+                                              Text(
+                                                'Explore more',
+                                                style: TextStyle(
+                                                    color: Colors.amber,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                              SizedBox(
+                                                width: 6.0,
+                                              ),
+                                              Icon(
+                                                Icons.chevron_right,
+                                                color: Colors.amber,
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                     
                                 ]))));
                   });
             }));

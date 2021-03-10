@@ -35,6 +35,8 @@ dependencies:
   webview_flutter:
   google_maps_flutter:
   geocoder: ^0.2.1
+  image_picker:
+  firebase_storage:
 
 dev_dependencies:
   flutter_test:
