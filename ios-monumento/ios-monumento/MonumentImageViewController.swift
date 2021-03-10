@@ -12,7 +12,7 @@ class MonumentImageViewController: UIViewController, UINavigationControllerDeleg
     private var monumentName = ""
     private var monumentModelMap = [
         "Taj Mahal" : "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
-        "Eiffel Tower" : "https://poly.googleusercontent.com/downloads/c/fp/1594652332676840/cPeRoB-RS0Q/4Z73gO10xW3/scene.gltf",
+        "Eiffel Tower" : "https://firebasestorage.googleapis.com/v0/b/monumento-fd184.appspot.com/o/eiffel.STL?alt=media&token=015c819b-c923-45d3-a4d3-ff4b3c1dd4d5",
         "Statue of Liberty" : "https://poly.googleusercontent.com/downloads/c/fp/1594203800428477/ef9Yd09Doxh/6iB-aRbRXqD/model.gltf",
         "Colosseum" : "https://poly.googleusercontent.com/downloads/c/fp/1594117136139223/cVtCnH0tnHJ/fdSQ8NwCQDK/model.gltf",
         "Leaning Tower of Pisa" : "https://poly.googleusercontent.com/downloads/c/fp/1592733756165702/9hcSqLXC58h/afqTiZoEw8O/f42649ee9cd14a7db955bdcee2d21ac3.gltf"
@@ -50,11 +50,24 @@ class MonumentImageViewController: UIViewController, UINavigationControllerDeleg
                     augmentButton.isHidden = true
                     noModel.text = "No Model found for" + detectedLandmark!.text
                 }
-            
+
             }
-            
+
         }
-        }
+//            detectedMonument.text = "Eiffel Tower"
+//            detectedMonument.isHidden = false
+//                if((monumentModelMap["Eiffel Tower"]) != nil){
+//                    augmentButton.isHidden = false
+//                    modelURl = monumentModelMap["Eiffel Tower"]!
+//                    monumentName = "Eiffel Tower"
+//                }
+//                else{
+//                    augmentButton.isHidden = true
+//                    noModel.text = "No Model found for" + "Eiffel Tower"
+//                }
+//
+            }
+        
     }
     
     @IBOutlet weak var detectMonumentButton: UIButton!
