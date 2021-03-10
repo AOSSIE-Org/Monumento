@@ -26,15 +26,17 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        title: Text(
-          'Explore Bookmark Monuments',
-          style: TextStyle(
-              fontSize: 19.0, fontWeight: FontWeight.bold, color: Colors.amber),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0.0,
+          title: Text(
+            'Explore Bookmark Monuments',
+            style: TextStyle(
+                fontSize: 19.0,
+                fontWeight: FontWeight.bold,
+                color: Colors.amber),
+          ),
         ),
-      ),
       body: FutureBuilder(
           future: getBookmarkedMonuments(),
           builder: (context, snapshot) {
@@ -151,7 +153,9 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 );
               },
             );
-          }),
-    );
+          });
+    ),
+);
+
   }
 }

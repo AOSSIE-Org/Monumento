@@ -21,7 +21,7 @@ class _DetailScreenState extends State<DetailScreen> {
   final _key = GlobalKey<ScaffoldState>();
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
-     
+
 
   Text _buildRatingStars(int rating) {
     String stars = '';
@@ -130,7 +130,6 @@ class _DetailScreenState extends State<DetailScreen> {
         print(e.toString())});
     
   }}
-
 
   @override
   Widget build(BuildContext context) {
@@ -266,8 +265,7 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
           Container(
               height: MediaQuery.of(context).size.height * 0.5,
-              child:
-                  IndexedStack(
+              child: IndexedStack(
                 index: _stackToView,
                 children: [
                   Column(
