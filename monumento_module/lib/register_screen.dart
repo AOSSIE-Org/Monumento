@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'constants.dart';
 import 'home_screen.dart';
+import 'package:dbcrypt/dbcrypt.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -193,6 +194,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
+  Future<String> _hashpassword(String password) async {
+    var hashpassword = new DBCrypt().hashpw(password, new DBCrypt().gensalt());
+    print(hashpassword);
+    return hashpassword;
+  }
+
   Future<bool> createUser(FirebaseUser user) async {
     String collection = "users";
     Map<String, dynamic> map = new Map();
@@ -201,7 +208,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     map["prof_pic"] = '';
     map["status"] = _statusController.text.trim();
     map["email"] = _emailController.text.trim();
-    map["password"] = _passwordController.text.trim();
+    map["password"] = _hashpassword(_passwordController.text.trim());
 
     DocumentReference documentReference =
         Firestore.instance.collection(collection).document();
