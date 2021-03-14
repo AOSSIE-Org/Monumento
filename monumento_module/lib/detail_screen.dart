@@ -22,7 +22,6 @@ class _DetailScreenState extends State<DetailScreen> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
 
-
   Text _buildRatingStars(int rating) {
     String stars = '';
     for (int i = 0; i < rating; i++) {
@@ -95,7 +94,7 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
-  Future<void> _bookmark() async {
+  void _bookmark() async {
     await getBookMarkStatus();
     if (!widget.isBookMarked) {
       String collection = "bookmarks";
@@ -127,9 +126,10 @@ class _DetailScreenState extends State<DetailScreen> {
           ));
         });
       }).catchError((e) {
-        print(e.toString())});
-    
-  }}
+        print(e.toString());
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -263,34 +263,32 @@ class _DetailScreenState extends State<DetailScreen> {
               ),
             ],
           ),
-          Container(
-              height: MediaQuery.of(context).size.height * 0.5,
+          Expanded(
               child: IndexedStack(
-                index: _stackToView,
-                children: [
-                  Column(
-                    children: <Widget>[
-                      Expanded(
-                          child: WebView(
-                        javascriptMode: JavascriptMode.unrestricted,
-                        initialUrl: widget.monument.data['wiki'],
-                        gestureNavigationEnabled: true,
-                        onWebViewCreated:
-                            (WebViewController webViewController) {
-                          _controller.complete(webViewController);
-                        },
-                        onPageFinished: _handleLoad,
-                      )),
-                    ],
-                  ),
-                  Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
+            index: _stackToView,
+            children: [
+              Column(
+                children: <Widget>[
+                  Expanded(
+                      child: WebView(
+                    javascriptMode: JavascriptMode.unrestricted,
+                    initialUrl: widget.monument.data['wiki'],
+                    gestureNavigationEnabled: true,
+                    onWebViewCreated: (WebViewController webViewController) {
+                      _controller.complete(webViewController);
+                    },
+                    onPageFinished: _handleLoad,
+                  )),
                 ],
-              )),
+              ),
+              Container(
+                color: Colors.white,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ],
+          )),
         ],
       ),
     );
