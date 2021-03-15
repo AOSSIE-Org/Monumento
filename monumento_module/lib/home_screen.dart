@@ -2,21 +2,44 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_intro/flutter_intro.dart';
 import 'package:monumento/bookmark_screen.dart';
 import 'package:monumento/explore_screen.dart';
 import 'package:monumento/profile_screen.dart';
 import 'package:monumento/utils/bookmark_carousel.dart';
 import 'package:monumento/utils/popular_carousel.dart';
 
+import 'dart:async';
+
 class HomeScreen extends StatefulWidget {
   final FirebaseUser user;
-  HomeScreen({this.user});
+   final bool b;
+  HomeScreen({this.user,this.b=false});
+
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Intro intro;
+  _HomeScreenState() {
+    /// init Intro
+    intro = Intro(
+      stepCount: 3,
+      widgetBuilder: StepWidgetBuilder.useDefaultTheme(
+        texts: [
+          'Find your monument here',
+          'Bottom Navigation',
+          'WELCOME HERE',
+        ],
+        buttonTextBuilder: (currPage, totalPage) {
+          return currPage < totalPage - 1 ? 'Next' : 'Explore Now !';
+        },
+        maskClosable: true,
+      ),
+    );
+  }
   int _currentTab = 0;
   final _key = GlobalKey<ScaffoldState>();
 
@@ -29,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         .getDocuments()
         .then((docs) {
       popMonumentDocs = docs.documents;
-      for(DocumentSnapshot doc in popMonumentDocs){
+      for (DocumentSnapshot doc in popMonumentDocs) {
         monumentMapList.add(doc.data);
       }
     });
@@ -48,15 +71,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   DocumentSnapshot profileSnapshot;
-  Future getProfileData() async{
+  Future getProfileData() async {
     await Firestore.instance
         .collection('users')
         .where("auth_id", isEqualTo: widget.user.uid)
         .limit(1)
         .getDocuments()
         .then((docs) {
-          if(docs != null && docs.documents.length != 0)
-      profileSnapshot = docs.documents[0];
+      if (docs != null && docs.documents.length != 0)
+        profileSnapshot = docs.documents[0];
     });
   }
 
@@ -73,9 +96,15 @@ class _HomeScreenState extends State<HomeScreen> {
         print('Popular Monuments Received!');
       });
     });
+    if(widget.b==true){
+      Timer(Duration(seconds: 10), () async {
+        /// start the intro
+        intro.start(context);
+      });
+    }
   }
 
-  void changeScreen(int tabIndex){
+  void changeScreen(int tabIndex) {
     setState(() {
       _currentTab = tabIndex;
     });
@@ -85,8 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _navToMonumentDetector() async {
     try {
-      await platform.invokeMethod("navMonumentDetector",
-          {"monumentsList":monumentMapList});
+      await platform.invokeMethod(
+          "navMonumentDetector", {"monumentsList": monumentMapList});
     } on PlatformException catch (e) {
       print("Failed to navigate to Monument Detector: '${e.message}'.");
     }
@@ -94,166 +123,196 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _key,
-      body: _currentTab == 1?
-          ExploreScreen(user: widget.user, monumentList: popMonumentDocs,)
-      :
-      _currentTab == 2?
-          BookmarkScreen(user: widget.user, monumentList: bookmarkedMonumentDocs,)
-      :
-          _currentTab == 3?
-              UserProfilePage(user: widget.user,
-                profileSnapshot: profileSnapshot,
-                bookmarkedMonuments: bookmarkedMonumentDocs,)
-          :
-      SafeArea(
-        child: (popMonumentDocs.length==0)?
-            Center(
-              child: Container(
-                height: 50.0,
-                width: 50.0,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
-                ),
+    return WillPopScope(
+      child: Scaffold(
+        key: _key,
+        body: _currentTab == 1
+            ? ExploreScreen(
+                user: widget.user,
+                monumentList: popMonumentDocs,
+              )
+            : _currentTab == 2
+                ? BookmarkScreen(
+                    user: widget.user,
+                    monumentList: bookmarkedMonumentDocs,
+                  )
+                : _currentTab == 3
+                    ? UserProfilePage(
+                        user: widget.user,
+                        profileSnapshot: profileSnapshot,
+                        bookmarkedMonuments: bookmarkedMonumentDocs,
+                      )
+                    : SafeArea(
+                        child: (popMonumentDocs.length == 0)
+                            ? Center(
+                                child: Container(
+                                  height: 50.0,
+                                  width: 50.0,
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.amber),
+                                  ),
+                                ),
+                              )
+                            : Stack(
+                                children: <Widget>[
+                                  ListView(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 30.0),
+                                    children: <Widget>[
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 20.0, right: 120.0),
+                                        child: Text(
+                                          'Monumento',
+                                          style: TextStyle(
+                                            fontSize: 28.0,
+                                            color: Colors.amber,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          key: intro.keys[2],
+                                        ),
+                                      ),
+                                      SizedBox(height: 20.0),
+                                      PopularMonumentsCarousel(
+                                        popMonumentDocs: popMonumentDocs,
+                                        user: widget.user,
+                                        changeTab: changeScreen,
+                                      ),
+                                      SizedBox(height: 20.0),
+                                      StreamBuilder<QuerySnapshot>(
+                                          stream: Firestore.instance
+                                              .collection('bookmarks')
+                                              .where("auth_id",
+                                                  isEqualTo: widget.user.uid)
+                                              .snapshots(),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasError)
+                                              return Center(
+                                                child: Text(
+                                                  'Failed to load Bookmarks!',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      fontSize: 22.0,
+                                                      color: Colors.grey),
+                                                ),
+                                              );
+                                            switch (snapshot.connectionState) {
+                                              case ConnectionState.waiting:
+                                                return SizedBox.shrink();
+                                              default:
+                                                if (snapshot != null &&
+                                                    snapshot.data.documents !=
+                                                        null) {
+                                                  bookmarkedMonumentDocs =
+                                                      snapshot.data.documents;
+                                                }
+                                                return BookmarkCarousel(
+                                                  bookmarkedMonumentDocs:
+                                                      (snapshot == null ||
+                                                              !(snapshot
+                                                                  .hasData) ||
+                                                              snapshot.data
+                                                                      .documents ==
+                                                                  null)
+                                                          ? bookmarkedMonumentDocs
+                                                          : snapshot
+                                                              .data.documents,
+                                                  changeTab: changeScreen,
+                                                );
+                                            }
+                                          })
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: FloatingActionButton(
+                                          key: intro.keys[0],
+                                          onPressed: () async {
+                                            _navToMonumentDetector();
+                                          },
+                                          backgroundColor: Colors.amber,
+                                          child: Icon(Icons.account_balance,
+                                              color: Colors.white),
+                                        )),
+                                  )
+                                ],
+                              ),
+                      ),
+        bottomNavigationBar: BottomNavigationBar(
+          key: intro.keys[1],
+          selectedLabelStyle: TextStyle(color: Colors.amber),
+          currentIndex: _currentTab,
+          elevation: 10.0,
+          selectedItemColor: Colors.amber,
+          onTap: (int value) {
+            setState(() {
+              _currentTab = value;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+                size: 30.0,
+                color: Colors.grey,
               ),
-            ):
-        Stack(
-          children: <Widget>[
-            ListView(
-              padding: EdgeInsets.symmetric(vertical: 30.0),
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(left: 20.0, right: 120.0),
-                  child: Text(
-                    'Monumento',
-                    style: TextStyle(
-                      fontSize: 28.0,
-                      color: Colors.amber,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                PopularMonumentsCarousel(
-                  popMonumentDocs: popMonumentDocs,
-                  user: widget.user,
-                  changeTab: changeScreen,
-                ),
-                SizedBox(height: 20.0),
-StreamBuilder<QuerySnapshot>(
-  stream: Firestore.instance
-      .collection('bookmarks')
-      .where("auth_id", isEqualTo: widget.user.uid).snapshots(),
-  builder: (context, snapshot) {
-    if(snapshot.hasError) return Center(
-      child: Text('Failed to load Bookmarks!',
-        style: TextStyle(
-            fontWeight: FontWeight.w700,
-            fontSize: 22.0,
-          color: Colors.grey
-        ),
-      ),
-    );
-    switch(snapshot.connectionState) {
-      case ConnectionState.waiting:
-        return SizedBox.shrink();
-      default:
-    if (snapshot != null && snapshot.data.documents != null) {
-      bookmarkedMonumentDocs = snapshot.data.documents;
-    }
-    return BookmarkCarousel(
-      bookmarkedMonumentDocs: (snapshot == null || !(snapshot.hasData) ||
-          snapshot.data.documents == null) ?
-      bookmarkedMonumentDocs :
-      snapshot.data.documents,
-      changeTab: changeScreen,
-    );
-  }
-  }
-)
-              ],
+              label: 'Home',
+              activeIcon: Icon(
+                Icons.home,
+                size: 35.0,
+                color: Colors.amber,
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: FloatingActionButton(
-                    onPressed: () async {
-                      _navToMonumentDetector();
-                    },
-                    backgroundColor: Colors.amber,
-                    child: Icon(Icons.account_balance, color: Colors.white),
-                  )),
-            )
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.apps,
+                size: 30.0,
+                color: Colors.grey,
+              ),
+              label: 'Popular',
+              activeIcon: Icon(
+                Icons.apps,
+                size: 35.0,
+                color: Colors.amber,
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.bookmark,
+                size: 30.0,
+                color: Colors.grey,
+              ),
+              label: 'Bookmarks',
+              activeIcon: Icon(
+                Icons.bookmark,
+                size: 35.0,
+                color: Colors.amber,
+              ),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.person_outline,
+                size: 30.0,
+                color: Colors.grey,
+              ),
+              label: 'Profile',
+              activeIcon: Icon(
+                Icons.person_outline,
+                size: 35.0,
+                color: Colors.amber,
+              ),
+            ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: TextStyle(color: Colors.amber),
-        currentIndex: _currentTab,
-        elevation: 10.0,
-        selectedItemColor: Colors.amber,
-        onTap: (int value) {
-          setState(() {
-            _currentTab = value;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              size: 30.0,
-              color: Colors.grey,
-            ),
-            label:'Home',
-            activeIcon: Icon(
-              Icons.home,
-              size: 35.0,
-              color: Colors.amber,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.apps,
-              size: 30.0,
-              color: Colors.grey,
-            ),
-            label: 'Popular',
-            activeIcon: Icon(
-              Icons.apps,
-              size: 35.0,
-              color: Colors.amber,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.bookmark,
-              size: 30.0,
-              color: Colors.grey,
-            ),
-            label:'Bookmarks',
-            activeIcon: Icon(
-              Icons.bookmark,
-              size: 35.0,
-              color: Colors.amber,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person_outline,
-              size: 30.0,
-              color: Colors.grey,
-            ),
-            label:'Profile',
-            activeIcon: Icon(
-              Icons.person_outline,
-              size: 35.0,
-              color: Colors.amber,
-            ),
-          ),
-        ],
-      ),
+      onWillPop: () async {
+        intro.dispose();
+        return true;
+      },
     );
   }
 }

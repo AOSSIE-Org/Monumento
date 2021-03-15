@@ -35,6 +35,7 @@ dependencies:
   webview_flutter:
   google_maps_flutter:
   geocoder: ^0.2.1
+  flutter_intro: ^1.1.0
 
 dev_dependencies:
   flutter_test:
