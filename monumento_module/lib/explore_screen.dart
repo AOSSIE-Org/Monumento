@@ -8,6 +8,7 @@ class ExploreScreen extends StatefulWidget {
   final FirebaseUser user;
   final List<DocumentSnapshot> monumentList;
 
+
   ExploreScreen({this.user, this.monumentList});
 
   @override

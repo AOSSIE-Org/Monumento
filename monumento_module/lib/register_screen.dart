@@ -244,6 +244,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       MaterialPageRoute(
                           builder: (context) => HomeScreen(
                                 user: user,
+                                b: true,
                               )),
                       (Route<dynamic> route) => false);
                 else
