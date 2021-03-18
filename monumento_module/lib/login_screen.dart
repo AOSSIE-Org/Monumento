@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:monumento/blocs/authentication/authentication_bloc.dart';
+import 'package:monumento/blocs/login_register/login_register_bloc.dart';
 import 'package:monumento/home_screen.dart';
 import 'package:monumento/register_screen.dart';
 import 'constants.dart';
@@ -20,53 +23,58 @@ class _LoginScreenState extends State<LoginScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isseen = false;
 
+  AuthenticationBloc _authenticationBloc;
+  LoginRegisterBloc _loginRegisterBloc;
+
   @override
   void initState() {
     super.initState();
     isseen = false;
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  Future<FirebaseUser> emailSignIn(String email, String password) async {
-    try {
-      AuthResult authResult = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      FirebaseUser user = authResult.user;
-      assert(user != null);
-      assert(await user.getIdToken() != null);
-      final FirebaseUser currentUser = await auth.currentUser();
-      assert(user.uid == currentUser.uid);
-      return user;
-    } catch (e) {
-      print('Email Sign In error: ' + e.toString());
-      return null;
-    }
-  }
-
-  Future<FirebaseUser> signInWithGoogle() async {
-    print('Google Sign In called');
-    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
-
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
-
-    final AuthResult authResult = await auth.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
-
-    assert(!user.isAnonymous);
-    assert(await user.getIdToken() != null);
-
-    final FirebaseUser currentUser = await auth.currentUser();
-    assert(user.uid == currentUser.uid);
-
-    return user;
-  }
+  // Future<FirebaseUser> emailSignIn(String email, String password) async {
+  //   try {
+  //     AuthResult authResult = await auth.signInWithEmailAndPassword(
+  //         email: email, password: password);
+  //     FirebaseUser user = authResult.user;
+  //     assert(user != null);
+  //     assert(await user.getIdToken() != null);
+  //     final FirebaseUser currentUser = await auth.currentUser();
+  //     assert(user.uid == currentUser.uid);
+  //     return user;
+  //   } catch (e) {
+  //     print('Email Sign In error: ' + e.toString());
+  //     return null;
+  //   }
+  // }
+  //
+  // Future<FirebaseUser> signInWithGoogle() async {
+  //   print('Google Sign In called');
+  //   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+  //   final GoogleSignInAuthentication googleSignInAuthentication =
+  //   await googleSignInAccount.authentication;
+  //
+  //   final AuthCredential credential = GoogleAuthProvider.getCredential(
+  //     accessToken: googleSignInAuthentication.accessToken,
+  //     idToken: googleSignInAuthentication.idToken,
+  //   );
+  //
+  //   final AuthResult authResult = await auth.signInWithCredential(credential);
+  //   final FirebaseUser user = authResult.user;
+  //
+  //   assert(!user.isAnonymous);
+  //   assert(await user.getIdToken() != null);
+  //
+  //   final FirebaseUser currentUser = await auth.currentUser();
+  //   assert(user.uid == currentUser.uid);
+  //
+  //   return user;
+  // }
 
   Future<bool> createUser(FirebaseUser user) async {
     String collection = "users";
@@ -79,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
     map["password"] = _passwordController.text.trim();
 
     DocumentReference documentReference =
-        Firestore.instance.collection(collection).document();
+    Firestore.instance.collection(collection).document();
     Firestore.instance.runTransaction((transaction) async {
       await transaction.set(documentReference, map).catchError((e) {
         return false;
@@ -164,7 +172,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 icon: Icon(
                   // Based on passwordVisible state choose the icon
                   !isseen ? Icons.visibility_off : Icons.visibility,
-                  color: Theme.of(context).primaryColorDark,
+                  color: Theme
+                      .of(context)
+                      .primaryColorDark,
                 ),
                 onPressed: () {
                   // Update the state i.e. toogle the state of passwordVisible variable
@@ -230,32 +240,36 @@ class _LoginScreenState extends State<LoginScreen> {
         splashColor: Colors.lightGreen,
         onPressed: () {
           print('Login Button Pressed');
-          emailSignIn(_emailController.text, _passwordController.text)
-              .then((user) {
-            if (isseen)
-              setState(() {
-                isseen = !isseen;
-              });
-            if (user != null) {
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => HomeScreen(
-                            user: user,
-                          )),
-                  (Route<dynamic> route) => false);
-            } else {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                backgroundColor: Colors.white,
-                content: Text(
-                  'Please enter a registered email and password!',
-                  style: TextStyle(
-                      color: Colors.amber,
-                      fontFamily: GoogleFonts.montserrat().fontFamily),
-                ),
-              ));
-            }
-          }).whenComplete(() => print('Email Sign in process complete'));
+          _loginRegisterBloc.add(LoginWithEmailPressed(email: _emailController.text, password: _passwordController.text));
+          // emailSignIn(_emailController.text, _passwordController.text)
+          //     .then((user) {
+          //   if (isseen)
+          //     setState(() {
+          //       isseen = !isseen;
+          //     });
+          //   if (user != null) {
+          //     Navigator.pushAndRemoveUntil(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) =>
+          //                 HomeScreen(
+          //                   user: user,
+          //                 )),
+          //             (Route<dynamic> route) => false);
+          //   } else {
+          //     _scaffoldKey.currentState.showSnackBar(SnackBar(
+          //       backgroundColor: Colors.white,
+          //       content: Text(
+          //         'Please enter a registered email and password!',
+          //         style: TextStyle(
+          //             color: Colors.amber,
+          //             fontFamily: GoogleFonts
+          //                 .montserrat()
+          //                 .fontFamily),
+          //       ),
+          //     ));
+          //   }
+          // }).whenComplete(() => print('Email Sign in process complete'));
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -294,54 +308,60 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: const EdgeInsets.symmetric(vertical: 30.0),
       child: MaterialButton(
         onPressed: () {
-          signInWithGoogle().then((user) {
-            if (user != null) {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                backgroundColor: Colors.white,
-                content: Text(
-                  'Signing In! Please wait...',
-                  style: TextStyle(color: Colors.amber),
-                ),
-              ));
-              createUser(user).then((value) {
-                if (value)
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomeScreen(
-                                user: user,
-                              )),
-                      (Route<dynamic> route) => false);
-                else
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(
-                    backgroundColor: Colors.white,
-                    content: Text(
-                      'Error! Please Try Again Later...',
-                      style: TextStyle(
-                          color: Colors.amber,
-                          fontFamily: GoogleFonts.montserrat().fontFamily),
-                    ),
-                  ));
-              });
-            } else {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                backgroundColor: Colors.white,
-                content: Text(
-                  'Google Sign-In failed!',
-                  style: TextStyle(
-                      color: Colors.amber,
-                      fontFamily: GoogleFonts.montserrat().fontFamily),
-                ),
-              ));
-            }
-          }).whenComplete(() => print('Google Sign In process completed.'));
+          _loginRegisterBloc.add(LoginWithGooglePressed());
+          // signInWithGoogle().then((user) {
+          //   if (user != null) {
+          //     _scaffoldKey.currentState.showSnackBar(SnackBar(
+          //       backgroundColor: Colors.white,
+          //       content: Text(
+          //         'Signing In! Please wait...',
+          //         style: TextStyle(color: Colors.amber),
+          //       ),
+          //     ));
+          //     createUser(user).then((value) {
+          //       if (value)
+          //         Navigator.pushAndRemoveUntil(
+          //             context,
+          //             MaterialPageRoute(
+          //                 builder: (context) =>
+          //                     HomeScreen(
+          //                       user: user,
+          //                     )),
+          //                 (Route<dynamic> route) => false);
+          //       else
+          //         _scaffoldKey.currentState.showSnackBar(SnackBar(
+          //           backgroundColor: Colors.white,
+          //           content: Text(
+          //             'Error! Please Try Again Later...',
+          //             style: TextStyle(
+          //                 color: Colors.amber,
+          //                 fontFamily: GoogleFonts
+          //                     .montserrat()
+          //                     .fontFamily),
+          //           ),
+          //         ));
+          //     });
+          //   } else {
+          //     _scaffoldKey.currentState.showSnackBar(SnackBar(
+          //       backgroundColor: Colors.white,
+          //       content: Text(
+          //         'Google Sign-In failed!',
+          //         style: TextStyle(
+          //             color: Colors.amber,
+          //             fontFamily: GoogleFonts
+          //                 .montserrat()
+          //                 .fontFamily),
+          //       ),
+          //     ));
+          //   }
+          // }).whenComplete(() => print('Google Sign In process completed.'));
         },
         elevation: 10.0,
         padding: EdgeInsets.all(15.0),
         color: Colors.white,
         splashColor: Colors.green,
         shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -384,7 +404,9 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
-                fontFamily: GoogleFonts.montserrat().fontFamily,
+                fontFamily: GoogleFonts
+                    .montserrat()
+                    .fontFamily,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -393,7 +415,9 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
-                fontFamily: GoogleFonts.montserrat().fontFamily,
+                fontFamily: GoogleFonts
+                    .montserrat()
+                    .fontFamily,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -405,68 +429,135 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.yellow[600],
-                      Colors.amber,
-                    ],
-                    stops: [0.4, 0.9],
-                  ),
-                ),
-              ),
-              Container(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 40.0,
-                    vertical: 60.0,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 35.0,
-                          fontWeight: FontWeight.bold,
+    return BlocConsumer<LoginRegisterBloc, LoginRegisterState>(
+        listener: (context, state) {
+          if(state is LoginSuccess){
+            afterSuccessfulLogin(state.user);
+          } else if(state is LoginFailed){
+            afterLoginFailed();
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            key: _scaffoldKey,
+            body: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle.light,
+              child: GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.yellow[600],
+                            Colors.amber,
+                          ],
+                          stops: [0.4, 0.9],
                         ),
                       ),
-                      SizedBox(height: 30.0),
-                      _buildEmailTF(),
-                      SizedBox(
-                        height: 30.0,
+                    ),
+                    Container(
+                      height: double.infinity,
+                      child: SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 40.0,
+                          vertical: 60.0,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Sign In',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 30.0),
+                            _buildEmailTF(),
+                            SizedBox(
+                              height: 30.0,
+                            ),
+                            _buildPasswordTF(),
+                            _buildForgotPasswordBtn(),
+                            _buildRememberMeCheckbox(),
+                            _buildLoginBtn(),
+                            _buildSignInWithText(),
+                            _buildSocialBtn(),
+                            _buildSignupBtn(),
+                          ],
+                        ),
                       ),
-                      _buildPasswordTF(),
-                      _buildForgotPasswordBtn(),
-                      _buildRememberMeCheckbox(),
-                      _buildLoginBtn(),
-                      _buildSignInWithText(),
-                      _buildSocialBtn(),
-                      _buildSignupBtn(),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
+              ),
+            ),
+          );
+        }
     );
+  }
+
+  afterSuccessfulLogin(FirebaseUser user){
+    _authenticationBloc.add(LoggedIn());
+    if (isseen)
+      setState(() {
+        isseen = !isseen;
+      });
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.white,
+      content: Text(
+        'Signing In! Please wait...',
+        style: TextStyle(color: Colors.amber),
+      ),
+    ));
+    createUser(user).then((value) {
+      if (value)
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    HomeScreen(
+                      user: user,
+                    )),
+                (Route<dynamic> route) => false);
+      else
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          backgroundColor: Colors.white,
+          content: Text(
+            'Error! Please Try Again Later...',
+            style: TextStyle(
+                color: Colors.amber,
+                fontFamily: GoogleFonts
+                    .montserrat()
+                    .fontFamily),
+          ),
+        ));
+    });
+  }
+
+  afterLoginFailed(){
+    if (isseen)
+      setState(() {
+        isseen = !isseen;
+      });
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.white,
+      content: Text(
+        'Sign In Failed! Please try again later..',
+        style: TextStyle(
+            color: Colors.amber,
+            fontFamily: GoogleFonts
+                .montserrat()
+                .fontFamily),
+      ),
+    ));
   }
 }

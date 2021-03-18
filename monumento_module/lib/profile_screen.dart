@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monumento/blocs/login_register/login_register_bloc.dart';
 import 'package:monumento/login_screen.dart';
 
 class UserProfilePage extends StatefulWidget {
@@ -17,6 +19,14 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final String _bio =
       "\"Hi, I am a vagabond and love to visit different monuments.\"";
   final _key = GlobalKey<ScaffoldState>();
+  LoginRegisterBloc _loginRegisterBloc;
+
+
+  @override
+  void initState() {
+    super.initState();
+    _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
+  }
 
   Widget _buildCoverImage(Size screenSize, BuildContext context) {
     return Stack(
@@ -170,72 +180,82 @@ class _UserProfilePageState extends State<UserProfilePage> {
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      key: _key,
-      body: Stack(
-        children: <Widget>[
-          _buildCoverImage(screenSize, context),
-          (widget.profileSnapshot == null || widget.profileSnapshot.data == null)?
-          Center(
-            child: Container(
-              height: 50.0,
-              width: 50.0,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+    return BlocConsumer<LoginRegisterBloc,LoginRegisterState>(
+      listener: (_,state){
+        if(state is LogOutSuccess){
+          afterLogOutSuccess();
+        }
+      },
+      builder:(_,state){return Scaffold(
+        key: _key,
+        body: Stack(
+          children: <Widget>[
+            _buildCoverImage(screenSize, context),
+            (widget.profileSnapshot == null || widget.profileSnapshot.data == null)?
+            Center(
+              child: Container(
+                height: 50.0,
+                width: 50.0,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.amber),
+                ),
+              ),
+            ):
+      SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: screenSize.height / 6.4),
+                    _buildProfileImage(),
+                    _buildFullName(),
+                    _buildStatus(context),
+                    _buildStatContainer(),
+                    _buildBio(context),
+                    _buildSeparator(screenSize),
+                    SizedBox(height: 8.0),
+                    widget.bookmarkedMonuments.length != 0?
+                    _buildGetInTouch(context):SizedBox.shrink(),
+                    SizedBox(height: 4.0),
+                    widget.bookmarkedMonuments.length > 0?
+                    ListTile(
+                      title: Text(widget.bookmarkedMonuments[0].data['name']),
+                      leading: Icon(Icons.account_balance, color: Colors.amber,),
+                      dense: true,
+                    ):SizedBox.shrink(),
+                    widget.bookmarkedMonuments.length > 1?
+                    ListTile(
+                      title: Text(widget.bookmarkedMonuments[1].data['name']),
+                      leading: Icon(Icons.account_balance, color: Colors.amber,),
+                      dense: true,
+                    ):SizedBox.shrink(),
+                    MaterialButton(
+                      color: Colors.red,
+                      padding: EdgeInsets.all(4.0),
+                      child: Text('Log Out', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
+                      onPressed: () async{
+                        _key.currentState.showSnackBar(SnackBar(
+                          backgroundColor: Colors.amber,
+                          content: Text('Logging Out!',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ));
+                        _loginRegisterBloc.add(LogOutPressed());
+
+                      },
+                    )
+                  ],
+                ),
               ),
             ),
-          ):
-    SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: screenSize.height / 6.4),
-                  _buildProfileImage(),
-                  _buildFullName(),
-                  _buildStatus(context),
-                  _buildStatContainer(),
-                  _buildBio(context),
-                  _buildSeparator(screenSize),
-                  SizedBox(height: 8.0),
-                  widget.bookmarkedMonuments.length != 0?
-                  _buildGetInTouch(context):SizedBox.shrink(),
-                  SizedBox(height: 4.0),
-                  widget.bookmarkedMonuments.length > 0?
-                  ListTile(
-                    title: Text(widget.bookmarkedMonuments[0].data['name']),
-                    leading: Icon(Icons.account_balance, color: Colors.amber,),
-                    dense: true,
-                  ):SizedBox.shrink(),
-                  widget.bookmarkedMonuments.length > 1?
-                  ListTile(
-                    title: Text(widget.bookmarkedMonuments[1].data['name']),
-                    leading: Icon(Icons.account_balance, color: Colors.amber,),
-                    dense: true,
-                  ):SizedBox.shrink(),
-                  MaterialButton(
-                    color: Colors.red,
-                    padding: EdgeInsets.all(4.0),
-                    child: Text('Log Out', textAlign: TextAlign.center, style: TextStyle(color: Colors.white),),
-                    onPressed: () async{
-                      _key.currentState.showSnackBar(SnackBar(
-                        backgroundColor: Colors.amber,
-                        content: Text('Logging Out!',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ));
-                      await FirebaseAuth.instance.signOut().whenComplete(() {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (_) => LoginScreen())
-                        );
-                      });
-                    },
-                  )
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      );}
+    );
+  }
+
+  afterLogOutSuccess(){
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (_) => LoginScreen())
     );
   }
 }

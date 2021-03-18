@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:monumento/blocs/authentication/authentication_bloc.dart';
+import 'package:monumento/blocs/login_register/login_register_bloc.dart';
 import 'constants.dart';
 import 'home_screen.dart';
 
@@ -18,10 +21,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   var _passwordController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isseen = false;
+
+  AuthenticationBloc _authenticationBloc;
+  LoginRegisterBloc _loginRegisterBloc;
+
   @override
   void initState() {
     super.initState();
     isseen = false;
+    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -177,7 +186,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 icon: Icon(
                   // Based on passwordVisible state choose the icon
                   isseen ? Icons.visibility : Icons.visibility_off,
-                  color: Theme.of(context).primaryColorDark,
+                  color: Theme
+                      .of(context)
+                      .primaryColorDark,
                 ),
                 onPressed: () {
                   // Update the state i.e. toogle the state of passwordVisible variable
@@ -204,7 +215,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     map["password"] = _passwordController.text.trim();
 
     DocumentReference documentReference =
-        Firestore.instance.collection(collection).document();
+    Firestore.instance.collection(collection).document();
     Firestore.instance.runTransaction((transaction) async {
       await transaction.set(documentReference, map).catchError((e) {
         return false;
@@ -228,47 +239,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         splashColor: Colors.lightGreen,
         onPressed: () {
           print('SignUp Button Pressed');
-          signUp(_emailController.text, _passwordController.text).then((user) {
-            if (user != null) {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                backgroundColor: Colors.white,
-                content: Text(
-                  'Signing Up! Please wait...',
-                  style: TextStyle(color: Colors.amber),
-                ),
-              ));
-              createUser(user).then((value) {
-                if (value)
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => HomeScreen(
-                                user: user,
-                              )),
-                      (Route<dynamic> route) => false);
-                else
-                  _scaffoldKey.currentState.showSnackBar(SnackBar(
-                    backgroundColor: Colors.white,
-                    content: Text(
-                      'Error! Please Try Again Later...',
-                      style: TextStyle(
-                          color: Colors.amber,
-                          fontFamily: GoogleFonts.montserrat().fontFamily),
-                    ),
-                  ));
-              });
-            } else {
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                backgroundColor: Colors.white,
-                content: Text(
-                  'Error while Signing up!',
-                  style: TextStyle(
-                      color: Colors.amber,
-                      fontFamily: GoogleFonts.montserrat().fontFamily),
-                ),
-              ));
-            }
-          });
+          _loginRegisterBloc.add(SignUpWithEmailPressed(
+              email: _emailController.text, password: _passwordController.text));
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -290,68 +262,125 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Stack(
-            children: <Widget>[
-              Container(
-                height: double.infinity,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.yellow[600],
-                      Colors.amber,
-                    ],
-                    stops: [0.4, 0.9],
-                  ),
-                ),
-              ),
-              Container(
-                height: double.infinity,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.only(
-                      left: 40.0, right: 40.0, bottom: 110.0, top: 60.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        'Sign Up',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 35.0,
-                          fontWeight: FontWeight.bold,
+    return BlocConsumer<LoginRegisterBloc,LoginRegisterState>(
+        listener: (_, state) {
+          if (state is SignUpSuccess) {
+            afterSignUpSuccess(state.user);
+          } else if (state is SignUpFailed) {
+            afterSignUpFailed();
+          }
+        },
+        builder: (_, state) {
+          return Scaffold(
+            key: _scaffoldKey,
+            body: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle.light,
+              child: GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.yellow[600],
+                            Colors.amber,
+                          ],
+                          stops: [0.4, 0.9],
                         ),
                       ),
-                      SizedBox(height: 30.0),
-                      _buildNameTF(),
-                      SizedBox(height: 30.0),
-                      _buildStatusTF(),
-                      SizedBox(height: 30.0),
-                      _buildEmailTF(),
-                      SizedBox(
-                        height: 30.0,
+                    ),
+                    Container(
+                      height: double.infinity,
+                      child: SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.only(
+                            left: 40.0, right: 40.0, bottom: 110.0, top: 60.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 30.0),
+                            _buildNameTF(),
+                            SizedBox(height: 30.0),
+                            _buildStatusTF(),
+                            SizedBox(height: 30.0),
+                            _buildEmailTF(),
+                            SizedBox(
+                              height: 30.0,
+                            ),
+                            _buildPasswordTF(),
+                            SizedBox(
+                              height: 24.0,
+                            ),
+                            _buildSignUpBtn(),
+                          ],
+                        ),
                       ),
-                      _buildPasswordTF(),
-                      SizedBox(
-                        height: 24.0,
-                      ),
-                      _buildSignUpBtn(),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
+              ),
+            ),
+          );
+        });
+  }
+
+  afterSignUpSuccess(FirebaseUser user) {
+    _authenticationBloc.add(LoggedIn());
+
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.white,
+      content: Text(
+        'Signing Up! Please wait...',
+        style: TextStyle(color: Colors.amber),
       ),
-    );
+    ));
+    createUser(user).then((value) {
+      if (value)
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    HomeScreen(
+                      user: user,
+                    )),
+                (Route<dynamic> route) => false);
+      else
+        _scaffoldKey.currentState.showSnackBar(SnackBar(
+          backgroundColor: Colors.white,
+          content: Text(
+            'Error! Please Try Again Later...',
+            style: TextStyle(
+                color: Colors.amber,
+                fontFamily: GoogleFonts
+                    .montserrat()
+                    .fontFamily),
+          ),
+        ));
+    });
+  }
+
+  afterSignUpFailed(){
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      backgroundColor: Colors.white,
+      content: Text(
+        'Error while Signing up!',
+        style: TextStyle(
+            color: Colors.amber,
+            fontFamily: GoogleFonts.montserrat().fontFamily),
+      ),
+    ));
   }
 }
