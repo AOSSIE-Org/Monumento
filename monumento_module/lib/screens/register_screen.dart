@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
-import 'constants.dart';
+import '../constants.dart';
 import 'home_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -186,9 +186,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 icon: Icon(
                   // Based on passwordVisible state choose the icon
                   isseen ? Icons.visibility : Icons.visibility_off,
-                  color: Theme
-                      .of(context)
-                      .primaryColorDark,
+                  color: Theme.of(context).primaryColorDark,
                 ),
                 onPressed: () {
                   // Update the state i.e. toogle the state of passwordVisible variable
@@ -215,7 +213,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     map["password"] = _passwordController.text.trim();
 
     DocumentReference documentReference =
-    Firestore.instance.collection(collection).document();
+        Firestore.instance.collection(collection).document();
     Firestore.instance.runTransaction((transaction) async {
       await transaction.set(documentReference, map).catchError((e) {
         return false;
@@ -240,7 +238,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         onPressed: () {
           print('SignUp Button Pressed');
           _loginRegisterBloc.add(SignUpWithEmailPressed(
-              email: _emailController.text, password: _passwordController.text));
+              email: _emailController.text,
+              password: _passwordController.text));
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -262,79 +261,78 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginRegisterBloc,LoginRegisterState>(
+    return BlocConsumer<LoginRegisterBloc, LoginRegisterState>(
         listener: (_, state) {
-          if (state is SignUpSuccess) {
-            afterSignUpSuccess(state.user);
-          } else if (state is SignUpFailed) {
-            afterSignUpFailed();
-          }
-        },
-        builder: (_, state) {
-          return Scaffold(
-            key: _scaffoldKey,
-            body: AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle.light,
-              child: GestureDetector(
-                onTap: () => FocusScope.of(context).unfocus(),
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.yellow[600],
-                            Colors.amber,
-                          ],
-                          stops: [0.4, 0.9],
-                        ),
-                      ),
+      if (state is SignUpSuccess) {
+        afterSignUpSuccess(state.user);
+      } else if (state is SignUpFailed) {
+        afterSignUpFailed();
+      }
+    }, builder: (_, state) {
+      return Scaffold(
+        key: _scaffoldKey,
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.yellow[600],
+                        Colors.amber,
+                      ],
+                      stops: [0.4, 0.9],
                     ),
-                    Container(
-                      height: double.infinity,
-                      child: SingleChildScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.only(
-                            left: 40.0, right: 40.0, bottom: 110.0, top: 60.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 30.0),
-                            _buildNameTF(),
-                            SizedBox(height: 30.0),
-                            _buildStatusTF(),
-                            SizedBox(height: 30.0),
-                            _buildEmailTF(),
-                            SizedBox(
-                              height: 30.0,
-                            ),
-                            _buildPasswordTF(),
-                            SizedBox(
-                              height: 24.0,
-                            ),
-                            _buildSignUpBtn(),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-              ),
+                Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.only(
+                        left: 40.0, right: 40.0, bottom: 110.0, top: 60.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 35.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 30.0),
+                        _buildNameTF(),
+                        SizedBox(height: 30.0),
+                        _buildStatusTF(),
+                        SizedBox(height: 30.0),
+                        _buildEmailTF(),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        _buildPasswordTF(),
+                        SizedBox(
+                          height: 24.0,
+                        ),
+                        _buildSignUpBtn(),
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
-          );
-        });
+          ),
+        ),
+      );
+    });
   }
 
   afterSignUpSuccess(FirebaseUser user) {
@@ -352,11 +350,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    HomeScreen(
+                builder: (context) => HomeScreen(
                       user: user,
                     )),
-                (Route<dynamic> route) => false);
+            (Route<dynamic> route) => false);
       else
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           backgroundColor: Colors.white,
@@ -364,15 +361,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             'Error! Please Try Again Later...',
             style: TextStyle(
                 color: Colors.amber,
-                fontFamily: GoogleFonts
-                    .montserrat()
-                    .fontFamily),
+                fontFamily: GoogleFonts.montserrat().fontFamily),
           ),
         ));
     });
   }
 
-  afterSignUpFailed(){
+  afterSignUpFailed() {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       backgroundColor: Colors.white,
       content: Text(

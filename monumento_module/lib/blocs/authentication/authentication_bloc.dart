@@ -4,8 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
-import 'package:monumento/blocs/authentication/authentication_bloc.dart';
-import 'package:monumento/resources/authentication/firebase_authentication_repository.dart';
+import 'package:monumento/resources/authentication/authentication_repository.dart';
 
 part 'authentication_event.dart';
 
@@ -13,10 +12,10 @@ part 'authentication_state.dart';
 
 class AuthenticationBloc
     extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final FirebaseAuthenticationRepository _authRepository;
+  final AuthenticationRepository _authRepository;
 
   AuthenticationBloc(
-      {@required FirebaseAuthenticationRepository authenticationRepository})
+      {@required AuthenticationRepository authenticationRepository})
       : assert(authenticationRepository != null),
         _authRepository = authenticationRepository,
         super(Uninitialized());
@@ -34,7 +33,6 @@ class AuthenticationBloc
       yield* _mapLoggedOutToState();
     }
   }
-
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
     try {

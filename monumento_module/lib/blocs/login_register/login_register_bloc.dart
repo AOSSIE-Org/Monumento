@@ -5,18 +5,18 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
-import 'package:monumento/resources/authentication/firebase_authentication_repository.dart';
+import 'package:monumento/resources/authentication/authentication_repository.dart';
 
 part 'login_register_event.dart';
 
 part 'login_register_state.dart';
 
 class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
-  final FirebaseAuthenticationRepository _authRepository;
+  final AuthenticationRepository _authRepository;
   final AuthenticationBloc _authenticationBloc;
 
   LoginRegisterBloc(
-      {@required FirebaseAuthenticationRepository authenticationRepository,
+      {@required AuthenticationRepository authenticationRepository,
       @required AuthenticationBloc authenticationBloc})
       : assert(authenticationRepository != null),
         assert(authenticationBloc != null),
@@ -58,7 +58,8 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
   Stream<LoginRegisterState> _mapLoginWithEmailPressedToState(
       {@required String email, @required String password}) async* {
     try {
-      final user = await _authRepository.emailSignIn(email:email, password:password);
+      final user =
+          await _authRepository.emailSignIn(email: email, password: password);
       if (user != null) {
         yield LoginSuccess(user);
       } else {
