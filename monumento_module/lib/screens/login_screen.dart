@@ -7,9 +7,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
-import 'package:monumento/home_screen.dart';
-import 'package:monumento/register_screen.dart';
-import 'constants.dart';
+import 'package:monumento/screens/home_screen.dart';
+import 'package:monumento/screens/register_screen.dart';
+import '../constants.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
     map["password"] = _passwordController.text.trim();
 
     DocumentReference documentReference =
-    Firestore.instance.collection(collection).document();
+        Firestore.instance.collection(collection).document();
     Firestore.instance.runTransaction((transaction) async {
       await transaction.set(documentReference, map).catchError((e) {
         return false;
@@ -172,9 +172,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 icon: Icon(
                   // Based on passwordVisible state choose the icon
                   !isseen ? Icons.visibility_off : Icons.visibility,
-                  color: Theme
-                      .of(context)
-                      .primaryColorDark,
+                  color: Theme.of(context).primaryColorDark,
                 ),
                 onPressed: () {
                   // Update the state i.e. toogle the state of passwordVisible variable
@@ -240,7 +238,9 @@ class _LoginScreenState extends State<LoginScreen> {
         splashColor: Colors.lightGreen,
         onPressed: () {
           print('Login Button Pressed');
-          _loginRegisterBloc.add(LoginWithEmailPressed(email: _emailController.text, password: _passwordController.text));
+          _loginRegisterBloc.add(LoginWithEmailPressed(
+              email: _emailController.text,
+              password: _passwordController.text));
           // emailSignIn(_emailController.text, _passwordController.text)
           //     .then((user) {
           //   if (isseen)
@@ -361,7 +361,7 @@ class _LoginScreenState extends State<LoginScreen> {
         color: Colors.white,
         splashColor: Colors.green,
         shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -404,9 +404,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
-                fontFamily: GoogleFonts
-                    .montserrat()
-                    .fontFamily,
+                fontFamily: GoogleFonts.montserrat().fontFamily,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -415,9 +413,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 16.0,
-                fontFamily: GoogleFonts
-                    .montserrat()
-                    .fontFamily,
+                fontFamily: GoogleFonts.montserrat().fontFamily,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -431,81 +427,79 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<LoginRegisterBloc, LoginRegisterState>(
         listener: (context, state) {
-          if(state is LoginSuccess){
-            afterSuccessfulLogin(state.user);
-          } else if(state is LoginFailed){
-            afterLoginFailed();
-          }
-        },
-        builder: (context, state) {
-          return Scaffold(
-            key: _scaffoldKey,
-            body: AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle.light,
-              child: GestureDetector(
-                onTap: () => FocusScope.of(context).unfocus(),
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.yellow[600],
-                            Colors.amber,
-                          ],
-                          stops: [0.4, 0.9],
-                        ),
-                      ),
+      if (state is LoginSuccess) {
+        afterSuccessfulLogin(state.user);
+      } else if (state is LoginFailed) {
+        afterLoginFailed();
+      }
+    }, builder: (context, state) {
+      return Scaffold(
+        key: _scaffoldKey,
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: GestureDetector(
+            onTap: () => FocusScope.of(context).unfocus(),
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: double.infinity,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.yellow[600],
+                        Colors.amber,
+                      ],
+                      stops: [0.4, 0.9],
                     ),
-                    Container(
-                      height: double.infinity,
-                      child: SingleChildScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 40.0,
-                          vertical: 60.0,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Sign In',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 30.0),
-                            _buildEmailTF(),
-                            SizedBox(
-                              height: 30.0,
-                            ),
-                            _buildPasswordTF(),
-                            _buildForgotPasswordBtn(),
-                            _buildRememberMeCheckbox(),
-                            _buildLoginBtn(),
-                            _buildSignInWithText(),
-                            _buildSocialBtn(),
-                            _buildSignupBtn(),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
+                  ),
                 ),
-              ),
+                Container(
+                  height: double.infinity,
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 40.0,
+                      vertical: 60.0,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'Sign In',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 35.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 30.0),
+                        _buildEmailTF(),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        _buildPasswordTF(),
+                        _buildForgotPasswordBtn(),
+                        _buildRememberMeCheckbox(),
+                        _buildLoginBtn(),
+                        _buildSignInWithText(),
+                        _buildSocialBtn(),
+                        _buildSignupBtn(),
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
-          );
-        }
-    );
+          ),
+        ),
+      );
+    });
   }
 
-  afterSuccessfulLogin(FirebaseUser user){
+  afterSuccessfulLogin(FirebaseUser user) {
     _authenticationBloc.add(LoggedIn());
     if (isseen)
       setState(() {
@@ -523,11 +517,10 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    HomeScreen(
+                builder: (context) => HomeScreen(
                       user: user,
                     )),
-                (Route<dynamic> route) => false);
+            (Route<dynamic> route) => false);
       else
         _scaffoldKey.currentState.showSnackBar(SnackBar(
           backgroundColor: Colors.white,
@@ -535,15 +528,13 @@ class _LoginScreenState extends State<LoginScreen> {
             'Error! Please Try Again Later...',
             style: TextStyle(
                 color: Colors.amber,
-                fontFamily: GoogleFonts
-                    .montserrat()
-                    .fontFamily),
+                fontFamily: GoogleFonts.montserrat().fontFamily),
           ),
         ));
     });
   }
 
-  afterLoginFailed(){
+  afterLoginFailed() {
     if (isseen)
       setState(() {
         isseen = !isseen;
@@ -554,9 +545,7 @@ class _LoginScreenState extends State<LoginScreen> {
         'Sign In Failed! Please try again later..',
         style: TextStyle(
             color: Colors.amber,
-            fontFamily: GoogleFonts
-                .montserrat()
-                .fontFamily),
+            fontFamily: GoogleFonts.montserrat().fontFamily),
       ),
     ));
   }

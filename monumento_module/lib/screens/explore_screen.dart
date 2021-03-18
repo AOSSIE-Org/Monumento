@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:monumento/detail_screen.dart';
+import 'package:monumento/screens/detail_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   final FirebaseUser user;

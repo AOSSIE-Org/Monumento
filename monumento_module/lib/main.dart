@@ -1,25 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:monumento/app_intro.dart';
+import 'package:monumento/screens/app_intro.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
+import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
+import 'package:monumento/blocs/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/resources/authentication/firebase_authentication_repository.dart';
-import 'home_screen.dart';
-import 'package:monumento/blocs/authentication/authentication_bloc.dart';
-
-// FirebaseUser _loggedInUser;
-// bool _isLoggedIn = false;
+import 'package:monumento/resources/monuments/firebase_monument_repository.dart';
+import 'screens/home_screen.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // if (await FirebaseAuth.instance.currentUser() != null) {
-  //   print('LOGGED IN: ' + FirebaseAuth.instance.currentUser().toString());
-  //   _loggedInUser = await FirebaseAuth.instance.currentUser();
-  //   _isLoggedIn = true;
-  // }
   runApp(MyApp());
 }
 
@@ -30,51 +24,86 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final FirebaseAuthenticationRepository _authRepository = FirebaseAuthenticationRepository();
+  final FirebaseAuthenticationRepository _authRepository =
+      FirebaseAuthenticationRepository();
+  final FirebaseMonumentRepository _monumentRepository =
+      FirebaseMonumentRepository();
   AuthenticationBloc _authenticationBloc;
   LoginRegisterBloc _loginRegisterBloc;
+  ProfileBloc _profileBloc;
+  BookmarkedMonumentsBloc _bookmarkedMonumentsBloc;
+  PopularMonumentsBloc _popularMonumentsBloc;
 
   @override
   void initState() {
     super.initState();
     _authenticationBloc =
         AuthenticationBloc(authenticationRepository: _authRepository);
-    _loginRegisterBloc =
-        LoginRegisterBloc(authenticationRepository: _authRepository,authenticationBloc: _authenticationBloc);
+    _loginRegisterBloc = LoginRegisterBloc(
+        authenticationRepository: _authRepository,
+        authenticationBloc: _authenticationBloc);
+    _profileBloc = ProfileBloc(firebaseMonumentRepository: _monumentRepository);
+    _bookmarkedMonumentsBloc = BookmarkedMonumentsBloc(
+        firebaseMonumentRepository: _monumentRepository);
+    _popularMonumentsBloc =
+        PopularMonumentsBloc(firebaseMonumentRepository: _monumentRepository);
+
+    _popularMonumentsBloc.add(GetPopularMonuments());
     _authenticationBloc.add(AppStarted());
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown
-    ]);
+    SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MultiBlocProvider(
-      providers: [BlocProvider<AuthenticationBloc>(
-        create: (_) => _authenticationBloc,), BlocProvider<LoginRegisterBloc>(
-        create: (_) => _loginRegisterBloc,)
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+          create: (_) => _authenticationBloc,
+        ),
+        BlocProvider<LoginRegisterBloc>(
+          create: (_) => _loginRegisterBloc,
+        ),
+        BlocProvider<ProfileBloc>(
+          create: (_) => _profileBloc,
+        ),
+        BlocProvider<PopularMonumentsBloc>(
+          create: (_) => _popularMonumentsBloc,
+        ),
+        BlocProvider<BookmarkedMonumentsBloc>(
+          create: (_) => _bookmarkedMonumentsBloc,
+        )
       ],
       child: MaterialApp(
           title: 'Monumento',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
               primarySwatch: Colors.amber,
-              fontFamily: GoogleFonts
-                  .montserrat()
-                  .fontFamily),
+              fontFamily: GoogleFonts.montserrat().fontFamily),
           home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
               builder: (BuildContext context, AuthenticationState state) {
-                if (state is Authenticated) {
-                  return HomeScreen(user: state.user,);
-                }
-                else if (state is Unauthenticated) {
-                  return AppIntroPage();
-                }
-                return Center(child: CircularProgressIndicator(),);
-              }
+            if (state is Authenticated) {
+              return HomeScreen(
+                user: state.user,
+              );
+            } else if (state is Unauthenticated) {
+              return AppIntroPage();
+            }
+            return Scaffold(
+              backgroundColor: Colors.white,
+            );
+          })),
+    );
+  }
 
-          )),);
+  @override
+  void dispose() {
+    super.dispose();
+    _bookmarkedMonumentsBloc.close();
+    _popularMonumentsBloc.close();
+    _profileBloc.close();
+    _loginRegisterBloc.close();
+    _authenticationBloc.close();
   }
 }
 

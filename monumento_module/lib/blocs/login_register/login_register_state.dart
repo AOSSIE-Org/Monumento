@@ -29,8 +29,8 @@ class LoginSuccess extends LoginRegisterState {
   @override
   List<Object> get props => [user.email];
 }
-class LoginFailed extends LoginRegisterState {
 
+class LoginFailed extends LoginRegisterState {
   LoginFailed();
 
   @override
@@ -39,8 +39,8 @@ class LoginFailed extends LoginRegisterState {
   @override
   List<Object> get props => [];
 }
-class LogOutSuccess extends LoginRegisterState {
 
+class LogOutSuccess extends LoginRegisterState {
   LogOutSuccess();
 
   @override
@@ -49,6 +49,7 @@ class LogOutSuccess extends LoginRegisterState {
   @override
   List<Object> get props => [];
 }
+
 class SignUpSuccess extends LoginRegisterState {
   final FirebaseUser user;
 
@@ -60,6 +61,7 @@ class SignUpSuccess extends LoginRegisterState {
   @override
   List<Object> get props => [user.email];
 }
+
 class SignUpFailed extends LoginRegisterState {
   SignUpFailed();
 
