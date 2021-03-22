@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../detail_screen.dart';
+import '../screens/detail_screen.dart';
 
 class BookmarkCarousel extends StatelessWidget {
   final List<DocumentSnapshot> bookmarkedMonumentDocs;
