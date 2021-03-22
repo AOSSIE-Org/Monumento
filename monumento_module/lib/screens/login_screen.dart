@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
 import 'package:monumento/screens/home_screen.dart';
@@ -34,47 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
   }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
 
-  // Future<FirebaseUser> emailSignIn(String email, String password) async {
-  //   try {
-  //     AuthResult authResult = await auth.signInWithEmailAndPassword(
-  //         email: email, password: password);
-  //     FirebaseUser user = authResult.user;
-  //     assert(user != null);
-  //     assert(await user.getIdToken() != null);
-  //     final FirebaseUser currentUser = await auth.currentUser();
-  //     assert(user.uid == currentUser.uid);
-  //     return user;
-  //   } catch (e) {
-  //     print('Email Sign In error: ' + e.toString());
-  //     return null;
-  //   }
-  // }
-  //
-  // Future<FirebaseUser> signInWithGoogle() async {
-  //   print('Google Sign In called');
-  //   final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
-  //   final GoogleSignInAuthentication googleSignInAuthentication =
-  //   await googleSignInAccount.authentication;
-  //
-  //   final AuthCredential credential = GoogleAuthProvider.getCredential(
-  //     accessToken: googleSignInAuthentication.accessToken,
-  //     idToken: googleSignInAuthentication.idToken,
-  //   );
-  //
-  //   final AuthResult authResult = await auth.signInWithCredential(credential);
-  //   final FirebaseUser user = authResult.user;
-  //
-  //   assert(!user.isAnonymous);
-  //   assert(await user.getIdToken() != null);
-  //
-  //   final FirebaseUser currentUser = await auth.currentUser();
-  //   assert(user.uid == currentUser.uid);
-  //
-  //   return user;
-  // }
 
   Future<bool> createUser(FirebaseUser user) async {
     String collection = "users";
@@ -241,35 +200,6 @@ class _LoginScreenState extends State<LoginScreen> {
           _loginRegisterBloc.add(LoginWithEmailPressed(
               email: _emailController.text,
               password: _passwordController.text));
-          // emailSignIn(_emailController.text, _passwordController.text)
-          //     .then((user) {
-          //   if (isseen)
-          //     setState(() {
-          //       isseen = !isseen;
-          //     });
-          //   if (user != null) {
-          //     Navigator.pushAndRemoveUntil(
-          //         context,
-          //         MaterialPageRoute(
-          //             builder: (context) =>
-          //                 HomeScreen(
-          //                   user: user,
-          //                 )),
-          //             (Route<dynamic> route) => false);
-          //   } else {
-          //     _scaffoldKey.currentState.showSnackBar(SnackBar(
-          //       backgroundColor: Colors.white,
-          //       content: Text(
-          //         'Please enter a registered email and password!',
-          //         style: TextStyle(
-          //             color: Colors.amber,
-          //             fontFamily: GoogleFonts
-          //                 .montserrat()
-          //                 .fontFamily),
-          //       ),
-          //     ));
-          //   }
-          // }).whenComplete(() => print('Email Sign in process complete'));
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -309,52 +239,6 @@ class _LoginScreenState extends State<LoginScreen> {
       child: MaterialButton(
         onPressed: () {
           _loginRegisterBloc.add(LoginWithGooglePressed());
-          // signInWithGoogle().then((user) {
-          //   if (user != null) {
-          //     _scaffoldKey.currentState.showSnackBar(SnackBar(
-          //       backgroundColor: Colors.white,
-          //       content: Text(
-          //         'Signing In! Please wait...',
-          //         style: TextStyle(color: Colors.amber),
-          //       ),
-          //     ));
-          //     createUser(user).then((value) {
-          //       if (value)
-          //         Navigator.pushAndRemoveUntil(
-          //             context,
-          //             MaterialPageRoute(
-          //                 builder: (context) =>
-          //                     HomeScreen(
-          //                       user: user,
-          //                     )),
-          //                 (Route<dynamic> route) => false);
-          //       else
-          //         _scaffoldKey.currentState.showSnackBar(SnackBar(
-          //           backgroundColor: Colors.white,
-          //           content: Text(
-          //             'Error! Please Try Again Later...',
-          //             style: TextStyle(
-          //                 color: Colors.amber,
-          //                 fontFamily: GoogleFonts
-          //                     .montserrat()
-          //                     .fontFamily),
-          //           ),
-          //         ));
-          //     });
-          //   } else {
-          //     _scaffoldKey.currentState.showSnackBar(SnackBar(
-          //       backgroundColor: Colors.white,
-          //       content: Text(
-          //         'Google Sign-In failed!',
-          //         style: TextStyle(
-          //             color: Colors.amber,
-          //             fontFamily: GoogleFonts
-          //                 .montserrat()
-          //                 .fontFamily),
-          //       ),
-          //     ));
-          //   }
-          // }).whenComplete(() => print('Google Sign In process completed.'));
         },
         elevation: 10.0,
         padding: EdgeInsets.all(15.0),
