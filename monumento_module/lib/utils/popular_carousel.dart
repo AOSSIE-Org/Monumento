@@ -13,9 +13,9 @@ class PopularMonumentsCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Expanded(
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
@@ -56,13 +56,15 @@ class PopularMonumentsCarousel extends StatelessWidget {
               return GestureDetector(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => DetailScreen(
-                                monument: popMonumentDocs[index],
-                                user: user,
-                                isBookMarked: false,
-                              )));
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => DetailScreen(
+                        monument: popMonumentDocs[index],
+                        user: user,
+                        isBookMarked: false,
+                      ),
+                    ),
+                  );
                 },
                 child: Container(
                   margin: EdgeInsets.all(10.0),

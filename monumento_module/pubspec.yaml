@@ -35,7 +35,8 @@ dependencies:
   webview_flutter:
   google_maps_flutter:
   geocoder: ^0.2.1
-  mockito: ^5.0.3
+  mockito: ^5.0.0
+  network_image_mock: ^2.0.0
 
 dev_dependencies:
   flutter_test:
