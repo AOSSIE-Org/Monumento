@@ -15,17 +15,13 @@ class MockDocumentSnapshot extends Mock implements DocumentSnapshot {
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
-class MockFirebaseAuth extends Mock implements FirebaseAuth {}
-
 void main() {
   group('UserProfileScreen test:', () {
     final data = {"name": "name", "prof_pic": "", "status": "status"};
     final mockDocumentSnapshot = MockDocumentSnapshot("documentId", data);
-    FirebaseAuth mockFirebaseAuth;
     NavigatorObserver mockNavObserver;
     setUp(() {
       mockNavObserver = MockNavigatorObserver();
-      mockFirebaseAuth = MockFirebaseAuth();
     });
 
     testWidgets('testing if profile data is displayed',
@@ -57,6 +53,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Logging Out!'), findsOneWidget);
+
       // verifying if navigation was initiated
       verify(mockNavObserver.didPush(any, any));
     });

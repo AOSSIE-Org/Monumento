@@ -38,8 +38,11 @@ void main() {
         navigatorObservers: [mockNavigatoObserver],
       ));
 
+      // get the signUp GestureDetector
       var signUp = find.byType(GestureDetector).first;
       expect(find.byType(GestureDetector).first, findsOneWidget);
+
+
       await tester.tap(signUp);
       await tester.pumpAndSettle();
 

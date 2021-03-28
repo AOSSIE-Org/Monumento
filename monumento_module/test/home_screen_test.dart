@@ -7,6 +7,7 @@ void main() {
   // test for checking if BottomNavigationBar is working properly
   testWidgets('BottomNavigationBar is working properly', (WidgetTester tester) async {
     int _currentTab = 0;
+    // replicating the bottom navigation bar in homepage
     Widget bottomNavBar() {
       return BottomNavigationBar(
         selectedLabelStyle: TextStyle(color: Colors.amber),
@@ -81,16 +82,24 @@ void main() {
       ),
     );
 
+    // tap on the first BottomNavigationBarItem
     await tester.tap(find.byIcon(Icons.apps));
+    // value of _currentTab changes to 1 
     expect(_currentTab, 1);
 
+    // tap on the second BottomNavigationBarItem
     await tester.tap(find.byIcon(Icons.bookmark));
+    // value of _currentTab changes to 2
     expect(_currentTab, 2);
 
+    // tap on the third BottomNavigationBarItem
     await tester.tap(find.byIcon(Icons.person_outline));
+    // value of _currentTab changes to 3
     expect(_currentTab, 3);
 
+    // tap on the fourth BottomNavigationBarItem
     await tester.tap(find.byIcon(Icons.home)); 
+    // value of _currentTab changes to 4
     expect(_currentTab, 0); 
   });
 

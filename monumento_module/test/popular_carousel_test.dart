@@ -8,12 +8,6 @@ import 'package:network_image_mock/network_image_mock.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
-class MockFirebaseUser extends Mock implements FirebaseUser {
-  final String uid;
-
-  MockFirebaseUser(this.uid);
-}
-
 class MockDocumentSnapshot extends Mock implements DocumentSnapshot {
   final Map<String, dynamic> data;
 
@@ -31,8 +25,6 @@ void main() {
       "country": "country",
       "city": "city",
     };
-    FirebaseUser mockUser = MockFirebaseUser("uid");
-    NavigatorObserver mockNavObserver = MockNavigatorObserver();
     MockDocumentSnapshot mockDocumentSnapshot = MockDocumentSnapshot(data);
     List<MockDocumentSnapshot> mockPopMonumentDocs = [mockDocumentSnapshot];
     void _changeScreen(int tabIndex) {
