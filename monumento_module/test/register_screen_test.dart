@@ -53,7 +53,7 @@ void main() {
       await tester.tap(registerButton, warnIfMissed: false);
       await tester.pumpAndSettle();
 
-      // navigates to the homeScreen after completing sign up
+      /// navigates to the [HomeScreen] after completing sign up
       verify(mockNavObserver.didPush(any, any));
     });
   });
