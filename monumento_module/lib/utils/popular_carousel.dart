@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:monumento/detail_screen.dart';
+import 'package:monumento/screens/detail_screen.dart';
 
 class PopularMonumentsCarousel extends StatelessWidget {
   final List<DocumentSnapshot> popMonumentDocs;
@@ -15,11 +15,11 @@ class PopularMonumentsCarousel extends StatelessWidget {
       children: <Widget>[
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.0),
-          child: Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Expanded(
+                child: Text(
                   'Popular Monuments',
                   style: TextStyle(
                     fontSize: 19.0,
@@ -28,23 +28,23 @@ class PopularMonumentsCarousel extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                GestureDetector(
-                  onTap: () {
-                    print('See All');
-                    changeTab(1);
-                  },
-                  child: Text(
-                    'See All',
-                    style: TextStyle(
-                      color: Colors.amber,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.0,
-                    ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  print('See All');
+                  changeTab(1);
+                },
+                child: Text(
+                  'See All',
+                  style: TextStyle(
+                    color: Colors.amber,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.0,
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         Container(

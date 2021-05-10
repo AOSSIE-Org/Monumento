@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:monumento/GoogleMap.dart';
+import 'package:monumento/screens/GoogleMap.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
 
