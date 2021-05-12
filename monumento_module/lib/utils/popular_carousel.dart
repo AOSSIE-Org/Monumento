@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
+import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/screens/detail_screen.dart';
 
 class PopularMonumentsCarousel extends StatelessWidget {
-  final List<DocumentSnapshot> popMonumentDocs;
-  final FirebaseUser user;
+  final List<MonumentModel> popMonumentDocs;
+  final UserModel user;
   final Function changeTab;
   PopularMonumentsCarousel({this.popMonumentDocs, this.user, this.changeTab});
 
@@ -96,8 +98,7 @@ class PopularMonumentsCarousel extends StatelessWidget {
                                   padding: const EdgeInsets.only(top: 20.0),
                                   child: FittedBox(
                                     child: Text(
-                                      popMonumentDocs[index].data['name'] ??
-                                          'Monument',
+                                      popMonumentDocs[index].name ?? 'Monument',
                                       style: TextStyle(
                                         fontSize: 21.0,
                                         fontWeight: FontWeight.w600,
@@ -136,15 +137,13 @@ class PopularMonumentsCarousel extends StatelessWidget {
                         child: Stack(
                           children: <Widget>[
                             Hero(
-                              tag: popMonumentDocs[index].data['name'] ??
-                                  'monument',
+                              tag: popMonumentDocs[index].name ?? 'monument',
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(20.0),
                                 child: Image(
                                   height: 180.0,
                                   width: 180.0,
-                                  image: NetworkImage(
-                                      popMonumentDocs[index].data['image']),
+                                  image: NetworkImage(popMonumentDocs[index].imageUrl ?? ""),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -156,8 +155,7 @@ class PopularMonumentsCarousel extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    popMonumentDocs[index].data['city'] ??
-                                        'City',
+                                    popMonumentDocs[index].city ?? 'City',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 24.0,
@@ -174,8 +172,7 @@ class PopularMonumentsCarousel extends StatelessWidget {
                                       ),
                                       SizedBox(width: 5.0),
                                       Text(
-                                        popMonumentDocs[index]
-                                                .data['country'] ??
+                                        popMonumentDocs[index].country ??
                                             'Country',
                                         style: TextStyle(
                                           color: Colors.white,

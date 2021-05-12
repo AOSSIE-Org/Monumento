@@ -1,10 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:monumento/resources/monuments/models/bookmarked_monument_model.dart';
 
 import '../screens/detail_screen.dart';
 
 class BookmarkCarousel extends StatelessWidget {
-  final List<DocumentSnapshot> bookmarkedMonumentDocs;
+  final List<BookmarkedMonumentModel> bookmarkedMonumentDocs;
   final Function changeTab;
   BookmarkCarousel({this.bookmarkedMonumentDocs, this.changeTab});
 
@@ -71,7 +71,8 @@ class BookmarkCarousel extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (_) => DetailScreen(
-                                      monument: bookmarkedMonumentDocs[index],
+                                      monument: bookmarkedMonumentDocs[index]
+                                          .monumentModel,
                                       isBookMarked: true,
                                     )));
                       },
@@ -111,7 +112,8 @@ class BookmarkCarousel extends StatelessWidget {
                                         child: FittedBox(
                                           child: Text(
                                             bookmarkedMonumentDocs[index]
-                                                    .data['name'] ??
+                                                    .monumentModel
+                                                    .name ??
                                                 'Monument',
                                             style: TextStyle(
                                               fontSize: 21.0,
@@ -152,7 +154,8 @@ class BookmarkCarousel extends StatelessWidget {
                                 children: <Widget>[
                                   Hero(
                                     tag: bookmarkedMonumentDocs[index]
-                                            .data['wiki'] ??
+                                            .monumentModel
+                                            .wiki ??
                                         'monument-tag',
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(20.0),
@@ -161,7 +164,8 @@ class BookmarkCarousel extends StatelessWidget {
                                         width: 180.0,
                                         image: NetworkImage(
                                             bookmarkedMonumentDocs[index]
-                                                .data['image']),
+                                                .monumentModel
+                                                .imageUrl),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -175,7 +179,8 @@ class BookmarkCarousel extends StatelessWidget {
                                       children: <Widget>[
                                         Text(
                                           bookmarkedMonumentDocs[index]
-                                                  .data['city'] ??
+                                                  .monumentModel
+                                                  .city ??
                                               'City',
                                           style: TextStyle(
                                             color: Colors.white,
@@ -194,7 +199,8 @@ class BookmarkCarousel extends StatelessWidget {
                                             SizedBox(width: 5.0),
                                             Text(
                                               bookmarkedMonumentDocs[index]
-                                                      .data['country'] ??
+                                                      .monumentModel
+                                                      .country ??
                                                   'Country',
                                               style: TextStyle(
                                                 color: Colors.white,

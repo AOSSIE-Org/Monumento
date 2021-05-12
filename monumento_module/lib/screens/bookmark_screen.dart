@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
+import 'package:monumento/resources/monuments/entities/bookmarked_monument_entity.dart';
+import 'package:monumento/resources/monuments/models/bookmarked_monument_model.dart';
 
 import 'detail_screen.dart';
 
 class BookmarkScreen extends StatefulWidget {
-  final FirebaseUser user;
-  List<DocumentSnapshot> monumentList;
+  final UserModel user;
+  List<BookmarkedMonumentModel> monumentList;
 
   BookmarkScreen({this.user, this.monumentList});
 
@@ -15,10 +17,10 @@ class BookmarkScreen extends StatefulWidget {
 }
 
 class _BookmarkScreenState extends State<BookmarkScreen> {
-  Future getBookmarkedMonuments() async {
+  Future<List<DocumentSnapshot>> getBookmarkedMonuments() async {
     QuerySnapshot query = await Firestore.instance
         .collection('bookmarks')
-        .where("auth_id", isEqualTo: widget.user.uid)
+        .where("uid", isEqualTo: widget.user.uid)
         .getDocuments();
     return query.documents;
   }
@@ -37,7 +39,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 color: Colors.amber),
           ),
         ),
-        body: FutureBuilder(
+        body: FutureBuilder<List<DocumentSnapshot>>(
             future: getBookmarkedMonuments(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting)
@@ -52,20 +54,19 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                   )),
                 );
 
-              widget.monumentList = snapshot.data;
+              widget.monumentList = snapshot.data.map((e) => BookmarkedMonumentModel.fromEntity(BookmarkedMonumentEntity.fromSnapshot(e))).toList();
               return ListView.builder(
                   scrollDirection: Axis.vertical,
                   itemCount: widget.monumentList.length,
                   itemBuilder: (BuildContext context, int index) {
                     return InkWell(
                         onTap: () {
-                          print(widget.monumentList);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (_) => DetailScreen(
                                         user: widget.user,
-                                        monument: widget.monumentList[index],
+                                        monument: widget.monumentList[index].monumentModel,
                                         isBookMarked: true,
                                       )));
                         },
@@ -81,7 +82,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                 child: Row(children: <Widget>[
                                   Hero(
                                       tag: widget.monumentList[index]
-                                              .data['wiki'] ??
+                                              .monumentModel.wiki ??
                                           'monument-tag',
                                       child: Container(
                                         height:
@@ -99,7 +100,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                             image: DecorationImage(
                                                 image: NetworkImage(widget
                                                     .monumentList[index]
-                                                    .data['image']),
+                                                    .monumentModel.imageUrl),
                                                 fit: BoxFit.cover)),
                                       )),
                                   SizedBox(
@@ -115,7 +116,7 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                               children: <Widget>[
                                         Text(
                                           widget
-                                              .monumentList[index].data['name'],
+                                              .monumentList[index].monumentModel.name,
                                           style: TextStyle(
                                               fontSize: 20.0,
                                               fontWeight: FontWeight.w700),
@@ -127,10 +128,10 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                               0.57,
                                           child: Text(
                                             widget.monumentList[index]
-                                                    .data['city'] +
+                                                    .monumentModel.city +
                                                 ', ' +
                                                 widget.monumentList[index]
-                                                    .data['country'],
+                                                    .monumentModel.country,
                                             maxLines: 3,
                                             style: TextStyle(
                                               fontSize: 18.0,

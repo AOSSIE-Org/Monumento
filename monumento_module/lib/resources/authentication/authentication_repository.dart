@@ -1,12 +1,17 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
+import 'package:monumento/resources/authentication/entities/user_entity.dart';
 
 abstract class AuthenticationRepository {
-  Future<FirebaseUser> emailSignIn(
+  Future<UserEntity> emailSignIn(
       {@required String email, @required String password});
-  Future<FirebaseUser> signInWithGoogle();
-  Future<FirebaseUser> signUp(email, password);
+
+  Future<UserEntity> signInWithGoogle();
+
+  Future<UserEntity> signUp({@required String email, @required String password, @required String name,@required String status });
+
   Future<void> signOut();
+
   Future<bool> isSignedIn();
-  Future<FirebaseUser> getUser();
+
+  Future<UserEntity> getUser();
 }

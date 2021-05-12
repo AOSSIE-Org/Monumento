@@ -1,11 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
 import 'package:monumento/blocs/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
+import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/screens/bookmark_screen.dart';
 import 'package:monumento/screens/explore_screen.dart';
 import 'package:monumento/screens/profile_screen.dart';
@@ -13,7 +13,7 @@ import 'package:monumento/utils/bookmark_carousel.dart';
 import 'package:monumento/utils/popular_carousel.dart';
 
 class HomeScreen extends StatefulWidget {
-  final FirebaseUser user;
+  final UserModel user;
 
   HomeScreen({this.user});
 
@@ -93,7 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             bookmarkState is BookmarkedMonumentsRetrieved) {
                           return UserProfilePage(
                             user: widget.user,
-                            profileSnapshot: profileState.profileDoc,
                             bookmarkedMonuments:
                                 bookmarkState.bookmarkedMonuments,
                           );
@@ -104,9 +103,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   : BlocBuilder<PopularMonumentsBloc, PopularMonumentsState>(
                       builder: (context, popularMonumentsState) {
                       if (popularMonumentsState is PopularMonumentsRetrieved) {
-                        for (DocumentSnapshot doc
+                        for (MonumentModel monument
                             in popularMonumentsState.popularMonuments) {
-                          monumentMapList.add(doc.data);
+                          monumentMapList.add(monument.toEntity().toDocument());
                         }
                       }
 
@@ -146,7 +145,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           builder: (context, state) {
                                         if (state
                                             is BookmarkedMonumentsRetrieved) {
-                                          print("bookmarksrec");
                                           return BookmarkCarousel(
                                             bookmarkedMonumentDocs:
                                                 state.bookmarkedMonuments,

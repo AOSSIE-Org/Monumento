@@ -10,11 +10,11 @@ class PopularMonumentsInitial extends PopularMonumentsState {
 }
 
 class PopularMonumentsRetrieved extends PopularMonumentsState {
-  final List<DocumentSnapshot> popularMonuments;
+  final List<MonumentModel> popularMonuments;
 
   PopularMonumentsRetrieved({this.popularMonuments});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [popularMonuments];
 }
 
 class FailedToRetrievePopularMonuments extends PopularMonumentsState {
