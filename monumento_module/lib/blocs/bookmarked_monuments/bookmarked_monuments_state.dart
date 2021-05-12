@@ -10,9 +10,9 @@ class BookmarkedMonumentsInitial extends BookmarkedMonumentsState {
 }
 
 class BookmarkedMonumentsRetrieved extends BookmarkedMonumentsState {
-  final List<DocumentSnapshot> bookmarkedMonuments;
+  final List<BookmarkedMonumentModel> bookmarkedMonuments;
   BookmarkedMonumentsRetrieved({this.bookmarkedMonuments});
+  
   @override
-  // TODO: implement props
   List<Object> get props => [bookmarkedMonuments];
 }

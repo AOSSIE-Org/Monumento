@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
 
 part 'authentication_event.dart';
 
@@ -24,7 +24,6 @@ class AuthenticationBloc
   Stream<AuthenticationState> mapEventToState(
     AuthenticationEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     if (event is AppStarted) {
       yield* _mapAppStartedToState();
     } else if (event is LoggedIn) {
@@ -38,7 +37,7 @@ class AuthenticationBloc
     try {
       final user = await _authRepository.getUser();
       if (user != null) {
-        yield Authenticated(user);
+        yield Authenticated(UserModel.fromEntity(user));
       } else {
         yield Unauthenticated();
       }
@@ -48,7 +47,9 @@ class AuthenticationBloc
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
-    yield Authenticated(await _authRepository.getUser());
+    final user = await _authRepository.getUser();
+
+    yield Authenticated(UserModel.fromEntity(user));
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {

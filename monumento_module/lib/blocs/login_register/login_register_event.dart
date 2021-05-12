@@ -38,8 +38,11 @@ class LoginWithGooglePressed extends LoginRegisterEvent {
 class SignUpWithEmailPressed extends LoginRegisterEvent {
   final String email;
   final String password;
+  final String name;
+  final String status;
 
-  SignUpWithEmailPressed({@required this.email, @required this.password});
+
+  SignUpWithEmailPressed({@required this.email, @required this.password, @required this.name, @required this.status});
 
   @override
   List<Object> get props => [email, password];

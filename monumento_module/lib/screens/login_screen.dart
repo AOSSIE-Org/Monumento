@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/screens/home_screen.dart';
 import 'package:monumento/screens/register_screen.dart';
 import '../constants.dart';
@@ -31,34 +30,6 @@ class _LoginScreenState extends State<LoginScreen> {
     isseen = false;
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
-  }
-
-
-
-  Future<bool> createUser(FirebaseUser user) async {
-    String collection = "users";
-    Map<String, dynamic> map = new Map();
-    map["auth_id"] = user.uid;
-    map["name"] = user.displayName ?? 'Monumento User';
-    map["prof_pic"] = user.photoUrl ?? '';
-    map["status"] = 'Monumento-nian';
-    map["email"] = _emailController.text.trim();
-    map["password"] = _passwordController.text.trim();
-
-    DocumentReference documentReference =
-        Firestore.instance.collection(collection).document();
-    Firestore.instance.runTransaction((transaction) async {
-      await transaction.set(documentReference, map).catchError((e) {
-        return false;
-      }).whenComplete(() {
-        print('User Created!');
-        return true;
-      });
-    }).catchError((e) {
-      print(e.toString());
-      return false;
-    });
-    return true;
   }
 
   Widget _buildEmailTF() {
@@ -383,7 +354,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  afterSuccessfulLogin(FirebaseUser user) {
+  afterSuccessfulLogin(UserModel user) {
     _authenticationBloc.add(LoggedIn());
     if (isseen)
       setState(() {
@@ -396,26 +367,14 @@ class _LoginScreenState extends State<LoginScreen> {
         style: TextStyle(color: Colors.amber),
       ),
     ));
-    createUser(user).then((value) {
-      if (value)
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomeScreen(
-                      user: user,
-                    )),
-            (Route<dynamic> route) => false);
-      else
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          backgroundColor: Colors.white,
-          content: Text(
-            'Error! Please Try Again Later...',
-            style: TextStyle(
-                color: Colors.amber,
-                fontFamily: GoogleFonts.montserrat().fontFamily),
-          ),
-        ));
-    });
+
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomeScreen(
+                  user: user,
+                )),
+        (Route<dynamic> route) => false);
   }
 
   afterLoginFailed() {

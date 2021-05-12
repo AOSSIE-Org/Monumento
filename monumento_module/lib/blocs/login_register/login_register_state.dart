@@ -19,7 +19,7 @@ class LoggingIn extends LoginRegisterState {
 }
 
 class LoginSuccess extends LoginRegisterState {
-  final FirebaseUser user;
+  final UserModel user;
 
   LoginSuccess(this.user);
 
@@ -51,7 +51,7 @@ class LogOutSuccess extends LoginRegisterState {
 }
 
 class SignUpSuccess extends LoginRegisterState {
-  final FirebaseUser user;
+  final UserModel user;
 
   SignUpSuccess(this.user);
 

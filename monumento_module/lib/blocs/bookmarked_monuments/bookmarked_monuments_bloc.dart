@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:monumento/resources/monuments/models/bookmarked_monument_model.dart';
 import 'package:monumento/resources/monuments/monument_repository.dart';
 
 part 'bookmarked_monuments_event.dart';
@@ -36,12 +36,12 @@ class BookmarkedMonumentsBloc
       {String userId}) async* {
     _firebaseMonumentRepository.getBookmarkedMonuments(userId).listen((event) {
       add(UpdateBookmarkedMonuments(
-          updatedBookmarkedMonuments: event.documents));
+          updatedBookmarkedMonuments: event.map((e) => BookmarkedMonumentModel.fromEntity(e)).toList()));
     });
   }
 
   Stream<BookmarkedMonumentsState> _mapUpdateBookmarkedMonumentsToState(
-      {List<DocumentSnapshot> monuments}) async* {
+      {List<BookmarkedMonumentModel> monuments}) async* {
     yield BookmarkedMonumentsRetrieved(bookmarkedMonuments: monuments);
   }
 }
