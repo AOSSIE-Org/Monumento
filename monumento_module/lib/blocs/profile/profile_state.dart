@@ -10,9 +10,9 @@ class ProfileInitial extends ProfileState {
 }
 
 class ProfileDataRetrieved extends ProfileState {
-  final DocumentSnapshot profileDoc;
+  final UserModel profile;
 
-  ProfileDataRetrieved({this.profileDoc});
+  ProfileDataRetrieved({this.profile});
   @override
   List<Object> get props => [];
 }

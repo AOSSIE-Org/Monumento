@@ -25,14 +25,11 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   @override
   void initState() {
     super.initState();
-    print(widget.address);
   }
 
   Future<Object> _geocoder(String query) async {
     var addresses = await Geocoder.local.findAddressesFromQuery(query);
-    print(addresses);
     var first = addresses.first;
-    print("${first.featureName} aa${first.coordinates.latitude}");
 
     return first;
   }
@@ -48,7 +45,6 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
             builder: (context, snapshot) {
               _geocoder(widget.address);
               if (snapshot.connectionState == ConnectionState.waiting) {
-                print(snapshot.hasData);
                 return Center(child: CircularProgressIndicator());
               }
 

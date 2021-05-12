@@ -4,6 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:monumento/resources/monuments/entities/monument_entity.dart';
+import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/resources/monuments/monument_repository.dart';
 
 part 'popular_monuments_event.dart';
@@ -31,9 +33,10 @@ class PopularMonumentsBloc
 
   Stream<PopularMonumentsState> _mapGetPopularMonumentsToState() async* {
     try {
-      final List<DocumentSnapshot> popularMonuments =
+      final List<MonumentEntity> popularMonuments =
           await _firebaseMonumentRepository.getPopularMonuments();
-      yield PopularMonumentsRetrieved(popularMonuments: popularMonuments);
+
+      yield PopularMonumentsRetrieved(popularMonuments: popularMonuments.map((e) => MonumentModel.fromEntity(e)).toList());
     } catch (_) {
       yield FailedToRetrievePopularMonuments();
     }
