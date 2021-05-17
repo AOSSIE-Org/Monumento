@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
 
 part 'login_register_event.dart';
 
@@ -37,7 +38,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       yield* _mapLogoutPressedToState();
     } else if (event is SignUpWithEmailPressed) {
       yield* _mapSignUpWithEmailPressedToState(
-          email: event.email, password: event.password);
+          email: event.email, password: event.password,name: event.name, status: event.status);
     }
   }
 
@@ -46,7 +47,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       final user = await _authRepository.signInWithGoogle();
       if (user != null) {
         _authenticationBloc.add(LoggedIn());
-        yield LoginSuccess(user);
+        yield LoginSuccess(UserModel.fromEntity(user));
       } else {
         yield LoginFailed();
       }
@@ -61,7 +62,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       final user =
           await _authRepository.emailSignIn(email: email, password: password);
       if (user != null) {
-        yield LoginSuccess(user);
+        yield LoginSuccess(UserModel.fromEntity(user));
       } else {
         yield LoginFailed();
       }
@@ -77,11 +78,11 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
   }
 
   Stream<LoginRegisterState> _mapSignUpWithEmailPressedToState(
-      {@required String email, @required String password}) async* {
+      {@required String email, @required String password, @required name, @required status}) async* {
     try {
-      final user = await _authRepository.signUp(email, password);
+      final user = await _authRepository.signUp(email: email, name: name, password: password, status: status );
       if (user != null) {
-        yield SignUpSuccess(user);
+        yield SignUpSuccess(UserModel.fromEntity(user));
       } else {
         yield SignUpFailed();
       }

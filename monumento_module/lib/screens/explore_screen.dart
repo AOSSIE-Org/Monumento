@@ -1,12 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
+import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/screens/detail_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
-  final FirebaseUser user;
-  final List<DocumentSnapshot> monumentList;
+  final UserModel user;
+  final List<MonumentModel> monumentList;
 
   ExploreScreen({this.user, this.monumentList});
 
@@ -53,7 +53,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   child: Row(
                     children: <Widget>[
                       Hero(
-                          tag: widget.monumentList[index].data['name'],
+                          tag: widget.monumentList[index].name,
                           child: Container(
                             height: MediaQuery.of(context).size.height * 0.2,
                             width: MediaQuery.of(context).size.width * 0.3,
@@ -63,8 +63,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     topLeft: Radius.circular(20.0),
                                     bottomLeft: Radius.circular(20.0)),
                                 image: DecorationImage(
-                                    image: NetworkImage(widget
-                                        .monumentList[index].data['image']),
+                                    image: NetworkImage(
+                                        widget.monumentList[index].imageUrl),
                                     fit: BoxFit.cover)),
                           )),
                       SizedBox(
@@ -76,7 +76,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              widget.monumentList[index].data['name'],
+                              widget.monumentList[index].name,
                               style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.w700,
@@ -86,9 +86,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
                             ),
                             Container(
                               child: Text(
-                                widget.monumentList[index].data['city'] +
+                                widget.monumentList[index].city +
                                     ', ' +
-                                    widget.monumentList[index].data['country'],
+                                    widget.monumentList[index].country,
                                 maxLines: 1,
                                 style: TextStyle(
                                   fontSize: 18.0,

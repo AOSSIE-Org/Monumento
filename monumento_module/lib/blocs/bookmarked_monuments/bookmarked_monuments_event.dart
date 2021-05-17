@@ -13,7 +13,7 @@ class RetrieveBookmarkedMonuments extends BookmarkedMonumentsEvent {
 }
 
 class UpdateBookmarkedMonuments extends BookmarkedMonumentsEvent {
-  final List<DocumentSnapshot> updatedBookmarkedMonuments;
+  final List<BookmarkedMonumentModel> updatedBookmarkedMonuments;
   UpdateBookmarkedMonuments({this.updatedBookmarkedMonuments});
   @override
   // TODO: implement props

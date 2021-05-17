@@ -1,16 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
+import 'package:monumento/resources/monuments/models/bookmarked_monument_model.dart';
 import 'package:monumento/screens/login_screen.dart';
 
 class UserProfilePage extends StatefulWidget {
-  final FirebaseUser user;
-  final DocumentSnapshot profileSnapshot;
-  final List<DocumentSnapshot> bookmarkedMonuments;
+  final UserModel user;
+  final List<BookmarkedMonumentModel> bookmarkedMonuments;
 
-  UserProfilePage({this.user, this.profileSnapshot, this.bookmarkedMonuments});
+  UserProfilePage({this.user, this.bookmarkedMonuments});
   @override
   _UserProfilePageState createState() => _UserProfilePageState();
 }
@@ -58,8 +57,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
         height: 140.0,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: widget.profileSnapshot.data['prof_pic'] != ''
-                ? NetworkImage(widget.profileSnapshot.data['prof_pic'])
+            image: widget.user.profilePictureUrl != ''
+                ? NetworkImage(widget.user.profilePictureUrl)
                 : AssetImage('assets/explore.jpg'),
             fit: BoxFit.cover,
           ),
@@ -81,7 +80,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
     );
 
     return Text(
-      widget.profileSnapshot.data["name"] ?? "Monumento User", //_fullName
+      widget.user.name ?? "Monumento User", //_fullName
       style: _nameTextStyle,
     );
   }
@@ -94,9 +93,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         borderRadius: BorderRadius.circular(4.0),
       ),
       child: Text(
-        widget.profileSnapshot.data["status"] == ''
-            ? 'Monumento-nian'
-            : widget.profileSnapshot.data["status"],
+        widget.user.status == "" ? 'Monumento-nian' : widget.user.status,
         style: TextStyle(
           fontFamily: 'Spectral',
           color: Colors.black,
@@ -187,8 +184,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
         body: Stack(
           children: <Widget>[
             _buildCoverImage(screenSize, context),
-            (widget.profileSnapshot == null ||
-                    widget.profileSnapshot.data == null)
+            (widget.user == null || widget.user.uid == null)
                 ? Center(
                     child: Container(
                       height: 50.0,
@@ -216,8 +212,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           SizedBox(height: 4.0),
                           widget.bookmarkedMonuments.length > 0
                               ? ListTile(
-                                  title: Text(widget
-                                      .bookmarkedMonuments[0].data['name']),
+                                  title: Text(widget.bookmarkedMonuments[0]
+                                      .monumentModel.name),
                                   leading: Icon(
                                     Icons.account_balance,
                                     color: Colors.amber,
@@ -227,8 +223,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               : SizedBox.shrink(),
                           widget.bookmarkedMonuments.length > 1
                               ? ListTile(
-                                  title: Text(widget
-                                      .bookmarkedMonuments[1].data['name']),
+                                  title: Text(widget.bookmarkedMonuments[1]
+                                      .monumentModel.name),
                                   leading: Icon(
                                     Icons.account_balance,
                                     color: Colors.amber,
