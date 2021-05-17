@@ -1,11 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
 import '../constants.dart';
 import 'home_screen.dart';
 
@@ -33,20 +33,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
   }
 
-  final FirebaseAuth auth = FirebaseAuth.instance;
-
-  Future<FirebaseUser> signUp(email, password) async {
-    try {
-      AuthResult authResult = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      FirebaseUser user = authResult.user;
-      assert(user != null);
-      assert(await user.getIdToken() != null);
-      return user;
-    } catch (e) {
-      return null;
-    }
-  }
 
   Widget _buildEmailTF() {
     return Column(
@@ -202,32 +188,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Future<bool> createUser(FirebaseUser user) async {
-    String collection = "users";
-    Map<String, dynamic> map = new Map();
-    map["auth_id"] = user.uid;
-    map["name"] = _nameController.text.trim();
-    map["prof_pic"] = '';
-    map["status"] = _statusController.text.trim();
-    map["email"] = _emailController.text.trim();
-    map["password"] = _passwordController.text.trim();
-
-    DocumentReference documentReference =
-        Firestore.instance.collection(collection).document();
-    Firestore.instance.runTransaction((transaction) async {
-      await transaction.set(documentReference, map).catchError((e) {
-        return false;
-      }).whenComplete(() {
-        print('SignedUp!');
-        return true;
-      });
-    }).catchError((e) {
-      print(e.toString());
-      return false;
-    });
-    return true;
-  }
-
   Widget _buildSignUpBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -239,7 +199,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           print('SignUp Button Pressed');
           _loginRegisterBloc.add(SignUpWithEmailPressed(
               email: _emailController.text,
-              password: _passwordController.text));
+              password: _passwordController.text, name: _nameController.text, status: _statusController.text));
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -335,7 +295,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-  afterSignUpSuccess(FirebaseUser user) {
+  afterSignUpSuccess(UserModel user) {
     _authenticationBloc.add(LoggedIn());
 
     _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -345,26 +305,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         style: TextStyle(color: Colors.amber),
       ),
     ));
-    createUser(user).then((value) {
-      if (value)
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomeScreen(
-                      user: user,
-                    )),
-            (Route<dynamic> route) => false);
-      else
-        _scaffoldKey.currentState.showSnackBar(SnackBar(
-          backgroundColor: Colors.white,
-          content: Text(
-            'Error! Please Try Again Later...',
-            style: TextStyle(
-                color: Colors.amber,
-                fontFamily: GoogleFonts.montserrat().fontFamily),
-          ),
-        ));
-    });
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+            builder: (context) => HomeScreen(
+                  user: user,
+                )),
+        (Route<dynamic> route) => false);
   }
 
   afterSignUpFailed() {

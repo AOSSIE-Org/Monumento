@@ -1,14 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:monumento/resources/authentication/models/user_model.dart';
+import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/screens/GoogleMap.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
 
 class DetailScreen extends StatefulWidget {
-  final DocumentSnapshot monument;
-  final FirebaseUser user;
+  final MonumentModel monument;
+  final UserModel user;
   bool isBookMarked;
 
   DetailScreen({this.monument, this.user, this.isBookMarked});
@@ -43,12 +44,12 @@ class _DetailScreenState extends State<DetailScreen> {
     String collection = "bookmarks";
     QuerySnapshot query = await Firestore.instance
         .collection(collection)
-        .where("auth_id", isEqualTo: widget.user.uid)
+        .where("uid", isEqualTo: widget.user.uid)
         .getDocuments();
     query.documents.forEach((element) {
-      if (element.data['name'] == widget.monument.data['name'] &&
-          element.data['country'] == widget.monument.data['country'] &&
-          element.data['city'] == widget.monument.data['city'])
+      if (element.data['name'] == widget.monument.name &&
+          element.data['country'] == widget.monument.country &&
+          element.data['city'] == widget.monument.city)
         setState(() {
           widget.isBookMarked = true;
         });
@@ -61,12 +62,12 @@ class _DetailScreenState extends State<DetailScreen> {
     String collection = "bookmarks";
     QuerySnapshot query = await Firestore.instance
         .collection(collection)
-        .where("auth_id", isEqualTo: widget.user.uid)
+        .where("uid", isEqualTo: widget.user.uid)
         .getDocuments();
     query.documents.forEach((element) {
-      if (element.data['name'] == widget.monument.data['name'] &&
-          element.data['country'] == widget.monument.data['country'] &&
-          element.data['city'] == widget.monument.data['city']) {
+      if (element.data['name'] == widget.monument.name &&
+          element.data['country'] == widget.monument.country &&
+          element.data['city'] == widget.monument.city) {
         element.reference.delete();
       }
     });
@@ -85,7 +86,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   _navToARFragment() async {
     List<Map<String, dynamic>> monumentMapList = new List();
-    monumentMapList.add(widget.monument.data);
+    monumentMapList.add(widget.monument.toEntity().toDocument());
     try {
       await platform
           .invokeMethod("navArFragment", {"monumentListMap": monumentMapList});
@@ -99,12 +100,12 @@ class _DetailScreenState extends State<DetailScreen> {
     if (!widget.isBookMarked) {
       String collection = "bookmarks";
       Map<String, dynamic> map = new Map();
-      map["auth_id"] = widget.user.uid;
-      map["name"] = widget.monument.data['name'];
-      map["image"] = widget.monument.data['image'];
-      map["wiki"] = widget.monument.data['wiki'];
-      map["country"] = widget.monument.data['country'];
-      map["city"] = widget.monument.data['city'];
+      map["uid"] = widget.user.uid;
+      map["name"] = widget.monument.name;
+      map["image"] = widget.monument.imageUrl;
+      map["wiki"] = widget.monument.wiki;
+      map["country"] = widget.monument.country;
+      map["city"] = widget.monument.city;
 
       DocumentReference documentReference =
           Firestore.instance.collection(collection).document();
@@ -153,12 +154,12 @@ class _DetailScreenState extends State<DetailScreen> {
                 ),
                 child: Hero(
                   tag: widget.isBookMarked
-                      ? widget.monument.data["wiki"] ?? 'monument-tag'
-                      : widget.monument.data['name'] ?? 'monument',
+                      ? widget.monument.wiki ?? 'monument-tag'
+                      : widget.monument.name ?? 'monument',
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(30.0),
                     child: Image(
-                      image: NetworkImage(widget.monument.data['image']),
+                      image: NetworkImage(widget.monument.imageUrl),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -214,7 +215,7 @@ class _DetailScreenState extends State<DetailScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.75,
                       child: Text(
-                        widget.monument.data['name'],
+                        widget.monument.name,
                         maxLines: 3,
                         style: TextStyle(
                           color: Colors.white,
@@ -233,7 +234,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         ),
                         SizedBox(width: 5.0),
                         Text(
-                          widget.monument.data['city'],
+                          widget.monument.city,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 20.0,
@@ -251,8 +252,8 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: InkWell(
                   onTap: () {
                     Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (context) => GoogleMapPage(
-                            address: widget.monument.data["name"])));
+                        builder: (context) =>
+                            GoogleMapPage(address: widget.monument.name)));
                   },
                   child: Icon(
                     Icons.location_on,
@@ -272,7 +273,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   Expanded(
                       child: WebView(
                     javascriptMode: JavascriptMode.unrestricted,
-                    initialUrl: widget.monument.data['wiki'],
+                    initialUrl: widget.monument.wiki,
                     gestureNavigationEnabled: true,
                     onWebViewCreated: (WebViewController webViewController) {
                       _controller.complete(webViewController);
