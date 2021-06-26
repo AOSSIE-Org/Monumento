@@ -38,7 +38,10 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       yield* _mapLogoutPressedToState();
     } else if (event is SignUpWithEmailPressed) {
       yield* _mapSignUpWithEmailPressedToState(
-          email: event.email, password: event.password,name: event.name, status: event.status);
+          email: event.email,
+          password: event.password,
+          name: event.name,
+          status: event.status,username:event.username);
     }
   }
 
@@ -47,7 +50,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       final user = await _authRepository.signInWithGoogle();
       if (user != null) {
         _authenticationBloc.add(LoggedIn());
-        yield LoginSuccess(UserModel.fromEntity(user));
+        yield LoginSuccess(user);
       } else {
         yield LoginFailed();
       }
@@ -62,7 +65,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       final user =
           await _authRepository.emailSignIn(email: email, password: password);
       if (user != null) {
-        yield LoginSuccess(UserModel.fromEntity(user));
+        yield LoginSuccess(user);
       } else {
         yield LoginFailed();
       }
@@ -78,11 +81,16 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
   }
 
   Stream<LoginRegisterState> _mapSignUpWithEmailPressedToState(
-      {@required String email, @required String password, @required name, @required status}) async* {
+      {@required String email,
+      @required String password,
+      @required String name,
+      @required String status,@required String username}) async* {
     try {
-      final user = await _authRepository.signUp(email: email, name: name, password: password, status: status );
+      //TODO implement profilePictureUpload feature
+      final user = await _authRepository.signUp(
+          email: email, name: name, password: password, status: status,username: username,profilePictureUrl: "");
       if (user != null) {
-        yield SignUpSuccess(UserModel.fromEntity(user));
+        yield SignUpSuccess(user);
       } else {
         yield SignUpFailed();
       }

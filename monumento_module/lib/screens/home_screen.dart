@@ -1,16 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
-import 'package:monumento/blocs/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
-import 'package:monumento/resources/monuments/models/monument_model.dart';
-import 'package:monumento/screens/bookmark_screen.dart';
-import 'package:monumento/screens/explore_screen.dart';
-import 'package:monumento/screens/profile_screen.dart';
-import 'package:monumento/utils/bookmark_carousel.dart';
-import 'package:monumento/utils/popular_carousel.dart';
+import 'package:monumento/screens/feed/feed_screen.dart';
+
+import 'package:monumento/utils/image_picker.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 
 class HomeScreen extends StatefulWidget {
   final UserModel user;
@@ -22,7 +23,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentTab = 0;
   final _key = GlobalKey<ScaffoldState>();
 
   List<Map<String, dynamic>> monumentMapList = new List();
@@ -40,10 +40,16 @@ class _HomeScreenState extends State<HomeScreen> {
     _profileBloc.add(GetProfileData(userId: uid));
   }
 
-  void changeScreen(int tabIndex) {
-    setState(() {
-      _currentTab = tabIndex;
-    });
+  int _currentIndex = 0;
+
+  void onTabTapped(int newIndex) {
+    if (newIndex == 2) {
+      newPostBottomSheet();
+    } else {
+      setState(() {
+        _currentIndex = newIndex;
+      });
+    }
   }
 
   static const platform = const MethodChannel("monument_detector");
@@ -59,186 +65,73 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _key,
-      body: _currentTab == 1
-          ? BlocBuilder<PopularMonumentsBloc, PopularMonumentsState>(
-              builder: (context, state) {
-              if (state is PopularMonumentsRetrieved) {
-                return ExploreScreen(
-                  user: widget.user,
-                  monumentList: state.popularMonuments,
-                );
-              }
-              return _buildCenterLoadingIndicator();
-            })
-          : _currentTab == 2
-              ? BlocBuilder<BookmarkedMonumentsBloc, BookmarkedMonumentsState>(
-                  builder: (context, state) {
-                  if (state is BookmarkedMonumentsRetrieved) {
-                    return BookmarkScreen(
-                      user: widget.user,
-                      monumentList: state.bookmarkedMonuments,
-                    );
-                  }
-                  return _buildCenterLoadingIndicator();
-                })
-              : _currentTab == 3
-                  ? BlocBuilder<ProfileBloc, ProfileState>(
-                      builder: (context, profileState) {
-                      return BlocBuilder<BookmarkedMonumentsBloc,
-                              BookmarkedMonumentsState>(
-                          builder: (context, bookmarkState) {
-                        if (profileState is ProfileDataRetrieved &&
-                            bookmarkState is BookmarkedMonumentsRetrieved) {
-                          return UserProfilePage(
-                            user: widget.user,
-                            bookmarkedMonuments:
-                                bookmarkState.bookmarkedMonuments,
-                          );
-                        }
-                        return _buildCenterLoadingIndicator();
-                      });
-                    })
-                  : BlocBuilder<PopularMonumentsBloc, PopularMonumentsState>(
-                      builder: (context, popularMonumentsState) {
-                      if (popularMonumentsState is PopularMonumentsRetrieved) {
-                        for (MonumentModel monument
-                            in popularMonumentsState.popularMonuments) {
-                          monumentMapList.add(monument.toEntity().toDocument());
-                        }
-                      }
+    return SafeArea(
+      child: Scaffold(
 
-                      return SafeArea(
-                        child: (popularMonumentsState
-                                is! PopularMonumentsRetrieved)
-                            ? _buildCenterLoadingIndicator()
-                            : Stack(
-                                children: <Widget>[
-                                  ListView(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 30.0),
-                                    children: <Widget>[
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: 20.0, right: 120.0),
-                                        child: Text(
-                                          'Monumento',
-                                          style: TextStyle(
-                                            fontSize: 28.0,
-                                            color: Colors.amber,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 20.0),
-                                      PopularMonumentsCarousel(
-                                        popMonumentDocs: (popularMonumentsState
-                                                as PopularMonumentsRetrieved)
-                                            .popularMonuments,
-                                        user: widget.user,
-                                        changeTab: changeScreen,
-                                      ),
-                                      SizedBox(height: 20.0),
-                                      BlocBuilder<BookmarkedMonumentsBloc,
-                                              BookmarkedMonumentsState>(
-                                          builder: (context, state) {
-                                        if (state
-                                            is BookmarkedMonumentsRetrieved) {
-                                          return BookmarkCarousel(
-                                            bookmarkedMonumentDocs:
-                                                state.bookmarkedMonuments,
-                                            changeTab: changeScreen,
-                                          );
-                                        }
+        key: _key,
+        body: FeedScreen(),
+        floatingActionButton: FloatingActionButton(child: Icon(Icons.add_a_photo),onPressed: newPostBottomSheet,),
 
-                                        return SizedBox.shrink();
-                                      })
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: FloatingActionButton(
-                                          onPressed: () async {
-                                            _navToMonumentDetector();
-                                          },
-                                          backgroundColor: Colors.amber,
-                                          child: Icon(Icons.account_balance,
-                                              color: Colors.white),
-                                        )),
-                                  )
-                                ],
-                              ),
-                      );
-                    }),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: TextStyle(color: Colors.amber),
-        currentIndex: _currentTab,
-        elevation: 10.0,
-        selectedItemColor: Colors.amber,
-        onTap: (int value) {
-          setState(() {
-            _currentTab = value;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.home,
-              size: 30.0,
-              color: Colors.grey,
-            ),
-            label: 'Home',
-            activeIcon: Icon(
-              Icons.home,
-              size: 35.0,
-              color: Colors.amber,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.apps,
-              size: 30.0,
-              color: Colors.grey,
-            ),
-            label: 'Popular',
-            activeIcon: Icon(
-              Icons.apps,
-              size: 35.0,
-              color: Colors.amber,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.bookmark,
-              size: 30.0,
-              color: Colors.grey,
-            ),
-            label: 'Bookmarks',
-            activeIcon: Icon(
-              Icons.bookmark,
-              size: 35.0,
-              color: Colors.amber,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.person_outline,
-              size: 30.0,
-              color: Colors.grey,
-            ),
-            label: 'Profile',
-            activeIcon: Icon(
-              Icons.person_outline,
-              size: 35.0,
-              color: Colors.amber,
-            ),
-          ),
-        ],
       ),
     );
+  }
+
+  newPostBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return Container(
+            padding: EdgeInsets.all(16),
+            height: 150,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "New Post",
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Column(
+                      children: [
+                        IconButton(
+                            iconSize: 60,
+                            icon: FaIcon(
+                              FontAwesomeIcons.camera,
+                              color: Colors.black,
+                            ),
+                            onPressed: () =>
+                                newPostPickImage(ImageSource.camera)),
+                        Text("Camera")
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        IconButton(
+                            iconSize: 60,
+                            icon: FaIcon(
+                              FontAwesomeIcons.image,
+                              color: Colors.black,
+                            ),
+                            onPressed: () =>
+                                newPostPickImage(ImageSource.gallery)),
+                        Text("Gallery")
+                      ],
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+  Future newPostPickImage(ImageSource source) async {
+    File image = await PickImage.takePicture(imageSource: source);
+    File croppedImage =
+    await PickImage.cropImage(image: image, ratioX: 1, ratioY: 1);
+    Navigator.of(context).pushNamed('/newPostScreen', arguments: croppedImage);
   }
 
   Widget _buildCenterLoadingIndicator() {
