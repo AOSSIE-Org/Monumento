@@ -28,10 +28,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Stream<ProfileState> _mapGetProfileDataToState({String userId}) async* {
     try {
-      final UserEntity profileData =
+      final UserModel profileData =
           await _firebaseMonumentRepository.getProfileData(userId);
-
-      yield ProfileDataRetrieved(profile: UserModel.fromEntity(profileData));
+      yield ProfileDataRetrieved(profile: profileData);
     } catch (_) {
       yield FailedToRetrieveProfileData();
     }
