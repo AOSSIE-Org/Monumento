@@ -26,6 +26,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".SceneformFragment" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
 
         <meta-data
             android:name="com.google.ar.core"
