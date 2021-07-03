@@ -37,7 +37,7 @@ class AuthenticationBloc
     try {
       final user = await _authRepository.getUser();
       if (user != null) {
-        yield Authenticated(UserModel.fromEntity(user));
+        yield Authenticated(user);
       } else {
         yield Unauthenticated();
       }
@@ -49,7 +49,7 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapLoggedInToState() async* {
     final user = await _authRepository.getUser();
 
-    yield Authenticated(UserModel.fromEntity(user));
+    yield Authenticated(user);
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {

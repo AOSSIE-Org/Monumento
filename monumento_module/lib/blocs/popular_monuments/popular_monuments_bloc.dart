@@ -33,10 +33,10 @@ class PopularMonumentsBloc
 
   Stream<PopularMonumentsState> _mapGetPopularMonumentsToState() async* {
     try {
-      final List<MonumentEntity> popularMonuments =
+      final List<MonumentModel> popularMonuments =
           await _firebaseMonumentRepository.getPopularMonuments();
 
-      yield PopularMonumentsRetrieved(popularMonuments: popularMonuments.map((e) => MonumentModel.fromEntity(e)).toList());
+      yield PopularMonumentsRetrieved(popularMonuments: popularMonuments);
     } catch (_) {
       yield FailedToRetrievePopularMonuments();
     }

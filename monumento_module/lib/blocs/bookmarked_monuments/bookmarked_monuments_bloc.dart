@@ -35,8 +35,7 @@ class BookmarkedMonumentsBloc
   Stream<BookmarkedMonumentsState> _mapRetrieveBookmarkedMonumentsToState(
       {String userId}) async* {
     _firebaseMonumentRepository.getBookmarkedMonuments(userId).listen((event) {
-      add(UpdateBookmarkedMonuments(
-          updatedBookmarkedMonuments: event.map((e) => BookmarkedMonumentModel.fromEntity(e)).toList()));
+      add(UpdateBookmarkedMonuments(updatedBookmarkedMonuments: event));
     });
   }
 

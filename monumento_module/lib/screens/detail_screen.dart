@@ -21,7 +21,7 @@ class DetailScreen extends StatefulWidget {
 class _DetailScreenState extends State<DetailScreen> {
   final _key = GlobalKey<ScaffoldState>();
   final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+  Completer<WebViewController>();
 
   Text _buildRatingStars(int rating) {
     String stars = '';
@@ -42,14 +42,16 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Future<bool> getBookMarkStatus() async {
     String collection = "bookmarks";
-    QuerySnapshot query = await Firestore.instance
+    QuerySnapshot query = await FirebaseFirestore.instance
         .collection(collection)
         .where("uid", isEqualTo: widget.user.uid)
-        .getDocuments();
-    query.documents.forEach((element) {
-      if (element.data['name'] == widget.monument.name &&
-          element.data['country'] == widget.monument.country &&
-          element.data['city'] == widget.monument.city)
+        .get();
+    query.docs.forEach((element) {
+      Map<String, dynamic> data = element.data();
+
+      if (data['name'] == widget.monument.name &&
+          data['country'] == widget.monument.country &&
+          data['city'] == widget.monument.city)
         setState(() {
           widget.isBookMarked = true;
         });
@@ -60,14 +62,16 @@ class _DetailScreenState extends State<DetailScreen> {
 
   Future<void> _delectbookmark() async {
     String collection = "bookmarks";
-    QuerySnapshot query = await Firestore.instance
+    QuerySnapshot query = await FirebaseFirestore.instance
         .collection(collection)
         .where("uid", isEqualTo: widget.user.uid)
-        .getDocuments();
-    query.documents.forEach((element) {
-      if (element.data['name'] == widget.monument.name &&
-          element.data['country'] == widget.monument.country &&
-          element.data['city'] == widget.monument.city) {
+        .get();
+    query.docs.forEach((element) {
+      Map<String, dynamic> data = element.data();
+
+      if (data['name'] == widget.monument.name &&
+          data['country'] == widget.monument.country &&
+          data['city'] == widget.monument.city) {
         element.reference.delete();
       }
     });
@@ -86,7 +90,7 @@ class _DetailScreenState extends State<DetailScreen> {
 
   _navToARFragment() async {
     List<Map<String, dynamic>> monumentMapList = new List();
-    monumentMapList.add(widget.monument.toEntity().toDocument());
+    monumentMapList.add(widget.monument.toEntity().toMap());
     try {
       await platform
           .invokeMethod("navArFragment", {"monumentListMap": monumentMapList});
@@ -108,24 +112,21 @@ class _DetailScreenState extends State<DetailScreen> {
       map["city"] = widget.monument.city;
 
       DocumentReference documentReference =
-          Firestore.instance.collection(collection).document();
-      Firestore.instance.runTransaction((transaction) async {
-        await transaction
-            .set(documentReference, map)
-            .catchError((e) {})
-            .whenComplete(() {
-          setState(() {
-            widget.isBookMarked = true;
-          });
-          print('Bookmarked!');
-          _key.currentState.showSnackBar(SnackBar(
-            backgroundColor: Colors.amber,
-            content: Text(
-              'Monument Bookmarked!',
-              style: TextStyle(color: Colors.white),
-            ),
-          ));
+      FirebaseFirestore.instance.collection(collection).doc();
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+        await transaction.set(documentReference, map);
+        // .catchError((e) {})
+        setState(() {
+          widget.isBookMarked = true;
         });
+        print('Bookmarked!');
+        _key.currentState.showSnackBar(SnackBar(
+          backgroundColor: Colors.amber,
+          content: Text(
+            'Monument Bookmarked!',
+            style: TextStyle(color: Colors.white),
+          ),
+        ));
       }).catchError((e) {
         print(e.toString());
       });
@@ -183,7 +184,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           padding: EdgeInsets.only(right: 5.0),
                           iconSize: 30.0,
                           color:
-                              widget.isBookMarked ? Colors.amber : Colors.white,
+                          widget.isBookMarked ? Colors.amber : Colors.white,
                           tooltip: 'Bookmark',
                           onPressed: () async {
                             if (!widget.isBookMarked) {
@@ -266,30 +267,30 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
           Expanded(
               child: IndexedStack(
-            index: _stackToView,
-            children: [
-              Column(
-                children: <Widget>[
-                  Expanded(
-                      child: WebView(
-                    javascriptMode: JavascriptMode.unrestricted,
-                    initialUrl: widget.monument.wiki,
-                    gestureNavigationEnabled: true,
-                    onWebViewCreated: (WebViewController webViewController) {
-                      _controller.complete(webViewController);
-                    },
-                    onPageFinished: _handleLoad,
-                  )),
+                index: _stackToView,
+                children: [
+                  Column(
+                    children: <Widget>[
+                      Expanded(
+                          child: WebView(
+                            javascriptMode: JavascriptMode.unrestricted,
+                            initialUrl: widget.monument.wiki,
+                            gestureNavigationEnabled: true,
+                            onWebViewCreated: (WebViewController webViewController) {
+                              _controller.complete(webViewController);
+                            },
+                            onPageFinished: _handleLoad,
+                          )),
+                    ],
+                  ),
+                  Container(
+                    color: Colors.white,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
                 ],
-              ),
-              Container(
-                color: Colors.white,
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ],
-          )),
+              )),
         ],
       ),
     );
