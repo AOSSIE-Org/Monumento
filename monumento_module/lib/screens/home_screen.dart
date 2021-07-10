@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
+import 'package:monumento/screens/discover/discover_screen.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
 
 import 'package:monumento/utils/image_picker.dart';
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
 
         key: _key,
-        body: FeedScreen(),
+        body: SearchScreen(),
         floatingActionButton: FloatingActionButton(child: Icon(Icons.add_a_photo),onPressed: newPostBottomSheet,),
 
       ),
