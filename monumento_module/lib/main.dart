@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:monumento/blocs/feed/feed_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
 import 'package:monumento/resources/social/firebase_social_repository.dart';
 import 'package:monumento/resources/social/social_repository.dart';
@@ -43,6 +44,8 @@ class _MyAppState extends State<MyApp> {
   BookmarkedMonumentsBloc _bookmarkedMonumentsBloc;
   PopularMonumentsBloc _popularMonumentsBloc;
   NewPostBloc _newPostBloc;
+  FeedBloc _feedBloc;
+
 
   @override
   void initState() {
@@ -58,6 +61,8 @@ class _MyAppState extends State<MyApp> {
     _popularMonumentsBloc =
         PopularMonumentsBloc(firebaseMonumentRepository: _monumentRepository);
     _newPostBloc = NewPostBloc(socialRepository: _socialRepository);
+    _feedBloc = FeedBloc(socialRepository: _socialRepository);
+
     _popularMonumentsBloc.add(GetPopularMonuments());
     _authenticationBloc.add(AppStarted());
   }
@@ -87,7 +92,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<NewPostBloc>(
           create: (_) => _newPostBloc,
         ),
-
+        BlocProvider<FeedBloc>(
+          create: (_) => _feedBloc,
+        ),
 
       ],
       child: MaterialApp(
