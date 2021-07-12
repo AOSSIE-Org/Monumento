@@ -200,8 +200,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           _loginRegisterBloc.add(SignUpWithEmailPressed(
               email: _emailController.text,
               password: _passwordController.text, name: _nameController.text, status: _statusController.text,username: 'username'));
-          //TODO : USername
-        },
+
+        },//TODO : username
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
