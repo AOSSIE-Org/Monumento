@@ -25,6 +25,7 @@ class UserEntity extends Equatable {
   }
 
   factory UserEntity.fromMap(Map<String, Object> data) {
+    print(data.toString()+"userfrommap");
     return UserEntity(
         uid: data['uid'] as String,
         name: data['name'] as String,
