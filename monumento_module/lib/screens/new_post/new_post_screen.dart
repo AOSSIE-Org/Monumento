@@ -5,6 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
 
 class NewPostScreen extends StatefulWidget {
+  static final String route = "/newPostScreen";
+  final File pickedImage;
+  NewPostScreen({@required this.pickedImage});
   @override
   _NewPostScreenState createState() => _NewPostScreenState();
 }
@@ -22,12 +25,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
 
   @override
   Widget build(BuildContext context) {
-    File pickedImage = ModalRoute.of(context).settings.arguments as File;
     return BlocListener<NewPostBloc, NewPostState>(
         listener: (context, state) {
           if (state is NewPostAdded) {
-
-            print("new post added"+ state.post.imageUrl);
+            print("new post added");
           }
         },
         child: Scaffold(
@@ -40,7 +41,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
             TextButton(
                 onPressed: () {
                   _newPostBloc.add(AddNewPost(
-                      image: pickedImage,
+                      image: widget.pickedImage,
                       location: _locationController.text,
                       title: _titleController.text));
                 },
@@ -53,12 +54,12 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(5),
-                        child: Image.file(pickedImage,
-                            height: MediaQuery.of(context).size.width,
-                            width: MediaQuery.of(context).size.width),
-                      ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Image.file(widget.pickedImage,
+                        height: MediaQuery.of(context).size.width,
+                        width: MediaQuery.of(context).size.width),
+                  ),
 
 
                   Divider(

@@ -16,6 +16,12 @@ class NewPostAdded extends NewPostState {
   List<Object> get props => [post];
 }
 
+class AddingNewPost extends NewPostState {
+
+  @override
+  List<Object> get props => [];
+}
+
 class NewPostFailed extends NewPostState {
   @override
   // TODO: implement props
