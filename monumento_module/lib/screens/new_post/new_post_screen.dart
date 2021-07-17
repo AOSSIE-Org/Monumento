@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monumento/blocs/feed/feed_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
 
 class NewPostScreen extends StatefulWidget {
@@ -13,7 +14,9 @@ class NewPostScreen extends StatefulWidget {
 }
 
 class _NewPostScreenState extends State<NewPostScreen> {
+
   NewPostBloc _newPostBloc;
+  FeedBloc _feedBloc;
   TextEditingController _titleController = TextEditingController();
   TextEditingController _locationController = TextEditingController();
 
@@ -21,6 +24,7 @@ class _NewPostScreenState extends State<NewPostScreen> {
   void initState() {
     super.initState();
     _newPostBloc = BlocProvider.of<NewPostBloc>(context);
+    _feedBloc = BlocProvider.of<FeedBloc>(context);
   }
 
   @override
@@ -28,7 +32,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
     return BlocListener<NewPostBloc, NewPostState>(
         listener: (context, state) {
           if (state is NewPostAdded) {
-            print("new post added");
+            print("new post added" + state.post.imageUrl);
+            //TODO : Change navigation pattern
+            // _feedBloc.add(LoadInitialFeed());
+            // Navigator.pop(context);
           }
         },
         child: Scaffold(
@@ -48,37 +55,54 @@ class _NewPostScreenState extends State<NewPostScreen> {
                 child: Text("Post"))
           ],
           body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: Image.file(widget.pickedImage,
-                        height: MediaQuery.of(context).size.width,
-                        width: MediaQuery.of(context).size.width),
-                  ),
+            child: Stack(
+              children: [
 
 
-                  Divider(
-                    height: 24,
-                    thickness: 2,
+
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(5),
+                        child: Image.file(widget.pickedImage,
+                            height: MediaQuery.of(context).size.width,
+                            width: MediaQuery.of(context).size.width),
+                      ),
+                      Divider(
+                        height: 24,
+                        thickness: 2,
+                      ),
+                      Text("Title"),
+                      TextField(
+                        controller: _titleController,
+                        decoration: InputDecoration(hintText: "Add a title"),
+                      ),
+                      SizedBox(
+                        height: 16,
+                      ),
+                      Text("Location"),
+                      TextField(
+                        controller: _locationController,
+                        decoration: InputDecoration(hintText: "Add a location"),
+                      ),
+                    ],
                   ),
-                  Text("Title"),
-                  TextField(
-                    controller: _titleController,
-                    decoration: InputDecoration(hintText: "Add a title"),
-                  ),
-                  SizedBox(height: 16,),
-                  Text("Location"),
-                  TextField(
-                    controller: _locationController,
-                    decoration: InputDecoration(hintText: "Add a location"),
-                  ),
-                ],
-              ),
+                ),
+                BlocBuilder<NewPostBloc, NewPostState>(
+                  bloc: _newPostBloc,
+                  builder: (context, state) {
+                    return state is AddingNewPost ?  Positioned.fill(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        )
+
+                    ) : Container();
+                  },
+                ),
+              ],
             ),
           ),
         ));
