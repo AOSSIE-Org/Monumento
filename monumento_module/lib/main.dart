@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/blocs/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/blocs/feed/feed_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
+import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/blocs/search/search_bloc.dart';
+import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/social/firebase_social_repository.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 import 'package:monumento/screens/app_intro.dart';
@@ -18,6 +20,7 @@ import 'package:monumento/resources/authentication/firebase_authentication_repos
 import 'package:monumento/resources/monuments/firebase_monument_repository.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
 import 'package:monumento/screens/new_post/new_post_screen.dart';
+import 'package:monumento/screens/profile/profile_screen.dart';
 import 'screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -49,6 +52,7 @@ class _MyAppState extends State<MyApp> {
   SearchBloc _searchBloc;
   DiscoverPostsBloc _discoverPostsBloc;
   FeedBloc _feedBloc;
+  ProfilePostsBloc _profilePostsBloc;
 
 
   @override
@@ -68,7 +72,7 @@ class _MyAppState extends State<MyApp> {
     _searchBloc = SearchBloc(socialRepository: _socialRepository);
     _discoverPostsBloc = DiscoverPostsBloc(socialRepository: _socialRepository);
     _feedBloc = FeedBloc(socialRepository: _socialRepository);
-
+    _profilePostsBloc = ProfilePostsBloc(socialRepository: _socialRepository);
     _popularMonumentsBloc.add(GetPopularMonuments());
     _authenticationBloc.add(AppStarted());
   }
@@ -107,6 +111,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<FeedBloc>(
           create: (_) => _feedBloc,
         ),
+        BlocProvider<ProfilePostsBloc>(
+          create: (_) => _profilePostsBloc,
+        ),
 
       ],
       child: MaterialApp(
@@ -129,7 +136,24 @@ class _MyAppState extends State<MyApp> {
                 backgroundColor: Colors.white,
               );
             }),
-        routes: {'/newPostScreen': (_) => NewPostScreen()},
+        onGenerateRoute: (settings){
+          if(settings.name == ProfileScreen.route){
+            ProfileScreenArguments args = settings.arguments as ProfileScreenArguments;
+            return MaterialPageRoute(builder: (context){
+              return ProfileScreen(user:args.user);
+            });
+          }
+
+          if(settings.name == NewPostScreen.route){
+            NewPostScreenArguments args = settings.arguments as NewPostScreenArguments;
+            return MaterialPageRoute(builder: (context){
+              return NewPostScreen(pickedImage: args.pickedImage,);
+            });
+          }
+
+          assert(false,"Route ${settings.name} not implemented");
+          return null;
+        },
       ),
     );
   }

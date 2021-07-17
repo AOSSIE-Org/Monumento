@@ -22,8 +22,8 @@ class FirebaseSocialRepository implements SocialRepository {
 
   FirebaseSocialRepository(
       {FirebaseFirestore database,
-      AuthenticationRepository authenticationRepository,
-      FirebaseStorage storage})
+        AuthenticationRepository authenticationRepository,
+        FirebaseStorage storage})
       : _database = database ?? FirebaseFirestore.instance,
         _storage = storage ?? FirebaseStorage.instance,
         _authRepository =
@@ -35,14 +35,14 @@ class FirebaseSocialRepository implements SocialRepository {
     //TODO TODO TODO
     QuerySnapshot snap = await _database
         .collection("posts")
-        // .where("postFor", arrayContains: currentUser.uid)
+    // .where("postFor", arrayContains: currentUser.uid)
         .orderBy("timeStamp", descending: true)
         .limit(10)
         .get();
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
     print("$posts lololol");
     return posts;
@@ -54,7 +54,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     QuerySnapshot snap = await _database
         .collection("posts")
-        // .where("postFor", arrayContains: currentUser.uid)
+    // .where("postFor", arrayContains: currentUser.uid)
         .orderBy("timeStamp", descending: true)
         .startAfterDocument(startAfterDoc)
         .limit(10)
@@ -62,7 +62,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
 
     return posts;
@@ -98,7 +98,7 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<String> uploadImageForUrl({File file, String address}) async {
     String fileName = Uuid().v4();
     UploadTask task =
-        _storage.ref().child(address).child("$fileName.jpg").putFile(file);
+    _storage.ref().child(address).child("$fileName.jpg").putFile(file);
 
     TaskSnapshot snapshot = await task.whenComplete(() => null);
 
@@ -132,7 +132,7 @@ class FirebaseSocialRepository implements SocialRepository {
     // .orderBy("dateJoined",descending: false)
     List<UserModel> users = snap.docs
         .map((e) => UserModel.fromEntity(
-            userEntity: UserEntity.fromSnapshot(e), snapshot: e))
+        userEntity: UserEntity.fromSnapshot(e), snapshot: e))
         .toList();
     return users;
   }
@@ -149,7 +149,7 @@ class FirebaseSocialRepository implements SocialRepository {
         .get();
     List<UserModel> users = snap.docs
         .map((e) => UserModel.fromEntity(
-            userEntity: UserEntity.fromSnapshot(e), snapshot: e))
+        userEntity: UserEntity.fromSnapshot(e), snapshot: e))
         .toList();
     return users;
   }
@@ -165,7 +165,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return snap.docs
         .map((e) => CommentModel.fromEntity(
-            entity: CommentEntity.fromSnapshot(e), snapshot: e))
+        entity: CommentEntity.fromSnapshot(e), snapshot: e))
         .toList();
   }
 
@@ -181,14 +181,14 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return snap.docs
         .map((e) => NotificationModel.fromEntity(
-            entity: NotificationEntity.fromSnapshot(e), documentSnapshot: e))
+        entity: NotificationEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
   }
 
   @override
   Future<List<CommentModel>> getMoreComments(
       {DocumentReference postDocReference,
-      DocumentSnapshot startAfterDoc}) async {
+        DocumentSnapshot startAfterDoc}) async {
     QuerySnapshot snap = await postDocReference
         .collection("comments")
         .orderBy("timeStamp", descending: true)
@@ -198,7 +198,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return snap.docs
         .map((e) => CommentModel.fromEntity(
-            entity: CommentEntity.fromSnapshot(e), snapshot: e))
+        entity: CommentEntity.fromSnapshot(e), snapshot: e))
         .toList();
   }
 
@@ -215,7 +215,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return snap.docs
         .map((e) => NotificationModel.fromEntity(
-            entity: NotificationEntity.fromSnapshot(e), documentSnapshot: e))
+        entity: NotificationEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
   }
 
@@ -253,7 +253,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
     print("$posts lololol");
     return posts;
@@ -271,7 +271,43 @@ class FirebaseSocialRepository implements SocialRepository {
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+        .toList();
+
+    return posts;
+  }
+
+  @override
+  Future<List<PostModel>> getInitialProfilePosts({String uid}) async {
+    QuerySnapshot snap = await _database
+        .collection("posts")
+    // .where("postByUid", isEqualTo: uid)
+        .orderBy("timeStamp", descending: true)
+        .limit(10)
+        .get();
+
+    List<PostModel> posts = snap.docs
+        .map((e) => PostModel.fromEntity(
+        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+        .toList();
+
+    return posts;
+  }
+
+  @override
+  Future<List<PostModel>> getMoreProfilePosts(
+      {DocumentSnapshot startAfterDoc, String uid}) async {
+    QuerySnapshot snap = await _database
+        .collection("posts")
+    // .where("postByUid", isEqualTo: uid)
+        .orderBy("timeStamp", descending: true)
+        .startAfterDocument(startAfterDoc)
+        .limit(10)
+        .get();
+
+    List<PostModel> posts = snap.docs
+        .map((e) => PostModel.fromEntity(
+        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
 
     return posts;

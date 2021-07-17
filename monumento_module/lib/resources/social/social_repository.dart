@@ -46,6 +46,14 @@ abstract class SocialRepository {
   Future<List<PostModel>> getMoreDiscoverPosts(
       {@required DocumentSnapshot startAfterDoc});
 
+  Future<List<PostModel>> getInitialProfilePosts({@required String uid});
+
+
+  Future<List<PostModel>> getMoreProfilePosts(
+      {@required DocumentSnapshot startAfterDoc,@required String uid});
+
+
+
 
 
 
