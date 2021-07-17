@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,12 +8,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
-import 'package:monumento/screens/discover/discover_screen.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
-
+import 'package:monumento/screens/profile/profile_screen.dart';
 import 'package:monumento/utils/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'discover/discover_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final UserModel user;
@@ -53,6 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  List<Widget> screens = [FeedScreen(), SearchScreen()];
   static const platform = const MethodChannel("monument_detector");
 
   _navToMonumentDetector() async {
@@ -68,11 +70,69 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-
         key: _key,
-        body: SearchScreen(),
-        floatingActionButton: FloatingActionButton(child: Icon(Icons.add_a_photo),onPressed: newPostBottomSheet,),
-
+        body: [
+          FeedScreen(),
+          SearchScreen(),
+          ProfileScreen(
+            user: widget.user,
+          ),
+          ProfileScreen(user: widget.user),
+          ProfileScreen(user: widget.user)
+        ][_currentIndex],
+        bottomNavigationBar: ConvexAppBar(
+          onTap: onTabTapped,
+          initialActiveIndex: _currentIndex,
+          backgroundColor: Color(0xfffcfcfd),
+          style: TabStyle.fixedCircle,
+          color: Theme.of(context).primaryColor,
+          activeColor: Theme.of(context).primaryColor,
+          items: [
+            TabItem(
+              activeIcon: Icon(
+                Icons.home,
+                color: Theme.of(context).primaryColor,
+              ),
+              icon: Icon(
+                Icons.home,
+                color: Colors.grey,
+              ),
+            ),
+            TabItem(
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.grey,
+                ),
+                activeIcon: Icon(
+                  Icons.search,
+                  color: Theme.of(context).primaryColor,
+                )),
+            TabItem(
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+            TabItem(
+                icon: Icon(
+                  Icons.chat_bubble_outline,
+                  color: Colors.grey,
+                ),
+                activeIcon: Icon(
+                  Icons.chat_bubble_outline,
+                  color: Theme.of(context).primaryColor,
+                )),
+            TabItem(
+                icon: FaIcon(
+                  FontAwesomeIcons.bell,
+                  color: Colors.grey,
+                ),
+                activeIcon: FaIcon(
+                  FontAwesomeIcons.bell,
+                  color: Theme.of(context).primaryColor,
+                )),
+          ],
+        ),
       ),
     );
   }
@@ -102,8 +162,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               FontAwesomeIcons.camera,
                               color: Colors.black,
                             ),
-                            onPressed: () =>
-                                newPostPickImage(ImageSource.camera)),
+                            onPressed: () {
+                              Navigator.pop(context);
+
+                              newPostPickImage(ImageSource.camera);
+                            }),
                         Text("Camera")
                       ],
                     ),
@@ -115,8 +178,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               FontAwesomeIcons.image,
                               color: Colors.black,
                             ),
-                            onPressed: () =>
-                                newPostPickImage(ImageSource.gallery)),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              newPostPickImage(ImageSource.gallery);
+                            }),
                         Text("Gallery")
                       ],
                     )
@@ -131,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Future newPostPickImage(ImageSource source) async {
     File image = await PickImage.takePicture(imageSource: source);
     File croppedImage =
-    await PickImage.cropImage(image: image, ratioX: 1, ratioY: 1);
+        await PickImage.cropImage(image: image, ratioX: 1, ratioY: 1);
     Navigator.of(context).pushNamed('/newPostScreen', arguments: croppedImage);
   }
 
@@ -147,3 +212,116 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+// _currentTab == 1
+// ?
+// BlocBuilder<PopularMonumentsBloc, PopularMonumentsState>(
+// builder: (context, state) {
+// if (state is PopularMonumentsRetrieved) {
+// return ExploreScreen(
+// user: widget.user,
+// monumentList: state.popularMonuments,
+// );
+// }
+// return _buildCenterLoadingIndicator();
+// })
+// : _currentTab == 2
+// ? BlocBuilder<BookmarkedMonumentsBloc, BookmarkedMonumentsState>(
+// builder: (context, state) {
+// if (state is BookmarkedMonumentsRetrieved) {
+// return BookmarkScreen(
+// user: widget.user,
+// monumentList: state.bookmarkedMonuments,
+// );
+// }
+// return _buildCenterLoadingIndicator();
+// })
+// : _currentTab == 3
+// ? BlocBuilder<ProfileBloc, ProfileState>(
+// builder: (context, profileState) {
+// return BlocBuilder<BookmarkedMonumentsBloc,
+// BookmarkedMonumentsState>(
+// builder: (context, bookmarkState) {
+// if (profileState is ProfileDataRetrieved &&
+// bookmarkState is BookmarkedMonumentsRetrieved) {
+// return UserProfilePage(
+// user: widget.user,
+// bookmarkedMonuments:
+// bookmarkState.bookmarkedMonuments,
+// );
+// }
+// return _buildCenterLoadingIndicator();
+// });
+// })
+// : BlocBuilder<PopularMonumentsBloc, PopularMonumentsState>(
+// builder: (context, popularMonumentsState) {
+// if (popularMonumentsState is PopularMonumentsRetrieved) {
+// for (MonumentModel monument
+// in popularMonumentsState.popularMonuments) {
+// monumentMapList.add(monument.toEntity().toMap());
+// }
+// }
+//
+// return SafeArea(
+// child: (popularMonumentsState
+// is! PopularMonumentsRetrieved)
+// ? _buildCenterLoadingIndicator()
+//     : Stack(
+// children: <Widget>[
+// ListView(
+// padding:
+// EdgeInsets.symmetric(vertical: 30.0),
+// children: <Widget>[
+// Padding(
+// padding: EdgeInsets.only(
+// left: 20.0, right: 120.0),
+// child: Text(
+// 'Monumento',
+// style: TextStyle(
+// fontSize: 28.0,
+// color: Colors.amber,
+// fontWeight: FontWeight.bold,
+// ),
+// ),
+// ),
+// SizedBox(height: 20.0),
+// PopularMonumentsCarousel(
+// popMonumentDocs: (popularMonumentsState
+// as PopularMonumentsRetrieved)
+//     .popularMonuments,
+// user: widget.user,
+// changeTab: changeScreen,
+// ),
+// SizedBox(height: 20.0),
+// BlocBuilder<BookmarkedMonumentsBloc,
+// BookmarkedMonumentsState>(
+// builder: (context, state) {
+// if (state
+// is BookmarkedMonumentsRetrieved) {
+// return BookmarkCarousel(
+// bookmarkedMonumentDocs:
+// state.bookmarkedMonuments,
+// changeTab: changeScreen,
+// );
+// }
+//
+// return SizedBox.shrink();
+// })
+// ],
+// ),
+// Padding(
+// padding: const EdgeInsets.all(8.0),
+// child: Align(
+// alignment: Alignment.bottomRight,
+// child: FloatingActionButton(
+// onPressed: () async {
+// _navToMonumentDetector();
+// },
+// backgroundColor: Colors.amber,
+// child: Icon(Icons.account_balance,
+// color: Colors.white),
+// )),
+// )
+// ],
+// ),
+// );
+// }),
