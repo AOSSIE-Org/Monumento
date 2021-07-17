@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
+import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
+import 'package:monumento/screens/new_post/new_post_screen.dart';
 import 'package:monumento/screens/profile/profile_screen.dart';
 import 'package:monumento/utils/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -197,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
     File image = await PickImage.takePicture(imageSource: source);
     File croppedImage =
         await PickImage.cropImage(image: image, ratioX: 1, ratioY: 1);
-    Navigator.of(context).pushNamed('/newPostScreen', arguments: croppedImage);
+    Navigator.of(context).pushNamed(NewPostScreen.route, arguments: NewPostScreenArguments(pickedImage: croppedImage));
   }
 
   Widget _buildCenterLoadingIndicator() {
