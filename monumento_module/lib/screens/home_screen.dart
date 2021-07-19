@@ -1,18 +1,21 @@
 import 'dart:io';
 
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
+import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
-import 'package:monumento/screens/discover/discover_screen.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
-
+import 'package:monumento/screens/new_post/new_post_screen.dart';
+import 'package:monumento/screens/profile/profile_screen.dart';
 import 'package:monumento/utils/image_picker.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'discover/discover_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final UserModel user;
@@ -53,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  List<Widget> screens = [FeedScreen(), SearchScreen()];
   static const platform = const MethodChannel("monument_detector");
 
   _navToMonumentDetector() async {
@@ -68,11 +72,69 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-
         key: _key,
-        body: SearchScreen(),
-        floatingActionButton: FloatingActionButton(child: Icon(Icons.add_a_photo),onPressed: newPostBottomSheet,),
-
+        body: [
+          FeedScreen(),
+          SearchScreen(),
+          ProfileScreen(
+            user: widget.user,
+          ),
+          ProfileScreen(user: widget.user),
+          ProfileScreen(user: widget.user)
+        ][_currentIndex],
+        bottomNavigationBar: ConvexAppBar(
+          onTap: onTabTapped,
+          initialActiveIndex: _currentIndex,
+          backgroundColor: Color(0xfffcfcfd),
+          style: TabStyle.fixedCircle,
+          color: Theme.of(context).primaryColor,
+          activeColor: Theme.of(context).primaryColor,
+          items: [
+            TabItem(
+              activeIcon: Icon(
+                Icons.home,
+                color: Theme.of(context).primaryColor,
+              ),
+              icon: Icon(
+                Icons.home,
+                color: Colors.grey,
+              ),
+            ),
+            TabItem(
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.grey,
+                ),
+                activeIcon: Icon(
+                  Icons.search,
+                  color: Theme.of(context).primaryColor,
+                )),
+            TabItem(
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+            TabItem(
+                icon: Icon(
+                  Icons.chat_bubble_outline,
+                  color: Colors.grey,
+                ),
+                activeIcon: Icon(
+                  Icons.chat_bubble_outline,
+                  color: Theme.of(context).primaryColor,
+                )),
+            TabItem(
+                icon: FaIcon(
+                  FontAwesomeIcons.bell,
+                  color: Colors.grey,
+                ),
+                activeIcon: FaIcon(
+                  FontAwesomeIcons.bell,
+                  color: Theme.of(context).primaryColor,
+                )),
+          ],
+        ),
       ),
     );
   }
@@ -102,8 +164,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               FontAwesomeIcons.camera,
                               color: Colors.black,
                             ),
-                            onPressed: () =>
-                                newPostPickImage(ImageSource.camera)),
+                            onPressed: () {
+                              Navigator.pop(context);
+
+                              newPostPickImage(ImageSource.camera);
+                            }),
                         Text("Camera")
                       ],
                     ),
@@ -115,8 +180,10 @@ class _HomeScreenState extends State<HomeScreen> {
                               FontAwesomeIcons.image,
                               color: Colors.black,
                             ),
-                            onPressed: () =>
-                                newPostPickImage(ImageSource.gallery)),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              newPostPickImage(ImageSource.gallery);
+                            }),
                         Text("Gallery")
                       ],
                     )
@@ -131,8 +198,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future newPostPickImage(ImageSource source) async {
     File image = await PickImage.takePicture(imageSource: source);
     File croppedImage =
-    await PickImage.cropImage(image: image, ratioX: 1, ratioY: 1);
-    Navigator.of(context).pushNamed('/newPostScreen', arguments: croppedImage);
+        await PickImage.cropImage(image: image, ratioX: 1, ratioY: 1);
+    Navigator.of(context).pushNamed(NewPostScreen.route, arguments: NewPostScreenArguments(pickedImage: croppedImage));
   }
 
   Widget _buildCenterLoadingIndicator() {

@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:monumento/blocs/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/blocs/search/search_bloc.dart';
+import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
+import 'package:monumento/screens/profile/profile_screen.dart';
 
 //TODO lazy loading for search results
 class SearchScreen extends StatefulWidget {
@@ -79,121 +81,125 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 !_showSearch
                     ? BlocBuilder<DiscoverPostsBloc, DiscoverPostsState>(
-                        builder: (context, currentState) {
-                          if (currentState
-                              is InitialDiscoverPostsLoadingFailed) {
-                            return SliverToBoxAdapter(child: Center(child: Text("FAiled")));
-                          }
+                  builder: (context, currentState) {
+                    if (currentState
+                    is InitialDiscoverPostsLoadingFailed) {
+                      return SliverToBoxAdapter(child: Center(child: Text("FAiled")));
+                    }
 
-                          if (currentState is InitialDiscoverPostsLoaded ||
-                              currentState is MoreDiscoverPostsLoaded ||
-                              currentState is LoadingMoreDiscoverPosts ||
-                              currentState is MoreDiscoverPostsLoadingFailed) {
-                            if (currentState is InitialDiscoverPostsLoaded) {
-                              posts.insertAll(
-                                  posts.length, currentState.initialPosts);
-                            }
-                            if (currentState is MoreDiscoverPostsLoaded) {
-                              posts.insertAll(posts.length, currentState.posts);
-                            }
-                            return SliverGrid(
-                              delegate: SliverChildBuilderDelegate((_, index) {
-                                return ClipRRect(
-                                  child: CachedNetworkImage(
-                                      imageUrl: posts[index].imageUrl),
-                                  borderRadius: BorderRadius.circular(5),
-                                );
-                              }, childCount: posts.length),
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 1,
-                                      mainAxisSpacing: 8,
-                                      crossAxisSpacing: 8),
-                            );
-                          }
-                          return SliverToBoxAdapter(
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
+                    if (currentState is InitialDiscoverPostsLoaded ||
+                        currentState is MoreDiscoverPostsLoaded ||
+                        currentState is LoadingMoreDiscoverPosts ||
+                        currentState is MoreDiscoverPostsLoadingFailed) {
+                      if (currentState is InitialDiscoverPostsLoaded) {
+                        posts.insertAll(
+                            posts.length, currentState.initialPosts);
+                      }
+                      if (currentState is MoreDiscoverPostsLoaded) {
+                        posts.insertAll(posts.length, currentState.posts);
+                      }
+                      return SliverGrid(
+                        delegate: SliverChildBuilderDelegate((_, index) {
+                          return ClipRRect(
+                            child: CachedNetworkImage(
+                                imageUrl: posts[index].imageUrl),
+                            borderRadius: BorderRadius.circular(5),
                           );
-                        },
-                      )
-                    : BlocBuilder<SearchBloc, SearchState>(
-                        builder: (context, state) {
-                          if (state is SearchedPeople) {
-                            users = [];
-                            users.insertAll(0, state.searchedUsers);
-                          } else if (state is SearchedMorePeople) {
-                            users.insertAll(users.length, state.searchedUsers);
-                          }
-                          if (state is SearchingMorePeopleFailed) {
-                            return SliverFillRemaining(
-                              child: Center(
-                                child: Text("Failed to load more results"),
-                              ),
-                            );
-                          }
-                          if (state is SearchingPeopleFailed) {
-                            return SliverFillRemaining(
-                              child: Center(
-                                child: Text("Failed to load results"),
-                              ),
-                            );
-                          }
-                          if(state is LoadingPeople){
-                            return SliverFillRemaining(
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
-                          }
-
-                          return users.length == 0
-                              ? SliverFillRemaining(
-                                  child: Center(
-                                    child: Text("No Search Results"),
-                                  ),
-                                )
-                              : SliverList(
-                                  delegate:
-                                      SliverChildBuilderDelegate((_, index) {
-                                    if (state is LoadingMorePeople &&
-                                        index == users.length - 1) {
-                                      return Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          ListTile(
-                                            leading: ClipOval(
-                                              child: CachedNetworkImage(
-                                                imageUrl:
-                                                    "https://data.whicdn.com/images/336211867/original.jpg",
-                                              ),
-                                            ),
-                                            title: Text(users[index].name),
-                                            subtitle: Text(users[index]
-                                                .email
-                                                .split("@")[0]),
-                                          ),
-                                          CircularProgressIndicator(),
-                                        ],
-                                      );
-                                    }
-                                    return ListTile(
-                                      leading: ClipOval(
-                                        child: CachedNetworkImage(
-                                          imageUrl:
-                                              "https://data.whicdn.com/images/336211867/original.jpg",
-                                        ),
-                                      ),
-                                      title: Text(users[index].name),
-                                      subtitle: Text(
-                                          users[index].email.split("@")[0]),
-                                    );
-                                  }, childCount: users.length),
-                                );
-                        },
+                        }, childCount: posts.length),
+                        gridDelegate:
+                        SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1,
+                            mainAxisSpacing: 8,
+                            crossAxisSpacing: 8),
+                      );
+                    }
+                    return SliverToBoxAdapter(
+                      child: Center(
+                        child: CircularProgressIndicator(),
                       ),
+                    );
+                  },
+                )
+                    : BlocBuilder<SearchBloc, SearchState>(
+                  builder: (context, state) {
+                    if (state is SearchedPeople) {
+                      users = [];
+                      users.insertAll(0, state.searchedUsers);
+                    } else if (state is SearchedMorePeople) {
+                      users.insertAll(users.length, state.searchedUsers);
+                    }
+                    if (state is SearchingMorePeopleFailed) {
+                      return SliverFillRemaining(
+                        child: Center(
+                          child: Text("Failed to load more results"),
+                        ),
+                      );
+                    }
+                    if (state is SearchingPeopleFailed) {
+                      return SliverFillRemaining(
+                        child: Center(
+                          child: Text("Failed to load results"),
+                        ),
+                      );
+                    }
+                    if(state is LoadingPeople){
+                      return SliverFillRemaining(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+
+                    return users.length == 0
+                        ? SliverFillRemaining(
+                      child: Center(
+                        child: Text("No Search Results"),
+                      ),
+                    )
+                        : SliverList(
+                      delegate:
+                      SliverChildBuilderDelegate((_, index) {
+                        if (state is LoadingMorePeople &&
+                            index == users.length - 1) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                leading: ClipOval(
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                    "https://data.whicdn.com/images/336211867/original.jpg",
+                                  ),
+                                ),
+                                title: Text(users[index].name),
+                                subtitle: Text(users[index]
+                                    .email
+                                    .split("@")[0]),
+                                onTap: ()=>Navigator.pushNamed(context, ProfileScreen.route,arguments: ProfileScreenArguments(user: users[index])),
+
+                              ),
+                              CircularProgressIndicator(),
+                            ],
+                          );
+                        }
+                        return ListTile(
+                          leading: ClipOval(
+                            child: CachedNetworkImage(
+                              imageUrl:
+                              "https://data.whicdn.com/images/336211867/original.jpg",
+                            ),
+                          ),
+                          title: Text(users[index].name),
+                          subtitle: Text(
+                              users[index].email.split("@")[0]),
+                          onTap: ()=>Navigator.pushNamed(context, ProfileScreen.route,arguments: ProfileScreenArguments(user: users[index])),
+
+                        );
+                      }, childCount: users.length),
+                    );
+                  },
+                ),
               ],
             ),
           ),

@@ -33,6 +33,7 @@ class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
       @required String title,
       @required String location}) async* {
     try {
+      yield AddingNewPost();
       final String imageUrl = await _socialRepository.uploadImageForUrl(
           file: image, address: "posts");
       if (imageUrl != null) {
