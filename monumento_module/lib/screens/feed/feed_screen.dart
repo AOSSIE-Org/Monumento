@@ -34,6 +34,7 @@ class _FeedScreenState extends State<FeedScreen> {
           currentState is LoadingMorePosts ||
           currentState is MorePostsLoadingFailed) {
         if (currentState is InitialFeedLoaded) {
+          posts = [];
           posts.insertAll(posts.length, currentState.initialPosts);
         }
         if (currentState is MorePostsLoaded) {

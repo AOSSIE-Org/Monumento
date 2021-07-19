@@ -26,9 +26,12 @@ class FeedTile extends StatelessWidget {
         children: <Widget>[
           ListTile(
             contentPadding: EdgeInsets.zero,
-            leading: ClipOval(
-              child: CachedNetworkImage(imageUrl: author.profilePictureUrl),
-            ),
+            leading:
+              ClipOval(
+
+                child: CachedNetworkImage(imageUrl: author.profilePictureUrl,width: 50,height: 50,),
+              ),
+
             title: Text(author.name),
             subtitle: Text("@${author.email.split("@")[0]}"),
           ),
