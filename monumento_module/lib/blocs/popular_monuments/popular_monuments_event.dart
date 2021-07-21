@@ -6,5 +6,5 @@ abstract class PopularMonumentsEvent extends Equatable {
 
 class GetPopularMonuments extends PopularMonumentsEvent {
   @override
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }

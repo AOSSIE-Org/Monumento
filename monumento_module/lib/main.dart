@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:monumento/blocs/comments/comments_bloc.dart';
 import 'package:monumento/blocs/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/blocs/feed/feed_bloc.dart';
+import 'package:monumento/blocs/new_comment/new_comment_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
 import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/blocs/search/search_bloc.dart';
@@ -18,15 +20,19 @@ import 'package:monumento/blocs/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/resources/authentication/firebase_authentication_repository.dart';
 import 'package:monumento/resources/monuments/firebase_monument_repository.dart';
+import 'package:monumento/screens/comments/comments_screen.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
 import 'package:monumento/screens/new_post/new_post_screen.dart';
 import 'package:monumento/screens/profile/profile_screen.dart';
+import 'package:monumento/simple_bloc_observer.dart';
 import 'screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  //TODO : Remove firebase initialization for faster app startup
   await Firebase.initializeApp();
+  Bloc.observer = SimpleBlocObserver();
 
   runApp(MyApp());
 }
@@ -53,6 +59,8 @@ class _MyAppState extends State<MyApp> {
   DiscoverPostsBloc _discoverPostsBloc;
   FeedBloc _feedBloc;
   ProfilePostsBloc _profilePostsBloc;
+  NewCommentBloc _newCommentBloc;
+  CommentsBloc _commentsBloc;
 
 
   @override
@@ -73,6 +81,8 @@ class _MyAppState extends State<MyApp> {
     _discoverPostsBloc = DiscoverPostsBloc(socialRepository: _socialRepository);
     _feedBloc = FeedBloc(socialRepository: _socialRepository);
     _profilePostsBloc = ProfilePostsBloc(socialRepository: _socialRepository);
+    _newCommentBloc = NewCommentBloc(socialRepository: _socialRepository);
+    _commentsBloc = CommentsBloc(socialRepository: _socialRepository);
     _popularMonumentsBloc.add(GetPopularMonuments());
     _authenticationBloc.add(AppStarted());
   }
@@ -114,6 +124,12 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<ProfilePostsBloc>(
           create: (_) => _profilePostsBloc,
         ),
+        BlocProvider<CommentsBloc>(
+          create: (_) => _commentsBloc,
+        ),
+        BlocProvider<NewCommentBloc>(
+          create: (_) => _newCommentBloc,
+        ),
 
       ],
       child: MaterialApp(
@@ -148,6 +164,14 @@ class _MyAppState extends State<MyApp> {
             NewPostScreenArguments args = settings.arguments as NewPostScreenArguments;
             return MaterialPageRoute(builder: (context){
               return NewPostScreen(pickedImage: args.pickedImage,);
+            });
+          }
+
+          if(settings.name == CommentsScreen.route){
+            CommentsScreenArguments args = settings.arguments as CommentsScreenArguments;
+            print(args.postDocumentRef.id+"printt");
+            return MaterialPageRoute(builder: (context){
+              return CommentsScreen(postDocumentRef: args.postDocumentRef,);
             });
           }
 

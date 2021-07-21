@@ -9,7 +9,7 @@ class RetrieveBookmarkedMonuments extends BookmarkedMonumentsEvent {
   RetrieveBookmarkedMonuments({this.userId});
   @override
   // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [userId];
 }
 
 class UpdateBookmarkedMonuments extends BookmarkedMonumentsEvent {
@@ -17,5 +17,5 @@ class UpdateBookmarkedMonuments extends BookmarkedMonumentsEvent {
   UpdateBookmarkedMonuments({this.updatedBookmarkedMonuments});
   @override
   // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [updatedBookmarkedMonuments];
 }
