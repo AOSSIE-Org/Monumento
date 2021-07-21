@@ -12,6 +12,7 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   FeedBloc _feedBloc;
+
   @override
   void initState() {
     super.initState();
@@ -20,12 +21,13 @@ class _FeedScreenState extends State<FeedScreen> {
   }
 
   List<PostModel> posts = [];
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FeedBloc, FeedState>(builder: (
-        BuildContext context,
-        FeedState currentState,
-        ) {
+      BuildContext context,
+      FeedState currentState,
+    ) {
       if (currentState is InitialFeedLoadingFailed) {
         return Center(child: Text("FAiled"));
       }
@@ -53,7 +55,12 @@ class _FeedScreenState extends State<FeedScreen> {
                       FeedTile(
                         location: posts[index].location,
                         title: posts[index].title,
-                        imageUrl: posts[index].imageUrl,author: posts[index].author,timeStamp: posts[index].timeStamp,),
+                        imageUrl: posts[index].imageUrl,
+                        author: posts[index].author,
+                        timeStamp: posts[index].timeStamp,
+                        postDocumentRef:
+                            posts[index].documentSnapshot.reference,
+                      ),
                       CircularProgressIndicator(),
                     ],
                   );
@@ -61,7 +68,11 @@ class _FeedScreenState extends State<FeedScreen> {
                 return FeedTile(
                   location: posts[index].location,
                   title: posts[index].title,
-                  imageUrl: posts[index].imageUrl,author: posts[index].author,timeStamp: posts[index].timeStamp,);
+                  imageUrl: posts[index].imageUrl,
+                  author: posts[index].author,
+                  timeStamp: posts[index].timeStamp,
+                  postDocumentRef: posts[index].documentSnapshot.reference,
+                );
               }),
           // Posts are loaded in a batch of 10.
           // If the number of total posts already loaded is not a multiple of 10 then there are no more posts available to load.
