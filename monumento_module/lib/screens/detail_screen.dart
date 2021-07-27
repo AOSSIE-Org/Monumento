@@ -11,7 +11,7 @@ class DetailScreen extends StatefulWidget {
   final MonumentModel monument;
   final UserModel user;
   bool isBookMarked;
-
+  static final String route = '/detailScreen';
   DetailScreen({this.monument, this.user, this.isBookMarked});
 
   @override

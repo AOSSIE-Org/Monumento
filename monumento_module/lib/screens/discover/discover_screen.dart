@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:monumento/blocs/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/blocs/search/search_bloc.dart';
+import 'package:monumento/constants.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
 import 'package:monumento/screens/profile/profile_screen.dart';
+import 'package:monumento/utils/custom_app_bar.dart';
 
 //TODO lazy loading for search results
 class SearchScreen extends StatefulWidget {
@@ -52,7 +54,7 @@ class _SearchScreenState extends State<SearchScreen> {
           }
         },
         child: Padding(
-          padding: const EdgeInsets.only(top: 16.0, left: 16, right: 16),
+          padding: const EdgeInsets.only( left: 16, right: 16),
           child: LazyLoadScrollView(
             scrollOffset: 300,
             onEndOfPage: () async {
@@ -64,6 +66,10 @@ class _SearchScreenState extends State<SearchScreen> {
             },
             child: CustomScrollView(
               slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  sliver:CustomAppBar(title: 'Discover', textStyle: kStyle28W600),),
+
                 SliverToBoxAdapter(
                   child: SearchBar(
                     node: _node,
@@ -166,13 +172,18 @@ class _SearchScreenState extends State<SearchScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               ListTile(
+
                                 leading: ClipOval(
                                   child: CachedNetworkImage(
                                     imageUrl:
-                                    "https://data.whicdn.com/images/336211867/original.jpg",
+                                    users[index].profilePictureUrl,
+                                    placeholder: (_,text){
+                                      return Container(color: Colors.white,width: 60,);
+                                    },
                                   ),
                                 ),
                                 title: Text(users[index].name),
+
                                 subtitle: Text(users[index]
                                     .email
                                     .split("@")[0]),
@@ -187,7 +198,10 @@ class _SearchScreenState extends State<SearchScreen> {
                           leading: ClipOval(
                             child: CachedNetworkImage(
                               imageUrl:
-                              "https://data.whicdn.com/images/336211867/original.jpg",
+                              users[index].profilePictureUrl,
+                              placeholder: (_,text){
+                                return Container(color: Colors.white,width: 60,);
+                              },
                             ),
                           ),
                           title: Text(users[index].name),
@@ -248,6 +262,7 @@ class SearchBar extends StatelessWidget {
 //TODO Search Screen : Random Posts, Onclick search results to profile page, lazyloading according to posts and search results
 //TODO Google Sign In : Navigate user to a form for reviewing the info retrieved and choosing a username
 //TODO Username : Check available username before signing up
+//TODO Register Form : Profile Picture Upload
 //TODO Notification Screen
 //TODO Comments Screen
 //TODO Profile Screen (User's posts and Follow Feature)
