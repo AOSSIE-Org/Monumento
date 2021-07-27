@@ -312,4 +312,39 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return posts;
   }
+  @override
+  Future<void> followUser({UserModel targetUser, UserModel currentUser}) async {
+    await _database.collection('users').doc(targetUser.uid).update({
+      'followers': FieldValue.arrayUnion([currentUser.uid])
+    });
+
+    await _database.collection('users').doc(currentUser.uid).update({
+      'following': FieldValue.arrayUnion([targetUser.uid])
+    });
+  }
+
+  @override
+  Future<bool> getFollowStatus({UserModel targetUser, UserModel currentUser}) async {
+    DocumentSnapshot targetDoc = await _database.collection('users').doc(targetUser.uid).get();
+
+    DocumentSnapshot currentDoc = await _database.collection('users').doc(currentUser.uid).get();
+
+    UserModel targetUpdated = UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(targetDoc));
+    UserModel currentUpdated = UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(currentDoc));
+    if(targetUpdated.followers.contains(currentUpdated.uid) && currentUpdated.following.contains(targetUpdated.uid)){
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<void> unfollowUser({UserModel targetUser, UserModel currentUser}) async {
+    await _database.collection('users').doc(targetUser.uid).update({
+      'followers': FieldValue.arrayRemove([currentUser.uid])
+    });
+
+    await _database.collection('users').doc(currentUser.uid).update({
+      'following': FieldValue.arrayRemove([targetUser.uid])
+    });
+  }
 }

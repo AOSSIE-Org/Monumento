@@ -53,6 +53,13 @@ abstract class SocialRepository {
       {@required DocumentSnapshot startAfterDoc,@required String uid});
 
 
+  Future<void> followUser({@required UserModel targetUser,@required UserModel currentUser });
+
+  Future<void> unfollowUser({@required UserModel targetUser,@required UserModel currentUser});
+
+  Future<bool> getFollowStatus({@required UserModel targetUser,@required UserModel currentUser});
+
+
 
 
 
