@@ -10,14 +10,18 @@ class UserEntity extends Equatable {
   final String profilePictureUrl;
   final String status;
   final String username;
-
+  final List<String> following;
+  final List<String> followers;
 
   UserEntity(
-      {this.email,
-      this.uid,
-      this.name = "Monumento User",
-      this.profilePictureUrl,
-      this.status = " hgh",this.username});
+      {this.following = const [],
+        this.followers = const [],
+        this.email,
+        this.uid,
+        this.name = "Monumento User",
+        this.profilePictureUrl,
+        this.status = " Status",
+        this.username});
 
   @override
   List<Object> get props {
@@ -25,25 +29,36 @@ class UserEntity extends Equatable {
   }
 
   factory UserEntity.fromMap(Map<String, Object> data) {
-    print(data.toString()+"userfrommap");
+    List<String> mappedFollowers = data['followers'] != null ? (data['followers'] as List).map<String>((e) => e).toList() : [];
+    List<String> mappedFollowing = data['following'] != null ? (data['following'] as List).map<String>((e) => e).toList() : [];
+
     return UserEntity(
         uid: data['uid'] as String,
         name: data['name'] as String,
         email: data['email'] as String,
         profilePictureUrl: data['profilePictureUrl'] as String,
-        status: data['status'] as String, username: data['username'] as String);
+        status: data['status'] as String,
+        username: data['username'] as String,
+        followers: mappedFollowers,
+        following:mappedFollowing);
   }
 
   factory UserEntity.fromSnapshot(DocumentSnapshot snap) {
     Map<String, dynamic> data = snap.data();
+    List<String> mappedFollowers = data['followers'] != null ? (data['followers'] as List).map<String>((e) => e).toList() : [];
+    List<String> mappedFollowing = data['following'] != null ? (data['following'] as List).map<String>((e) => e).toList() : [];
 
     return UserEntity(
         uid: data['uid'],
         name: data['name'],
         email: data['email'],
         profilePictureUrl: data['profilePictureUrl'],
-        status: data['status'], username: data['username']);
+        status: data['status'],
+        username: data['username'],
+        followers: mappedFollowers,
+        following: mappedFollowing);
   }
+
   factory UserEntity.fromJson(String source) =>
       UserEntity.fromMap(json.decode(source));
 
@@ -54,7 +69,9 @@ class UserEntity extends Equatable {
       'email': email,
       'profilePictureUrl': profilePictureUrl,
       'status': status,
-      'username':username
+      'username': username,
+      'following': following,
+      'followers': followers
     };
   }
 

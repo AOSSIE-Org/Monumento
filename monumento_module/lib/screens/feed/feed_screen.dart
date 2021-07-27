@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:monumento/blocs/feed/feed_bloc.dart';
+import 'package:monumento/constants.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
 import 'package:monumento/screens/feed/components/feed_tile.dart';
+import 'package:monumento/utils/custom_app_bar.dart';
 
 class FeedScreen extends StatefulWidget {
   @override
@@ -25,9 +27,9 @@ class _FeedScreenState extends State<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FeedBloc, FeedState>(builder: (
-      BuildContext context,
-      FeedState currentState,
-    ) {
+        BuildContext context,
+        FeedState currentState,
+        ) {
       if (currentState is InitialFeedLoadingFailed) {
         return Center(child: Text("FAiled"));
       }
@@ -44,36 +46,43 @@ class _FeedScreenState extends State<FeedScreen> {
         }
 
         return LazyLoadScrollView(
-          child: ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (_, index) {
-                if (currentState is LoadingMorePosts &&
-                    index == posts.length - 1) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      FeedTile(
-                        location: posts[index].location,
-                        title: posts[index].title,
-                        imageUrl: posts[index].imageUrl,
-                        author: posts[index].author,
-                        timeStamp: posts[index].timeStamp,
-                        postDocumentRef:
-                            posts[index].documentSnapshot.reference,
-                      ),
-                      CircularProgressIndicator(),
-                    ],
-                  );
-                }
-                return FeedTile(
-                  location: posts[index].location,
-                  title: posts[index].title,
-                  imageUrl: posts[index].imageUrl,
-                  author: posts[index].author,
-                  timeStamp: posts[index].timeStamp,
-                  postDocumentRef: posts[index].documentSnapshot.reference,
-                );
-              }),
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                sliver:
+                CustomAppBar(title: 'Your Feed', textStyle: kStyle28W600),
+              ),
+              SliverList(
+                  delegate: SliverChildBuilderDelegate((_, index) {
+                    if (currentState is LoadingMorePosts &&
+                        index == posts.length - 1) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          FeedTile(
+                            location: posts[index].location,
+                            title: posts[index].title,
+                            imageUrl: posts[index].imageUrl,
+                            author: posts[index].author,
+                            timeStamp: posts[index].timeStamp,
+                            postDocumentRef: posts[index].documentSnapshot.reference,
+                          ),
+                          CircularProgressIndicator(),
+                        ],
+                      );
+                    }
+                    return FeedTile(
+                      location: posts[index].location,
+                      title: posts[index].title,
+                      imageUrl: posts[index].imageUrl,
+                      author: posts[index].author,
+                      timeStamp: posts[index].timeStamp,
+                      postDocumentRef: posts[index].documentSnapshot.reference,
+                    );
+                  }, childCount: posts.length))
+            ],
+          ),
           // Posts are loaded in a batch of 10.
           // If the number of total posts already loaded is not a multiple of 10 then there are no more posts available to load.
           onEndOfPage: posts.length % 10 == 0 ? _loadMorePosts : () {},
