@@ -8,7 +8,7 @@ class LoadInitialProfilePosts extends ProfilePostsEvent {
   LoadInitialProfilePosts({@required this.uid});
   @override
   // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [uid];
 }
 
 class LoadMoreProfilePosts extends ProfilePostsEvent {

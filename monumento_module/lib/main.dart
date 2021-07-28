@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/blocs/comments/comments_bloc.dart';
 import 'package:monumento/blocs/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/blocs/feed/feed_bloc.dart';
+import 'package:monumento/blocs/follow/follow_bloc.dart';
 import 'package:monumento/blocs/new_comment/new_comment_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
 import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
@@ -21,6 +22,7 @@ import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/resources/authentication/firebase_authentication_repository.dart';
 import 'package:monumento/resources/monuments/firebase_monument_repository.dart';
 import 'package:monumento/screens/comments/comments_screen.dart';
+import 'package:monumento/screens/detail_screen.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
 import 'package:monumento/screens/new_post/new_post_screen.dart';
 import 'package:monumento/screens/profile/profile_screen.dart';
@@ -61,6 +63,7 @@ class _MyAppState extends State<MyApp> {
   ProfilePostsBloc _profilePostsBloc;
   NewCommentBloc _newCommentBloc;
   CommentsBloc _commentsBloc;
+  FollowBloc _followBloc;
 
 
   @override
@@ -83,12 +86,15 @@ class _MyAppState extends State<MyApp> {
     _profilePostsBloc = ProfilePostsBloc(socialRepository: _socialRepository);
     _newCommentBloc = NewCommentBloc(socialRepository: _socialRepository);
     _commentsBloc = CommentsBloc(socialRepository: _socialRepository);
+    _followBloc = FollowBloc(socialRepository: _socialRepository);
+
     _popularMonumentsBloc.add(GetPopularMonuments());
     _authenticationBloc.add(AppStarted());
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark,statusBarColor: Colors.white));
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MultiBlocProvider(
@@ -130,12 +136,16 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<NewCommentBloc>(
           create: (_) => _newCommentBloc,
         ),
+        BlocProvider<FollowBloc>(
+          create: (_) => _followBloc,
+        ),
 
       ],
       child: MaterialApp(
         title: 'Monumento',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
             primarySwatch: Colors.amber,
             fontFamily: GoogleFonts.montserrat().fontFamily),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -172,6 +182,12 @@ class _MyAppState extends State<MyApp> {
             print(args.postDocumentRef.id+"printt");
             return MaterialPageRoute(builder: (context){
               return CommentsScreen(postDocumentRef: args.postDocumentRef,);
+            });
+          }
+          if(settings.name == DetailScreen.route){
+            DetailScreenArguments args = settings.arguments as DetailScreenArguments;
+            return MaterialPageRoute(builder: (context){
+              return DetailScreen(user: args.user,monument: args.monument,isBookMarked: args.isBookmarked,);
             });
           }
 
