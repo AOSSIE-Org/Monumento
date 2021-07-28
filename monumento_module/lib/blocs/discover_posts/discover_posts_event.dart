@@ -6,7 +6,7 @@ abstract class DiscoverPostsEvent extends Equatable {
 class LoadInitialDiscoverPosts extends DiscoverPostsEvent {
   @override
   // TODO: implement props
-  List<Object> get props => throw UnimplementedError();
+  List<Object> get props => [];
 }
 
 class LoadMoreDiscoverPosts extends DiscoverPostsEvent {
