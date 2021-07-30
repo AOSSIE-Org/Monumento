@@ -175,7 +175,7 @@ class NotificationTile extends StatelessWidget {
               text: TextSpan(children: [
                 TextSpan(
                     text: userInvolved.username + " ",
-                    style: TextStyle(color: Colors.black),
+                    style: kStyle14W600.copyWith(color: Colors.black),
                     recognizer: TapGestureRecognizer()..onTap = () {}),
                 TextSpan(
                   text: getText(),
