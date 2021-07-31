@@ -13,17 +13,17 @@ class NotificationModel {
 
   NotificationModel(
       {this.notificationType,
-      this.userInvolved,
-      this.postInvolved,
-      this.timeStamp,
-      this.documentSnapshot});
+        this.userInvolved,
+        this.postInvolved,
+        this.timeStamp,
+        this.documentSnapshot});
 
   factory NotificationModel.fromEntity(
       {@required NotificationEntity entity, DocumentSnapshot documentSnapshot}) {
     return NotificationModel(
         notificationType: NotificationType.values[entity.notificationType],
         postInvolved: PostModel.fromEntity(entity: entity.postInvolved),
-        documentSnapshot: documentSnapshot);
+        documentSnapshot: documentSnapshot,userInvolved: UserModel.fromEntity(userEntity: entity.userInvolved));
   }
 
   NotificationEntity toEntity() {
@@ -33,6 +33,11 @@ class NotificationModel {
       userInvolved:userInvolved.toEntity(),
       postInvolved:  (notificationType == NotificationType.likeNotification ||notificationType == NotificationType.commentNotification ) ? postInvolved.toEntity() : null,
     );
+  }
+
+  @override
+  String toString() {
+    return 'NotificationModel{notificationType: $notificationType, userInvolved: $userInvolved, postInvolved: $postInvolved, timeStamp: $timeStamp, documentSnapshot: $documentSnapshot}';
   }
 }
 

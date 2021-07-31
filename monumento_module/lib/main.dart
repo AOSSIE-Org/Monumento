@@ -8,6 +8,7 @@ import 'package:monumento/blocs/feed/feed_bloc.dart';
 import 'package:monumento/blocs/follow/follow_bloc.dart';
 import 'package:monumento/blocs/new_comment/new_comment_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
+import 'package:monumento/blocs/notifications/notifications_bloc.dart';
 import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/blocs/search/search_bloc.dart';
 import 'package:monumento/navigation/arguments.dart';
@@ -25,6 +26,7 @@ import 'package:monumento/screens/comments/comments_screen.dart';
 import 'package:monumento/screens/detail_screen.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
 import 'package:monumento/screens/new_post/new_post_screen.dart';
+import 'package:monumento/screens/notifications/notification_screen.dart';
 import 'package:monumento/screens/profile/profile_screen.dart';
 import 'package:monumento/simple_bloc_observer.dart';
 import 'screens/home_screen.dart';
@@ -64,6 +66,8 @@ class _MyAppState extends State<MyApp> {
   NewCommentBloc _newCommentBloc;
   CommentsBloc _commentsBloc;
   FollowBloc _followBloc;
+  NotificationsBloc _notificationsBloc;
+
 
 
   @override
@@ -84,6 +88,8 @@ class _MyAppState extends State<MyApp> {
     _discoverPostsBloc = DiscoverPostsBloc(socialRepository: _socialRepository);
     _feedBloc = FeedBloc(socialRepository: _socialRepository);
     _profilePostsBloc = ProfilePostsBloc(socialRepository: _socialRepository);
+    _notificationsBloc = NotificationsBloc(socialRepository: _socialRepository);
+
     _newCommentBloc = NewCommentBloc(socialRepository: _socialRepository);
     _commentsBloc = CommentsBloc(socialRepository: _socialRepository);
     _followBloc = FollowBloc(socialRepository: _socialRepository);
@@ -139,6 +145,9 @@ class _MyAppState extends State<MyApp> {
         BlocProvider<FollowBloc>(
           create: (_) => _followBloc,
         ),
+        BlocProvider<NotificationsBloc>(
+          create: (_) => _notificationsBloc,
+        ),
 
       ],
       child: MaterialApp(
@@ -188,6 +197,11 @@ class _MyAppState extends State<MyApp> {
             DetailScreenArguments args = settings.arguments as DetailScreenArguments;
             return MaterialPageRoute(builder: (context){
               return DetailScreen(user: args.user,monument: args.monument,isBookMarked: args.isBookmarked,);
+            });
+          }
+          if(settings.name == NotificationsScreen.route){
+            return MaterialPageRoute(builder: (context){
+              return NotificationsScreen();
             });
           }
 
