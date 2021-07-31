@@ -224,6 +224,9 @@ class FirebaseSocialRepository implements SocialRepository {
       {DocumentReference postDocReference, String comment}) async {
     UserModel user = await _authRepository.getUser();
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    DocumentSnapshot postSnap = await postDocReference.get();
+    PostModel post  = PostModel.fromEntity(entity: PostEntity.fromSnapshot(postSnap));
+
     DocumentReference doc = await postDocReference.collection("comments").add({
       "comment": comment,
       "timeStamp": timeStamp,
@@ -236,6 +239,14 @@ class FirebaseSocialRepository implements SocialRepository {
         "email": user.email
       }
     });
+    var notification = NotificationModel(
+        notificationType: NotificationType.commentNotification,
+        timeStamp: timeStamp,
+        userInvolved: user,
+        postInvolved: post);
+
+    await addNewNotification(
+        targetUser: post.author, notification: notification);
     return CommentModel(
         comment: comment,
         postInvolvedId: postDocReference.id,
@@ -312,6 +323,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return posts;
   }
+
   @override
   Future<void> followUser({UserModel targetUser, UserModel currentUser}) async {
     await _database.collection('users').doc(targetUser.uid).update({
@@ -321,24 +333,38 @@ class FirebaseSocialRepository implements SocialRepository {
     await _database.collection('users').doc(currentUser.uid).update({
       'following': FieldValue.arrayUnion([targetUser.uid])
     });
+    var notification = NotificationModel(
+        notificationType: NotificationType.followedYou,
+        timeStamp: DateTime.now().millisecondsSinceEpoch,
+        userInvolved: currentUser);
+
+    await addNewNotification(
+        targetUser: targetUser, notification: notification);
   }
 
   @override
-  Future<bool> getFollowStatus({UserModel targetUser, UserModel currentUser}) async {
-    DocumentSnapshot targetDoc = await _database.collection('users').doc(targetUser.uid).get();
+  Future<bool> getFollowStatus(
+      {UserModel targetUser, UserModel currentUser}) async {
+    DocumentSnapshot targetDoc =
+    await _database.collection('users').doc(targetUser.uid).get();
 
-    DocumentSnapshot currentDoc = await _database.collection('users').doc(currentUser.uid).get();
+    DocumentSnapshot currentDoc =
+    await _database.collection('users').doc(currentUser.uid).get();
 
-    UserModel targetUpdated = UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(targetDoc));
-    UserModel currentUpdated = UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(currentDoc));
-    if(targetUpdated.followers.contains(currentUpdated.uid) && currentUpdated.following.contains(targetUpdated.uid)){
+    UserModel targetUpdated =
+    UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(targetDoc));
+    UserModel currentUpdated =
+    UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(currentDoc));
+    if (targetUpdated.followers.contains(currentUpdated.uid) &&
+        currentUpdated.following.contains(targetUpdated.uid)) {
       return true;
     }
     return false;
   }
 
   @override
-  Future<void> unfollowUser({UserModel targetUser, UserModel currentUser}) async {
+  Future<void> unfollowUser(
+      {UserModel targetUser, UserModel currentUser}) async {
     await _database.collection('users').doc(targetUser.uid).update({
       'followers': FieldValue.arrayRemove([currentUser.uid])
     });
@@ -347,4 +373,25 @@ class FirebaseSocialRepository implements SocialRepository {
       'following': FieldValue.arrayRemove([targetUser.uid])
     });
   }
+
+  @override
+  Future<NotificationModel> addNewNotification(
+      {UserModel targetUser, NotificationModel notification}) async {
+    assert(targetUser.uid != null);
+    DocumentReference ref = await _database.collection('users').doc(targetUser.uid).collection('notifications')
+        .add(notification.toEntity().toMap());
+    DocumentSnapshot snap = await ref.get();
+    NotificationModel addedNotification = NotificationModel.fromEntity(
+        entity: NotificationEntity.fromSnapshot(snap), documentSnapshot: snap);
+    return addedNotification;
+  }
+
+  Future<UserModel> getUserByUid(String uid)async{
+    DocumentSnapshot snap = await _database.collection('user').doc(uid).get();
+
+    UserModel user = UserModel.fromEntity(userEntity:UserEntity.fromSnapshot(snap),snapshot: snap);
+    return user;
+  }
+
+
 }
