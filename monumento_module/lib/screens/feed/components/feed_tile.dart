@@ -66,7 +66,7 @@ class FeedTile extends StatelessWidget {
               ),
               Spacer(),
               Icon(
-                Icons.bookmark_add_outlined,
+                Icons.bookmark_outline,
                 size: 24,
               ),
             ],
