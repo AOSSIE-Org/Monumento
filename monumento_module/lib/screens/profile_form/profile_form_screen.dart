@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -9,38 +8,120 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
+import 'package:monumento/blocs/profile_form/profile_form_bloc.dart';
+import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
+import 'package:monumento/resources/social/social_repository.dart';
+import 'package:monumento/screens/home_screen.dart';
 import 'package:monumento/utils/image_picker.dart';
-import '../constants.dart';
-import 'home_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
+import '../../constants.dart';
+
+
+class ProfileFormScreen extends StatefulWidget {
+  static final String route = "/profileFormScreen";
+
+  final String email;
+  final String name;
+  final String uid;
+
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _ProfileFormScreenState createState() => _ProfileFormScreenState();
+
+  const ProfileFormScreen({
+    @required this.email,
+    @required this.name,
+    @required this.uid
+
+  });
+
+
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _ProfileFormScreenState extends State<ProfileFormScreen> {
   var _emailController = TextEditingController();
   var _nameController = TextEditingController();
   var _statusController = TextEditingController();
-  var _passwordController = TextEditingController();
   var _usernameController = TextEditingController();
-  File _pickedImage;
-
-
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool isseen = false;
+  File _pickedImage;
 
   AuthenticationBloc _authenticationBloc;
   LoginRegisterBloc _loginRegisterBloc;
+  ProfileFormBloc _profileFormBloc;
+
 
   @override
   void initState() {
     super.initState();
-    isseen = false;
+    _emailController.text = widget.email;
+    _nameController.text = widget.name;
+    _profileFormBloc = ProfileFormBloc(
+      authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
+        authenticationRepository: RepositoryProvider.of<
+            AuthenticationRepository>(context),
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
   }
+
+
+  Widget _buildEmailTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Email',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 60.0,
+          child: TextField(
+            enabled: false,
+            keyboardType: TextInputType.emailAddress,
+            controller: _emailController,
+            style: TextStyle(
+              color: Colors.amber,
+            ),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.email,
+                color: Colors.amber,
+              ),
+              hintText: 'Enter your Email',
+              hintStyle: kHintTextStyle,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildProfilePictureWidget() {
+    return _pickedImage != null ? Center(
+      child: ClipOval(
+        child: Image.file(
+          _pickedImage,
+          width: 70,
+          height: 70,
+          key: ValueKey(_pickedImage.lengthSync()),
+        ),
+      ),
+    ) : Center(
+      child:  GestureDetector(
+        onTap: showImageSourceOptions,
+        child: ClipOval(
+            child: Icon(Icons.linked_camera_outlined,size: 70,color: Colors.white,)
+             ,),
+      ),
+       );
+  }
+
   Widget _buildUsernameTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,41 +149,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 color: Colors.amber,
               ),
               hintText: 'Enter your username',
-              hintStyle: kHintTextStyle,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEmailTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Email',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-            keyboardType: TextInputType.emailAddress,
-            controller: _emailController,
-            style: TextStyle(
-              color: Colors.amber,
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.email,
-                color: Colors.amber,
-              ),
-              hintText: 'Enter your Email',
               hintStyle: kHintTextStyle,
             ),
           ),
@@ -181,56 +227,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget _buildPasswordTF() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          'Password',
-          style: kLabelStyle,
-        ),
-        SizedBox(height: 10.0),
-        Container(
-          alignment: Alignment.centerLeft,
-          decoration: kBoxDecorationStyle,
-          height: 60.0,
-          child: TextField(
-            obscureText: !isseen,
-            keyboardType: TextInputType.visiblePassword,
-            controller: _passwordController,
-            style: TextStyle(
-              color: Colors.amber,
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
-              prefixIcon: Icon(
-                Icons.lock,
-                color: Colors.amber,
-              ),
-              hintText: 'Enter your Password',
-              hintStyle: kHintTextStyle,
-              suffixIcon: IconButton(
-                icon: Icon(
-                  // Based on passwordVisible state choose the icon
-                  isseen ? Icons.visibility : Icons.visibility_off,
-                  color: Theme.of(context).primaryColorDark,
-                ),
-                onPressed: () {
-                  // Update the state i.e. toogle the state of passwordVisible variable
-                  setState(() {
-                    isseen = !isseen;
-                  });
-                },
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
-  Widget _buildSignUpBtn() {
+  Widget _buildCreateProfileBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
@@ -238,19 +236,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
         elevation: 5.0,
         splashColor: Colors.lightGreen,
         onPressed: () {
-          print('SignUp Button Pressed');
-          _loginRegisterBloc.add(SignUpWithEmailPressed(profilePictureFile: _pickedImage,
-              email: _emailController.text,
-              password: _passwordController.text, name: _nameController.text, status: _statusController.text,username: _usernameController.text, ));
+          _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Creating profile. Please Wait.')));
 
-        },//TODO : username
+          _profileFormBloc.add(
+              CreateUserDoc(email: _emailController.text,
+                username: _usernameController.text,
+                status: _statusController.text,
+                name: _nameController.text,
+                uid: widget.uid,));
+        },
+        //TODO : username
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         color: Colors.white,
         child: Text(
-          'REGISTER',
+          'Create Profile',
           style: TextStyle(
             color: Colors.amber,
             letterSpacing: 1.5,
@@ -264,14 +266,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginRegisterBloc, LoginRegisterState>(
+    return BlocConsumer<ProfileFormBloc, ProfileFormState>(
+      bloc: _profileFormBloc,
         listener: (_, state) {
-      if (state is SignUpSuccess) {
-        afterSignUpSuccess(state.user);
-      } else if (state is SignUpFailed) {
-        afterSignUpFailed(message: state.message);
-      }
-    }, builder: (_, state) {
+          if (state is ProfileCreated) {
+            afterProfileCreationSuccess((state).user);
+          } else if (state is ProfileFormError) {
+            print("listener called");
+            afterProfileCreationFailed(state.message);
+          }
+        }, builder: (_, state) {
       return Scaffold(
         key: _scaffoldKey,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -313,24 +317,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                         SizedBox(height: 30.0),
+
                         _buildProfilePictureWidget(),
                         SizedBox(height: 30.0),
                         _buildNameTF(),
                         SizedBox(height: 30.0),
                         _buildStatusTF(),
                         SizedBox(height: 30.0),
-
-                        _buildUsernameTF(),
-                        SizedBox(height: 30.0),
                         _buildEmailTF(),
                         SizedBox(
                           height: 30.0,
                         ),
-                        _buildPasswordTF(),
+                        _buildUsernameTF(),
                         SizedBox(
                           height: 24.0,
                         ),
-                        _buildSignUpBtn(),
+                        _buildCreateProfileBtn(),
                       ],
                     ),
                   ),
@@ -343,10 +345,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
   }
 
-  afterSignUpSuccess(UserModel user) {
+  afterProfileCreationSuccess(UserModel user) {
     _authenticationBloc.add(LoggedIn());
 
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: Colors.white,
       content: Text(
         'Signing Up! Please wait...',
@@ -356,23 +358,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-            builder: (context) => HomeScreen(
+            builder: (context) =>
+                HomeScreen(
                   user: user,
                 )),
-        (Route<dynamic> route) => false);
+            (Route<dynamic> route) => false);
   }
 
-  afterSignUpFailed({String message}) {
+  afterProfileCreationFailed(String message) {
     _scaffoldKey.currentState.showSnackBar(SnackBar(
       backgroundColor: Colors.white,
       content: Text(
-       message,
+        message,
         style: TextStyle(
             color: Colors.amber,
-            fontFamily: GoogleFonts.montserrat().fontFamily),
+            fontFamily: GoogleFonts
+                .montserrat()
+                .fontFamily),
       ),
     ));
   }
+
   showImageSourceOptions() {
     showDialog(
         context: context,
@@ -437,25 +443,5 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } else {
       _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text('Something went wrong')));
     }
-  }
-
-  Widget _buildProfilePictureWidget() {
-    return _pickedImage != null ? Center(
-      child: ClipOval(
-        child: Image.file(
-          _pickedImage,
-          width: 70,
-          height: 70,
-          key: ValueKey(_pickedImage.lengthSync()),
-        ),
-      ),
-    ) : Center(
-      child:  GestureDetector(
-        onTap: showImageSourceOptions,
-        child: ClipOval(
-          child: Icon(Icons.linked_camera_outlined,size: 70,color: Colors.white,)
-          ,),
-      ),
-    );
   }
 }

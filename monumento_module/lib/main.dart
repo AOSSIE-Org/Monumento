@@ -12,6 +12,7 @@ import 'package:monumento/blocs/notifications/notifications_bloc.dart';
 import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/blocs/search/search_bloc.dart';
 import 'package:monumento/navigation/arguments.dart';
+import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/social/firebase_social_repository.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 import 'package:monumento/screens/app_intro.dart';
@@ -28,6 +29,7 @@ import 'package:monumento/screens/feed/feed_screen.dart';
 import 'package:monumento/screens/new_post/new_post_screen.dart';
 import 'package:monumento/screens/notifications/notification_screen.dart';
 import 'package:monumento/screens/profile/profile_screen.dart';
+import 'package:monumento/screens/profile_form/profile_form_screen.dart';
 import 'package:monumento/simple_bloc_observer.dart';
 import 'screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -48,11 +50,11 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final FirebaseAuthenticationRepository _authRepository =
+  final AuthenticationRepository _authRepository =
   FirebaseAuthenticationRepository();
   final FirebaseMonumentRepository _monumentRepository =
   FirebaseMonumentRepository();
-  final FirebaseSocialRepository _socialRepository = FirebaseSocialRepository();
+  final SocialRepository _socialRepository = FirebaseSocialRepository();
   AuthenticationBloc _authenticationBloc;
   LoginRegisterBloc _loginRegisterBloc;
   ProfileBloc _profileBloc;
@@ -77,7 +79,7 @@ class _MyAppState extends State<MyApp> {
         AuthenticationBloc(authenticationRepository: _authRepository);
     _loginRegisterBloc = LoginRegisterBloc(
         authenticationRepository: _authRepository,
-        authenticationBloc: _authenticationBloc);
+        authenticationBloc: _authenticationBloc, socialRepository: _socialRepository);
     _profileBloc = ProfileBloc(firebaseMonumentRepository: _monumentRepository);
     _bookmarkedMonumentsBloc = BookmarkedMonumentsBloc(
         firebaseMonumentRepository: _monumentRepository);
@@ -100,7 +102,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarIconBrightness: Brightness.dark,statusBarColor: Colors.white));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return MultiBlocProvider(
@@ -150,7 +152,9 @@ class _MyAppState extends State<MyApp> {
         ),
 
       ],
-      child: MaterialApp(
+      child: MultiRepositoryProvider(
+  providers: [RepositoryProvider(create: (_)=>_authRepository,),RepositoryProvider(create: (_)=>_socialRepository,)],
+  child: MaterialApp(
         title: 'Monumento',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -204,11 +208,19 @@ class _MyAppState extends State<MyApp> {
               return NotificationsScreen();
             });
           }
+          if(settings.name == ProfileFormScreen.route){
+            var args = settings.arguments as ProfileFormScreenArguments;
+
+            return MaterialPageRoute(builder: (context){
+              return ProfileFormScreen(email: args.email, name: args.name, uid: args.uid,);
+            });
+          }
 
           assert(false,"Route ${settings.name} not implemented");
           return null;
         },
       ),
+),
     );
   }
 
