@@ -60,7 +60,7 @@ abstract class SocialRepository {
   Future<bool> getFollowStatus({@required UserModel targetUser,@required UserModel currentUser});
 
   Future<NotificationModel> addNewNotification({@required UserModel targetUser, @required NotificationModel notification});
-
+  Future<bool> checkUserNameAvailability({@required String username});
 
 
 

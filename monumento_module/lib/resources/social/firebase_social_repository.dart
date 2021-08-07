@@ -79,8 +79,8 @@ class FirebaseSocialRepository implements SocialRepository {
       "location": location,
       "imageUrl": imageUrl,
       "timeStamp": timeStamp,
-      "author": user.toEntity().toMap()
-      // "postFor":[]
+      "author": user.toEntity().toMap(),
+      "postFor":user.followers
     });
     DocumentSnapshot documentSnapshot = await ref.get();
 
@@ -107,8 +107,8 @@ class FirebaseSocialRepository implements SocialRepository {
 
   @override
   Future<String> uploadProfilePicForUrl({File file}) async {
-    final UserModel user = await _authRepository.getUser();
-    String fileName = user.uid;
+    String fileName  = Uuid().v4();
+
     UploadTask task = _storage
         .ref()
         .child("profilePictures")
@@ -391,6 +391,12 @@ class FirebaseSocialRepository implements SocialRepository {
 
     UserModel user = UserModel.fromEntity(userEntity:UserEntity.fromSnapshot(snap),snapshot: snap);
     return user;
+  }
+
+  @override
+  Future<bool> checkUserNameAvailability({String username}) async {
+   QuerySnapshot<Map<String,dynamic>> docs = await _database.collection('users').where('username',isEqualTo: username).get();
+   return docs.docs.isEmpty;
   }
 
 

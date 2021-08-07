@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
+import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/screens/home_screen.dart';
+import 'package:monumento/screens/profile_form/profile_form_screen.dart';
 import 'package:monumento/screens/register_screen.dart';
 import '../constants.dart';
 
@@ -286,6 +288,8 @@ class _LoginScreenState extends State<LoginScreen> {
         afterSuccessfulLogin(state.user);
       } else if (state is LoginFailed) {
         afterLoginFailed();
+      } else if (state is SigninWithGoogleSuccess) {
+        afterSuccessfulGoogleSignin(state);
       }
     }, builder: (context, state) {
       return Scaffold(
@@ -352,6 +356,23 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
     });
+  }
+
+  afterSuccessfulGoogleSignin(SigninWithGoogleSuccess state) {
+    state.isNewUser
+        ? Navigator.pushNamedAndRemoveUntil(
+            context, ProfileFormScreen.route, (route) => false,
+            arguments: ProfileFormScreenArguments(
+                email: state.user.email,
+                name: state.user.name,
+                uid: state.user.uid))
+        : Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(
+                      user: state.user,
+                    )),
+            (Route<dynamic> route) => false);
   }
 
   afterSuccessfulLogin(UserModel user) {

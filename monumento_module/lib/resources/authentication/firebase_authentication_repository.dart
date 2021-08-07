@@ -29,7 +29,7 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
     return UserModel.fromEntity(userEntity:UserEntity.fromSnapshot(userDocSnap),snapshot: userDocSnap);
   }
 
-  Future<UserModel> signInWithGoogle() async {
+  Future<Map<String,dynamic>> signInWithGoogle() async {
     print('Google Sign In called');
     final GoogleSignInAccount googleSignInAccount =
     await _googleSignIn.signIn();
@@ -39,17 +39,17 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
       accessToken: googleSignInAuthentication.accessToken,
       idToken: googleSignInAuthentication.idToken,
     );
-    User currentUser = _firebaseAuth.currentUser;
+    UserCredential userCredential =await FirebaseAuth.instance.signInWithCredential(credential);
+
+    if(googleSignInAccount == null){
+      print("current null");
+    }
     //TODO : Complete getOrCreateUserDocForGoogleSignIn. Once the user signIns using the Google Provider,
     // take him to the new form where he enters his username, chooses profile picture and reviews other info
-    DocumentSnapshot userDocSnap = await getOrCreateUserDocForGoogleSignIn(
-        profilePictureUrl: "",
-        username: currentUser.email.split("@")[0],
-        currentUser: currentUser,
-        name: currentUser.displayName,
-        status: "");
+    var isNew = await checkUserDoc(userCredential.user.uid);
+    print("$isNew isnew");
 
-    return UserModel.fromEntity(userEntity:UserEntity.fromSnapshot(userDocSnap),snapshot: userDocSnap);
+    return {'isNewUser':isNew,'user':UserModel(email: userCredential.user.email, uid: userCredential.user.uid, name: userCredential.user.displayName)};
   }
 
   Future<UserModel> signUp({@required String email,
@@ -58,8 +58,10 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
     @required String status, @required String username, @required String profilePictureUrl}) async {
     final UserCredential userCredential = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
-    final User currentUser = _firebaseAuth.currentUser;
-
+    final User currentUser = userCredential.user;
+  if(currentUser == null){
+    print('current null');
+  }
     DocumentSnapshot userDocSnap =
     await getOrCreateUserDocForEmailSignup(status: status,
         name: name,
@@ -114,28 +116,28 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
     return newUserDocSnap;
   }
 
-  Future<DocumentSnapshot> getOrCreateUserDocForGoogleSignIn(
-      {User currentUser, String name, String status, String username, String profilePictureUrl}) async {
-    DocumentSnapshot userDocSnap =
-    await _database.collection("users").doc(currentUser.uid).get();
-    if (userDocSnap.exists) {
-      return userDocSnap;
-    }
+  @override
+  Future<UserModel> getOrCreateUserDocForGoogleSignIn(
+      {String email,String uid, String name, String status, String username, String profilePictureUrl}) async {
+
     List<String> searchParams = getSearchParams(name: name,userName: username);
 
 
-    await _database.collection("users").doc(currentUser.uid).set({
+    await _database.collection("users").doc(uid).set({
       'name': name,
-      'uid': currentUser.uid,
+      'uid': uid,
       'profilePictureUrl': profilePictureUrl ?? "",
-      'email': currentUser.email,
+      'email': email,
       'status': status ?? "",
       'username': username,
-      'searchParams': searchParams
+      'searchParams': searchParams,
+      'followers':[],
+      'following':[],
     });
     DocumentSnapshot newUserDocSnap =
-    await _database.collection("users").doc(currentUser.uid).get();
-    return newUserDocSnap;
+    await _database.collection("users").doc(uid).get();
+
+    return UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(newUserDocSnap), snapshot: newUserDocSnap);
   }
 
   List<String> getSearchParams({String userName, String name}) {
@@ -149,5 +151,10 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
       searchParams.add(name.trim().toLowerCase().substring(0, i + 1).replaceAll(' ', ''));
     }
     return searchParams;
+  }
+
+  Future<bool> checkUserDoc(String uid)async{
+   DocumentSnapshot snap = await _database.collection('users').doc(uid).get();
+   return !snap.exists;
   }
 }

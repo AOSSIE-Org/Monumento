@@ -190,7 +190,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               height: MediaQuery.of(context).size.height * .03,
               width: MediaQuery.of(context).size.height * .03,
               child: CircularProgressIndicator(
-                color: Colors.white,
+
+                backgroundColor: Colors.white,
                 strokeWidth: 3,
               )),
           style: ButtonStyle(
