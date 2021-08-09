@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/screens/GoogleMap.dart';
+import 'package:monumento/utils/feed_image_loading.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'dart:async';
 
@@ -60,7 +62,7 @@ class _DetailScreenState extends State<DetailScreen> {
     return false;
   }
 
-  Future<void> _delectbookmark() async {
+  Future<void> _removeBookmark() async {
     String collection = "bookmarks";
     QuerySnapshot query = await FirebaseFirestore.instance
         .collection(collection)
@@ -158,11 +160,10 @@ class _DetailScreenState extends State<DetailScreen> {
                       ? widget.monument.wiki ?? 'monument-tag'
                       : widget.monument.name ?? 'monument',
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(30.0),
-                    child: Image(
-                      image: NetworkImage(widget.monument.imageUrl),
-                      fit: BoxFit.cover,
-                    ),
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(30),bottomRight:  Radius.circular(30)),
+                    child: CachedNetworkImage(imageUrl: widget.monument.imageUrl, fit: BoxFit.cover,placeholder: (_,__){
+                      return FeedImageLoading();
+                    },),
                   ),
                 ),
               ),
@@ -190,7 +191,7 @@ class _DetailScreenState extends State<DetailScreen> {
                             if (!widget.isBookMarked) {
                               await _bookmark();
                             } else
-                              await _delectbookmark();
+                              await _removeBookmark();
                           },
                         ),
                         IconButton(
@@ -280,6 +281,7 @@ class _DetailScreenState extends State<DetailScreen> {
                               _controller.complete(webViewController);
                             },
                             onPageFinished: _handleLoad,
+
                           )),
                     ],
                   ),

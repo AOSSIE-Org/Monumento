@@ -80,11 +80,13 @@ class FirebaseSocialRepository implements SocialRepository {
       "imageUrl": imageUrl,
       "timeStamp": timeStamp,
       "author": user.toEntity().toMap(),
-      "postFor":user.followers
+      "postFor":user.followers,
+      "postByUid":user.uid
     });
     DocumentSnapshot documentSnapshot = await ref.get();
 
     return PostModel(
+      postByUid:user.uid,
         postId: ref.id,
         imageUrl: imageUrl,
         title: title,

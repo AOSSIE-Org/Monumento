@@ -7,8 +7,10 @@ import 'package:monumento/blocs/follow/follow_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/constants.dart';
+import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
+import 'package:monumento/screens/bookmark_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   static final String route = "/profileScreen";
@@ -50,10 +52,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: LazyLoadScrollView(
               scrollOffset: 300,
-              onEndOfPage: () {
-                _profilePostsBloc.add(LoadMoreProfilePosts(
-                    startAfterDoc: posts.last.documentSnapshot,
-                    uid: widget.user.uid));
+              onEndOfPage:  () {
+                ProfilePostsState state = _profilePostsBloc.state;
+                if(state is InitialProfilePostsLoaded) {
+                  _profilePostsBloc.add(LoadMoreProfilePosts(
+                      startAfterDoc: posts.last.documentSnapshot,
+                      uid: widget.user.uid));
+                }
+                else if(state is MoreProfilePostsLoaded && state.hasReachedMax){
+                  _profilePostsBloc.add(LoadMoreProfilePosts(
+                      startAfterDoc: posts.last.documentSnapshot,
+                      uid: widget.user.uid));
+                }
               },
               child: CustomScrollView(
                 slivers: [
@@ -200,7 +210,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
     if (state is CurrentUserProfile) {
-      return Container();
+      return  SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * .06,
+        child: TextButton(
+          onPressed: () {
+            Navigator.pushNamed(context, BookmarkScreen.route,arguments: BookmarkScreenArguments(user: widget.user));
+          },
+          child:  Text('Bookmarks', style: TextStyle(color: Colors.black),),
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.amberAccent)),
+        ),
+      );
     }
     return Container();
   }

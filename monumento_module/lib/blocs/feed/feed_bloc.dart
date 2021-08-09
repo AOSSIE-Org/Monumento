@@ -47,8 +47,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           await _socialRepository.getMorePosts(startAfterDoc: startAfterDoc);
 
       yield MorePostsLoaded(posts: posts);
-    } catch (_) {
-      yield MorePostsLoadingFailed();
+    } catch (e) {
+      yield MorePostsLoadingFailed(message: e.toString());
     }
   }
 }
