@@ -75,7 +75,7 @@ class _MonumentoScreenState extends State<MonumentoScreen> {
                         Icons.map,
                         color: Colors.black,
                       ),
-                      onPressed: () {},
+                      onPressed: _navToMonumentDetector,
                     )),
               ),
               SliverPadding(

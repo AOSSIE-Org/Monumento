@@ -30,14 +30,29 @@ class LoginSuccess extends LoginRegisterState {
   List<Object> get props => [user.email];
 }
 
+class SigninWithGoogleSuccess extends LoginRegisterState {
+  final UserModel user;
+  final bool isNewUser;
+
+  SigninWithGoogleSuccess({ this.user, @required this.isNewUser});
+
+  @override
+  String toString() => 'SigninWithGoogleSuccess { displayName: ${user.email} , isUserCreate: $isNewUser }';
+
+  @override
+  List<Object> get props => [user.email];
+}
+
 class LoginFailed extends LoginRegisterState {
-  LoginFailed();
+final String message;
+
 
   @override
-  String toString() => 'Login Failed';
+  List<Object> get props => [message];
 
-  @override
-  List<Object> get props => [];
+const LoginFailed({
+    @required this.message,
+  });
 }
 
 class LogOutSuccess extends LoginRegisterState {
@@ -63,11 +78,19 @@ class SignUpSuccess extends LoginRegisterState {
 }
 
 class SignUpFailed extends LoginRegisterState {
-  SignUpFailed();
+  SignUpFailed({@required this.message});
+  final String message;
 
   @override
   String toString() => 'SignUp Failed';
 
   @override
   List<Object> get props => [];
+}
+
+class LoginRegisterLoading extends LoginRegisterState{
+  @override
+  // TODO: implement props
+  List<Object> get props => [];
+
 }

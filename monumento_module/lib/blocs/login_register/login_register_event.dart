@@ -41,9 +41,10 @@ class SignUpWithEmailPressed extends LoginRegisterEvent {
   final String name;
   final String status;
   final String username;
+  final File profilePictureFile;
 
 
-  SignUpWithEmailPressed({@required this.email, @required this.password, @required this.name, @required this.status,@required this.username});
+  SignUpWithEmailPressed({@required this.email, @required this.password, @required this.name, @required this.status,@required this.username,@required this.profilePictureFile});
 
   @override
   List<Object> get props => [email, password];
