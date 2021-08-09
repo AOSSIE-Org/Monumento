@@ -85,8 +85,9 @@ class _HomeScreenState extends State<HomeScreen> {
           MonumentoScreen(
             user: widget.user,
           ),
-          SearchScreen(),
           FeedScreen(),
+          Container(),
+          SearchScreen(),
           ProfileScreen(
             user: widget.user,
           ),

@@ -28,3 +28,14 @@ class DetailScreenArguments{
   DetailScreenArguments({@required this.monument, @required this.user, @required this.isBookmarked});
 
 }
+class ProfileFormScreenArguments{
+   final String email;
+  final String name;
+  final String uid;
+
+   const ProfileFormScreenArguments({
+    @required this.email,
+    @required this.name,
+    @required this.uid,
+  });
+}

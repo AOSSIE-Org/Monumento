@@ -259,12 +259,7 @@ class SearchBar extends StatelessWidget {
     );
   }
 }
-//TODO Search Screen : Random Posts, Onclick search results to profile page, lazyloading according to posts and search results
 //TODO Google Sign In : Navigate user to a form for reviewing the info retrieved and choosing a username
 //TODO Username : Check available username before signing up
 //TODO Register Form : Profile Picture Upload
-//TODO Notification Screen
-//TODO Comments Screen
-//TODO Profile Screen (User's posts and Follow Feature)
 //TODO postFor field for feed after follow feature is implemented
-//TODO Create issues and PRs
