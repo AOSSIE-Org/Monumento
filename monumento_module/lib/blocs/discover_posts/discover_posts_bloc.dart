@@ -35,15 +35,12 @@ class DiscoverPostsBloc extends Bloc<DiscoverPostsEvent, DiscoverPostsState> {
   Stream<DiscoverPostsState> _mapLoadInitialDiscoverPostsToState() async* {
     try {
       yield LoadingInitialDiscoverPosts();
-      print("discoverr11");
 
       List<PostModel> initialPosts =
       await _socialRepository.getInitialFeedPosts();
-      print("discoverr222");
 
       yield InitialDiscoverPostsLoaded(initialPosts: initialPosts);
     } catch (e) {
-      print(e.toString()+"discoverr");
       yield InitialDiscoverPostsLoadingFailed();
     }
   }
@@ -56,8 +53,8 @@ class DiscoverPostsBloc extends Bloc<DiscoverPostsEvent, DiscoverPostsState> {
       await _socialRepository.getMorePosts(startAfterDoc: startAfterDoc);
 
       yield MoreDiscoverPostsLoaded(posts: posts);
-    } catch (_) {
-      yield MoreDiscoverPostsLoadingFailed();
+    } catch (e) {
+      yield MoreDiscoverPostsLoadingFailed(message: e.toString());
     }
   }
 }

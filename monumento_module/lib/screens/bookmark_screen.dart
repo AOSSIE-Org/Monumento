@@ -7,6 +7,7 @@ import 'package:monumento/resources/monuments/models/bookmarked_monument_model.d
 import 'detail_screen.dart';
 
 class BookmarkScreen extends StatefulWidget {
+  static final route = '/bookmarkScreen';
   final UserModel user;
   List<BookmarkedMonumentModel> monumentList;
 
@@ -48,15 +49,15 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                 return Container(
                   child: Center(
                       child: Text(
-                        'No Bookmarks!',
-                        style:
+                    'No Bookmarks!',
+                    style:
                         TextStyle(fontWeight: FontWeight.w700, fontSize: 26.0),
-                      )),
+                  )),
                 );
 
               widget.monumentList = snapshot.data
                   .map((e) => BookmarkedMonumentModel.fromEntity(
-                  BookmarkedMonumentEntity.fromSnapshot(e)))
+                      BookmarkedMonumentEntity.fromSnapshot(e)))
                   .toList();
               return ListView.builder(
                   scrollDirection: Axis.vertical,
@@ -68,11 +69,11 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (_) => DetailScreen(
-                                    user: widget.user,
-                                    monument: widget
-                                        .monumentList[index].monumentModel,
-                                    isBookMarked: true,
-                                  )));
+                                        user: widget.user,
+                                        monument: widget
+                                            .monumentList[index].monumentModel,
+                                        isBookMarked: true,
+                                      )));
                         },
                         child: Card(
                             margin: EdgeInsets.all(15.0),
@@ -82,25 +83,25 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                             ),
                             child: Container(
                                 height:
-                                MediaQuery.of(context).size.height * 0.2,
+                                    MediaQuery.of(context).size.height * 0.2,
                                 child: Row(children: <Widget>[
                                   Hero(
                                       tag: widget.monumentList[index]
-                                          .monumentModel.wiki ??
+                                              .monumentModel.wiki ??
                                           'monument-tag',
                                       child: Container(
                                         height:
-                                        MediaQuery.of(context).size.height *
-                                            0.2,
+                                            MediaQuery.of(context).size.height *
+                                                0.2,
                                         width:
-                                        MediaQuery.of(context).size.width *
-                                            0.3,
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
                                         decoration: BoxDecoration(
                                             color: Colors.grey,
                                             borderRadius: BorderRadius.only(
                                                 topLeft: Radius.circular(20.0),
                                                 bottomLeft:
-                                                Radius.circular(20.0)),
+                                                    Radius.circular(20.0)),
                                             image: DecorationImage(
                                                 image: NetworkImage(widget
                                                     .monumentList[index]
@@ -115,53 +116,53 @@ class _BookmarkScreenState extends State<BookmarkScreen> {
                                       child: Container(
                                           child: Column(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                                  MainAxisAlignment.spaceAround,
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: <Widget>[
-                                                Text(
-                                                  widget.monumentList[index]
-                                                      .monumentModel.name,
-                                                  style: TextStyle(
-                                                      fontSize: 20.0,
-                                                      fontWeight: FontWeight.w700),
-                                                ),
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                      0.57,
-                                                  child: Text(
-                                                    widget.monumentList[index]
-                                                        .monumentModel.city +
-                                                        ', ' +
-                                                        widget.monumentList[index]
-                                                            .monumentModel.country,
-                                                    maxLines: 3,
-                                                    style: TextStyle(
-                                                      fontSize: 18.0,
-                                                    ),
-                                                    overflow: TextOverflow.ellipsis,
-                                                  ),
-                                                ),
-                                                Row(
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Explore more',
-                                                      style: TextStyle(
-                                                          color: Colors.amber,
-                                                          fontWeight: FontWeight.bold),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 6.0,
-                                                    ),
-                                                    Icon(
-                                                      Icons.chevron_right,
-                                                      color: Colors.amber,
-                                                    )
-                                                  ],
-                                                ),
-                                              ])))
+                                        Text(
+                                          widget.monumentList[index]
+                                              .monumentModel.name,
+                                          style: TextStyle(
+                                              fontSize: 20.0,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.57,
+                                          child: Text(
+                                            widget.monumentList[index]
+                                                    .monumentModel.city +
+                                                ', ' +
+                                                widget.monumentList[index]
+                                                    .monumentModel.country,
+                                            maxLines: 3,
+                                            style: TextStyle(
+                                              fontSize: 18.0,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                        Row(
+                                          children: <Widget>[
+                                            Text(
+                                              'Explore more',
+                                              style: TextStyle(
+                                                  color: Colors.amber,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            SizedBox(
+                                              width: 6.0,
+                                            ),
+                                            Icon(
+                                              Icons.chevron_right,
+                                              color: Colors.amber,
+                                            )
+                                          ],
+                                        ),
+                                      ])))
                                 ]))));
                   });
             }));

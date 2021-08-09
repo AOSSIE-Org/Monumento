@@ -4,6 +4,7 @@ import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
@@ -20,8 +21,10 @@ import 'discover/discover_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final UserModel user;
+  final int navBarIndex;
+  static final String route = '/homeScreen';
 
-  HomeScreen({this.user});
+  HomeScreen({this.user, this.navBarIndex = 0});
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -43,6 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String uid = widget.user.uid;
     _bookmarkedMonumentsBloc.add(RetrieveBookmarkedMonuments(userId: uid));
     _profileBloc.add(GetProfileData(userId: uid));
+    _currentIndex = widget.navBarIndex;
   }
 
   int _currentIndex = 0;
@@ -57,23 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  List<Widget> screens = [
-    FeedScreen(),
-    SearchScreen(),
-    ProfileScreen(),
-    ProfileScreen(),
-    ProfileScreen()
-  ];
-  static const platform = const MethodChannel("monument_detector");
 
-  _navToMonumentDetector() async {
-    try {
-      await platform.invokeMethod(
-          "navMonumentDetector", {"monumentsList": monumentMapList});
-    } on PlatformException catch (e) {
-      print("Failed to navigate to Monument Detector: '${e.message}'.");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,24 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
           activeColor: Theme.of(context).primaryColor,
           items: [
             TabItem(
-              activeIcon: Icon(
-                Icons.home,
-                color: Theme.of(context).primaryColor,
-              ),
-              icon: Icon(
-                Icons.home,
-                color: Colors.grey,
-              ),
+              activeIcon: SvgPicture.asset('assets/home_icon.svg',color: Theme.of(context).primaryColor,),
+              icon: SvgPicture.asset('assets/home_icon.svg',)
             ),
             TabItem(
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.grey,
-                ),
-                activeIcon: Icon(
-                  Icons.search,
-                  color: Theme.of(context).primaryColor,
-                )),
+                icon:SvgPicture.asset('assets/feed_icon.svg'),
+                activeIcon: SvgPicture.asset('assets/feed_icon.svg',color:Theme.of(context).primaryColor)),
             TabItem(
               icon: Icon(
                 Icons.add,
@@ -126,23 +102,11 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             TabItem(
-                icon: Icon(
-                  Icons.chat_bubble_outline,
-                  color: Colors.grey,
-                ),
-                activeIcon: Icon(
-                  Icons.chat_bubble_outline,
-                  color: Theme.of(context).primaryColor,
-                )),
+                icon:SvgPicture.asset('assets/discover_icon.svg'),
+                activeIcon: SvgPicture.asset('assets/discover_icon.svg',color:Theme.of(context).primaryColor)),
             TabItem(
-                icon: FaIcon(
-                  FontAwesomeIcons.bell,
-                  color: Colors.grey,
-                ),
-                activeIcon: FaIcon(
-                  FontAwesomeIcons.bell,
-                  color: Theme.of(context).primaryColor,
-                )),
+                icon: SvgPicture.asset('assets/profile_icon.svg'),
+                activeIcon: SvgPicture.asset('assets/profile_icon.svg',color:Theme.of(context).primaryColor)),
           ],
         ),
       ),

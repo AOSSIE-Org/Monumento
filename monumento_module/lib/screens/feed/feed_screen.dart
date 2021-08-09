@@ -6,6 +6,7 @@ import 'package:monumento/constants.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
 import 'package:monumento/screens/feed/components/feed_tile.dart';
 import 'package:monumento/utils/custom_app_bar.dart';
+import 'package:monumento/utils/shimmer_feed_tile.dart';
 
 class FeedScreen extends StatefulWidget {
   @override
@@ -85,13 +86,30 @@ class _FeedScreenState extends State<FeedScreen> {
           ),
           // Posts are loaded in a batch of 10.
           // If the number of total posts already loaded is not a multiple of 10 then there are no more posts available to load.
-          onEndOfPage: posts.length % 10 == 0 ? _loadMorePosts : () {},
+          onEndOfPage:(){
+            if(currentState is InitialFeedLoaded ){
+              _loadMorePosts();
+            }
+            else if(currentState is MorePostsLoaded && currentState.hasReachedMax){
+              _loadMorePosts();
+            }
+          },
           scrollOffset: 300,
         );
       }
 
-      return Center(
-        child: CircularProgressIndicator(),
+      return CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            sliver:
+            CustomAppBar(title: 'Your Feed', textStyle: kStyle28W600),
+          ),
+          SliverList(
+              delegate: SliverChildBuilderDelegate((_, index) {
+                return ShimmerFeedTile();
+              }, childCount: 5))
+        ],
       );
     });
   }

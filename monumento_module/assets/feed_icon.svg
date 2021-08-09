@@ -1,0 +1,11 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="feed">
+<g id="window">
+<path id="Oval 6" fill-rule="evenodd" clip-rule="evenodd" d="M6.25002 8.33335C7.40061 8.33335 8.33335 7.40061 8.33335 6.25002C8.33335 5.09943 7.40061 4.16669 6.25002 4.16669C5.09943 4.16669 4.16669 5.09943 4.16669 6.25002C4.16669 7.40061 5.09943 8.33335 6.25002 8.33335Z" stroke="black" stroke-linecap="round"/>
+<path id="Path 2" d="M18.3334 10.8333H1.66669" stroke="black"/>
+<path id="Path 2 Copy" d="M15 5.00002H10.8334" stroke="black" stroke-linecap="round"/>
+<path id="Path 2 Copy 2" d="M15 7.50002H10.8334" stroke="black" stroke-linecap="round"/>
+</g>
+<path id="Rectangle" d="M1.66669 4.66669C1.66669 3.00983 3.00983 1.66669 4.66669 1.66669H15.3334C16.9902 1.66669 18.3334 3.00983 18.3334 4.66669V18.3334H1.66669V4.66669Z" stroke="black" stroke-linejoin="round"/>
+</g>
+</svg>

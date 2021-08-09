@@ -19,7 +19,15 @@ class InitialFeedLoaded extends FeedState {
 
 class MorePostsLoaded extends FeedState {
   final List<PostModel> posts;
-  MorePostsLoaded({@required this.posts});
+  bool hasReachedMax;
+  MorePostsLoaded({@required this.posts}){
+    if(posts.isEmpty){
+      hasReachedMax = true;
+    }
+    else{
+      hasReachedMax = false;
+    }
+  }
   @override
   List<Object> get props => [posts];
 }
@@ -30,8 +38,13 @@ class InitialFeedLoadingFailed extends FeedState {
 }
 
 class MorePostsLoadingFailed extends FeedState {
+  final String message;
   @override
-  List<Object> get props => [];
+  List<Object> get props => [message];
+
+   MorePostsLoadingFailed({
+    @required this.message,
+  });
 }
 
 class LoadingInitialFeed extends FeedState {
