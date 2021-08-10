@@ -19,8 +19,15 @@ class SearchedPeople extends SearchState {
 }
 class SearchedMorePeople extends SearchState {
   final List<UserModel> searchedUsers;
-
-  SearchedMorePeople({@required this.searchedUsers});
+  bool hasReachedMax;
+  SearchedMorePeople({@required this.searchedUsers}){
+    if(searchedUsers.isEmpty){
+      hasReachedMax = true;
+    }
+    else{
+      hasReachedMax = false;
+    }
+  }
 
   @override
   List<Object> get props => [searchedUsers];

@@ -1,9 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monumento/constants.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/screens/comments/comments_screen.dart';
+import 'package:monumento/utils/feed_image_loading.dart';
+import 'package:monumento/utils/profile_picture_loading.dart';
 
 class FeedTile extends StatelessWidget {
   final String title;
@@ -12,6 +16,7 @@ class FeedTile extends StatelessWidget {
   final UserModel author;
   final int timeStamp;
   final DocumentReference postDocumentRef;
+
 
   const FeedTile(
       {@required this.location,
@@ -23,7 +28,6 @@ class FeedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("hello $author");
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -31,60 +35,81 @@ class FeedTile extends StatelessWidget {
         children: <Widget>[
           ListTile(
             contentPadding: EdgeInsets.zero,
+            dense: false,
             leading: ClipOval(
               child: CachedNetworkImage(
                 imageUrl: author.profilePictureUrl,
                 width: 50,
                 height: 50,
+                placeholder: (_, __) {
+                  return ProfilePictureLoading();
+                },
               ),
             ),
-            title: Text(author.name),
-            subtitle: Text("@${author.email.split("@")[0]}"),
+            title: Text(
+              author.name,
+              style: kStyle12W600,
+            ),
+            subtitle: Text(
+              "@${author.username}",
+              style: kStyle12W400,
+            ),
           ),
           ClipRRect(
-            child: CachedNetworkImage(imageUrl: imageUrl ?? "lul"),
+            child: CachedNetworkImage(
+              imageUrl: imageUrl ?? '',
+              placeholder: (_, __) {
+                return FeedImageLoading();
+              },
+            ),
             borderRadius: BorderRadius.circular(5),
           ),
           SizedBox(
-            height: 4,
+            height: 8,
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Icon(
-                Icons.star_border_outlined,
-                size: 24,
+              SvgPicture.asset(
+                "assets/favourite_icon_outline.svg",
               ),
               SizedBox(
                 width: 16,
               ),
-              IconButton(
-                icon: Icon(Icons.message_outlined),
-                onPressed: () => Navigator.of(context).pushNamed(
+              GestureDetector(
+                child: SvgPicture.asset(
+                  "assets/comment_icon.svg",
+                ),
+                onTap: () => Navigator.of(context).pushNamed(
                     CommentsScreen.route,
                     arguments: CommentsScreenArguments(
                         postDocumentRef: postDocumentRef)),
-              ),
-              Spacer(),
-              Icon(
-                Icons.bookmark_outline,
-                size: 24,
               ),
             ],
           ),
           SizedBox(
             height: 4,
           ),
-          Text(title),
+          Text(
+            title,
+            style: kStyle16W600,
+          ),
           SizedBox(
             height: 4,
           ),
           Row(
             children: [
-              Icon(Icons.location_on_outlined),
-              SizedBox(
-                width: 4,
+              Icon(
+                Icons.location_on_outlined,
+                size: 16,
               ),
-              Text(location),
+              SizedBox(
+                width: 2,
+              ),
+              Text(
+                location,
+                style: kStyle12W400,
+              ),
             ],
           ),
         ],

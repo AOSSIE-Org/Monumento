@@ -8,6 +8,7 @@ import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/screens/detail_screen.dart';
+import 'package:monumento/screens/explore_screen.dart';
 import 'package:monumento/utils/custom_app_bar.dart';
 
 class MonumentoScreen extends StatefulWidget {
@@ -89,7 +90,9 @@ class _MonumentoScreenState extends State<MonumentoScreen> {
                       ),
                       Spacer(),
                       TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, ExploreScreen.route,arguments: ExploreScreenArguments(user: widget.user,monumentList: state.popularMonuments));
+                          },
                           child: Text(
                             'See all',
                             style: kStyle14W600.copyWith(

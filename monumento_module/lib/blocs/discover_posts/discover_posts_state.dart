@@ -19,7 +19,15 @@ class InitialDiscoverPostsLoaded extends DiscoverPostsState {
 
 class MoreDiscoverPostsLoaded extends DiscoverPostsState {
   final List<PostModel> posts;
-  MoreDiscoverPostsLoaded({@required this.posts});
+  bool hasReachedMax;
+  MoreDiscoverPostsLoaded({@required this.posts}){
+    if(posts.isEmpty){
+      hasReachedMax = true;
+    }
+    else{
+      hasReachedMax = false;
+    }
+  }
   @override
   List<Object> get props => [posts];
 }
@@ -30,8 +38,14 @@ class InitialDiscoverPostsLoadingFailed extends DiscoverPostsState {
 }
 
 class MoreDiscoverPostsLoadingFailed extends DiscoverPostsState {
+  final String message;
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [message];
+
+  const MoreDiscoverPostsLoadingFailed({
+    @required this.message,
+  });
 }
 
 class LoadingInitialDiscoverPosts extends DiscoverPostsState {

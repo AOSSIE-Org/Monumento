@@ -7,6 +7,7 @@ import 'package:monumento/screens/detail_screen.dart';
 class ExploreScreen extends StatefulWidget {
   final UserModel user;
   final List<MonumentModel> monumentList;
+  static final route = '/exploreScreen';
 
   ExploreScreen({this.user, this.monumentList});
 

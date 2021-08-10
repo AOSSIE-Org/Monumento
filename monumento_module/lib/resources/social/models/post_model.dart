@@ -13,6 +13,7 @@ class PostModel {
   final UserModel author;
   final String postByUid;
 
+
   PostModel(
       {@required this.postId,
       @required this.imageUrl,
@@ -42,6 +43,7 @@ class PostModel {
 
   PostEntity toEntity() {
     return PostEntity(
+      postByUid: postByUid,
         postId: postId,
         imageUrl: imageUrl,
         title: title,
