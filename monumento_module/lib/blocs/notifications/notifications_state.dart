@@ -20,7 +20,15 @@ class InitialNotificationsLoaded extends NotificationsState {
 
 class MoreNotificationsLoaded extends NotificationsState {
   final List<NotificationModel> notifications;
-  MoreNotificationsLoaded({@required this.notifications});
+  bool hasReachedMax;
+  MoreNotificationsLoaded({@required this.notifications}){
+    if(notifications.isEmpty){
+      hasReachedMax = true;
+    }
+    else{
+      hasReachedMax = false;
+    }
+  }
   @override
   List<Object> get props => [notifications];
 }

@@ -39,3 +39,30 @@ class ProfileFormScreenArguments{
     @required this.uid,
   });
 }
+
+class BookmarkScreenArguments{
+  final UserModel user;
+
+  const BookmarkScreenArguments({
+    @required this.user,
+  });
+}
+
+class ExploreScreenArguments{
+  final UserModel user;
+  final List<MonumentModel> monumentList;
+
+  const ExploreScreenArguments({@required this.monumentList,
+    @required this.user,
+  });
+}
+
+class HomeScreenArguments{
+  final UserModel user;
+  final int navBarIndex;
+
+  const HomeScreenArguments({
+    @required this.user,
+    this.navBarIndex = 0,
+  });
+}
