@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/feed/feed_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
+import 'package:monumento/navigation/arguments.dart';
+import 'package:monumento/screens/home_screen.dart';
 
 class NewPostScreen extends StatefulWidget {
   static final String route = "/newPostScreen";
@@ -34,8 +37,10 @@ class _NewPostScreenState extends State<NewPostScreen> {
           if (state is NewPostAdded) {
             print("new post added" + state.post.imageUrl);
             //TODO : Change navigation pattern
-            // _feedBloc.add(LoadInitialFeed());
-            // Navigator.pop(context);
+           AuthenticationBloc authBloc =  BlocProvider.of<AuthenticationBloc>(context,listen: false);
+
+            _feedBloc.add(LoadInitialFeed());
+            Navigator.pushNamedAndRemoveUntil(context, HomeScreen.route, (route) => false, arguments: HomeScreenArguments(user: (authBloc.state as Authenticated).user, navBarIndex: 1));
           }
         },
         child: Scaffold(

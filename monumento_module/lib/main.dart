@@ -23,8 +23,10 @@ import 'package:monumento/blocs/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/resources/authentication/firebase_authentication_repository.dart';
 import 'package:monumento/resources/monuments/firebase_monument_repository.dart';
+import 'package:monumento/screens/bookmark_screen.dart';
 import 'package:monumento/screens/comments/comments_screen.dart';
 import 'package:monumento/screens/detail_screen.dart';
+import 'package:monumento/screens/explore_screen.dart';
 import 'package:monumento/screens/feed/feed_screen.dart';
 import 'package:monumento/screens/new_post/new_post_screen.dart';
 import 'package:monumento/screens/notifications/notification_screen.dart';
@@ -213,6 +215,28 @@ class _MyAppState extends State<MyApp> {
 
             return MaterialPageRoute(builder: (context){
               return ProfileFormScreen(email: args.email, name: args.name, uid: args.uid,);
+            });
+          }
+          if(settings.name == BookmarkScreen.route){
+            var args = settings.arguments as BookmarkScreenArguments;
+
+            return MaterialPageRoute(builder: (context){
+              return BookmarkScreen(user: args.user,);
+            });
+          }
+          if(settings.name == ExploreScreen.route){
+            var args = settings.arguments as ExploreScreenArguments;
+
+            return MaterialPageRoute(builder: (context){
+              return ExploreScreen(user: args.user,monumentList: args.monumentList,);
+            });
+          }
+
+          if(settings.name == HomeScreen.route){
+            var args = settings.arguments as HomeScreenArguments;
+
+            return MaterialPageRoute(builder: (context){
+              return HomeScreen(user: args.user,navBarIndex: args.navBarIndex,);
             });
           }
 

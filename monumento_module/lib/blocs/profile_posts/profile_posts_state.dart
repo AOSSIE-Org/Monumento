@@ -20,7 +20,16 @@ class InitialProfilePostsLoaded extends ProfilePostsState {
 
 class MoreProfilePostsLoaded extends ProfilePostsState {
   final List<PostModel> posts;
-  MoreProfilePostsLoaded({@required this.posts});
+  bool hasReachedMax;
+  MoreProfilePostsLoaded({@required this.posts}){
+    if(posts.isEmpty){
+      hasReachedMax = true;
+    }
+    else{
+      hasReachedMax = false;
+    }
+  }
+
   @override
   List<Object> get props => [posts];
 }
