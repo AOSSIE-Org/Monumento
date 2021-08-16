@@ -16,24 +16,24 @@ class UserModel extends Equatable {
 
   UserModel(
       {this.following,
-        this.followers,
-        this.email,
-        this.uid,
-        this.name,
-        this.profilePictureUrl,
-        this.status = "",
-        this.username,
-        this.documentSnapshot});
+      this.followers,
+      this.email,
+      this.uid,
+      this.name,
+      this.profilePictureUrl,
+      this.status = "",
+      this.username,
+      this.documentSnapshot});
 
   UserModel copyWith(
       {String email,
-        String name,
-        String profilePictureUrl,
-        String status,
-        String username,
-        String uid,
-        List<String> following,
-        List<String> followers}) {
+      String name,
+      String profilePictureUrl,
+      String status,
+      String username,
+      String uid,
+      List<String> following,
+      List<String> followers}) {
     return UserModel(
         email: email ?? this.email,
         uid: uid ?? this.uid,
@@ -52,7 +52,10 @@ class UserModel extends Equatable {
         uid: uid,
         name: name,
         profilePictureUrl: profilePictureUrl,
-        status: status,following: following,followers: followers,username: username);
+        status: status,
+        following: following,
+        followers: followers,
+        username: username);
   }
 
   static UserModel fromEntity(
@@ -64,15 +67,15 @@ class UserModel extends Equatable {
         profilePictureUrl: userEntity.profilePictureUrl,
         status: userEntity.status,
         username: userEntity.username,
-        documentSnapshot: snapshot,followers: userEntity.followers,following: userEntity.following);
+        documentSnapshot: snapshot,
+        followers: userEntity.followers,
+        following: userEntity.following);
   }
 
   @override
   String toString() {
     return 'UserModel(profilePictureUrl:$profilePictureUrl)';
   }
-
-
 
   @override
   // TODO: implement props

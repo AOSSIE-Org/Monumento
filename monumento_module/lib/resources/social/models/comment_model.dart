@@ -66,7 +66,7 @@ class CommentModel {
     return new CommentModel(
       comment: entity.comment,
       postInvolvedId: entity.postInvolvedId,
-      author: UserModel.fromEntity(userEntity:entity.author),
+      author: UserModel.fromEntity(userEntity: entity.author),
       timeStamp: entity.timeStamp,
       snapshot: snapshot,
     );
@@ -79,6 +79,4 @@ class CommentModel {
         author: author.toEntity(),
         timeStamp: timeStamp);
   }
-
-
 }

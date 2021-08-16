@@ -9,7 +9,6 @@ class LoadInitialComments extends CommentsEvent {
 
   LoadInitialComments({@required this.postDocReference});
 
-
   @override
   // TODO: implement props
   List<Object> get props => [postDocReference];
@@ -19,9 +18,8 @@ class LoadMoreComments extends CommentsEvent {
   final DocumentSnapshot startAfterDoc;
   final DocumentReference postDocReference;
 
-  LoadMoreComments({@required this.startAfterDoc,@required this.postDocReference});
+  LoadMoreComments(
+      {@required this.startAfterDoc, @required this.postDocReference});
   @override
   List<Object> get props => [startAfterDoc.id];
 }
-
-

@@ -37,7 +37,7 @@ class DiscoverPostsBloc extends Bloc<DiscoverPostsEvent, DiscoverPostsState> {
       yield LoadingInitialDiscoverPosts();
 
       List<PostModel> initialPosts =
-      await _socialRepository.getInitialFeedPosts();
+          await _socialRepository.getInitialFeedPosts();
 
       yield InitialDiscoverPostsLoaded(initialPosts: initialPosts);
     } catch (e) {
@@ -50,7 +50,7 @@ class DiscoverPostsBloc extends Bloc<DiscoverPostsEvent, DiscoverPostsState> {
     try {
       yield LoadingMoreDiscoverPosts();
       List<PostModel> posts =
-      await _socialRepository.getMorePosts(startAfterDoc: startAfterDoc);
+          await _socialRepository.getMorePosts(startAfterDoc: startAfterDoc);
 
       yield MoreDiscoverPostsLoaded(posts: posts);
     } catch (e) {

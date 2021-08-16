@@ -8,6 +8,7 @@ class CommentsInitial extends CommentsState {
   @override
   List<Object> get props => [];
 }
+
 class InitialCommentsLoaded extends CommentsState {
   final List<CommentModel> initialComments;
 
@@ -20,9 +21,9 @@ class InitialCommentsLoaded extends CommentsState {
 class MoreCommentsLoaded extends CommentsState {
   final List<CommentModel> comments;
   final bool hasReachedMax;
-  MoreCommentsLoaded({@required this.comments,@required this.hasReachedMax});
+  MoreCommentsLoaded({@required this.comments, @required this.hasReachedMax});
   @override
-  List<Object> get props => [comments,hasReachedMax];
+  List<Object> get props => [comments, hasReachedMax];
 }
 
 class InitialCommentsLoadingFailed extends CommentsState {
@@ -46,5 +47,3 @@ class LoadingMoreComments extends CommentsState {
   @override
   List<Object> get props => [];
 }
-
-
