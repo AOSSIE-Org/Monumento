@@ -17,7 +17,6 @@ class NewPostAdded extends NewPostState {
 }
 
 class AddingNewPost extends NewPostState {
-
   @override
   List<Object> get props => [];
 }

@@ -18,7 +18,8 @@ class PostEntity {
       @required this.title,
       @required this.location,
       @required this.timeStamp,
-      @required this.author,@required this.postByUid});
+      @required this.author,
+      @required this.postByUid});
 
   PostEntity copyWith(
       {String postId,
@@ -26,14 +27,16 @@ class PostEntity {
       String title,
       String location,
       int timeStamp,
-      UserEntity author,String postByUid}) {
+      UserEntity author,
+      String postByUid}) {
     return PostEntity(
         postId: postId ?? this.postId,
         imageUrl: imageUrl ?? this.imageUrl,
         title: title ?? this.title,
         location: location ?? this.location,
         timeStamp: timeStamp ?? this.timeStamp,
-        author: author ?? this.author,postByUid: postByUid ?? this.postByUid);
+        author: author ?? this.author,
+        postByUid: postByUid ?? this.postByUid);
   }
 
   Map<String, dynamic> toMap() {
@@ -44,7 +47,7 @@ class PostEntity {
       'location': location,
       'timeStamp': timeStamp,
       'author': author.toMap(),
-      'postByUid':postByUid
+      'postByUid': postByUid
     };
   }
 
@@ -56,7 +59,8 @@ class PostEntity {
         title: data["title"],
         location: data["location"],
         timeStamp: data["timeStamp"],
-        author: UserEntity.fromMap(data["author"]),postByUid: data["postByUid"]);
+        author: UserEntity.fromMap(data["author"]),
+        postByUid: data["postByUid"]);
   }
 
   factory PostEntity.fromMap(Map<String, dynamic> map) {
@@ -66,7 +70,8 @@ class PostEntity {
         title: map['title'],
         location: map['location'],
         timeStamp: map['timeStamp'],
-        author: UserEntity.fromMap(map['author']),postByUid: map['postByUid']);
+        author: UserEntity.fromMap(map['author']),
+        postByUid: map['postByUid']);
   }
 
   String toJson() => json.encode(toMap());

@@ -20,7 +20,9 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
         super(CommentsInitial());
 
   @override
-  Stream<CommentsState> mapEventToState(CommentsEvent event,) async* {
+  Stream<CommentsState> mapEventToState(
+    CommentsEvent event,
+  ) async* {
     if (event is LoadInitialComments) {
       yield* _mapLoadInitialCommentsToState(
           documentRef: event.postDocReference);
@@ -29,7 +31,6 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
           startAfterDoc: event.startAfterDoc, docRef: event.postDocReference);
     }
   }
-
 
   Stream<CommentsState> _mapLoadInitialCommentsToState(
       {DocumentReference documentRef}) async* {
@@ -50,12 +51,11 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
       yield LoadingMoreComments();
       List<CommentModel> comments = await _socialRepository.getMoreComments(
           postDocReference: docRef, startAfterDoc: startAfterDoc);
-      yield MoreCommentsLoaded(comments: comments,hasReachedMax: comments.isEmpty);
+      yield MoreCommentsLoaded(
+          comments: comments, hasReachedMax: comments.isEmpty);
     } catch (e) {
       print(e.toString());
       yield MoreCommentsLoadingFailed();
     }
   }
-
 }
-

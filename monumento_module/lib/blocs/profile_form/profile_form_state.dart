@@ -8,7 +8,8 @@ class ProfileFormInitial extends ProfileFormState {
   @override
   List<Object> get props => [];
 }
-class ProfileFormError extends ProfileFormState{
+
+class ProfileFormError extends ProfileFormState {
   final String message;
   @override
   // TODO: implement props

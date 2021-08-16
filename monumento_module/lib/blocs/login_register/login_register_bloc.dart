@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
-import 'package:monumento/constants.dart';
+import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
@@ -41,11 +41,11 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
           email: event.email, password: event.password);
     } else if (event is LoginWithGooglePressed) {
       yield* _mapLoginWithGooglePressedToState();
-    } else if (event is LogOutPressed) {
-      yield* _mapLogoutPressedToState();
+    } else if (event is LogOutEvent) {
+      yield* _mapLogoutEventToState();
     } else if (event is SignUpWithEmailPressed) {
       yield* _mapSignUpWithEmailPressedToState(
-        profilePictureFile: event.profilePictureFile,
+          profilePictureFile: event.profilePictureFile,
           email: event.email,
           password: event.password,
           name: event.name,
@@ -56,6 +56,8 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
 
   Stream<LoginRegisterState> _mapLoginWithGooglePressedToState() async* {
     try {
+      yield LoginRegisterLoading();
+
       final map = await _authRepository.signInWithGoogle();
       // _authenticationBloc.add(LoggedIn());
 
@@ -75,6 +77,8 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
   Stream<LoginRegisterState> _mapLoginWithEmailPressedToState(
       {@required String email, @required String password}) async* {
     try {
+      yield LoginRegisterLoading();
+
       final user =
           await _authRepository.emailSignIn(email: email, password: password);
       if (user != null) {
@@ -87,7 +91,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
     }
   }
 
-  Stream<LoginRegisterState> _mapLogoutPressedToState() async* {
+  Stream<LoginRegisterState> _mapLogoutEventToState() async* {
     await _authRepository.signOut();
     _authenticationBloc.add(LoggedOut());
     yield LogOutSuccess();
@@ -98,18 +102,19 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       @required String password,
       @required String name,
       @required String status,
-      @required String username, @required File profilePictureFile}) async* {
+      @required String username,
+      @required File profilePictureFile}) async* {
     try {
-      //TODO implement profilePictureUpload feature
+      yield LoginRegisterLoading();
       bool isUserNameAvailable =
           await _socialRepository.checkUserNameAvailability(username: username);
       if (isUserNameAvailable) {
         String url;
 
-        if(profilePictureFile != null) {
+        if (profilePictureFile != null) {
           url = await _socialRepository.uploadProfilePicForUrl(
               file: profilePictureFile);
-        }else{
+        } else {
           url = defaultProfilePicture;
         }
         final user = await _authRepository.signUp(
@@ -124,10 +129,10 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
         } else {
           yield SignUpFailed(message: 'Something went wrong');
         }
-      }else{
-        yield SignUpFailed(message: 'Username already used. Enter a different username');
+      } else {
+        yield SignUpFailed(
+            message: 'Username already used. Enter a different username');
       }
-
     } catch (e) {
       yield SignUpFailed(message: e.toString());
     }

@@ -21,8 +21,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   @override
   Stream<NotificationsState> mapEventToState(
-      NotificationsEvent event,
-      ) async* {
+    NotificationsEvent event,
+  ) async* {
     // TODO: implement mapEventToState
     if (event is LoadInitialNotifications) {
       yield* _mapLoadInitialNotificationsToState();
@@ -36,7 +36,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     try {
       yield LoadingInitialNotifications();
       List<NotificationModel> notifications =
-      await _socialRepository.getInitialNotifications();
+          await _socialRepository.getInitialNotifications();
       yield InitialNotificationsLoaded(initialNotifications: notifications);
     } catch (e) {
       yield InitialNotificationsLoadingFailed();

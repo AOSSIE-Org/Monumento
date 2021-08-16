@@ -13,8 +13,10 @@ part 'new_comment_state.dart';
 class NewCommentBloc extends Bloc<NewCommentEvent, NewCommentState> {
   final SocialRepository _socialRepository;
 
-  NewCommentBloc({SocialRepository socialRepository})  : assert(socialRepository != null),
-  _socialRepository = socialRepository,super(NewCommentInitial());
+  NewCommentBloc({SocialRepository socialRepository})
+      : assert(socialRepository != null),
+        _socialRepository = socialRepository,
+        super(NewCommentInitial());
 
   @override
   Stream<NewCommentState> mapEventToState(
@@ -22,17 +24,19 @@ class NewCommentBloc extends Bloc<NewCommentEvent, NewCommentState> {
   ) async* {
     // TODO: implement mapEventToState
     if (event is AddCommentPressed) {
-    yield*  _mapAddCommentPressedToState(
-    comment: event.comment, documentRef: event.postDocReference);
+      yield* _mapAddCommentPressedToState(
+          comment: event.comment, documentRef: event.postDocReference);
     }
   }
 
-  Stream<NewCommentState> _mapAddCommentPressedToState({String comment, DocumentReference documentRef}) async* {
-    try{
+  Stream<NewCommentState> _mapAddCommentPressedToState(
+      {String comment, DocumentReference documentRef}) async* {
+    try {
       yield AddingComment();
-      CommentModel commentAdded = await _socialRepository.addNewComment(postDocReference: documentRef, comment: comment);
+      CommentModel commentAdded = await _socialRepository.addNewComment(
+          postDocReference: documentRef, comment: comment);
       yield CommentAdded(comment: commentAdded);
-    }catch(e){
+    } catch (e) {
       print(e.toString());
       yield FailedToAddComment();
     }

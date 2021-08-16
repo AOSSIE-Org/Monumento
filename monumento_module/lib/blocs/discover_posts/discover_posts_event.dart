@@ -3,6 +3,7 @@ part of 'discover_posts_bloc.dart';
 abstract class DiscoverPostsEvent extends Equatable {
   const DiscoverPostsEvent();
 }
+
 class LoadInitialDiscoverPosts extends DiscoverPostsEvent {
   @override
   // TODO: implement props

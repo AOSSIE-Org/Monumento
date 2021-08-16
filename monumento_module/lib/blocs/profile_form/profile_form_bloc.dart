@@ -5,7 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
-import 'package:monumento/constants.dart';
+import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
@@ -58,10 +58,10 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
       if (isUserNameAvailable) {
         String url;
 
-        if(profilePictureFile != null) {
+        if (profilePictureFile != null) {
           url = await _socialRepository.uploadProfilePicForUrl(
               file: profilePictureFile);
-        }else{
+        } else {
           url = defaultProfilePicture;
         }
         UserModel user =
@@ -74,7 +74,6 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
                 profilePictureUrl: url);
         yield ProfileCreated(user: user);
         _authenticationBloc.add(LoggedIn());
-
       } else {
         yield ProfileFormError(
             message: 'Username already used. Enter a different username');

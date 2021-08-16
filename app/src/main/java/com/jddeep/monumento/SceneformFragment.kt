@@ -36,12 +36,19 @@ class SceneformFragment : AppCompatActivity() {
     private lateinit var monumentListMap: List<Map<String, String>>
     private val MIN_OPENGL_VERSION = 3.0
 
+//    private val monumentModelMap: HashMap<String, String> = hashMapOf(
+//        "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
+//        "Eiffel Tower" to "https://poly.googleusercontent.com/downloads/c/fp/1594652332676840/cPeRoB-RS0Q/4Z73gO10xW3/scene.gltf",
+//        "Statue of Liberty" to "https://poly.googleusercontent.com/downloads/c/fp/1594203800428477/ef9Yd09Doxh/6iB-aRbRXqD/model.gltf",
+//        "Colosseum" to "https://poly.googleusercontent.com/downloads/c/fp/1594117136139223/cVtCnH0tnHJ/fdSQ8NwCQDK/model.gltf",
+//        "Leaning Tower of Pisa" to "https://poly.googleusercontent.com/downloads/c/fp/1592733756165702/9hcSqLXC58h/afqTiZoEw8O/f42649ee9cd14a7db955bdcee2d21ac3.gltf"
+//    )
     private val monumentModelMap: HashMap<String, String> = hashMapOf(
-        "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
-        "Eiffel Tower" to "https://poly.googleusercontent.com/downloads/c/fp/1594652332676840/cPeRoB-RS0Q/4Z73gO10xW3/scene.gltf",
-        "Statue of Liberty" to "https://poly.googleusercontent.com/downloads/c/fp/1594203800428477/ef9Yd09Doxh/6iB-aRbRXqD/model.gltf",
-        "Colosseum" to "https://poly.googleusercontent.com/downloads/c/fp/1594117136139223/cVtCnH0tnHJ/fdSQ8NwCQDK/model.gltf",
-        "Leaning Tower of Pisa" to "https://poly.googleusercontent.com/downloads/c/fp/1592733756165702/9hcSqLXC58h/afqTiZoEw8O/f42649ee9cd14a7db955bdcee2d21ac3.gltf"
+        "Taj Mahal" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Ftaj.gltf?alt=media&token=5b7ad0ca-c018-4fce-8b1f-18dc73e9a19f",
+        "Eiffel Tower" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Fscene.gltf?alt=media&token=f9bbbb67-47a1-41a8-87ad-d4768c2dcd25",
+        "Statue of Liberty" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Fmodel.gltf?alt=media&token=f8e65199-684b-4792-9150-c88e020d73b0",
+        "Colosseum" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Fmodel%20(1).gltf?alt=media&token=34d75c13-11cd-46aa-8324-393039974538",
+        "Leaning Tower of Pisa" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Ff42649ee9cd14a7db955bdcee2d21ac3.gltf?alt=media&token=f2766ee3-852a-4d18-b25e-6e7b5631f603"
     )
 
 

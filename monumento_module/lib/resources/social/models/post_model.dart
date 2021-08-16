@@ -13,7 +13,6 @@ class PostModel {
   final UserModel author;
   final String postByUid;
 
-
   PostModel(
       {@required this.postId,
       @required this.imageUrl,
@@ -21,7 +20,8 @@ class PostModel {
       @required this.location,
       @required this.timeStamp,
       @required this.documentSnapshot,
-      @required this.author,@required this.postByUid});
+      @required this.author,
+      @required this.postByUid});
 
   PostModel copyWith(
       {String postId,
@@ -30,7 +30,8 @@ class PostModel {
       String location,
       int timeStamp,
       DocumentSnapshot documentSnapshot,
-      UserModel author,String postByUid}) {
+      UserModel author,
+      String postByUid}) {
     return PostModel(
         postId: postId ?? this.postId,
         imageUrl: imageUrl ?? this.imageUrl,
@@ -38,12 +39,13 @@ class PostModel {
         location: location ?? this.location,
         timeStamp: timeStamp ?? this.timeStamp,
         documentSnapshot: documentSnapshot ?? this.documentSnapshot,
-        author: author ?? this.author,postByUid: postByUid ?? this.postByUid);
+        author: author ?? this.author,
+        postByUid: postByUid ?? this.postByUid);
   }
 
   PostEntity toEntity() {
     return PostEntity(
-      postByUid: postByUid,
+        postByUid: postByUid,
         postId: postId,
         imageUrl: imageUrl,
         title: title,
@@ -54,7 +56,6 @@ class PostModel {
 
   factory PostModel.fromEntity(
       {@required PostEntity entity, DocumentSnapshot documentSnapshot}) {
-
     return PostModel(
         postId: entity.postId,
         imageUrl: entity.imageUrl,
@@ -62,7 +63,8 @@ class PostModel {
         location: entity.location,
         timeStamp: entity.timeStamp,
         documentSnapshot: documentSnapshot,
-        author: UserModel.fromEntity(userEntity:entity.author),postByUid: entity.postByUid);
+        author: UserModel.fromEntity(userEntity: entity.author),
+        postByUid: entity.postByUid);
   }
 
   @override
