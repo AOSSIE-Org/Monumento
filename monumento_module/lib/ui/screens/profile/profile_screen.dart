@@ -9,6 +9,7 @@ import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
+import 'package:monumento/resources/social/social_repository.dart';
 import 'package:monumento/ui/screens/bookmark/bookmark_screen.dart';
 import 'package:monumento/ui/screens/login/login_screen.dart';
 import 'package:monumento/utilities/constants.dart';
@@ -34,9 +35,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
-    _profilePostsBloc = BlocProvider.of<ProfilePostsBloc>(context);
+    _profilePostsBloc = ProfilePostsBloc(
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
     _profilePostsBloc.add(LoadInitialProfilePosts(uid: widget.user.uid));
-    _followBloc = BlocProvider.of<FollowBloc>(context);
+    _followBloc = FollowBloc(
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
     _authBloc = BlocProvider.of<AuthenticationBloc>(context);
     currentUser = (_authBloc.state as Authenticated).user;
     _followBloc.add(
@@ -82,26 +85,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SliverToBoxAdapter(
                       child: Column(
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.height * .15 / 2),
-                            child: widget.user.profilePictureUrl != null
-                                ? CachedNetworkImage(
-                                    imageUrl: widget.user.profilePictureUrl,
-                                    height: MediaQuery.of(context).size.height *
-                                        .15,
-                                    placeholder: (_, text) {
-                                      return Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                .15,
-                                        width:
-                                            MediaQuery.of(context).size.height *
-                                                .15,
-                                      );
-                                    },
-                                  )
-                                : Image.asset("assets/explore.jpg"),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  MediaQuery.of(context).size.height * .15 / 2),
+                              child: widget.user.profilePictureUrl != null
+                                  ? CachedNetworkImage(
+                                      imageUrl: widget.user.profilePictureUrl,
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              .15,
+                                      placeholder: (_, text) {
+                                        return Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .15,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              .15,
+                                        );
+                                      },
+                                    )
+                                  : Image.asset("assets/explore.jpg"),
+                            ),
                           ),
                           SizedBox(
                             height: 16,
@@ -148,6 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             currentState is LoadingMoreProfilePosts ||
                             currentState is MoreProfilePostsLoadingFailed) {
                           if (currentState is InitialProfilePostsLoaded) {
+                            posts = [];
                             posts.insertAll(
                                 posts.length, currentState.initialPosts);
                           }

@@ -7,6 +7,7 @@ import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/comments/comments_bloc.dart';
 import 'package:monumento/blocs/new_comment/new_comment_bloc.dart';
 import 'package:monumento/resources/social/models/comment_model.dart';
+import 'package:monumento/resources/social/social_repository.dart';
 import 'package:monumento/ui/screens/comments/components/comment_tile.dart';
 
 class CommentsScreen extends StatefulWidget {
@@ -28,8 +29,10 @@ class _CommentsScreenState extends State<CommentsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _commentsBloc = BlocProvider.of<CommentsBloc>(context);
-    _newCommentBloc = BlocProvider.of<NewCommentBloc>(context);
+    _commentsBloc = CommentsBloc(
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
+    _newCommentBloc = NewCommentBloc(
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
     _authenticationBloc =
         BlocProvider.of<AuthenticationBloc>(context, listen: false);
     _commentsBloc

@@ -7,6 +7,7 @@ import 'package:monumento/blocs/search/search_bloc.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
+import 'package:monumento/resources/social/social_repository.dart';
 import 'package:monumento/ui/screens/discover/components/search_bar.dart';
 import 'package:monumento/ui/screens/profile/profile_screen.dart';
 import 'package:monumento/ui/widgets/custom_app_bar.dart';
@@ -40,9 +41,10 @@ class _SearchScreenState extends State<SearchScreen> {
         _node.hasFocus ? _showSearch = true : _showSearch = false;
       });
     });
-    _searchBloc = BlocProvider.of<SearchBloc>(context, listen: false);
-    _discoverPostsBloc =
-        BlocProvider.of<DiscoverPostsBloc>(context, listen: false);
+    _searchBloc = SearchBloc(
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
+    _discoverPostsBloc = DiscoverPostsBloc(
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
     _discoverPostsBloc.add(LoadInitialDiscoverPosts());
   }
 
@@ -121,6 +123,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildDiscoverPosts() {
     return BlocBuilder<DiscoverPostsBloc, DiscoverPostsState>(
+      bloc: _discoverPostsBloc,
       builder: (context, currentState) {
         if (currentState is InitialDiscoverPostsLoadingFailed) {
           return SliverFillRemaining(
@@ -132,6 +135,7 @@ class _SearchScreenState extends State<SearchScreen> {
             currentState is LoadingMoreDiscoverPosts ||
             currentState is MoreDiscoverPostsLoadingFailed) {
           if (currentState is InitialDiscoverPostsLoaded) {
+            posts = [];
             posts.insertAll(posts.length, currentState.initialPosts);
           }
           if (currentState is MoreDiscoverPostsLoaded) {
@@ -177,6 +181,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildSearchView() {
     return BlocBuilder<SearchBloc, SearchState>(
+      bloc: _searchBloc,
       builder: (context, state) {
         if (state is SearchedPeople) {
           users = [];

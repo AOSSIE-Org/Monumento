@@ -389,7 +389,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   afterSignUpSuccess(UserModel user) {
-    _authenticationBloc.add(LoggedIn());
     showSnackBar(context: context, text: 'Signed up successfully');
 
     Navigator.pushNamedAndRemoveUntil(

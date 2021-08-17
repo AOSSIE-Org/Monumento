@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
-import 'package:monumento/blocs/login_register/login_register_bloc.dart';
 import 'package:monumento/blocs/profile_form/profile_form_bloc.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
@@ -39,10 +38,6 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   File _pickedImage;
   final _formKey = GlobalKey<FormState>();
-
-
-  AuthenticationBloc _authenticationBloc;
-  LoginRegisterBloc _loginRegisterBloc;
   ProfileFormBloc _profileFormBloc;
 
   @override
@@ -55,11 +50,7 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
         authenticationRepository:
             RepositoryProvider.of<AuthenticationRepository>(context),
         socialRepository: RepositoryProvider.of<SocialRepository>(context));
-    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -100,51 +91,58 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
                     Container(
                       height: double.infinity,
                       child: SingleChildScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.only(
-                            left: 40.0, right: 40.0, bottom: 110.0, top: 60.0),
-                        child: Form(
-                          key: _formKey,
-                          child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          physics: AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.only(
+                              left: 40.0,
+                              right: 40.0,
+                              bottom: 110.0,
+                              top: 60.0),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Sign Up',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 35.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 30.0),
+                                _buildProfilePictureWidget(),
+                                SizedBox(height: 30.0),
+                                _buildNameTF(),
+                                SizedBox(height: 30.0),
+                                _buildStatusTF(),
+                                SizedBox(height: 30.0),
+                                _buildEmailTF(),
+                                SizedBox(
+                                  height: 30.0,
+                                ),
+                                _buildUsernameTF(),
+                                SizedBox(
+                                  height: 24.0,
+                                ),
+                                _buildCreateProfileBtn(),
+                              ],
                             ),
-                            SizedBox(height: 30.0),
-                            _buildProfilePictureWidget(),
-                            SizedBox(height: 30.0),
-                            _buildNameTF(),
-                            SizedBox(height: 30.0),
-                            _buildStatusTF(),
-                            SizedBox(height: 30.0),
-                            _buildEmailTF(),
-                            SizedBox(
-                              height: 30.0,
-                            ),
-                            _buildUsernameTF(),
-                            SizedBox(
-                              height: 24.0,
-                            ),
-                            _buildCreateProfileBtn(),
-                          ],
-                        ),)
-                      ),
+                          )),
                     ),
-                    state is ProfileFormLoading ? Center(child: CircularProgressIndicator(),) : Container()
+                    state is ProfileFormLoading
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Container()
                   ],
-
                 ),
               ),
             ),
           );
         });
   }
+
   Widget _buildEmailTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,27 +182,27 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
   Widget _buildProfilePictureWidget() {
     return _pickedImage != null
         ? Center(
-      child: ClipOval(
-        child: Image.file(
-          _pickedImage,
-          width: 70,
-          height: 70,
-          key: ValueKey(_pickedImage.lengthSync()),
-        ),
-      ),
-    )
+            child: ClipOval(
+              child: Image.file(
+                _pickedImage,
+                width: 70,
+                height: 70,
+                key: ValueKey(_pickedImage.lengthSync()),
+              ),
+            ),
+          )
         : Center(
-      child: GestureDetector(
-        onTap: showImageSourceOptions,
-        child: ClipOval(
-          child: Icon(
-            Icons.linked_camera_outlined,
-            size: 70,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
+            child: GestureDetector(
+              onTap: showImageSourceOptions,
+              child: ClipOval(
+                child: Icon(
+                  Icons.linked_camera_outlined,
+                  size: 70,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          );
   }
 
   Widget _buildUsernameTF() {
@@ -337,6 +335,7 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
                 context: context, text: 'Creating profile. Please Wait.');
 
             _profileFormBloc.add(CreateUserDoc(
+              profilePictureFile: _pickedImage,
               email: _emailController.text,
               username: _usernameController.text,
               status: _statusController.text,
@@ -345,7 +344,6 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
             ));
           }
         },
-        //TODO : username
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
@@ -363,9 +361,8 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
       ),
     );
   }
-  afterProfileCreationSuccess(UserModel user) {
-    _authenticationBloc.add(LoggedIn());
 
+  afterProfileCreationSuccess(UserModel user) {
     showSnackBar(
       context: context,
       text: 'Signing Up! Please wait...',

@@ -385,7 +385,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   afterSuccessfulLogin(UserModel user) {
-    _authenticationBloc.add(LoggedIn());
     if (isseen)
       setState(() {
         isseen = !isseen;

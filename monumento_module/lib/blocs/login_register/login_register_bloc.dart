@@ -65,6 +65,8 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
             user: map['user'] as UserModel);
       } else {
         UserModel user = await _authRepository.getUser();
+        _authenticationBloc.add(LoggedIn());
+
         yield SigninWithGoogleSuccess(isNewUser: false, user: user);
       }
     } catch (e) {
@@ -80,6 +82,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       final user =
           await _authRepository.emailSignIn(email: email, password: password);
       if (user != null) {
+        _authenticationBloc.add(LoggedIn());
         yield LoginSuccess(user);
       } else {
         yield LoginFailed(message: 'Failed to Login');
@@ -124,6 +127,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
             profilePictureUrl: url);
         if (user != null) {
           yield SignUpSuccess(user);
+          _authenticationBloc.add(LoggedIn());
         } else {
           yield SignUpFailed(message: 'Something went wrong');
         }

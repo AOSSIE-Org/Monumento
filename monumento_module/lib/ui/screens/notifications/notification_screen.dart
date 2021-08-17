@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:monumento/blocs/notifications/notifications_bloc.dart';
 import 'package:monumento/resources/social/models/notification_model.dart';
+import 'package:monumento/resources/social/social_repository.dart';
 import 'package:monumento/ui/screens/notifications/components/notification_tile.dart';
 import 'package:monumento/ui/widgets/custom_app_bar.dart';
 import 'package:monumento/utilities/constants.dart';
@@ -24,7 +25,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _notificationsBloc = BlocProvider.of<NotificationsBloc>(context);
+    _notificationsBloc = NotificationsBloc(
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
     _notificationsBloc.add(LoadInitialNotifications());
   }
 

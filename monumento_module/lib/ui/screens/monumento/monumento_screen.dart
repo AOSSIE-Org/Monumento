@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monumento/blocs/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/resources/monuments/monument_repository.dart';
 import 'package:monumento/ui/screens/monumento/components/popular_monuments_tile.dart';
 import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/navigation/arguments.dart';
@@ -21,6 +22,7 @@ class MonumentoScreen extends StatefulWidget {
 class _MonumentoScreenState extends State<MonumentoScreen> {
   static const platform = const MethodChannel("monument_detector");
   List<Map<String, dynamic>> monumentMapList = new List();
+  PopularMonumentsBloc _popularMonumentsBloc;
 
   _navToMonumentDetector() async {
     try {
@@ -34,15 +36,21 @@ class _MonumentoScreenState extends State<MonumentoScreen> {
   @override
   void initState() {
     // TODO: implement initState
+
     super.initState();
+    _popularMonumentsBloc = PopularMonumentsBloc(
+        firebaseMonumentRepository:
+            RepositoryProvider.of<MonumentRepository>(context));
+    _popularMonumentsBloc.add(GetPopularMonuments());
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PopularMonumentsBloc, PopularMonumentsState>(
+      bloc: _popularMonumentsBloc,
       builder: (context, state) {
         if (state is PopularMonumentsRetrieved) {
-          print(state.toString() + 'asdasd');
+          print(state.toString());
           for (MonumentModel monument in state.popularMonuments) {
             monumentMapList.add(monument.toEntity().toMap());
           }
