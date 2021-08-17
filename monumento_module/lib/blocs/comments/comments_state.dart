@@ -11,8 +11,10 @@ class CommentsInitial extends CommentsState {
 
 class InitialCommentsLoaded extends CommentsState {
   final List<CommentModel> initialComments;
+  final bool hasReachedMax;
 
-  InitialCommentsLoaded({this.initialComments});
+  InitialCommentsLoaded(
+      {@required this.initialComments, @required this.hasReachedMax});
 
   @override
   List<Object> get props => [initialComments];

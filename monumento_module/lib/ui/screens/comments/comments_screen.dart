@@ -62,6 +62,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                   bool hasReachedMax = false;
 
                   if (currentState is InitialCommentsLoaded) {
+                    hasReachedMax = currentState.hasReachedMax;
                     comments = [];
                     comments.insertAll(
                         comments.length, currentState.initialComments);
@@ -103,7 +104,7 @@ class _CommentsScreenState extends State<CommentsScreen> {
                         );
                       },
                     ),
-                    onEndOfPage: hasReachedMax ? _loadMoreComments : () {},
+                    onEndOfPage: !hasReachedMax ? _loadMoreComments : () {},
                     scrollOffset: 300,
                   );
                 }

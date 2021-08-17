@@ -66,17 +66,25 @@ class NotificationEntity {
     return NotificationEntity(
       notificationType: data['notificationType'] as int,
       userInvolved: UserEntity.fromMap(data['userInvolved']),
-      postInvolved: PostEntity.fromMap(data['postInvolved']),
+      postInvolved: data['postInvolved'] != null
+          ? PostEntity.fromMap(data['postInvolved'])
+          : null,
       timeStamp: data['timeStamp'] as int,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'notificationType': this.notificationType,
-      'userInvolved': this.userInvolved.toMap(),
-      'postInvolved': this.postInvolved.toMap(),
-      'timeStamp': this.timeStamp,
-    };
+    return postInvolved != null
+        ? {
+            'notificationType': this.notificationType,
+            'userInvolved': this.userInvolved.toMap(),
+            'postInvolved': this.postInvolved.toMap(),
+            'timeStamp': this.timeStamp,
+          }
+        : {
+            'notificationType': this.notificationType,
+            'userInvolved': this.userInvolved.toMap(),
+            'timeStamp': this.timeStamp,
+          };
   }
 }
