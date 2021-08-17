@@ -5,13 +5,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
-import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
+import 'package:monumento/utilities/constants.dart';
 
 part 'profile_form_event.dart';
-
 part 'profile_form_state.dart';
 
 class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
@@ -53,6 +52,7 @@ class ProfileFormBloc extends Bloc<ProfileFormEvent, ProfileFormState> {
       String status,
       String uid}) async* {
     try {
+      yield ProfileFormLoading();
       bool isUserNameAvailable =
           await _socialRepository.checkUserNameAvailability(username: username);
       if (isUserNameAvailable) {

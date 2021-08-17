@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/authentication/entities/user_entity.dart';
@@ -11,7 +12,6 @@ import 'package:monumento/resources/social/entities/post_entity.dart';
 import 'package:monumento/resources/social/models/comment_model.dart';
 import 'package:monumento/resources/social/models/notification_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 import 'package:uuid/uuid.dart';
 

@@ -7,7 +7,6 @@ import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 
 part 'follow_event.dart';
-
 part 'follow_state.dart';
 
 class FollowBloc extends Bloc<FollowEvent, FollowState> {

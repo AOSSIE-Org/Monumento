@@ -11,7 +11,6 @@ import 'package:monumento/blocs/new_post/new_post_bloc.dart';
 import 'package:monumento/blocs/notifications/notifications_bloc.dart';
 import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/blocs/search/search_bloc.dart';
-import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/navigation/route_generator.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/social/firebase_social_repository.dart';
@@ -25,18 +24,8 @@ import 'package:monumento/resources/authentication/firebase_authentication_repos
 import 'package:monumento/resources/monuments/firebase_monument_repository.dart';
 import 'package:monumento/utilities/simple_bloc_observer.dart';
 import 'package:monumento/ui/screens/app_intro/app_intro.dart';
-import 'package:monumento/ui/screens/bookmark/bookmark_screen.dart';
-import 'package:monumento/ui/screens/comments/comments_screen.dart';
-import 'package:monumento/ui/screens/monument_detail/detail_screen.dart';
-import 'package:monumento/ui/screens/explore_monuments/explore_screen.dart';
 import 'package:monumento/ui/screens/home/home_screen.dart';
-import 'package:monumento/ui/screens/login/login_screen.dart';
-import 'package:monumento/ui/screens/new_post/new_post_screen.dart';
-import 'package:monumento/ui/screens/notifications/notification_screen.dart';
-import 'package:monumento/ui/screens/profile/profile_screen.dart';
-import 'package:monumento/ui/screens/profile_form/profile_form_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:monumento/ui/screens/signup/register_screen.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();

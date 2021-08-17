@@ -4,18 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
 import 'package:monumento/blocs/profile_form/profile_form_bloc.dart';
-import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 import 'package:monumento/ui/screens/home/home_screen.dart';
 import 'package:monumento/ui/widgets/image_picker.dart';
+import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/utilities/utils.dart';
 
 class ProfileFormScreen extends StatefulWidget {
@@ -39,6 +38,8 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
   var _usernameController = TextEditingController();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   File _pickedImage;
+  final _formKey = GlobalKey<FormState>();
+
 
   AuthenticationBloc _authenticationBloc;
   LoginRegisterBloc _loginRegisterBloc;
@@ -58,6 +59,92 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
     _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
   }
 
+
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<ProfileFormBloc, ProfileFormState>(
+        bloc: _profileFormBloc,
+        listener: (_, state) {
+          if (state is ProfileCreated) {
+            afterProfileCreationSuccess((state).user);
+          } else if (state is ProfileFormError) {
+            print("listener called");
+            afterProfileCreationFailed(state.message);
+          }
+        },
+        builder: (_, state) {
+          return Scaffold(
+            key: _scaffoldKey,
+            body: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle.light,
+              child: GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.yellow[600],
+                            Colors.amber,
+                          ],
+                          stops: [0.4, 0.9],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: double.infinity,
+                      child: SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.only(
+                            left: 40.0, right: 40.0, bottom: 110.0, top: 60.0),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              'Sign Up',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 30.0),
+                            _buildProfilePictureWidget(),
+                            SizedBox(height: 30.0),
+                            _buildNameTF(),
+                            SizedBox(height: 30.0),
+                            _buildStatusTF(),
+                            SizedBox(height: 30.0),
+                            _buildEmailTF(),
+                            SizedBox(
+                              height: 30.0,
+                            ),
+                            _buildUsernameTF(),
+                            SizedBox(
+                              height: 24.0,
+                            ),
+                            _buildCreateProfileBtn(),
+                          ],
+                        ),)
+                      ),
+                    ),
+                    state is ProfileFormLoading ? Center(child: CircularProgressIndicator(),) : Container()
+                  ],
+
+                ),
+              ),
+            ),
+          );
+        });
+  }
   Widget _buildEmailTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,27 +184,27 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
   Widget _buildProfilePictureWidget() {
     return _pickedImage != null
         ? Center(
-            child: ClipOval(
-              child: Image.file(
-                _pickedImage,
-                width: 70,
-                height: 70,
-                key: ValueKey(_pickedImage.lengthSync()),
-              ),
-            ),
-          )
+      child: ClipOval(
+        child: Image.file(
+          _pickedImage,
+          width: 70,
+          height: 70,
+          key: ValueKey(_pickedImage.lengthSync()),
+        ),
+      ),
+    )
         : Center(
-            child: GestureDetector(
-              onTap: showImageSourceOptions,
-              child: ClipOval(
-                child: Icon(
-                  Icons.linked_camera_outlined,
-                  size: 70,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          );
+      child: GestureDetector(
+        onTap: showImageSourceOptions,
+        child: ClipOval(
+          child: Icon(
+            Icons.linked_camera_outlined,
+            size: 70,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildUsernameTF() {
@@ -133,7 +220,13 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: TextFormField(
+            validator: (val) {
+              if (val.isNotEmpty) {
+                return null;
+              }
+              return "Enter a valid username";
+            },
             keyboardType: TextInputType.emailAddress,
             controller: _usernameController,
             style: TextStyle(
@@ -168,7 +261,13 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: 60.0,
-          child: TextField(
+          child: TextFormField(
+            validator: (val) {
+              if (val.isNotEmpty) {
+                return null;
+              }
+              return "This field can't be empty";
+            },
             keyboardType: TextInputType.text,
             controller: _nameController,
             style: TextStyle(
@@ -233,16 +332,18 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
         elevation: 5.0,
         splashColor: Colors.lightGreen,
         onPressed: () {
-          showSnackBar(
-              context: context, text: 'Creating profile. Please Wait.');
+          if (_formKey.currentState.validate()) {
+            showSnackBar(
+                context: context, text: 'Creating profile. Please Wait.');
 
-          _profileFormBloc.add(CreateUserDoc(
-            email: _emailController.text,
-            username: _usernameController.text,
-            status: _statusController.text,
-            name: _nameController.text,
-            uid: widget.uid,
-          ));
+            _profileFormBloc.add(CreateUserDoc(
+              email: _emailController.text,
+              username: _usernameController.text,
+              status: _statusController.text,
+              name: _nameController.text,
+              uid: widget.uid,
+            ));
+          }
         },
         //TODO : username
         padding: EdgeInsets.all(15.0),
@@ -262,88 +363,6 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<ProfileFormBloc, ProfileFormState>(
-        bloc: _profileFormBloc,
-        listener: (_, state) {
-          if (state is ProfileCreated) {
-            afterProfileCreationSuccess((state).user);
-          } else if (state is ProfileFormError) {
-            print("listener called");
-            afterProfileCreationFailed(state.message);
-          }
-        },
-        builder: (_, state) {
-          return Scaffold(
-            key: _scaffoldKey,
-            body: AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle.light,
-              child: GestureDetector(
-                onTap: () => FocusScope.of(context).unfocus(),
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      height: double.infinity,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.yellow[600],
-                            Colors.amber,
-                          ],
-                          stops: [0.4, 0.9],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      height: double.infinity,
-                      child: SingleChildScrollView(
-                        physics: AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.only(
-                            left: 40.0, right: 40.0, bottom: 110.0, top: 60.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Sign Up',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 35.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 30.0),
-                            _buildProfilePictureWidget(),
-                            SizedBox(height: 30.0),
-                            _buildNameTF(),
-                            SizedBox(height: 30.0),
-                            _buildStatusTF(),
-                            SizedBox(height: 30.0),
-                            _buildEmailTF(),
-                            SizedBox(
-                              height: 30.0,
-                            ),
-                            _buildUsernameTF(),
-                            SizedBox(
-                              height: 24.0,
-                            ),
-                            _buildCreateProfileBtn(),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
   afterProfileCreationSuccess(UserModel user) {
     _authenticationBloc.add(LoggedIn());
 

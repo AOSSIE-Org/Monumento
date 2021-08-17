@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/ui/screens/comments/comments_screen.dart';
 import 'package:monumento/ui/widgets/feed_image_loading.dart';
 import 'package:monumento/ui/widgets/profile_picture_loading.dart';
+import 'package:monumento/utilities/constants.dart';
 
 class FeedTile extends StatelessWidget {
   final String title;

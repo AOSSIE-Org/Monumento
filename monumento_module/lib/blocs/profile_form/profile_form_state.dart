@@ -11,8 +11,8 @@ class ProfileFormInitial extends ProfileFormState {
 
 class ProfileFormError extends ProfileFormState {
   final String message;
+
   @override
-  // TODO: implement props
   List<Object> get props => [message];
 
   ProfileFormError({@required this.message});
@@ -20,10 +20,16 @@ class ProfileFormError extends ProfileFormState {
 
 class ProfileCreated extends ProfileFormState {
   final UserModel user;
+
   @override
   List<Object> get props => [user];
 
   const ProfileCreated({
     @required this.user,
   });
+}
+
+class ProfileFormLoading extends ProfileFormState {
+  @override
+  List<Object> get props => [];
 }

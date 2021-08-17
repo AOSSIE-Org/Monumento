@@ -8,7 +8,6 @@ import 'package:monumento/resources/social/models/notification_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 
 part 'notifications_event.dart';
-
 part 'notifications_state.dart';
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {

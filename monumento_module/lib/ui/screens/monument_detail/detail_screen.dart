@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,6 @@ import 'package:monumento/ui/screens/map/GoogleMap.dart';
 import 'package:monumento/ui/widgets/feed_image_loading.dart';
 import 'package:monumento/utilities/utils.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'dart:async';
 
 class DetailScreen extends StatefulWidget {
   final MonumentModel monument;
