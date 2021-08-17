@@ -162,7 +162,7 @@ class FirebaseSocialRepository implements SocialRepository {
     QuerySnapshot snap = await postDocReference
         .collection("comments")
         .orderBy("timeStamp", descending: true)
-        .limit(10)
+        .limit(20)
         .get();
 
     return snap.docs

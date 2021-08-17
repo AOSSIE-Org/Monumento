@@ -23,7 +23,9 @@ class NotificationModel {
       DocumentSnapshot documentSnapshot}) {
     return NotificationModel(
         notificationType: NotificationType.values[entity.notificationType],
-        postInvolved: PostModel.fromEntity(entity: entity.postInvolved),
+        postInvolved: entity.postInvolved != null
+            ? PostModel.fromEntity(entity: entity.postInvolved)
+            : null,
         documentSnapshot: documentSnapshot,
         userInvolved: UserModel.fromEntity(userEntity: entity.userInvolved));
   }

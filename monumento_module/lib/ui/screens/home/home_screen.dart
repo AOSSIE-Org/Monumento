@@ -62,17 +62,20 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         key: _key,
-        body: [
-          MonumentoScreen(
-            user: widget.user,
-          ),
-          FeedScreen(),
-          Container(),
-          SearchScreen(),
-          ProfileScreen(
-            user: widget.user,
-          ),
-        ][_currentIndex],
+        body: IndexedStack(
+          children: [
+            MonumentoScreen(
+              user: widget.user,
+            ),
+            FeedScreen(),
+            Container(),
+            SearchScreen(),
+            ProfileScreen(
+              user: widget.user,
+            ),
+          ],
+          index: _currentIndex,
+        ),
         bottomNavigationBar: ConvexAppBar(
           onTap: onTabTapped,
           initialActiveIndex: _currentIndex,

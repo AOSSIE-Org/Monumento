@@ -37,7 +37,8 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
       yield LoadingInitialComments();
       List<CommentModel> comments = await _socialRepository.getInitialComments(
           postDocReference: documentRef);
-      yield InitialCommentsLoaded(initialComments: comments);
+      yield InitialCommentsLoaded(
+          initialComments: comments, hasReachedMax: false);
     } catch (e) {
       print(e.toString());
       yield InitialCommentsLoadingFailed(message: e);
