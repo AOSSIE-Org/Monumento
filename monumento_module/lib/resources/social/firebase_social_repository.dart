@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/authentication/entities/user_entity.dart';
@@ -11,7 +12,6 @@ import 'package:monumento/resources/social/entities/post_entity.dart';
 import 'package:monumento/resources/social/models/comment_model.dart';
 import 'package:monumento/resources/social/models/notification_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 import 'package:uuid/uuid.dart';
 
@@ -22,8 +22,8 @@ class FirebaseSocialRepository implements SocialRepository {
 
   FirebaseSocialRepository(
       {FirebaseFirestore database,
-        AuthenticationRepository authenticationRepository,
-        FirebaseStorage storage})
+      AuthenticationRepository authenticationRepository,
+      FirebaseStorage storage})
       : _database = database ?? FirebaseFirestore.instance,
         _storage = storage ?? FirebaseStorage.instance,
         _authRepository =
@@ -35,16 +35,16 @@ class FirebaseSocialRepository implements SocialRepository {
     //TODO TODO TODO
     QuerySnapshot snap = await _database
         .collection("posts")
-    // .where("postFor", arrayContains: currentUser.uid)
+        // .where("postFor", arrayContains: currentUser.uid)
         .orderBy("timeStamp", descending: true)
         .limit(10)
         .get();
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
-    print("$posts lololol");
+    print("$posts");
     return posts;
   }
 
@@ -54,7 +54,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     QuerySnapshot snap = await _database
         .collection("posts")
-    // .where("postFor", arrayContains: currentUser.uid)
+        // .where("postFor", arrayContains: currentUser.uid)
         .orderBy("timeStamp", descending: true)
         .startAfterDocument(startAfterDoc)
         .limit(10)
@@ -62,7 +62,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
 
     return posts;
@@ -80,13 +80,13 @@ class FirebaseSocialRepository implements SocialRepository {
       "imageUrl": imageUrl,
       "timeStamp": timeStamp,
       "author": user.toEntity().toMap(),
-      "postFor":user.followers,
-      "postByUid":user.uid
+      "postFor": user.followers,
+      "postByUid": user.uid
     });
     DocumentSnapshot documentSnapshot = await ref.get();
 
     return PostModel(
-      postByUid:user.uid,
+        postByUid: user.uid,
         postId: ref.id,
         imageUrl: imageUrl,
         title: title,
@@ -100,7 +100,7 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<String> uploadImageForUrl({File file, String address}) async {
     String fileName = Uuid().v4();
     UploadTask task =
-    _storage.ref().child(address).child("$fileName.jpg").putFile(file);
+        _storage.ref().child(address).child("$fileName.jpg").putFile(file);
 
     TaskSnapshot snapshot = await task.whenComplete(() => null);
 
@@ -109,7 +109,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
   @override
   Future<String> uploadProfilePicForUrl({File file}) async {
-    String fileName  = Uuid().v4();
+    String fileName = Uuid().v4();
 
     UploadTask task = _storage
         .ref()
@@ -134,7 +134,7 @@ class FirebaseSocialRepository implements SocialRepository {
     // .orderBy("dateJoined",descending: false)
     List<UserModel> users = snap.docs
         .map((e) => UserModel.fromEntity(
-        userEntity: UserEntity.fromSnapshot(e), snapshot: e))
+            userEntity: UserEntity.fromSnapshot(e), snapshot: e))
         .toList();
     return users;
   }
@@ -151,7 +151,7 @@ class FirebaseSocialRepository implements SocialRepository {
         .get();
     List<UserModel> users = snap.docs
         .map((e) => UserModel.fromEntity(
-        userEntity: UserEntity.fromSnapshot(e), snapshot: e))
+            userEntity: UserEntity.fromSnapshot(e), snapshot: e))
         .toList();
     return users;
   }
@@ -162,12 +162,12 @@ class FirebaseSocialRepository implements SocialRepository {
     QuerySnapshot snap = await postDocReference
         .collection("comments")
         .orderBy("timeStamp", descending: true)
-        .limit(10)
+        .limit(20)
         .get();
 
     return snap.docs
         .map((e) => CommentModel.fromEntity(
-        entity: CommentEntity.fromSnapshot(e), snapshot: e))
+            entity: CommentEntity.fromSnapshot(e), snapshot: e))
         .toList();
   }
 
@@ -183,14 +183,14 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return snap.docs
         .map((e) => NotificationModel.fromEntity(
-        entity: NotificationEntity.fromSnapshot(e), documentSnapshot: e))
+            entity: NotificationEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
   }
 
   @override
   Future<List<CommentModel>> getMoreComments(
       {DocumentReference postDocReference,
-        DocumentSnapshot startAfterDoc}) async {
+      DocumentSnapshot startAfterDoc}) async {
     QuerySnapshot snap = await postDocReference
         .collection("comments")
         .orderBy("timeStamp", descending: true)
@@ -200,7 +200,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return snap.docs
         .map((e) => CommentModel.fromEntity(
-        entity: CommentEntity.fromSnapshot(e), snapshot: e))
+            entity: CommentEntity.fromSnapshot(e), snapshot: e))
         .toList();
   }
 
@@ -217,7 +217,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return snap.docs
         .map((e) => NotificationModel.fromEntity(
-        entity: NotificationEntity.fromSnapshot(e), documentSnapshot: e))
+            entity: NotificationEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
   }
 
@@ -227,7 +227,8 @@ class FirebaseSocialRepository implements SocialRepository {
     UserModel user = await _authRepository.getUser();
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
     DocumentSnapshot postSnap = await postDocReference.get();
-    PostModel post  = PostModel.fromEntity(entity: PostEntity.fromSnapshot(postSnap));
+    PostModel post =
+        PostModel.fromEntity(entity: PostEntity.fromSnapshot(postSnap));
 
     DocumentReference doc = await postDocReference.collection("comments").add({
       "comment": comment,
@@ -266,9 +267,9 @@ class FirebaseSocialRepository implements SocialRepository {
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
-    print("$posts lololol");
+    print("$posts");
     return posts;
   }
 
@@ -284,7 +285,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
 
     return posts;
@@ -294,14 +295,14 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<List<PostModel>> getInitialProfilePosts({String uid}) async {
     QuerySnapshot snap = await _database
         .collection("posts")
-    // .where("postByUid", isEqualTo: uid)
+        // .where("postByUid", isEqualTo: uid)
         .orderBy("timeStamp", descending: true)
         .limit(10)
         .get();
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
 
     return posts;
@@ -312,7 +313,7 @@ class FirebaseSocialRepository implements SocialRepository {
       {DocumentSnapshot startAfterDoc, String uid}) async {
     QuerySnapshot snap = await _database
         .collection("posts")
-    // .where("postByUid", isEqualTo: uid)
+        // .where("postByUid", isEqualTo: uid)
         .orderBy("timeStamp", descending: true)
         .startAfterDocument(startAfterDoc)
         .limit(10)
@@ -320,7 +321,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     List<PostModel> posts = snap.docs
         .map((e) => PostModel.fromEntity(
-        entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
+            entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
 
     return posts;
@@ -348,15 +349,15 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<bool> getFollowStatus(
       {UserModel targetUser, UserModel currentUser}) async {
     DocumentSnapshot targetDoc =
-    await _database.collection('users').doc(targetUser.uid).get();
+        await _database.collection('users').doc(targetUser.uid).get();
 
     DocumentSnapshot currentDoc =
-    await _database.collection('users').doc(currentUser.uid).get();
+        await _database.collection('users').doc(currentUser.uid).get();
 
     UserModel targetUpdated =
-    UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(targetDoc));
+        UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(targetDoc));
     UserModel currentUpdated =
-    UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(currentDoc));
+        UserModel.fromEntity(userEntity: UserEntity.fromSnapshot(currentDoc));
     if (targetUpdated.followers.contains(currentUpdated.uid) &&
         currentUpdated.following.contains(targetUpdated.uid)) {
       return true;
@@ -380,7 +381,10 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<NotificationModel> addNewNotification(
       {UserModel targetUser, NotificationModel notification}) async {
     assert(targetUser.uid != null);
-    DocumentReference ref = await _database.collection('users').doc(targetUser.uid).collection('notifications')
+    DocumentReference ref = await _database
+        .collection('users')
+        .doc(targetUser.uid)
+        .collection('notifications')
         .add(notification.toEntity().toMap());
     DocumentSnapshot snap = await ref.get();
     NotificationModel addedNotification = NotificationModel.fromEntity(
@@ -388,18 +392,20 @@ class FirebaseSocialRepository implements SocialRepository {
     return addedNotification;
   }
 
-  Future<UserModel> getUserByUid(String uid)async{
+  Future<UserModel> getUserByUid(String uid) async {
     DocumentSnapshot snap = await _database.collection('user').doc(uid).get();
 
-    UserModel user = UserModel.fromEntity(userEntity:UserEntity.fromSnapshot(snap),snapshot: snap);
+    UserModel user = UserModel.fromEntity(
+        userEntity: UserEntity.fromSnapshot(snap), snapshot: snap);
     return user;
   }
 
   @override
   Future<bool> checkUserNameAvailability({String username}) async {
-   QuerySnapshot<Map<String,dynamic>> docs = await _database.collection('users').where('username',isEqualTo: username).get();
-   return docs.docs.isEmpty;
+    QuerySnapshot<Map<String, dynamic>> docs = await _database
+        .collection('users')
+        .where('username', isEqualTo: username)
+        .get();
+    return docs.docs.isEmpty;
   }
-
-
 }

@@ -3,17 +3,16 @@ import 'package:meta/meta.dart';
 import 'package:monumento/resources/authentication/entities/user_entity.dart';
 import 'package:monumento/resources/social/entities/post_entity.dart';
 
-class NotificationEntity{
+class NotificationEntity {
   final int notificationType;
   final UserEntity userInvolved;
   final PostEntity postInvolved;
   final int timeStamp;
 
-
   const NotificationEntity({
     @required this.notificationType,
-     this.userInvolved,
-     this.postInvolved,
+    this.userInvolved,
+    this.postInvolved,
     @required this.timeStamp,
   });
 
@@ -23,13 +22,12 @@ class NotificationEntity{
     PostEntity postInvolved,
     int timeStamp,
   }) {
-    return  NotificationEntity(
+    return NotificationEntity(
       notificationType: notificationType ?? this.notificationType,
       userInvolved: userInvolved ?? this.userInvolved,
       postInvolved: postInvolved ?? this.postInvolved,
       timeStamp: timeStamp ?? this.timeStamp,
     );
-
   }
 
   @override
@@ -64,24 +62,29 @@ class NotificationEntity{
   }
 
   factory NotificationEntity.fromSnapshot(DocumentSnapshot snapshot) {
-    Map<String,dynamic> data  = snapshot.data();
+    Map<String, dynamic> data = snapshot.data();
     return NotificationEntity(
       notificationType: data['notificationType'] as int,
       userInvolved: UserEntity.fromMap(data['userInvolved']),
-      postInvolved:  PostEntity.fromMap(data['postInvolved']),
+      postInvolved: data['postInvolved'] != null
+          ? PostEntity.fromMap(data['postInvolved'])
+          : null,
       timeStamp: data['timeStamp'] as int,
     );
   }
 
-
   Map<String, dynamic> toMap() {
-    return {
-      'notificationType': this.notificationType,
-      'userInvolved': this.userInvolved.toMap(),
-      'postInvolved': this.postInvolved.toMap(),
-      'timeStamp': this.timeStamp,
-    };
+    return postInvolved != null
+        ? {
+            'notificationType': this.notificationType,
+            'userInvolved': this.userInvolved.toMap(),
+            'postInvolved': this.postInvolved.toMap(),
+            'timeStamp': this.timeStamp,
+          }
+        : {
+            'notificationType': this.notificationType,
+            'userInvolved': this.userInvolved.toMap(),
+            'timeStamp': this.timeStamp,
+          };
   }
-
-
 }

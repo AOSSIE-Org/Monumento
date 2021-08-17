@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
-import 'package:monumento/resources/authentication/entities/user_entity.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/entities/comment_entity.dart';
 
@@ -66,7 +65,7 @@ class CommentModel {
     return new CommentModel(
       comment: entity.comment,
       postInvolvedId: entity.postInvolvedId,
-      author: UserModel.fromEntity(userEntity:entity.author),
+      author: UserModel.fromEntity(userEntity: entity.author),
       timeStamp: entity.timeStamp,
       snapshot: snapshot,
     );
@@ -79,6 +78,4 @@ class CommentModel {
         author: author.toEntity(),
         timeStamp: timeStamp);
   }
-
-
 }

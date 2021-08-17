@@ -13,25 +13,32 @@ class NotificationModel {
 
   NotificationModel(
       {this.notificationType,
-        this.userInvolved,
-        this.postInvolved,
-        this.timeStamp,
-        this.documentSnapshot});
+      this.userInvolved,
+      this.postInvolved,
+      this.timeStamp,
+      this.documentSnapshot});
 
   factory NotificationModel.fromEntity(
-      {@required NotificationEntity entity, DocumentSnapshot documentSnapshot}) {
+      {@required NotificationEntity entity,
+      DocumentSnapshot documentSnapshot}) {
     return NotificationModel(
         notificationType: NotificationType.values[entity.notificationType],
-        postInvolved: PostModel.fromEntity(entity: entity.postInvolved),
-        documentSnapshot: documentSnapshot,userInvolved: UserModel.fromEntity(userEntity: entity.userInvolved));
+        postInvolved: entity.postInvolved != null
+            ? PostModel.fromEntity(entity: entity.postInvolved)
+            : null,
+        documentSnapshot: documentSnapshot,
+        userInvolved: UserModel.fromEntity(userEntity: entity.userInvolved));
   }
 
   NotificationEntity toEntity() {
     return NotificationEntity(
       notificationType: notificationType.index,
       timeStamp: timeStamp,
-      userInvolved:userInvolved.toEntity(),
-      postInvolved:  (notificationType == NotificationType.likeNotification ||notificationType == NotificationType.commentNotification ) ? postInvolved.toEntity() : null,
+      userInvolved: userInvolved.toEntity(),
+      postInvolved: (notificationType == NotificationType.likeNotification ||
+              notificationType == NotificationType.commentNotification)
+          ? postInvolved.toEntity()
+          : null,
     );
   }
 

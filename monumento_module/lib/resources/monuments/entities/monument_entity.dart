@@ -29,7 +29,7 @@ class MonumentEntity extends Equatable {
         city: data['email'] as String,
         country: data['country'] as String,
         imageUrl: data['image'] as String,
-        wiki: data['wiki'] as String);
+        wiki: data['wikipediaLink'] as String);
   }
 
   factory MonumentEntity.fromSnapshot(DocumentSnapshot snap) {
@@ -40,7 +40,7 @@ class MonumentEntity extends Equatable {
         city: data['city'],
         country: data['country'],
         imageUrl: data['image'],
-        wiki: data['wiki']);
+        wiki: data['wikipediaLink']);
   }
 
   Map<String, Object> toMap() {
@@ -50,7 +50,7 @@ class MonumentEntity extends Equatable {
       'city': city,
       'country': country,
       'image': imageUrl,
-      'wiki': wiki
+      'wikipediaLink': wiki
     };
   }
 

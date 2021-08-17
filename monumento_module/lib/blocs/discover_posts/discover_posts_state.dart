@@ -8,6 +8,7 @@ class DiscoverPostsInitial extends DiscoverPostsState {
   @override
   List<Object> get props => [];
 }
+
 class InitialDiscoverPostsLoaded extends DiscoverPostsState {
   final List<PostModel> initialPosts;
 
@@ -20,11 +21,10 @@ class InitialDiscoverPostsLoaded extends DiscoverPostsState {
 class MoreDiscoverPostsLoaded extends DiscoverPostsState {
   final List<PostModel> posts;
   bool hasReachedMax;
-  MoreDiscoverPostsLoaded({@required this.posts}){
-    if(posts.isEmpty){
+  MoreDiscoverPostsLoaded({@required this.posts}) {
+    if (posts.isEmpty) {
       hasReachedMax = true;
-    }
-    else{
+    } else {
       hasReachedMax = false;
     }
   }

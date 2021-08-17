@@ -7,7 +7,6 @@ import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 
 part 'follow_event.dart';
-
 part 'follow_state.dart';
 
 class FollowBloc extends Bloc<FollowEvent, FollowState> {
@@ -25,12 +24,13 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
     // TODO: implement mapEventToState
     if (event is FollowUser) {
       yield* _mapFollowUserToState(
-        targetUser: event.targetUser, currentUser: event.currentUser
-      );
+          targetUser: event.targetUser, currentUser: event.currentUser);
     } else if (event is UnfollowUser) {
-      yield* _mapUnfollowUserToState(targetUser: event.targetUser, currentUser: event.currentUser);
+      yield* _mapUnfollowUserToState(
+          targetUser: event.targetUser, currentUser: event.currentUser);
     } else if (event is GetFollowStatus) {
-      yield* _mapGetFollowStatusToState(targetUser: event.targetUser, currentUser: event.currentUser);
+      yield* _mapGetFollowStatusToState(
+          targetUser: event.targetUser, currentUser: event.currentUser);
     }
   }
 
@@ -43,7 +43,7 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
           targetUser: targetUser, currentUser: currentUser);
       add(GetFollowStatus(targetUser: targetUser, currentUser: currentUser));
     } catch (e) {
-      print(e.toString()+'follow');
+      print(e.toString() + 'follow');
 
       yield FollowStateError(e.toString());
     }
@@ -59,7 +59,7 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
           targetUser: targetUser, currentUser: currentUser);
       add(GetFollowStatus(targetUser: targetUser, currentUser: currentUser));
     } catch (e) {
-      print(e.toString()+'unfollow');
+      print(e.toString() + 'unfollow');
       yield FollowStateError(e.toString());
     }
   }
@@ -69,16 +69,15 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
       @required UserModel currentUser}) async* {
     try {
       yield LoadingFollowState();
-      if(targetUser == currentUser){
+      if (targetUser == currentUser) {
         yield CurrentUserProfile();
-      }
-      else {
+      } else {
         bool following = await _socialRepository.getFollowStatus(
             targetUser: targetUser, currentUser: currentUser);
         yield FollowStatusRetrieved(following: following);
       }
     } catch (e) {
-      print(e.toString()+'status');
+      print(e.toString() + 'status');
 
       yield FollowStateError(e.toString());
     }

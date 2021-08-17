@@ -21,11 +21,10 @@ class InitialProfilePostsLoaded extends ProfilePostsState {
 class MoreProfilePostsLoaded extends ProfilePostsState {
   final List<PostModel> posts;
   bool hasReachedMax;
-  MoreProfilePostsLoaded({@required this.posts}){
-    if(posts.isEmpty){
+  MoreProfilePostsLoaded({@required this.posts}) {
+    if (posts.isEmpty) {
       hasReachedMax = true;
-    }
-    else{
+    } else {
       hasReachedMax = false;
     }
   }
