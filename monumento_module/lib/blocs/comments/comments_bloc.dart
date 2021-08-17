@@ -8,7 +8,6 @@ import 'package:monumento/resources/social/models/comment_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 
 part 'comments_event.dart';
-
 part 'comments_state.dart';
 
 class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {

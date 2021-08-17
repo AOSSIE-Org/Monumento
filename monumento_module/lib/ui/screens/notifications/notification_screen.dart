@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:monumento/blocs/notifications/notifications_bloc.dart';
-import 'package:monumento/ui/screens/notifications/components/notification_tile.dart';
-import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/resources/social/models/notification_model.dart';
+import 'package:monumento/ui/screens/notifications/components/notification_tile.dart';
 import 'package:monumento/ui/widgets/custom_app_bar.dart';
+import 'package:monumento/utilities/constants.dart';
 
 class NotificationsScreen extends StatefulWidget {
   const NotificationsScreen();

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:monumento/blocs/feed/feed_bloc.dart';
-import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
 import 'package:monumento/ui/screens/feed/components/feed_tile.dart';
 import 'package:monumento/ui/widgets/custom_app_bar.dart';
 import 'package:monumento/ui/widgets/shimmer_feed_tile.dart';
+import 'package:monumento/utilities/constants.dart';
 
 class FeedScreen extends StatefulWidget {
   @override

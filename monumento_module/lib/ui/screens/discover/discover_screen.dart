@@ -4,15 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:monumento/blocs/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/blocs/search/search_bloc.dart';
-import 'package:monumento/ui/screens/discover/components/search_bar.dart';
-import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
+import 'package:monumento/ui/screens/discover/components/search_bar.dart';
 import 'package:monumento/ui/screens/profile/profile_screen.dart';
 import 'package:monumento/ui/widgets/custom_app_bar.dart';
 import 'package:monumento/ui/widgets/discover_post_loading.dart';
 import 'package:monumento/ui/widgets/search_tile_loading.dart';
+import 'package:monumento/utilities/constants.dart';
 
 //TODO lazy loading for search results
 class SearchScreen extends StatefulWidget {

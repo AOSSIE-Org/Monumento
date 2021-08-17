@@ -5,14 +5,13 @@ import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/follow/follow_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
-import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/blocs/profile_posts/profile_posts_bloc.dart';
-import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/models/post_model.dart';
 import 'package:monumento/ui/screens/bookmark/bookmark_screen.dart';
 import 'package:monumento/ui/screens/login/login_screen.dart';
+import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/utilities/utils.dart';
 
 class ProfileScreen extends StatefulWidget {

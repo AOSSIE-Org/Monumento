@@ -3,16 +3,14 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
-import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
+import 'package:monumento/utilities/constants.dart';
 
 part 'login_register_event.dart';
-
 part 'login_register_state.dart';
 
 class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {

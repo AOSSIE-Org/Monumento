@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/resources/authentication/entities/user_entity.dart';
-import 'package:monumento/resources/social/entities/post_entity.dart';
 
 class CommentEntity {
   final String comment;

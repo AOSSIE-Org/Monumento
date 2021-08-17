@@ -8,7 +8,6 @@ import 'package:monumento/resources/social/models/post_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 
 part 'discover_posts_event.dart';
-
 part 'discover_posts_state.dart';
 
 class DiscoverPostsBloc extends Bloc<DiscoverPostsEvent, DiscoverPostsState> {

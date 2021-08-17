@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
 import 'package:monumento/blocs/profile/profile_bloc.dart';
@@ -14,7 +14,6 @@ import 'package:monumento/ui/screens/feed/feed_screen.dart';
 import 'package:monumento/ui/screens/monumento/monumento_screen.dart';
 import 'package:monumento/ui/screens/new_post/new_post_screen.dart';
 import 'package:monumento/ui/screens/profile/profile_screen.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:monumento/ui/widgets/image_picker.dart';
 
 import '../discover/discover_screen.dart';
