@@ -44,7 +44,7 @@ class FirebaseSocialRepository implements SocialRepository {
         .map((e) => PostModel.fromEntity(
             entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
-    print("$posts lololol");
+    print("$posts");
     return posts;
   }
 
@@ -269,7 +269,7 @@ class FirebaseSocialRepository implements SocialRepository {
         .map((e) => PostModel.fromEntity(
             entity: PostEntity.fromSnapshot(e), documentSnapshot: e))
         .toList();
-    print("$posts lololol");
+    print("$posts");
     return posts;
   }
 

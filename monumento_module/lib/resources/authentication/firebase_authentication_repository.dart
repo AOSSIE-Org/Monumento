@@ -33,7 +33,6 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
   }
 
   Future<Map<String, dynamic>> signInWithGoogle() async {
-    print('Google Sign In called');
     final GoogleSignInAccount googleSignInAccount =
         await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication =
@@ -72,9 +71,7 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
     final UserCredential userCredential = await _firebaseAuth
         .createUserWithEmailAndPassword(email: email, password: password);
     final User currentUser = userCredential.user;
-    if (currentUser == null) {
-      print('current null');
-    }
+
     DocumentSnapshot userDocSnap = await getOrCreateUserDocForEmailSignup(
         status: status,
         name: name,

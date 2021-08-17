@@ -47,7 +47,6 @@ class RouteGenerator {
     if (settings.name == CommentsScreen.route) {
       CommentsScreenArguments args =
           settings.arguments as CommentsScreenArguments;
-      print(args.postDocumentRef.id + "printt");
       return MaterialPageRoute(builder: (context) {
         return CommentsScreen(
           postDocumentRef: args.postDocumentRef,
