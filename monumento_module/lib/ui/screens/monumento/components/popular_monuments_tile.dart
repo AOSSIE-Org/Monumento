@@ -4,6 +4,7 @@ import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/ui/screens/monument_detail/detail_screen.dart';
+import 'package:monumento/ui/widgets/feed_image_loading.dart';
 
 class PopularMonumentTile extends StatelessWidget {
   const PopularMonumentTile(
@@ -46,8 +47,8 @@ class PopularMonumentTile extends StatelessWidget {
             placeholder: (context, url) => Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
-                color: Colors.blueGrey,
               ),
+              child: FeedImageLoading(),
               height: 120,
             ),
             errorWidget: (context, url, error) => Icon(Icons.error),

@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/blocs/bookmarked_monuments/bookmarked_monuments_bloc.dart';
-import 'package:monumento/blocs/profile/profile_bloc.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/ui/screens/feed/feed_screen.dart';
@@ -33,18 +32,15 @@ class _HomeScreenState extends State<HomeScreen> {
   final _key = GlobalKey<ScaffoldState>();
 
   List<Map<String, dynamic>> monumentMapList = new List();
-  ProfileBloc _profileBloc;
   BookmarkedMonumentsBloc _bookmarkedMonumentsBloc;
 
   @override
   void initState() {
     super.initState();
-    _profileBloc = BlocProvider.of<ProfileBloc>(context);
     _bookmarkedMonumentsBloc =
         BlocProvider.of<BookmarkedMonumentsBloc>(context);
     String uid = widget.user.uid;
     _bookmarkedMonumentsBloc.add(RetrieveBookmarkedMonuments(userId: uid));
-    _profileBloc.add(GetProfileData(userId: uid));
     _currentIndex = widget.navBarIndex;
   }
 
