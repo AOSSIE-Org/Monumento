@@ -7,7 +7,6 @@ import 'package:monumento/resources/monuments/models/bookmarked_monument_model.d
 import 'package:monumento/resources/monuments/monument_repository.dart';
 
 part 'bookmarked_monuments_event.dart';
-
 part 'bookmarked_monuments_state.dart';
 
 class BookmarkedMonumentsBloc

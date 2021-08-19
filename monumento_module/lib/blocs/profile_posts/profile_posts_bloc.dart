@@ -20,14 +20,14 @@ class ProfilePostsBloc extends Bloc<ProfilePostsEvent, ProfilePostsState> {
 
   @override
   Stream<ProfilePostsState> mapEventToState(
-      ProfilePostsEvent event,
-      ) async* {
+    ProfilePostsEvent event,
+  ) async* {
     // TODO: implement mapEventToState
     if (event is LoadInitialProfilePosts) {
       yield* _mapLoadInitialProfilePostsToState(uid: event.uid);
     } else if (event is LoadMoreProfilePosts) {
       yield* _mapLoadMoreProfilePostsToState(
-          startAfterDoc: event.startAfterDoc,uid:event.uid);
+          startAfterDoc: event.startAfterDoc, uid: event.uid);
     }
   }
 
@@ -36,18 +36,19 @@ class ProfilePostsBloc extends Bloc<ProfilePostsEvent, ProfilePostsState> {
     try {
       yield LoadingInitialProfilePosts();
       List<PostModel> initialPosts =
-      await _socialRepository.getInitialProfilePosts(uid: uid);
+          await _socialRepository.getInitialProfilePosts(uid: uid);
       yield InitialProfilePostsLoaded(initialPosts: initialPosts);
     } catch (_) {
       yield InitialProfilePostsLoadingFailed(message: _.toString());
     }
   }
+
   Stream<ProfilePostsState> _mapLoadMoreProfilePostsToState(
-      {DocumentSnapshot startAfterDoc,@required String uid}) async* {
+      {DocumentSnapshot startAfterDoc, @required String uid}) async* {
     try {
       yield LoadingMoreProfilePosts();
-      List<PostModel> posts =
-      await _socialRepository.getMoreProfilePosts(startAfterDoc: startAfterDoc,uid: uid);
+      List<PostModel> posts = await _socialRepository.getMoreProfilePosts(
+          startAfterDoc: startAfterDoc, uid: uid);
 
       yield MoreProfilePostsLoaded(posts: posts);
     } catch (_) {

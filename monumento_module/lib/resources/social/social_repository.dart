@@ -14,9 +14,10 @@ abstract class SocialRepository {
   Future<List<PostModel>> getMorePosts(
       {@required DocumentSnapshot startAfterDoc});
 
-  Future<PostModel> uploadNewPost({@required String title,
-    @required String location,
-    @required String imageUrl});
+  Future<PostModel> uploadNewPost(
+      {@required String title,
+      @required String location,
+      @required String imageUrl});
 
   Future<String> uploadImageForUrl(
       {@required File file, @required String address});
@@ -25,15 +26,18 @@ abstract class SocialRepository {
 
   Future<List<UserModel>> searchPeople({@required String searchQuery});
 
-  Future<List<UserModel>> getMoreSearchResults({@required String searchQuery, @required DocumentSnapshot startAfterDoc});
+  Future<List<UserModel>> getMoreSearchResults(
+      {@required String searchQuery, @required DocumentSnapshot startAfterDoc});
 
-  Future<CommentModel> addNewComment({@required DocumentReference postDocReference,@required String comment});
+  Future<CommentModel> addNewComment(
+      {@required DocumentReference postDocReference, @required String comment});
 
-  Future<List<CommentModel>> getInitialComments({@required DocumentReference postDocReference});
+  Future<List<CommentModel>> getInitialComments(
+      {@required DocumentReference postDocReference});
 
   Future<List<CommentModel>> getMoreComments(
-      {@required DocumentReference postDocReference, @required DocumentSnapshot startAfterDoc});
-
+      {@required DocumentReference postDocReference,
+      @required DocumentSnapshot startAfterDoc});
 
   Future<List<NotificationModel>> getInitialNotifications();
 
@@ -42,29 +46,25 @@ abstract class SocialRepository {
 
   Future<List<PostModel>> getInitialDiscoverPosts();
 
-
   Future<List<PostModel>> getMoreDiscoverPosts(
       {@required DocumentSnapshot startAfterDoc});
 
   Future<List<PostModel>> getInitialProfilePosts({@required String uid});
 
-
   Future<List<PostModel>> getMoreProfilePosts(
-      {@required DocumentSnapshot startAfterDoc,@required String uid});
+      {@required DocumentSnapshot startAfterDoc, @required String uid});
 
+  Future<void> followUser(
+      {@required UserModel targetUser, @required UserModel currentUser});
 
-  Future<void> followUser({@required UserModel targetUser,@required UserModel currentUser });
+  Future<void> unfollowUser(
+      {@required UserModel targetUser, @required UserModel currentUser});
 
-  Future<void> unfollowUser({@required UserModel targetUser,@required UserModel currentUser});
+  Future<bool> getFollowStatus(
+      {@required UserModel targetUser, @required UserModel currentUser});
 
-  Future<bool> getFollowStatus({@required UserModel targetUser,@required UserModel currentUser});
-
-  Future<NotificationModel> addNewNotification({@required UserModel targetUser, @required NotificationModel notification});
+  Future<NotificationModel> addNewNotification(
+      {@required UserModel targetUser,
+      @required NotificationModel notification});
   Future<bool> checkUserNameAvailability({@required String username});
-
-
-
-
-
-
 }

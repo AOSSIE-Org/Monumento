@@ -17,27 +17,22 @@ class FollowStatusRetrieved extends FollowState {
   @override
   List<Object> get props => [];
 }
+
 class FollowStateError extends FollowState {
   final String message;
 
   FollowStateError(this.message);
-
 
   @override
   List<Object> get props => [];
 }
 
 class LoadingFollowState extends FollowState {
-
-
   @override
   List<Object> get props => [];
 }
 
 class CurrentUserProfile extends FollowState {
-
-
   @override
   List<Object> get props => [];
 }
-
