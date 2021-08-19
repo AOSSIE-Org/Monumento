@@ -15,13 +15,13 @@ class UserEntity extends Equatable {
 
   UserEntity(
       {this.following = const [],
-        this.followers = const [],
-        this.email,
-        this.uid,
-        this.name = "Monumento User",
-        this.profilePictureUrl,
-        this.status = " Status",
-        this.username});
+      this.followers = const [],
+      this.email,
+      this.uid,
+      this.name = "Monumento User",
+      this.profilePictureUrl,
+      this.status = " Status",
+      this.username});
 
   @override
   List<Object> get props {
@@ -29,8 +29,12 @@ class UserEntity extends Equatable {
   }
 
   factory UserEntity.fromMap(Map<String, Object> data) {
-    List<String> mappedFollowers = data['followers'] != null ? (data['followers'] as List).map<String>((e) => e).toList() : [];
-    List<String> mappedFollowing = data['following'] != null ? (data['following'] as List).map<String>((e) => e).toList() : [];
+    List<String> mappedFollowers = data['followers'] != null
+        ? (data['followers'] as List).map<String>((e) => e).toList()
+        : [];
+    List<String> mappedFollowing = data['following'] != null
+        ? (data['following'] as List).map<String>((e) => e).toList()
+        : [];
 
     return UserEntity(
         uid: data['uid'] as String,
@@ -40,13 +44,17 @@ class UserEntity extends Equatable {
         status: data['status'] as String,
         username: data['username'] as String,
         followers: mappedFollowers,
-        following:mappedFollowing);
+        following: mappedFollowing);
   }
 
   factory UserEntity.fromSnapshot(DocumentSnapshot snap) {
     Map<String, dynamic> data = snap.data();
-    List<String> mappedFollowers = data['followers'] != null ? (data['followers'] as List).map<String>((e) => e).toList() : [];
-    List<String> mappedFollowing = data['following'] != null ? (data['following'] as List).map<String>((e) => e).toList() : [];
+    List<String> mappedFollowers = data['followers'] != null
+        ? (data['followers'] as List).map<String>((e) => e).toList()
+        : [];
+    List<String> mappedFollowing = data['following'] != null
+        ? (data['following'] as List).map<String>((e) => e).toList()
+        : [];
 
     return UserEntity(
         uid: data['uid'],

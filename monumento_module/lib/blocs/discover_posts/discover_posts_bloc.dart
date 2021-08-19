@@ -8,7 +8,6 @@ import 'package:monumento/resources/social/models/post_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 
 part 'discover_posts_event.dart';
-
 part 'discover_posts_state.dart';
 
 class DiscoverPostsBloc extends Bloc<DiscoverPostsEvent, DiscoverPostsState> {
@@ -37,7 +36,7 @@ class DiscoverPostsBloc extends Bloc<DiscoverPostsEvent, DiscoverPostsState> {
       yield LoadingInitialDiscoverPosts();
 
       List<PostModel> initialPosts =
-      await _socialRepository.getInitialFeedPosts();
+          await _socialRepository.getInitialFeedPosts();
 
       yield InitialDiscoverPostsLoaded(initialPosts: initialPosts);
     } catch (e) {
@@ -50,7 +49,7 @@ class DiscoverPostsBloc extends Bloc<DiscoverPostsEvent, DiscoverPostsState> {
     try {
       yield LoadingMoreDiscoverPosts();
       List<PostModel> posts =
-      await _socialRepository.getMorePosts(startAfterDoc: startAfterDoc);
+          await _socialRepository.getMorePosts(startAfterDoc: startAfterDoc);
 
       yield MoreDiscoverPostsLoaded(posts: posts);
     } catch (e) {

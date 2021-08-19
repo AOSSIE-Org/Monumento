@@ -15,7 +15,7 @@ class FirebaseMonumentRepository implements MonumentRepository {
       : _database = database ?? FirebaseFirestore.instance;
 
   Future<List<MonumentModel>> getPopularMonuments() async {
-    final docs = await _database.collection('popular_monuments').get();
+    final docs = await _database.collection('monuments').get();
     final List<MonumentModel> popularMonumentsDocs = docs.docs
         .map(
             (doc) => MonumentModel.fromEntity(MonumentEntity.fromSnapshot(doc)))

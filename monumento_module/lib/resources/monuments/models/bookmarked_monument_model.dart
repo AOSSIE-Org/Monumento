@@ -5,19 +5,24 @@ class BookmarkedMonumentModel {
   final String bookmarkedByUid;
   final MonumentModel monumentModel;
 
-  BookmarkedMonumentModel({this.bookmarkedByUid,this.monumentModel});
+  BookmarkedMonumentModel({this.bookmarkedByUid, this.monumentModel});
 
-  BookmarkedMonumentModel copyWith(){
-    return BookmarkedMonumentModel(bookmarkedByUid: bookmarkedByUid,monumentModel: monumentModel);
+  BookmarkedMonumentModel copyWith() {
+    return BookmarkedMonumentModel(
+        bookmarkedByUid: bookmarkedByUid, monumentModel: monumentModel);
   }
 
   BookmarkedMonumentEntity toEntity() {
-    return BookmarkedMonumentEntity(bookmarkedByUid: bookmarkedByUid, monumentEntity: monumentModel.toEntity());
+    return BookmarkedMonumentEntity(
+        bookmarkedByUid: bookmarkedByUid,
+        monumentEntity: monumentModel.toEntity());
   }
 
-  static BookmarkedMonumentModel fromEntity(BookmarkedMonumentEntity bookmarkedMonumentEntity) {
-    return BookmarkedMonumentModel(bookmarkedByUid: bookmarkedMonumentEntity.bookmarkedByUid, monumentModel: MonumentModel.fromEntity(bookmarkedMonumentEntity.monumentEntity));
+  static BookmarkedMonumentModel fromEntity(
+      BookmarkedMonumentEntity bookmarkedMonumentEntity) {
+    return BookmarkedMonumentModel(
+        bookmarkedByUid: bookmarkedMonumentEntity.bookmarkedByUid,
+        monumentModel:
+            MonumentModel.fromEntity(bookmarkedMonumentEntity.monumentEntity));
   }
-
-  
 }

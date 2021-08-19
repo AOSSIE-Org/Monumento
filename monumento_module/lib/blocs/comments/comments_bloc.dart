@@ -8,7 +8,6 @@ import 'package:monumento/resources/social/models/comment_model.dart';
 import 'package:monumento/resources/social/social_repository.dart';
 
 part 'comments_event.dart';
-
 part 'comments_state.dart';
 
 class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
@@ -20,7 +19,9 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
         super(CommentsInitial());
 
   @override
-  Stream<CommentsState> mapEventToState(CommentsEvent event,) async* {
+  Stream<CommentsState> mapEventToState(
+    CommentsEvent event,
+  ) async* {
     if (event is LoadInitialComments) {
       yield* _mapLoadInitialCommentsToState(
           documentRef: event.postDocReference);
@@ -30,14 +31,14 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     }
   }
 
-
   Stream<CommentsState> _mapLoadInitialCommentsToState(
       {DocumentReference documentRef}) async* {
     try {
       yield LoadingInitialComments();
       List<CommentModel> comments = await _socialRepository.getInitialComments(
           postDocReference: documentRef);
-      yield InitialCommentsLoaded(initialComments: comments);
+      yield InitialCommentsLoaded(
+          initialComments: comments, hasReachedMax: false);
     } catch (e) {
       print(e.toString());
       yield InitialCommentsLoadingFailed(message: e);
@@ -50,12 +51,11 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
       yield LoadingMoreComments();
       List<CommentModel> comments = await _socialRepository.getMoreComments(
           postDocReference: docRef, startAfterDoc: startAfterDoc);
-      yield MoreCommentsLoaded(comments: comments,hasReachedMax: comments.isEmpty);
+      yield MoreCommentsLoaded(
+          comments: comments, hasReachedMax: comments.isEmpty);
     } catch (e) {
       print(e.toString());
       yield MoreCommentsLoadingFailed();
     }
   }
-
 }
-

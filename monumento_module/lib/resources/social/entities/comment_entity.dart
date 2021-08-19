@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meta/meta.dart';
 import 'package:monumento/resources/authentication/entities/user_entity.dart';
-import 'package:monumento/resources/social/entities/post_entity.dart';
 
-class CommentEntity{
+class CommentEntity {
   final String comment;
   final String postInvolvedId;
   final UserEntity author;
   final int timeStamp;
-
 
   const CommentEntity({
     @required this.comment,
@@ -63,7 +61,7 @@ class CommentEntity{
   }
 
   factory CommentEntity.fromSnapshot(DocumentSnapshot snapshot) {
-    Map<String,dynamic> data = snapshot.data();
+    Map<String, dynamic> data = snapshot.data();
     return new CommentEntity(
       comment: data['comment'] as String,
       postInvolvedId: data['postInvolvedId'] as String,
@@ -80,6 +78,4 @@ class CommentEntity{
       'timeStamp': this.timeStamp,
     };
   }
-
-
 }

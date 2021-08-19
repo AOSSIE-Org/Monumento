@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:monumento/resources/monuments/entities/monument_entity.dart';
 import 'package:monumento/resources/monuments/models/monument_model.dart';
 import 'package:monumento/resources/monuments/monument_repository.dart';
 
 part 'popular_monuments_event.dart';
-
 part 'popular_monuments_state.dart';
 
 class PopularMonumentsBloc
