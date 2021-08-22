@@ -32,7 +32,7 @@ class _FeedScreenState extends State<FeedScreen> {
       FeedState currentState,
     ) {
       if (currentState is InitialFeedLoadingFailed) {
-        return Center(child: Text("FAiled"));
+        return Center(child: Text("Failed"));
       }
       if (currentState is InitialFeedLoaded ||
           currentState is MorePostsLoaded ||
