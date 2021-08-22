@@ -17,14 +17,14 @@ import 'package:monumento/utilities/constants.dart';
 
 //TODO lazy loading for search results
 class SearchScreen extends StatefulWidget {
-  const SearchScreen({Key key}) : super(key: key);
+  final FocusNode node;
+  const SearchScreen({Key key, @required this.node}) : super(key: key);
 
   @override
   _SearchScreenState createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  FocusNode _node = FocusNode();
   bool _showSearch = false;
   List<UserModel> users = [];
   List<PostModel> posts = [];
@@ -36,9 +36,9 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    _node.addListener(() {
+    widget.node.addListener(() {
       setState(() {
-        _node.hasFocus ? _showSearch = true : _showSearch = false;
+        widget.node.hasFocus ? _showSearch = true : _showSearch = false;
       });
     });
     _searchBloc = SearchBloc(
@@ -52,8 +52,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          if (_node.hasFocus) {
-            _node.unfocus();
+          if (widget.node.hasFocus) {
+            widget.node.unfocus();
             return false;
           } else {
             return true;
@@ -64,7 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
           child: LazyLoadScrollView(
             scrollOffset: 300,
             onEndOfPage: () async {
-              if (_node.hasFocus) {
+              if (widget.node.hasFocus) {
                 SearchState state = _searchBloc.state;
                 if (state is SearchedPeople) {
                   _loadMoreSearchResults();
@@ -90,7 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 SliverToBoxAdapter(
                   child: SearchBar(
-                    node: _node,
+                    node: widget.node,
                     onChange: (query) {
                       _searchBloc.add(SearchPeople(
                           searchQuery: (query as String).replaceAll(' ', '')));
@@ -237,10 +237,13 @@ class _SearchScreenState extends State<SearchScreen> {
                           ),
                           title: Text(users[index].name),
                           subtitle: Text(users[index].email.split("@")[0]),
-                          onTap: () => Navigator.pushNamed(
-                              context, ProfileScreen.route,
-                              arguments:
-                                  ProfileScreenArguments(user: users[index])),
+                          onTap: () {
+                            widget.node.unfocus();
+                            Navigator.pushNamed(
+                                context, ProfileScreen.route,
+                                arguments:
+                                ProfileScreenArguments(user: users[index]));
+                          },
                         ),
                         CircularProgressIndicator(),
                       ],
