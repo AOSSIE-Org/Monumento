@@ -6,6 +6,7 @@ import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/feed/feed_bloc.dart';
 import 'package:monumento/blocs/new_post/new_post_bloc.dart';
 import 'package:monumento/navigation/arguments.dart';
+import 'package:monumento/resources/social/social_repository.dart';
 import 'package:monumento/ui/screens/home/home_screen.dart';
 
 class NewPostScreen extends StatefulWidget {
@@ -25,13 +26,15 @@ class _NewPostScreenState extends State<NewPostScreen> {
   @override
   void initState() {
     super.initState();
-    _newPostBloc = BlocProvider.of<NewPostBloc>(context);
+    _newPostBloc = NewPostBloc(
+        socialRepository: RepositoryProvider.of<SocialRepository>(context));
     _feedBloc = BlocProvider.of<FeedBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<NewPostBloc, NewPostState>(
+        bloc: _newPostBloc,
         listener: (context, state) {
           if (state is NewPostAdded) {
             print("new post added" + state.post.imageUrl);

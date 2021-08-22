@@ -29,7 +29,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ProfilePostsBloc _profilePostsBloc;
   FollowBloc _followBloc;
   AuthenticationBloc _authBloc;
-  UserModel currentUser;
+
+  // UserModel currentUser;
   LoginRegisterBloc _loginRegisterBloc;
 
   @override
@@ -41,10 +42,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _followBloc = FollowBloc(
         socialRepository: RepositoryProvider.of<SocialRepository>(context));
     _authBloc = BlocProvider.of<AuthenticationBloc>(context);
-    currentUser = (_authBloc.state as Authenticated).user;
-    _followBloc.add(
-        GetFollowStatus(targetUser: widget.user, currentUser: currentUser));
-
+    // currentUser = (_authBloc.state as Authenticated).user;
+    var authState = _authBloc.state;
+    if (authState is Authenticated) {
+      _followBloc.add(GetFollowStatus(
+          targetUser: widget.user, currentUser: authState.user));
+    }
     super.initState();
   }
 
@@ -63,146 +66,172 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: LazyLoadScrollView(
-                scrollOffset: 300,
-                onEndOfPage: () {
-                  ProfilePostsState state = _profilePostsBloc.state;
-                  if (state is InitialProfilePostsLoaded) {
-                    _profilePostsBloc.add(LoadMoreProfilePosts(
-                        startAfterDoc: posts.last.documentSnapshot,
-                        uid: widget.user.uid));
-                  } else if (state is MoreProfilePostsLoaded &&
-                      state.hasReachedMax) {
-                    _profilePostsBloc.add(LoadMoreProfilePosts(
-                        startAfterDoc: posts.last.documentSnapshot,
-                        uid: widget.user.uid));
-                  }
-                },
-                child: CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16.0),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                  MediaQuery.of(context).size.height * .15 / 2),
-                              child: widget.user.profilePictureUrl != null
-                                  ? CachedNetworkImage(
-                                      imageUrl: widget.user.profilePictureUrl,
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              .15,
-                                      placeholder: (_, text) {
-                                        return Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .15,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              .15,
-                                        );
-                                      },
-                                    )
-                                  : Image.asset("assets/explore.jpg"),
+          body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
+            bloc: _authBloc,
+            listener: (_, authState) {
+              if (authState is Authenticated) {
+                _followBloc.add(GetFollowStatus(
+                    targetUser: widget.user, currentUser: authState.user));
+              }
+            },
+            builder: (context, authState) {
+              if (authState is Authenticated) {
+                return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: LazyLoadScrollView(
+                      scrollOffset: 300,
+                      onEndOfPage: () {
+                        ProfilePostsState state = _profilePostsBloc.state;
+                        if (state is InitialProfilePostsLoaded) {
+                          _profilePostsBloc.add(LoadMoreProfilePosts(
+                              startAfterDoc: posts.last.documentSnapshot,
+                              uid: widget.user.uid));
+                        } else if (state is MoreProfilePostsLoaded &&
+                            state.hasReachedMax) {
+                          _profilePostsBloc.add(LoadMoreProfilePosts(
+                              startAfterDoc: posts.last.documentSnapshot,
+                              uid: widget.user.uid));
+                        }
+                      },
+                      child: CustomScrollView(
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(
+                                        MediaQuery.of(context).size.height *
+                                            .15 /
+                                            2),
+                                    child: widget.user.profilePictureUrl != null
+                                        ? CachedNetworkImage(
+                                            imageUrl:
+                                                widget.user.profilePictureUrl,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                .15,
+                                            placeholder: (_, text) {
+                                              return Container(
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .15,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    .15,
+                                              );
+                                            },
+                                          )
+                                        : Image.asset("assets/explore.jpg"),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 16,
+                                ),
+                                Text(
+                                  widget.user.name,
+                                  style: kStyle16W600,
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                Text('@${widget.user.email.split("@")[0]}'),
+                                //TODO : username
+                                SizedBox(
+                                  height: 16,
+                                ),
+                                BlocBuilder<FollowBloc, FollowState>(
+                                  bloc: _followBloc,
+                                  builder: (context, state) {
+                                    return getFollowButton(
+                                        state, authState.user);
+                                  },
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(
-                            height: 16,
+                          SliverToBoxAdapter(
+                            child: SizedBox(
+                              height: 16,
+                            ),
                           ),
-                          Text(
-                            widget.user.name,
-                            style: kStyle16W600,
-                          ),
-                          SizedBox(
-                            height: 8,
-                          ),
-                          Text('@${widget.user.email.split("@")[0]}'),
-                          //TODO : username
-                          SizedBox(
-                            height: 16,
-                          ),
-                          BlocBuilder<FollowBloc, FollowState>(
-                            bloc: _followBloc,
-                            builder: (context, state) {
-                              return getFollowButton(state);
+                          BlocBuilder<ProfilePostsBloc, ProfilePostsState>(
+                            bloc: _profilePostsBloc,
+                            builder: (context, currentState) {
+                              if (currentState
+                                  is InitialProfilePostsLoadingFailed) {
+                                return SliverFillRemaining(
+                                  child: Center(
+                                    child: Text(currentState.message),
+                                  ),
+                                );
+                              }
+
+                              if (currentState is InitialProfilePostsLoaded ||
+                                  currentState is MoreProfilePostsLoaded ||
+                                  currentState is LoadingMoreProfilePosts ||
+                                  currentState
+                                      is MoreProfilePostsLoadingFailed) {
+                                if (currentState is InitialProfilePostsLoaded) {
+                                  posts = [];
+                                  posts.insertAll(
+                                      posts.length, currentState.initialPosts);
+                                }
+                                if (currentState is MoreProfilePostsLoaded) {
+                                  posts.insertAll(
+                                      posts.length, currentState.posts);
+                                }
+                                return posts.isEmpty
+                                    ? SliverFillRemaining(
+                                        child: Center(
+                                          child: Text("No posts to display"),
+                                        ),
+                                      )
+                                    : SliverGrid(
+                                        delegate: SliverChildBuilderDelegate(
+                                            (_, index) {
+                                          return ClipRRect(
+                                            child: CachedNetworkImage(
+                                                imageUrl:
+                                                    posts[index].imageUrl),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          );
+                                        }, childCount: posts.length),
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                childAspectRatio: 1,
+                                                mainAxisSpacing: 8,
+                                                crossAxisSpacing: 8),
+                                      );
+                              }
+                              return SliverFillRemaining(
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              );
                             },
                           ),
                         ],
                       ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 16,
-                      ),
-                    ),
-                    BlocBuilder<ProfilePostsBloc, ProfilePostsState>(
-                      bloc: _profilePostsBloc,
-                      builder: (context, currentState) {
-                        if (currentState is InitialProfilePostsLoadingFailed) {
-                          return SliverFillRemaining(
-                            child: Center(
-                              child: Text(currentState.message),
-                            ),
-                          );
-                        }
-
-                        if (currentState is InitialProfilePostsLoaded ||
-                            currentState is MoreProfilePostsLoaded ||
-                            currentState is LoadingMoreProfilePosts ||
-                            currentState is MoreProfilePostsLoadingFailed) {
-                          if (currentState is InitialProfilePostsLoaded) {
-                            posts = [];
-                            posts.insertAll(
-                                posts.length, currentState.initialPosts);
-                          }
-                          if (currentState is MoreProfilePostsLoaded) {
-                            posts.insertAll(posts.length, currentState.posts);
-                          }
-                          return posts.isEmpty
-                              ? SliverFillRemaining(
-                                  child: Center(
-                                    child: Text("No posts to display"),
-                                  ),
-                                )
-                              : SliverGrid(
-                                  delegate:
-                                      SliverChildBuilderDelegate((_, index) {
-                                    return ClipRRect(
-                                      child: CachedNetworkImage(
-                                          imageUrl: posts[index].imageUrl),
-                                      borderRadius: BorderRadius.circular(5),
-                                    );
-                                  }, childCount: posts.length),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: 1,
-                                          mainAxisSpacing: 8,
-                                          crossAxisSpacing: 8),
-                                );
-                        }
-                        return SliverFillRemaining(
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              )),
+                    ));
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget getFollowButton(FollowState state) {
+  Widget getFollowButton(FollowState state, UserModel currentUser) {
     if (state is FollowStatusRetrieved) {
       return SizedBox(
         width: MediaQuery.of(context).size.width,

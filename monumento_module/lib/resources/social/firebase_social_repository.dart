@@ -295,7 +295,7 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<List<PostModel>> getInitialProfilePosts({String uid}) async {
     QuerySnapshot snap = await _database
         .collection("posts")
-        // .where("postByUid", isEqualTo: uid)
+        .where("postByUid", isEqualTo: uid)
         .orderBy("timeStamp", descending: true)
         .limit(10)
         .get();
@@ -313,7 +313,7 @@ class FirebaseSocialRepository implements SocialRepository {
       {DocumentSnapshot startAfterDoc, String uid}) async {
     QuerySnapshot snap = await _database
         .collection("posts")
-        // .where("postByUid", isEqualTo: uid)
+        .where("postByUid", isEqualTo: uid)
         .orderBy("timeStamp", descending: true)
         .startAfterDocument(startAfterDoc)
         .limit(10)

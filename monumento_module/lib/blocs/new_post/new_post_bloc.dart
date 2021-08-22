@@ -13,7 +13,7 @@ part 'new_post_state.dart';
 class NewPostBloc extends Bloc<NewPostEvent, NewPostState> {
   final SocialRepository _socialRepository;
 
-  NewPostBloc({SocialRepository socialRepository})
+  NewPostBloc({@required SocialRepository socialRepository})
       : assert(socialRepository != null),
         _socialRepository = socialRepository,
         super(NewPostInitial());
