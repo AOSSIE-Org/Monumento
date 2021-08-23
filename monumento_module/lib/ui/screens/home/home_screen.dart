@@ -42,13 +42,15 @@ class _HomeScreenState extends State<HomeScreen> {
     _bookmarkedMonumentsBloc.add(RetrieveBookmarkedMonuments(userId: uid));
     _currentIndex = widget.navBarIndex;
   }
-
+  FocusNode discoverNode = FocusNode();
   int _currentIndex = 0;
 
   void onTabTapped(int newIndex) {
+
     if (newIndex == 2) {
       newPostBottomSheet();
     } else {
+      discoverNode.unfocus();
       setState(() {
         _currentIndex = newIndex;
       });
@@ -68,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               FeedScreen(),
               Container(),
-              SearchScreen(),
+              SearchScreen(node: discoverNode,),
               ProfileScreen(
                 user: widget.user,
               ),
