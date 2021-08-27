@@ -37,12 +37,21 @@ class SceneformFragment : AppCompatActivity() {
     private val MIN_OPENGL_VERSION = 3.0
 
     private val monumentModelMap: HashMap<String, String> = hashMapOf(
-        "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
-        "Eiffel Tower" to "https://poly.googleusercontent.com/downloads/c/fp/1594652332676840/cPeRoB-RS0Q/4Z73gO10xW3/scene.gltf",
-        "Statue of Liberty" to "https://poly.googleusercontent.com/downloads/c/fp/1594203800428477/ef9Yd09Doxh/6iB-aRbRXqD/model.gltf",
-        "Colosseum" to "https://poly.googleusercontent.com/downloads/c/fp/1594117136139223/cVtCnH0tnHJ/fdSQ8NwCQDK/model.gltf",
-        "Leaning Tower of Pisa" to "https://poly.googleusercontent.com/downloads/c/fp/1592733756165702/9hcSqLXC58h/afqTiZoEw8O/f42649ee9cd14a7db955bdcee2d21ac3.gltf"
+        "Taj Mahal" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Ftaj_mahal%2Fscene.glb?alt=media&token=c6d87d03-c75a-4d53-b09b-f31db72ae7e4",
+        "Mount Rushmore National Memorial" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Fmount_rushmore%2Fscene%20(2).glb?alt=media&token=522ada26-b7ae-4ef0-b682-dc595d6bf732",
+        "Eiffel Tower" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Feiffel_tower%2Fscene%20(2).glb?alt=media&token=0ed1974f-e14c-4863-8151-0dfc1df2c173",
+        "Statue of Liberty" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Fstatue_of_liberty%2Fscene%20(2).glb?alt=media&token=6c599026-d0c8-41d8-a5fa-7a34bda96fd1",
+        "Colosseum" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Fcolosseum%2Fscene%20(2).glb?alt=media&token=c5d331fe-f81e-4b66-b156-d23d6f4c0619",
+        "Leaning Tower of Pisa" to "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Fpisa_tower%2Fscene%20(2).glb?alt=media&token=963d4438-3d65-448a-8a54-986d54a429e8"
     )
+//    private val monumentModelMap: HashMap<String, String> = hashMapOf(
+//        "Taj Mahal" to "https://poly.googleusercontent.com/downloads/c/fp/1594202789615202/ajc6GfQ7_d_/fZXEbDa8gRt/taj.gltf",
+//        "Eiffel Tower" to "https://poly.googleusercontent.com/downloads/c/fp/1594652332676840/cPeRoB-RS0Q/4Z73gO10xW3/scene.gltf",
+//        "Statue of Liberty" to "https://poly.googleusercontent.com/downloads/c/fp/1594203800428477/ef9Yd09Doxh/6iB-aRbRXqD/model.gltf",
+//        "Colosseum" to "https://poly.googleusercontent.com/downloads/c/fp/1594117136139223/cVtCnH0tnHJ/fdSQ8NwCQDK/model.gltf",
+//        "Leaning Tower of Pisa" to "https://poly.googleusercontent.com/downloads/c/fp/1592733756165702/9hcSqLXC58h/afqTiZoEw8O/f42649ee9cd14a7db955bdcee2d21ac3.gltf"
+//    )
+
 
 
     @SuppressLint("RestrictedApi")
@@ -109,8 +118,8 @@ class SceneformFragment : AppCompatActivity() {
         var wikiUrl: String = "https://en.m.wikipedia.org/wiki/Main_Page"
         if (monument.isNullOrEmpty() || monument == "Nothing Found") return wikiUrl
         for (monumentMap in monumentListMap) {
-            if (monumentMap["name"] == monument) {
-                wikiUrl = monumentMap["wiki"] as String
+            if (monumentMap["name"] == monument && monumentMap["wikipediaLink"] != null) {
+                wikiUrl = monumentMap["wikipediaLink"] as String
                 break
             }
         }
@@ -128,6 +137,7 @@ class SceneformFragment : AppCompatActivity() {
             "Statue of Liberty" -> "Statue of Liberty"
             "Colosseum" -> "Colosseum"
             "Leaning Tower of Pisa" -> "Leaning Tower of Pisa"
+            "Mount Rushmore National Memorial" -> "Mount Rushmore National Memorial"
             else -> default
         }
     }
@@ -230,7 +240,7 @@ class SceneformFragment : AppCompatActivity() {
                 fragment.context, RenderableSource.builder().setSource(
                     fragment.context,
                     Uri.parse(model),
-                    RenderableSource.SourceType.GLTF2
+                    RenderableSource.SourceType.GLB
                 )
                     .build()
             )
