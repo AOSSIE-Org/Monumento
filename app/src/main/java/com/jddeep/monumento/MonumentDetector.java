@@ -94,6 +94,8 @@ public class MonumentDetector extends AppCompatActivity {
         arInfoTv = findViewById(R.id.augment_text);
         arFragBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MonumentDetector.this, SceneformFragment.class);
+            Log.d(TAG, "onCreate: monument"+monument);
+            Log.d(TAG, "onCreate: monumentmap"+monumentListMap);
             intent.putExtra("monument", monument);
             intent.putExtra("monumentListMap", (Serializable) monumentListMap);
             startActivity(intent);

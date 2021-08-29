@@ -12,7 +12,7 @@ class BookmarkedMonumentsInitial extends BookmarkedMonumentsState {
 class BookmarkedMonumentsRetrieved extends BookmarkedMonumentsState {
   final List<BookmarkedMonumentModel> bookmarkedMonuments;
   BookmarkedMonumentsRetrieved({this.bookmarkedMonuments});
-  
+
   @override
   List<Object> get props => [bookmarkedMonuments];
 }
