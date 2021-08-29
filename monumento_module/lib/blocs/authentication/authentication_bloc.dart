@@ -7,7 +7,6 @@ import 'package:monumento/resources/authentication/authentication_repository.dar
 import 'package:monumento/resources/authentication/models/user_model.dart';
 
 part 'authentication_event.dart';
-
 part 'authentication_state.dart';
 
 class AuthenticationBloc
@@ -37,7 +36,7 @@ class AuthenticationBloc
     try {
       final user = await _authRepository.getUser();
       if (user != null) {
-        yield Authenticated(UserModel.fromEntity(user));
+        yield Authenticated(user);
       } else {
         yield Unauthenticated();
       }
@@ -49,7 +48,7 @@ class AuthenticationBloc
   Stream<AuthenticationState> _mapLoggedInToState() async* {
     final user = await _authRepository.getUser();
 
-    yield Authenticated(UserModel.fromEntity(user));
+    yield Authenticated(user);
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {

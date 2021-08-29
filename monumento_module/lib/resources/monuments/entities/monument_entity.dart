@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -9,52 +11,51 @@ class MonumentEntity extends Equatable {
   final String country;
   final String imageUrl;
   final String wiki;
-  MonumentEntity({this.id, this.city, this.country, this.imageUrl, this.name, @required this.wiki});
+  MonumentEntity(
+      {this.id,
+      this.city,
+      this.country,
+      this.imageUrl,
+      this.name,
+      @required this.wiki});
 
   @override
   List<Object> get props => [id];
 
-  Map<String, Object> toJson() {
+  factory MonumentEntity.fromMap(Map<String, Object> data) {
+    return MonumentEntity(
+        id: data['id'] as String,
+        name: data['name'] as String,
+        city: data['email'] as String,
+        country: data['country'] as String,
+        imageUrl: data['image'] as String,
+        wiki: data['wikipediaLink'] as String);
+  }
+
+  factory MonumentEntity.fromSnapshot(DocumentSnapshot snap) {
+    final Map<String, dynamic> data = snap.data();
+    return MonumentEntity(
+        id: data['id'],
+        name: data['name'],
+        city: data['city'],
+        country: data['country'],
+        imageUrl: data['image'],
+        wiki: data['wikipediaLink']);
+  }
+
+  Map<String, Object> toMap() {
     return {
       'id': id,
       'name': name,
       'city': city,
       'country': country,
       'image': imageUrl,
-      'wiki':wiki
+      'wikipediaLink': wiki
     };
   }
 
-  static MonumentEntity fromJson(Map<String, Object> json) {
-    return MonumentEntity(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      city: json['email'] as String,
-      country: json['country'] as String,
-      imageUrl: json['image'] as String,
-      wiki: json['wiki'] as String
-    );
-  }
+  String toJson() => json.encode(toMap());
 
-  static MonumentEntity fromSnapshot(DocumentSnapshot snap) {
-    return MonumentEntity(
-      id: snap.data['id'],
-      name: snap.data['name'],
-      city: snap.data['city'],
-      country: snap.data['country'],
-      imageUrl: snap.data['image'],
-      wiki: snap.data['wiki']
-    );
-  }
-
-  Map<String, Object> toDocument() {
-    return {
-      'id': id,
-      'name': name,
-      'city': city,
-      'country': country,
-      'image': imageUrl,
-      'wiki': wiki
-    };
-  }
+  factory MonumentEntity.fromJson(String source) =>
+      MonumentEntity.fromMap(json.decode(source));
 }

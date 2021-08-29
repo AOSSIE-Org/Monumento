@@ -7,7 +7,6 @@ import 'package:monumento/resources/monuments/models/bookmarked_monument_model.d
 import 'package:monumento/resources/monuments/monument_repository.dart';
 
 part 'bookmarked_monuments_event.dart';
-
 part 'bookmarked_monuments_state.dart';
 
 class BookmarkedMonumentsBloc
@@ -35,8 +34,7 @@ class BookmarkedMonumentsBloc
   Stream<BookmarkedMonumentsState> _mapRetrieveBookmarkedMonumentsToState(
       {String userId}) async* {
     _firebaseMonumentRepository.getBookmarkedMonuments(userId).listen((event) {
-      add(UpdateBookmarkedMonuments(
-          updatedBookmarkedMonuments: event.map((e) => BookmarkedMonumentModel.fromEntity(e)).toList()));
+      add(UpdateBookmarkedMonuments(updatedBookmarkedMonuments: event));
     });
   }
 

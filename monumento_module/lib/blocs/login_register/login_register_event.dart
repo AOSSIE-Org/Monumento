@@ -4,7 +4,7 @@ abstract class LoginRegisterEvent extends Equatable {
   const LoginRegisterEvent();
 }
 
-class LogOutPressed extends LoginRegisterEvent {
+class LogOutEvent extends LoginRegisterEvent {
   @override
   String toString() => 'LoggedOut';
 
@@ -40,9 +40,16 @@ class SignUpWithEmailPressed extends LoginRegisterEvent {
   final String password;
   final String name;
   final String status;
+  final String username;
+  final File profilePictureFile;
 
-
-  SignUpWithEmailPressed({@required this.email, @required this.password, @required this.name, @required this.status});
+  SignUpWithEmailPressed(
+      {@required this.email,
+      @required this.password,
+      @required this.name,
+      @required this.status,
+      @required this.username,
+      @required this.profilePictureFile});
 
   @override
   List<Object> get props => [email, password];

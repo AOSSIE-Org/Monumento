@@ -9,14 +9,32 @@ class MonumentModel {
   final String imageUrl;
   final String wiki;
 
-  MonumentModel({this.id, this.city, this.country, this.imageUrl, this.name,@required this.wiki});
+  MonumentModel(
+      {this.id,
+      this.city,
+      this.country,
+      this.imageUrl,
+      this.name,
+      @required this.wiki});
 
-  MonumentModel copyWith(){
-    return MonumentModel(id: id, name: name, city: city, country: country, wiki: wiki,imageUrl: imageUrl);
+  MonumentModel copyWith() {
+    return MonumentModel(
+        id: id,
+        name: name,
+        city: city,
+        country: country,
+        wiki: wiki,
+        imageUrl: imageUrl);
   }
 
   MonumentEntity toEntity() {
-    return MonumentEntity(id: id, name: name, city: city, country: country, wiki: wiki,imageUrl: imageUrl);
+    return MonumentEntity(
+        id: id,
+        name: name,
+        city: city,
+        country: country,
+        wiki: wiki,
+        imageUrl: imageUrl);
   }
 
   static MonumentModel fromEntity(MonumentEntity monumentEntity) {
@@ -24,8 +42,8 @@ class MonumentModel {
         id: monumentEntity.id,
         name: monumentEntity.name,
         city: monumentEntity.city,
-        country: monumentEntity.country, wiki: monumentEntity.wiki,imageUrl: monumentEntity.imageUrl);
+        country: monumentEntity.country,
+        wiki: monumentEntity.wiki,
+        imageUrl: monumentEntity.imageUrl);
   }
-
-  
 }
