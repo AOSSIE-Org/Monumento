@@ -156,11 +156,11 @@ class _DetailScreenState extends State<DetailScreen> {
                       ? widget.monument.wiki ?? 'monument-tag'
                       : widget.monument.name ?? 'monument',
                   child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30)),
+                    // borderRadius: BorderRadius.only(
+                    //     bottomLeft: Radius.circular(30),
+                    //     bottomRight: Radius.circular(30)),
                     child: CachedNetworkImage(
-                      imageUrl: widget.monument.imageUrl,
+                      imageUrl: widget.monument.image_1x1_,
                       fit: BoxFit.cover,
                       placeholder: (_, __) {
                         return FeedImageLoading();

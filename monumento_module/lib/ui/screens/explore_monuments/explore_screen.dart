@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
@@ -64,7 +65,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                     bottomLeft: Radius.circular(20.0)),
                                 image: DecorationImage(
                                     image: NetworkImage(
-                                        widget.monumentList[index].imageUrl),
+                                        widget.monumentList[index].image_1x1_),
                                     fit: BoxFit.cover)),
                           )),
                       SizedBox(
