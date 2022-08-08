@@ -60,7 +60,7 @@ class _MonumentoScreenState extends State<MonumentoScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   sliver: CustomAppBar(
                       title: 'Monumento',
-                      textStyle: kStyle28W600.copyWith(
+                      textStyle: kStyle28W700.copyWith(
                           color: Color.fromRGBO(255, 214, 0, 1)))),
               SliverToBoxAdapter(
                 child: Container(
