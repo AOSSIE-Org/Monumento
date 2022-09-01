@@ -12,9 +12,9 @@ class _AppIntroPageState extends State<AppIntroPage> {
     PageViewModel(
         title: Text('EXPLORE'),
         titleTextStyle: TextStyle(
-            color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w700),
+            color: Colors.amber, fontSize: 24.0, fontWeight: FontWeight.w700),
         body: Text('Travel around the world and visit different monuments'),
-        bodyTextStyle: TextStyle(color: Colors.white),
+        bodyTextStyle: TextStyle(color: Colors.amber),
         mainImage: Container(
           margin: EdgeInsets.all(8),
           alignment: Alignment.center,
@@ -23,14 +23,14 @@ class _AppIntroPageState extends State<AppIntroPage> {
               image: DecorationImage(
                   image: AssetImage('assets/explore.jpg'), fit: BoxFit.cover)),
         ),
-        bubbleBackgroundColor: Colors.amberAccent),
+        bubbleBackgroundColor: Colors.amber),
     PageViewModel(
         title: Text('KNOW'),
         titleTextStyle: TextStyle(
-            color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w700),
+            color: Colors.amber, fontSize: 24.0, fontWeight: FontWeight.w700),
         body: Text(
             'Know all about the monuments visited by you and people around the world'),
-        bodyTextStyle: TextStyle(color: Colors.white),
+        bodyTextStyle: TextStyle(color: Colors.amber),
         mainImage: Container(
           margin: EdgeInsets.all(8),
           alignment: Alignment.center,
@@ -39,14 +39,14 @@ class _AppIntroPageState extends State<AppIntroPage> {
               image: DecorationImage(
                   image: AssetImage('assets/know.png'), fit: BoxFit.cover)),
         ),
-        bubbleBackgroundColor: Colors.amberAccent),
+        bubbleBackgroundColor: Colors.amber),
     PageViewModel(
         title: Text('VISUALIZE'),
         titleTextStyle: TextStyle(
-            color: Colors.white, fontSize: 24.0, fontWeight: FontWeight.w700),
+            color: Colors.amber, fontSize: 24.0, fontWeight: FontWeight.w700),
         body: Text(
             'Check out what the monuments actually look like up close in Augmented Reality'),
-        bodyTextStyle: TextStyle(color: Colors.white),
+        bodyTextStyle: TextStyle(color: Colors.amber),
         mainImage: Container(
           margin: EdgeInsets.all(8),
           alignment: Alignment.center,
@@ -55,7 +55,7 @@ class _AppIntroPageState extends State<AppIntroPage> {
               image: DecorationImage(
                   image: AssetImage('assets/ar_image.jpg'), fit: BoxFit.cover)),
         ),
-        bubbleBackgroundColor: Colors.amberAccent),
+        bubbleBackgroundColor: Colors.amber),
   ];
 
   void onClose() {
@@ -78,10 +78,10 @@ class _AppIntroPageState extends State<AppIntroPage> {
       body: Builder(
         builder: (context) => IntroViewsFlutter(
           introPages,
-          background: Colors.amber,
+          background: Colors.white,
           onTapDoneButton: () => onClose(),
           pageButtonTextStyles: TextStyle(
-            color: Colors.white,
+            color: Colors.amber,
             fontSize: 18.0,
           ),
         ),

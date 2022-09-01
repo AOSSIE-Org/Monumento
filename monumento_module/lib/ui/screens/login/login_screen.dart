@@ -132,7 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: EdgeInsets.only(right: 0.0),
         child: Text(
           'Forgot Password?',
-          style: kLabelStyle,
+          style: kLabelStyleAmber,
         ),
       ),
     );
@@ -144,11 +144,11 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Row(
         children: <Widget>[
           Theme(
-            data: ThemeData(unselectedWidgetColor: Colors.white),
+            data: ThemeData(unselectedWidgetColor: Colors.amber),
             child: Checkbox(
               value: _rememberMe,
-              checkColor: Colors.green,
-              activeColor: Colors.white,
+              checkColor: Colors.white,
+              activeColor: Colors.amber,
               onChanged: (value) {
                 setState(() {
                   _rememberMe = value;
@@ -158,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Text(
             'Remember me',
-            style: kLabelStyle,
+            style: kLabelStyleAmber,
           ),
         ],
       ),
@@ -182,11 +182,11 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        color: Colors.white,
+        color: Colors.amber,
         child: Text(
           'LOGIN',
           style: TextStyle(
-            color: Colors.amber,
+            color: Colors.white,
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
@@ -210,39 +210,19 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+
   Widget _buildSocialBtn() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30.0),
-      child: MaterialButton(
-        onPressed: () {
-          _loginRegisterBloc.add(LoginWithGooglePressed());
-        },
-        elevation: 10.0,
-        padding: EdgeInsets.all(15.0),
-        color: Colors.white,
-        splashColor: Colors.green,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(100.0)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Login with Google',
-              style: TextStyle(
-                color: Colors.amber,
-                fontSize: 17.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Image.asset(
-              'assets/google.png',
-              height: 30.0,
-              width: 30.0,
-            ),
-          ],
+      child: GestureDetector(
+        onTap: () {}, // Image tapped
+        child: Image.asset(
+          'assets/google.png',
+          fit: BoxFit.cover, // Fixes border issues
+          width: 30.0,
+          height: 30.0,
         ),
-      ),
+      )
     );
   }
 
@@ -322,6 +302,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           SizedBox(height: 30.0),
+                          Image.asset(
+                            'assets/monumento.png',
+                            height: 110.0,
+                            width: 110.0,
+                          ),
+                          SizedBox(height: 30.0),
                           Container(
                               width: double.infinity,
                               child: Text(
@@ -336,7 +322,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           SizedBox(height: 30.0),
                           _buildEmailTF(),
                           SizedBox(
-                            height: 30.0,
+                            height: 15.0,
                           ),
                           _buildPasswordTF(),
                           _buildForgotPasswordBtn(),
