@@ -7,6 +7,7 @@ class MonumentModel {
   final String city;
   final String country;
   final String imageUrl;
+  final String image_1x1_;
   final String wiki;
 
   MonumentModel(
@@ -14,6 +15,7 @@ class MonumentModel {
       this.city,
       this.country,
       this.imageUrl,
+      this.image_1x1_,
       this.name,
       @required this.wiki});
 
@@ -24,6 +26,7 @@ class MonumentModel {
         city: city,
         country: country,
         wiki: wiki,
+        image_1x1_: image_1x1_,
         imageUrl: imageUrl);
   }
 
@@ -34,6 +37,7 @@ class MonumentModel {
         city: city,
         country: country,
         wiki: wiki,
+        image_1x1_: image_1x1_,
         imageUrl: imageUrl);
   }
 
@@ -44,6 +48,8 @@ class MonumentModel {
         city: monumentEntity.city,
         country: monumentEntity.country,
         wiki: monumentEntity.wiki,
+        image_1x1_: monumentEntity.image_1x1_,
         imageUrl: monumentEntity.imageUrl);
+
   }
 }
