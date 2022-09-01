@@ -4,7 +4,7 @@ abstract class PopularMonumentsEvent extends Equatable {
   const PopularMonumentsEvent();
 }
 
-class GetPopularMonuments extends PopularMonumentsEvent {
+class  GetPopularMonuments extends PopularMonumentsEvent {
   @override
   List<Object> get props => [];
 }
