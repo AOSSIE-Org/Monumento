@@ -7,6 +7,11 @@ final kLabelStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
+final kLabelStyleAmber = TextStyle(
+  color: Colors.amber,
+  fontWeight: FontWeight.bold,
+);
+
 final kBoxDecorationStyle = BoxDecoration(
   color: Colors.white,
   borderRadius: BorderRadius.circular(10.0),
