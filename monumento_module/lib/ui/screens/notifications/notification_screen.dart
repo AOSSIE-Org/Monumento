@@ -42,10 +42,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
               SliverPadding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 sliver: CustomAppBar(
-                  title: 'Notifications',
-                  textStyle: kStyle28W600,
-                  showNotificationIcon: false,
-                ),
+                    title: 'Notifications',
+                    textStyle: kStyle28W600,
+                    showNotificationIcon: false,
+                    userModel: notifications[0].userInvolved),
               ),
               BlocBuilder<NotificationsBloc, NotificationsState>(
                 bloc: _notificationsBloc,

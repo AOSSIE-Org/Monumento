@@ -128,6 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       alignment: Alignment.centerRight,
       child: ElevatedButton(
+        style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
         onPressed: () => print('Forgot Password Button Pressed'),
         child: Text(
           'Forgot Password?',

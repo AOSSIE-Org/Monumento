@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meta/meta.dart';
 import 'package:monumento/blocs/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/resources/monuments/monument_repository.dart';
 import 'package:monumento/ui/screens/monumento/components/popular_monuments_tile.dart';
@@ -61,7 +62,8 @@ class _MonumentoScreenState extends State<MonumentoScreen> {
                   sliver: CustomAppBar(
                       title: 'Monumento',
                       textStyle: kStyle28W700.copyWith(
-                          color: Color.fromRGBO(255, 214, 0, 1)))),
+                          color: Color.fromRGBO(255, 214, 0, 1)),
+                      userModel: widget.user)),
               SliverToBoxAdapter(
                 child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),

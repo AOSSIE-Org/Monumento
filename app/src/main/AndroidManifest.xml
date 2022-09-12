@@ -16,21 +16,47 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="API KEY"/>
-        <activity android:name=".SplashActivity"
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="API KEY" />
+
+        <activity
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="flutter_declining_enabled"
+                android:value="true" />
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="monumento.page.link"
+                    android:scheme="http" />
+                <data
+                    android:host="monumento.page.link"
+                    android:scheme="https" />
+                <data
+                    android:host="monumento.org"
+                    android:scheme="http" />
+                <data
+                    android:host="monumento.org"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
         <activity android:name=".SceneformFragment" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
 
         <meta-data
@@ -38,13 +64,13 @@
             android:value="required=false" />
 
         <activity android:name=".MonumentDetector" />
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity android:name=".MainActivity"></activity>
         <activity
             android:name="io.flutter.embedding.android.FlutterActivity"
             android:hardwareAccelerated="true"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
+
     </application>
 
 </manifest>
