@@ -127,9 +127,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildForgotPasswordBtn() {
     return Container(
       alignment: Alignment.centerRight,
-      child: FlatButton(
+      child: ElevatedButton(
         onPressed: () => print('Forgot Password Button Pressed'),
-        padding: EdgeInsets.only(right: 0.0),
         child: Text(
           'Forgot Password?',
           style: kLabelStyleAmber,
@@ -169,20 +168,13 @@ class _LoginScreenState extends State<LoginScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        splashColor: Colors.lightGreen,
+      child: ElevatedButton(
         onPressed: () {
           print('Login Button Pressed');
           _loginRegisterBloc.add(LoginWithEmailPressed(
               email: _emailController.text,
               password: _passwordController.text));
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.amber,
         child: Text(
           'LOGIN',
           style: TextStyle(

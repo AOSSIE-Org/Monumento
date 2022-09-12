@@ -343,9 +343,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        splashColor: Colors.lightGreen,
+      child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState.validate()) {
             print('SignUp Button Pressed');
@@ -359,12 +357,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ));
           }
         },
-        //TODO : username
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.amber,
         child: Text(
           'REGISTER',
           style: TextStyle(
