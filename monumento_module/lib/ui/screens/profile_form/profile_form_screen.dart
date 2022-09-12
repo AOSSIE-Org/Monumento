@@ -326,9 +326,7 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        splashColor: Colors.lightGreen,
+      child:ElevatedButton  (
         onPressed: () {
           if (_formKey.currentState.validate()) {
             showSnackBar(
@@ -344,11 +342,6 @@ class _ProfileFormScreenState extends State<ProfileFormScreen> {
             ));
           }
         },
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.white,
         child: Text(
           'Create Profile',
           style: TextStyle(
