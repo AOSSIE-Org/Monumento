@@ -207,7 +207,9 @@ class _LoginScreenState extends State<LoginScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 30.0),
       child: GestureDetector(
-        onTap: () {}, // Image tapped
+        onTap: () {
+          _loginRegisterBloc.add(LoginWithGooglePressed());
+        }, // Image tapped
         child: Image.asset(
           'assets/google.png',
           fit: BoxFit.cover, // Fixes border issues
