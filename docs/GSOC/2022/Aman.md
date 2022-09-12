@@ -59,7 +59,6 @@ I mainly worked on the Flutter module of the Native Android app. I kept the use 
 - Introduction of more feature in the chat screen
 - Making it even more compatible on iOS
 - Refactor the code to get dynamic monuments model data from the database
-- Push notifications using FCM or any other service
 
 
 I want to thank the AOSSIE community and my very supportive mentors, Jaideep Prasad, Thuvarakan Tharmarajasingam. Being a part of this incredible community feels great. I have learnt a lot in these past 3-4 months and would continue contributing as much as I can.
