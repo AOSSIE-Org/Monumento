@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "23340623187",
+    "firebase_url": "https://monumento-277103.firebaseio.com",
+    "project_id": "monumento-277103",
+    "storage_bucket": "monumento-277103.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23340623187:android:7054148e8a1dee1ff8eda6",
+        "android_client_info": {
+          "package_name": "com.jddeep.monumento"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23340623187-qdin8qjrrho0916p35v01pog92mcovfb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAuo4k8RSXYVadVB2WTBK_gLd8bhbYSu8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23340623187-qdin8qjrrho0916p35v01pog92mcovfb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "23340623187-srpehbrmbciom06pvq4qcnarc22gkud1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "aossie.Monumento"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

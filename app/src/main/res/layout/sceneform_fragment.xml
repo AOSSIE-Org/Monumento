@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/nav_wiki_btn"-->
+<!--        android:layout_width="175dp"-->
+<!--        android:layout_height="60dp"-->
+<!--        android:text="Wikipedia"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        app:rippleColor="@color/colorAccent"-->
+<!--        android:backgroundTint="@color/colorPrimaryDark"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/sceneform_frag"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        android:layout_marginBottom="8dp"-->
+<!--        android:layout_marginEnd="8dp"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:visibility="gone"-->
+<!--        android:theme="@style/Theme.MaterialComponents.Light"-->
+<!--        app:cornerRadius="15dp"/>-->
+
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/slidePanelLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        app:umanoPanelHeight="120dp"
+        app:umanoShadowHeight="4dp"
+        tools:context=".SceneformFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/arFragCl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:id="@+id/noModelLl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/noModelTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingVertical="8dp"
+                android:text="No 3D-Model Available!"
+                android:textColor="@android:color/black"
+                android:textSize="22dp"/>
+        </LinearLayout>
+
+    <fragment
+        android:id="@+id/sceneform_frag"
+        android:name="com.google.ar.sceneform.ux.ArFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/sceneform_frag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/ic_monumento"/>
+
+    <ProgressBar
+        android:id="@+id/model_loading_pb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/sceneform_frag"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/wikiTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimaryDark"
+                android:text="WIKIPEDIA ^"
+                android:textColor="@android:color/white"
+                android:textAlignment="center"
+                android:padding="4dp"/>
+                <WebView
+                    android:id="@+id/wikiWv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+        </LinearLayout>
+
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>

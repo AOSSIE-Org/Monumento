@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:id="@+id/imageProgress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:indeterminate="true"
+                android:visibility="invisible"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_below="@+id/imageProgress"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                app:srcCompat="@android:drawable/alert_dark_frame" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/visionAPIData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:textColor="@android:color/black"
+            tools:text="Text Label" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/takePicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|bottom"
+            android:src="@drawable/ic_camera"
+            android:background="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_margin="16dp"
+            android:padding="4dp"
+            />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/nav_ar_frag_btn"
+        android:layout_width="185dp"
+        android:layout_height="60dp"
+        android:text="TAP TO AUGMENT"
+        android:textColor="@android:color/white"
+        app:rippleColor="@color/colorAccent"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        app:cornerRadius="15dp"/>
+
+    <TextView
+        android:id="@+id/augment_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:visibility="gone"
+        android:text="You can now visualize the monument in AR!"
+        />
+    </LinearLayout>

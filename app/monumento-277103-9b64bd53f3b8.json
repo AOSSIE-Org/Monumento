@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "monumento-277103",
+  "private_key_id": "9b64bd53f3b8c5e574a6171f8c8597c34a6cf962",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC+85aNccLYBUpX\nm3g2OPI7klbzDUsGsL9C87FLTfHcwl5RdMJoEytaRDftiGhmNDRpxLVoVm3Qgwrf\nWmpaAYzG1ugfo5W2+7AxnR7vptpwXLaRj7QPZVLUcEkmQ5SstWxHdHFH3kiOtb09\nrFNYF16NP0Lbr/cLjmK1UaWrRHA+e7oJB9lwlDjJIO2tPGAS52nfJDT4b6a3VuVK\nHYn5gQZjEP9nSFo9LInOuVyWoOf1V0qVhxr7Ak8S5n/MtmO5bHS6csnwzaJm8Cti\n+bdfPK6Aoc1OSMk0Sc0qZfM7gbaaB3yKcxvFn+SpalzIBAfzkEoiI7yPAXQfy0L9\n6sMg3zYHAgMBAAECggEAE+kPRjFZ+S9YCJl/59t5OofwRAibTZfJYaBKWMlIUlX8\nAq9ThAmXqCJb2Is0I5AG9Q5bQgVdDvRTAmYJl9f4h1UqP/5NIpbM0OeKrb9uoG+y\nY6whwMc2Y0tP/UrnqjiCkVLNawp881B06oTY7eMF62Fwxbpr3osatMBOL3UD5SfQ\nCPz8HlP63tXcxgXzYO4yTl6KCmFCoKZsXxXI+KMZ9BO2ZFXCX/n/m0LTLm2RHVa9\nuX58wquInC4PtQ/DjjEZkdkHLWu2FYJxSYBGeN9IzhOd2SW+Wm3zAbZtzNw+ezYL\nRlH+1pOYTGmgeqg8Qz1g1IPiiun/CnOPi12ATpZP/QKBgQD7ezrAMRCgNVIN+tjp\nKni8oOT/UNj3Akak5dATuybV/6KPonCmOWAMlspUGCKEjfLgHb2nStbYAM9ox/F1\ngBRbtzKA68qRrbcW25I8Hsa293XtW2U8Z9kneTSCYIPTGbLo2wFSk1mzuMeYkHrB\necJbb9WlfAIdah2tERzfitCQZQKBgQDCYe6Mc8oON2+CSdKBy5VZD/yMZu+Q3DqG\n872akP3qXUM5ikh1G0FLSjyZ+GMrkc4h+BtV3LOhfSua2DVtEt1EYKQ3K61tBdn9\nP4LnrnW3f7cNAZuyZ4rMZ1HKCvX4poqKywaGXE9DA+6J1vf2FQszIDF3dDrZfkRo\n6qYA9BVn+wKBgCDO9N06CXc9PZVBUqcouVOyke2VOJkRHPJKYRkR44ErtqOSh6vH\n9HXv/jl2ZJpygmsmtiVrKBhKEsUSwLeZnA5TGi2jlWvoA+jhgHSDd11Lb4El2VFG\nIxh5QZZ4zPnvcl3apJOHUb6WrsOCpeEz511Se8b5JLV9sJ1xjBjF3WvZAoGALV1r\nre3MBzta095kuZQIu+tmNmJDoNw08I/r/Sm/iLXRXZlvRZ1hxK+Dqy9z/ZQetoDP\n6F8EsTikN5QkC9uuNioTyShxZhNKh7cN1wI5SOUOlIN+kclmdEPcq7mZJDnB9Zhi\nYnMisHI3doXsAstwfLMTuFww69dzIcU5jtloMYcCgYBrU8ZNPm0P3XSi5h7Cu4RL\na2+d1sOoHyV6IIzGR5qK3Lv156/Cav+jOYlAWdRTrCpSr3ccLufalKqpYjytuWzM\naGq+OGdqq8DNposXiSYLa7PCrjRumMyKJk8xGP0HAWU3PaGvAx4kDyOYoSXbpgfU\nAg9cB/mohVis3S8SWG45oQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "monumento-service-account@monumento-277103.iam.gserviceaccount.com",
+  "client_id": "113300677752499556518",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/monumento-service-account%40monumento-277103.iam.gserviceaccount.com"
+}
