@@ -28,7 +28,7 @@ class PopularMonumentTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(5),
                   image:
                       DecorationImage(image: imageProvider, fit: BoxFit.fill)),
-              height: 120,
+              height: 220.0,
               width: MediaQuery.of(context).size.width,
               child: Align(
                 child: Padding(
@@ -37,7 +37,7 @@ class PopularMonumentTile extends StatelessWidget {
                     monument.name,
                     style: TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 20,
                         fontWeight: FontWeight.w600),
                   ),
                 ),
