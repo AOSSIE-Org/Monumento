@@ -69,17 +69,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Container(
                       height: double.infinity,
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.yellow[600],
-                            Colors.amber,
-                          ],
-                          stops: [0.4, 0.9],
-                        ),
-                      ),
+                      color: Colors.white,
                     ),
                     Container(
                       height: double.infinity,
@@ -95,7 +85,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               Text(
                                 'Sign Up',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.amber,
                                   fontSize: 35.0,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -142,7 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       children: <Widget>[
         Text(
           'Username',
-          style: kLabelStyle,
+          style: kLabelStyleAmber,
         ),
         SizedBox(height: 10.0),
         Container(
@@ -183,7 +173,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       children: <Widget>[
         Text(
           'Email',
-          style: kLabelStyle,
+          style: kLabelStyleAmber,
         ),
         SizedBox(height: 10.0),
         Container(
@@ -224,7 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       children: <Widget>[
         Text(
           'Name',
-          style: kLabelStyle,
+          style: kLabelStyleAmber,
         ),
         SizedBox(height: 10.0),
         Container(
@@ -265,7 +255,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       children: <Widget>[
         Text(
           'Status',
-          style: kLabelStyle,
+          style: kLabelStyleAmber,
         ),
         SizedBox(height: 10.0),
         Container(
@@ -300,7 +290,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       children: <Widget>[
         Text(
           'Password',
-          style: kLabelStyle,
+          style: kLabelStyleAmber,
         ),
         SizedBox(height: 10.0),
         Container(
@@ -353,9 +343,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 16.0),
       width: double.infinity,
-      child: RaisedButton(
-        elevation: 5.0,
-        splashColor: Colors.lightGreen,
+      child: ElevatedButton(
         onPressed: () {
           if (_formKey.currentState.validate()) {
             print('SignUp Button Pressed');
@@ -369,16 +357,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ));
           }
         },
-        //TODO : username
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.white,
         child: Text(
           'REGISTER',
           style: TextStyle(
-            color: Colors.amber,
+            color: Colors.white,
             letterSpacing: 1.5,
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
@@ -480,7 +462,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 child: Icon(
                   Icons.linked_camera_outlined,
                   size: 70,
-                  color: Colors.white,
+                  color: Colors.amber,
                 ),
               ),
             ),

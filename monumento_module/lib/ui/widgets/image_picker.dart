@@ -26,7 +26,7 @@ class PickImage {
       {@required File image,
       @required double ratioX,
       @required double ratioY}) async {
-    File croppedImageFile = await ImageCropper.cropImage(
+    File croppedImageFile = await ImageCropper().cropImage(
         sourcePath: image.path,
         aspectRatio: CropAspectRatio(ratioX: ratioX, ratioY: ratioY),
         compressQuality: 15);
