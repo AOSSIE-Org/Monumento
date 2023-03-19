@@ -10,13 +10,16 @@ class MonumentEntity extends Equatable {
   final String city;
   final String country;
   final String imageUrl;
+  final String image_1x1_;
   final String wiki;
+
   MonumentEntity(
       {this.id,
       this.city,
       this.country,
       this.imageUrl,
       this.name,
+      this.image_1x1_,
       @required this.wiki});
 
   @override
@@ -29,6 +32,7 @@ class MonumentEntity extends Equatable {
         city: data['email'] as String,
         country: data['country'] as String,
         imageUrl: data['image'] as String,
+        image_1x1_: data['image_1x1_'] as String,
         wiki: data['wikipediaLink'] as String);
   }
 
@@ -40,6 +44,7 @@ class MonumentEntity extends Equatable {
         city: data['city'],
         country: data['country'],
         imageUrl: data['image'],
+        image_1x1_: data['image_1x1_'],
         wiki: data['wikipediaLink']);
   }
 
@@ -50,6 +55,7 @@ class MonumentEntity extends Equatable {
       'city': city,
       'country': country,
       'image': imageUrl,
+      'image_1x1_' : image_1x1_,
       'wikipediaLink': wiki
     };
   }
