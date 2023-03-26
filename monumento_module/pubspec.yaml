@@ -45,6 +45,7 @@ dependencies:
   shimmer: ^2.0.0
   flutter_svg: ^0.22.0
   email_validator: ^2.0.1
+  file: ^6.1.4
 
 dev_dependencies:
   flutter_test:
