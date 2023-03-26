@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/blocs/authentication/authentication_bloc.dart';
 import 'package:monumento/blocs/login_register/login_register_bloc.dart';
+import 'package:monumento/blocs/login_validation/login_validation_bloc.dart';
+import 'package:monumento/blocs/login_validation/login_validation_event.dart';
 import 'package:monumento/navigation/arguments.dart';
 import 'package:monumento/resources/authentication/models/user_model.dart';
 import 'package:monumento/ui/screens/home/home_screen.dart';
@@ -11,6 +13,7 @@ import 'package:monumento/ui/screens/signup/register_screen.dart';
 import 'package:monumento/utilities/constants.dart';
 import 'package:monumento/utilities/utils.dart';
 
+import '../../../blocs/login_validation/login_validation_state.dart';
 import '../profile_form/profile_form_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -29,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   AuthenticationBloc _authenticationBloc;
   LoginRegisterBloc _loginRegisterBloc;
+  LoginValidationBloc _loginValidationBloc;
 
   @override
   void initState() {
@@ -36,6 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
     isseen = false;
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _loginRegisterBloc = BlocProvider.of<LoginRegisterBloc>(context);
+    _loginValidationBloc = BlocProvider.of<LoginValidationBloc>(context);
   }
 
   Widget _buildEmailTF() {
@@ -52,9 +57,12 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: kBoxDecorationStyle,
           height: 60.0,
           child: TextField(
-            //TODO: Email Validation
+           
             keyboardType: TextInputType.emailAddress,
             controller: _emailController,
+             onChanged: (val){
+              _loginValidationBloc.add(LoginTextChangedEvent(_emailController.text, _passwordController.text));
+            },
             style: TextStyle(
               color: Colors.amber,
             ),
@@ -92,6 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
             obscureText: !isseen,
             keyboardType: TextInputType.visiblePassword,
             controller: _passwordController,
+             onChanged: (val){
+              _loginValidationBloc.add(LoginTextChangedEvent(_emailController.text, _passwordController.text));
+            },
             style: TextStyle(
               color: Colors.amber,
             ),
@@ -131,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () => print('Forgot Password Button Pressed'),
         child: Text(
           'Forgot Password?',
-          style: kLabelStyleAmber,
+          style: kLabelStyle,
         ),
       ),
     );
@@ -202,20 +213,18 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
   Widget _buildSocialBtn() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30.0),
-      child: GestureDetector(
-        onTap: () {}, // Image tapped
-        child: Image.asset(
-          'assets/google.png',
-          fit: BoxFit.cover, // Fixes border issues
-          width: 30.0,
-          height: 30.0,
-        ),
-      )
-    );
+        padding: const EdgeInsets.symmetric(vertical: 30.0),
+        child: GestureDetector(
+          onTap: () {}, // Image tapped
+          child: Image.asset(
+            'assets/google.png',
+            fit: BoxFit.cover, // Fixes border issues
+            width: 30.0,
+            height: 30.0,
+          ),
+        ));
   }
 
   Widget _buildSignupBtn() {
@@ -300,6 +309,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             width: 110.0,
                           ),
                           SizedBox(height: 30.0),
+                          BlocBuilder<LoginValidationBloc,
+                              LoginValidationState>(
+                            builder: (context, state) {
+                              if (state is LoginValidationErrorState) {
+                                return Text(state.errorMessage,
+                                    style: TextStyle(color: Colors.red));
+                              }
+                              else{
+                                return Container();
+                              }
+                            },
+                          ),
+                          SizedBox(height: 10.0),
                           Container(
                               width: double.infinity,
                               child: Text(

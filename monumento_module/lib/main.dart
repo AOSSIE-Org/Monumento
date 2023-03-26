@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:monumento/blocs/feed/feed_bloc.dart';
+import 'package:monumento/blocs/login_validation/login_validation_bloc.dart';
 import 'package:monumento/navigation/route_generator.dart';
 import 'package:monumento/resources/authentication/authentication_repository.dart';
 import 'package:monumento/resources/monuments/monument_repository.dart';
@@ -17,6 +18,8 @@ import 'package:monumento/utilities/simple_bloc_observer.dart';
 import 'package:monumento/ui/screens/app_intro/app_intro.dart';
 import 'package:monumento/ui/screens/home/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+
+import 'blocs/login_validation/login_validation_state.dart';
 
 Future<Null> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +45,7 @@ class _MyAppState extends State<MyApp> {
   LoginRegisterBloc _loginRegisterBloc;
   BookmarkedMonumentsBloc _bookmarkedMonumentsBloc;
   FeedBloc _feedBloc;
+  LoginValidationBloc _loginValidationBloc;
 
   @override
   void initState() {
@@ -56,6 +60,7 @@ class _MyAppState extends State<MyApp> {
         firebaseMonumentRepository: _monumentRepository);
     _feedBloc = FeedBloc(socialRepository: _socialRepository);
     _authenticationBloc.add(AppStarted());
+    _loginValidationBloc=LoginValidationBloc(LoginValidationInitialState());
   }
 
   @override
@@ -82,6 +87,9 @@ class _MyAppState extends State<MyApp> {
             BlocProvider<FeedBloc>(
               create: (_) => _feedBloc,
             ),
+            BlocProvider<LoginValidationBloc>(
+              create: (_) => _loginValidationBloc,
+            )
           ],
           child: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(
