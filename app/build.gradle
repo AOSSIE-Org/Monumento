@@ -9,7 +9,7 @@ apply plugin: 'com.google.gms.google-services'
 //        'src/main/res/raw/taj')
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
 
     defaultConfig {
         applicationId "com.jddeep.monumento"
