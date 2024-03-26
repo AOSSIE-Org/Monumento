@@ -15,13 +15,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "23340623187-h9hqe2suq5cb4sbspmlqgen6d408q7ca.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jddeep.monumento",
+            "certificate_hash": "cfb2c8519caa72f5f092ad70fcf1b25f208dee02"
+          }
+        },
+        {
           "client_id": "23340623187-qdin8qjrrho0916p35v01pog92mcovfb.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAAuo4k8RSXYVadVB2WTBK_gLd8bhbYSu8"
+          "current_key": "AIzaSyAO7RnXF0crJ_t8SHRMNXKwbG2477ZcfTA"
         }
       ],
       "services": {
