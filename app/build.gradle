@@ -77,6 +77,8 @@ dependencies {
     })
     implementation "com.google.ar.sceneform.ux:sceneform-ux:1.17.1"
     implementation 'com.google.ar.sceneform:assets:1.17.1'
+    implementation 'com.google.ar:core:1.42.0'
+    implementation 'com.google.ar.sceneform:core:1.17.1'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'com.sothree.slidinguppanel:library:3.4.0'
 //    releaseImplementation 'com.jddeep.monumento:flutter_release:1.0'
