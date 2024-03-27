@@ -53,7 +53,7 @@ public class MonumentDetector extends AppCompatActivity {
     private static final int RECORD_REQUEST_CODE = 101;
     private static final int CAMERA_REQUEST_CODE = 102;
 
-    private static final String CLOUD_VISION_API_KEY = "AIzaSyB3Rtf6kKP2zzs9HN3zzpJMu1oUtDYk4_4";
+    private static final String CLOUD_VISION_API_KEY = BuildConfig.CLOUD_VISION_API_KEY;
 
     FloatingActionButton takePicture;
     ProgressBar imageUploadProgress;
