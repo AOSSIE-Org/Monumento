@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -96,8 +97,17 @@ class _DetailScreenState extends State<DetailScreen> {
     List<Map<String, dynamic>> monumentMapList = new List();
     monumentMapList.add(widget.monument.toEntity().toMap());
     try {
-      await platform
-          .invokeMethod("navArFragment", {"monumentListMap": monumentMapList});
+      if (Platform.isAndroid) {
+        await platform.invokeMethod(
+            "navArFragment", {"monumentListMap": monumentMapList});
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'AR Viewer is not available on ${Platform.operatingSystem} yet.'),
+          ),
+        );
+      }
     } on PlatformException catch (e) {
       print("Failed to navigate to AR Fragment: '${e.message}'.");
     }
@@ -203,11 +213,6 @@ class _DetailScreenState extends State<DetailScreen> {
                           tooltip: 'Visit in 3D AR',
                           onPressed: () async {
                             _navToARFragment();
-                            // Navigator.of(context).push(
-                            //   new MaterialPageRoute(
-                            //     builder: (context) => DemoArScreen(),
-                            //   ),
-                            // );
                           },
                         ),
                       ],
@@ -260,9 +265,12 @@ class _DetailScreenState extends State<DetailScreen> {
                 bottom: 20.0,
                 child: InkWell(
                   onTap: () {
-                    Navigator.of(context).push(new MaterialPageRoute(
+                    Navigator.of(context).push(
+                      new MaterialPageRoute(
                         builder: (context) =>
-                            GoogleMapPage(address: widget.monument.name)));
+                            GoogleMapPage(address: widget.monument.name),
+                      ),
+                    );
                   },
                   child: Icon(
                     Icons.location_on,
