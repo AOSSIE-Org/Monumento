@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,8 +28,17 @@ class _MonumentoScreenState extends State<MonumentoScreen> {
 
   _navToMonumentDetector() async {
     try {
-      await platform.invokeMethod(
-          "navMonumentDetector", {"monumentsList": monumentMapList});
+      if (Platform.isAndroid) {
+        await platform.invokeMethod(
+            "navMonumentDetector", {"monumentsList": monumentMapList});
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Monument Detector is not available on ${Platform.operatingSystem} yet.'),
+          ),
+        );
+      }
     } on PlatformException catch (e) {
       print("Failed to navigate to Monument Detector: '${e.message}'.");
     }

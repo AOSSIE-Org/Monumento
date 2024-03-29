@@ -70,7 +70,6 @@
 				1DF7C5FB26677431A94DC103 /* Pods-Runner.release.xcconfig */,
 				A522B71743A84F9D0557CD3C /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -389,6 +388,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jddeep.monumento;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -541,6 +541,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.jddeep.monumento;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
