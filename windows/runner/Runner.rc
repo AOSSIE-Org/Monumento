@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.jddeep" "\0"
+            VALUE "CompanyName", "org.aossie" "\0"
             VALUE "FileDescription", "monumento" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "monumento" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.jddeep. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 org.aossie. All rights reserved." "\0"
             VALUE "OriginalFilename", "monumento.exe" "\0"
             VALUE "ProductName", "monumento" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

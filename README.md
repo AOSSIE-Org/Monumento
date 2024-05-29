@@ -21,48 +21,16 @@ Go to the project directory
 ```
   cd Monumento
 ```
-Monumento requires Flutter version to be less than 3.10.0. If your version is more than 3.10.0, you can follow the below steps or downgrade your local version of Flutter
 
-1. Install [FVM](https://fvm.app)
-2. Install Flutter 3.7.12 through FVM
-    ```
-    fvm install 3.7.12
-    ```
-3. Once installed, run the following command to set it as the default version for FVM
-    ```
-    fvm use 3.7.12
-    ```
-4. Now open a terminal and move to the `monumento_module` directory
-5. Upgrade the dependencies
-    ```
-    fvm flutter pub upgrade
-    ```
-6. Now try running the app
-    ```
-    fvm flutter run
-    ```
+Install dependencies
+
+```
+  flutter pub get
+```
 
 Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will add the `google-services.json` and `GoogleService-Info.plist` file for android and iOS, and also creates a `firebase_options.dart` file in the lib folder
 
-Enable [Google Cloud Vision API](https://console.cloud.google.com/marketplace/product/google/vision.googleapis.com) in GCP and generate a private key. In android folder, open `local.properties` file. Create it if it doesn't exist and add the following line
-```
-cloud.vision.api.key=abcd_your_api_key_here_xyz
-```
-\
-Tip: If you are using VS Code, create `.vscode/seetings.json` file if doen't already exist and add the following lines
-```
-{
-    "dart.flutterSdkPath": "/path/to/fvm/versions/3.7.12", //example path: "/Users/xyz/fvm/versions/3.7.12"
-    // Remove .fvm files from search
-    "search.exclude": {
-      "**/.fvm": true
-    },
-    // Remove from file watching
-    "files.watcherExclude": {
-      "**/.fvm": true
-    }
-  }
-  ```
+
 
 ## ✌️ Maintainers
 
