@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
@@ -8,29 +7,26 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
-class LoginViewDesktop extends StatefulWidget {
-  const LoginViewDesktop({super.key});
+class ResetPasswordViewDesktop extends StatefulWidget {
+  const ResetPasswordViewDesktop({super.key});
 
   @override
-  State<LoginViewDesktop> createState() => _LoginViewDesktopState();
+  State<ResetPasswordViewDesktop> createState() =>
+      _ResetPasswordViewDesktopState();
 }
 
-class _LoginViewDesktopState extends State<LoginViewDesktop> {
+class _ResetPasswordViewDesktopState extends State<ResetPasswordViewDesktop> {
   late TextEditingController emailController;
-  late TextEditingController passwordController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   @override
   void initState() {
     emailController = TextEditingController();
-    passwordController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     emailController.dispose();
-    passwordController.dispose();
     super.dispose();
   }
 
@@ -63,17 +59,18 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                   child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
                     bloc: locator<LoginRegisterBloc>(),
                     listener: (context, state) {
-                      if (state is LoginFailed) {
+                      if (state is ResetPasswordSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Password reset link has been sent to your email.',
+                            ),
+                          ),
+                        );
+                      } else if (state is ResetPasswordFailed) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text(
-                              state.message,
-                              style: AppTextStyles.s14(
-                                color: AppColor.appWhite,
-                                fontType: FontType.MEDIUM,
-                              ),
-                            ),
-                            backgroundColor: AppColor.appSecondary,
+                            content: Text(state.message),
                           ),
                         );
                       }
@@ -90,53 +87,54 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                             ),
                           );
                         }
-
-                        if (state is SigninWithGoogleSuccess) {
-                          while (context.canPop() == true) {
-                            context.pop();
-                          }
-                          context.push('/');
+                        if (state is ResetPasswordSuccess) {
+                          return Column(
+                            children: [
+                              Text(
+                                  "Password rest link has been sent to your email ${emailController.text}."),
+                              const SizedBox(
+                                height: 38,
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    backgroundColor: AppColor.appPrimary,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                  ),
+                                  onPressed: () {
+                                    context.pop();
+                                  },
+                                  child: Text(
+                                    'Back to Login',
+                                    style: AppTextStyles.s14(
+                                      color: AppColor.appSecondary,
+                                      fontType: FontType.MEDIUM,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
                         }
                         return Column(
                           children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: SignInButton(
-                                padding: const EdgeInsets.all(4),
-                                Buttons.GoogleDark,
-                                onPressed: () {
-                                  locator<LoginRegisterBloc>().add(
-                                    LoginWithGooglePressed(),
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 22,
-                            ),
-                            const Text(
-                              'Or',
-                              style: TextStyle(
-                                color: AppColor.appSecondaryBlack,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 22,
-                            ),
                             TextFormField(
-                              controller: emailController,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Please enter email.';
+                                  return 'Please enter your email';
                                 } else if (!value.contains('@')) {
-                                  return 'Please enter a valid email.';
+                                  return 'Please enter a valid email';
                                 }
                                 return null;
                               },
                               autovalidateMode:
                                   AutovalidateMode.onUserInteraction,
+                              controller: emailController,
                               decoration: InputDecoration(
                                 labelText: 'Email',
                                 focusedBorder: const OutlineInputBorder(
@@ -156,64 +154,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                               ),
                             ),
                             const SizedBox(
-                              height: 16,
-                            ),
-                            TextFormField(
-                              controller: passwordController,
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter password.';
-                                } else if (value.length < 6) {
-                                  return 'Password must be at least 6 characters.';
-                                }
-                                return null;
-                              },
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              decoration: InputDecoration(
-                                labelText: 'Password',
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColor.appSecondary,
-                                  ),
-                                ),
-                                floatingLabelStyle: AppTextStyles.s14(
-                                  color: AppColor.appSecondary,
-                                  fontType: FontType.MEDIUM,
-                                ),
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColor.appSecondaryBlack,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  context.push('/reset-password');
-                                },
-                                style: ButtonStyle(
-                                  overlayColor: WidgetStateProperty.all(
-                                    Colors.transparent,
-                                  ),
-                                ),
-                                child: Text(
-                                  'Forgot Password?',
-                                  style: AppTextStyles.s14(
-                                    color: AppColor.appSecondary,
-                                    fontType: FontType.MEDIUM,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 48,
+                              height: 38,
                             ),
                             SizedBox(
                               width: double.infinity,
@@ -229,28 +170,14 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                 onPressed: () {
                                   if (formKey.currentState!.validate()) {
                                     locator<LoginRegisterBloc>().add(
-                                      LoginWithEmailPressed(
+                                      ResetPasswordButtonPressed(
                                         email: emailController.text,
-                                        password: passwordController.text,
-                                      ),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Please enter valid email and password',
-                                          style: AppTextStyles.s14(
-                                            color: AppColor.appWhite,
-                                            fontType: FontType.MEDIUM,
-                                          ),
-                                        ),
-                                        backgroundColor: AppColor.appSecondary,
                                       ),
                                     );
                                   }
                                 },
                                 child: Text(
-                                  'Login',
+                                  'Reset Password',
                                   style: AppTextStyles.s14(
                                     color: AppColor.appSecondary,
                                     fontType: FontType.MEDIUM,
@@ -265,7 +192,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'Don\'t have an account?',
+                                  'Don\'t want to reset anymore?',
                                   style: AppTextStyles.s14(
                                     color: AppColor.appSecondaryBlack,
                                     fontType: FontType.REGULAR,
@@ -273,7 +200,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                 ),
                                 TextButton(
                                   onPressed: () {
-                                    context.push('/register');
+                                    context.pop();
                                   },
                                   style: ButtonStyle(
                                     overlayColor: WidgetStateProperty.all(
@@ -281,7 +208,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                     ),
                                   ),
                                   child: Text(
-                                    'Sign Up',
+                                    'Go back',
                                     style: AppTextStyles.s14(
                                       color: AppColor.appPrimary,
                                       fontType: FontType.MEDIUM,

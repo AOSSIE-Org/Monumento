@@ -6,7 +6,7 @@ abstract interface class AuthenticationRepository {
 
   Future<Map<String, dynamic>> signInWithGoogle();
 
-  Future<UserModel> signUp({
+  Future<UserModel?> signUp({
     required String email,
     required String password,
     required String name,
@@ -19,7 +19,12 @@ abstract interface class AuthenticationRepository {
 
   Future<bool> isSignedIn();
 
-  Future<UserModel?> getUser();
+  Future<(bool, UserModel?)> getUser();
+
+  Future<String> getUid();
+
+  Future<String> getEmail();
+
   Future<UserModel> getOrCreateUserDocForGoogleSignIn({
     required String uid,
     required String email,
@@ -28,4 +33,6 @@ abstract interface class AuthenticationRepository {
     required String username,
     String? profilePictureUrl,
   });
+
+  Future sendPasswordResetEmail({required String email});
 }

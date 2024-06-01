@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
@@ -13,14 +13,24 @@ class AuthenticationBloc
     on<AppStarted>(_mapAppStartedToState);
     on<LoggedIn>(_mapLoggedInToState);
     on<LoggedOut>(_mapLoggedOutToState);
+    on<LoggedInWithInCompleteOnboarding>(
+        _mapLoggedInWithInCompleteOnboardingToState);
+  }
+
+  _mapLoggedInWithInCompleteOnboardingToState(
+      AuthenticationEvent event, Emitter<AuthenticationState> emit) {
+    emit(OnboardingIncomplete());
   }
 
   _mapAppStartedToState(
       AuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
-      final user = await _authRepository.getUser();
-      if (user != null) {
+      final (userLoggedIn, user) = await _authRepository.getUser();
+      print('User: $userLoggedIn, $user');
+      if (userLoggedIn && user != null) {
         emit(Authenticated(user.toEntity()));
+      } else if (userLoggedIn && user == null) {
+        emit(OnboardingIncomplete());
       } else {
         emit(Unauthenticated());
       }
@@ -31,10 +41,12 @@ class AuthenticationBloc
 
   _mapLoggedInToState(
       AuthenticationEvent event, Emitter<AuthenticationState> emit) async {
-    final user = await _authRepository.getUser();
+    final (userLoggedIn, user) = await _authRepository.getUser();
 
-    if (user != null) {
+    if (userLoggedIn && user != null) {
       emit(Authenticated(user.toEntity()));
+    } else if (userLoggedIn && user == null) {
+      emit(OnboardingIncomplete());
     } else {
       emit(Unauthenticated());
     }

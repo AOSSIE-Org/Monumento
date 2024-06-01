@@ -1,6 +1,9 @@
 import 'package:go_router/go_router.dart';
 import 'package:monumento/main.dart';
 import 'package:monumento/presentation/authentication/login_view.dart';
+import 'package:monumento/presentation/authentication/onboarding_view.dart';
+import 'package:monumento/presentation/authentication/reset_password_view.dart';
+import 'package:monumento/presentation/authentication/sign_up_view.dart';
 
 final router = GoRouter(
   routes: [
@@ -11,6 +14,18 @@ final router = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginView(),
+    ),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const SignUpView(),
+    ),
+    GoRoute(
+      path: '/reset-password',
+      builder: (context, state) => const ResetPasswordView(),
+    ),
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => const OnboardingView(),
     ),
   ],
 );

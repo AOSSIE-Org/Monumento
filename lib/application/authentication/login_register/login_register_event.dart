@@ -44,7 +44,7 @@ class SignUpWithEmailPressed extends LoginRegisterEvent {
   final String name;
   final String status;
   final String username;
-  final File profilePictureFile;
+  final File? profilePictureFile;
 
   const SignUpWithEmailPressed({
     required this.email,
@@ -52,7 +52,7 @@ class SignUpWithEmailPressed extends LoginRegisterEvent {
     required this.name,
     required this.status,
     required this.username,
-    required this.profilePictureFile,
+    this.profilePictureFile,
   });
 
   @override
@@ -61,5 +61,39 @@ class SignUpWithEmailPressed extends LoginRegisterEvent {
   @override
   String toString() {
     return 'SignUpWithEmailPressed { email: $email, password: $password }';
+  }
+}
+
+class ResetPasswordButtonPressed extends LoginRegisterEvent {
+  final String email;
+
+  const ResetPasswordButtonPressed({required this.email});
+
+  @override
+  String toString() => 'ResetPasswordButtonPressed';
+
+  @override
+  List<Object> get props => [email];
+}
+
+class SaveOnboardingDetails extends LoginRegisterEvent {
+  final String name;
+  final String username;
+  final String status;
+  final File? profilePictureFile;
+
+  const SaveOnboardingDetails({
+    required this.name,
+    required this.status,
+    required this.username,
+    this.profilePictureFile,
+  });
+
+  @override
+  List<Object> get props => [name, status];
+
+  @override
+  String toString() {
+    return 'SaveOnboardingDetails { name: $name, status: $status }';
   }
 }
