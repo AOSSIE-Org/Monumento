@@ -46,6 +46,17 @@ class SigninWithGoogleSuccess extends LoginRegisterState {
   List<Object> get props => [user.email];
 }
 
+class SigninWithGoogleFailed extends LoginRegisterState {
+  final String message;
+
+  @override
+  List<Object> get props => [message];
+
+  const SigninWithGoogleFailed({
+    required this.message,
+  });
+}
+
 class LoginFailed extends LoginRegisterState {
   final String message;
 
@@ -91,6 +102,26 @@ class SignUpFailed extends LoginRegisterState {
 }
 
 class LoginRegisterLoading extends LoginRegisterState {
+  @override
+  List<Object> get props => [];
+}
+
+class ResetPasswordFailed extends LoginRegisterState {
+  final String message;
+
+  const ResetPasswordFailed({required this.message});
+
+  @override
+  String toString() => 'ResetPasswordFailed';
+
+  @override
+  List<Object> get props => [message];
+}
+
+class ResetPasswordSuccess extends LoginRegisterState {
+  @override
+  String toString() => 'ResetPasswordSuccess';
+
   @override
   List<Object> get props => [];
 }

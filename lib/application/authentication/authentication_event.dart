@@ -38,3 +38,11 @@ class LoggedOut extends AuthenticationEvent {
   @override
   List<Object> get props => [];
 }
+
+class LoggedInWithInCompleteOnboarding extends AuthenticationEvent {
+  @override
+  String toString() => 'LoggedInWithInCompleteProfile';
+
+  @override
+  List<Object> get props => [];
+}

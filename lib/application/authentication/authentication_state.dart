@@ -34,3 +34,31 @@ class Unauthenticated extends AuthenticationState {
   @override
   List<Object> get props => [];
 }
+
+class OnboardingIncomplete extends AuthenticationState {
+  @override
+  String toString() => 'OnboardingIncomplete';
+
+  @override
+  List<Object> get props => [];
+}
+
+class OnboardingFailed extends AuthenticationState {
+  final String message;
+
+  const OnboardingFailed({required this.message});
+
+  @override
+  String toString() => 'OnboardingFailed';
+
+  @override
+  List<Object> get props => [message];
+}
+
+class OnboardingSuccess extends AuthenticationState {
+  @override
+  String toString() => 'OnboardingSuccess';
+
+  @override
+  List<Object> get props => [];
+}

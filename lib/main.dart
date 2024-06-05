@@ -1,16 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monumento/presentation/authentication/login_view.dart';
 import 'package:monumento/service_locator.dart';
+import 'package:monumento/utils/app_colors.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'application/authentication/authentication_bloc.dart';
+import 'presentation/authentication/onboarding_view.dart';
 import 'firebase_options.dart';
+import 'presentation/home/home_view.dart';
 import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
   runApp(const MyApp());
@@ -61,14 +66,18 @@ class _WrapperState extends State<Wrapper> {
       bloc: locator<AuthenticationBloc>(),
       builder: (context, state) {
         if (state is Authenticated) {
-          return const MyHomePage();
+          return const HomeView();
         } else if (state is Unauthenticated) {
           return const LoginView();
+        } else if (state is OnboardingIncomplete) {
+          return const OnboardingView();
         }
         return const Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator(
+              color: AppColor.appPrimary,
+            ),
           ),
         );
       },

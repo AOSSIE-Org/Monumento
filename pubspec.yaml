@@ -51,6 +51,15 @@ dependencies:
   # UI/UX
   flutter_native_splash: ^2.4.0
   flutter_signin_button: ^2.0.0
+  expandable_page_view: ^1.0.17
+
+  # Utils
+  uuid: ^4.4.0
+  image_picker: ^1.1.1
+  flutter_dotenv: ^5.1.0
+
+  # SVG / Vector Graphics
+  flutter_svg: ^2.0.10+1
 
   # Fonts
   google_fonts: ^6.2.1
@@ -101,7 +110,10 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - .env
     - assets/logo_black.png
+    - assets/icons/
+    - assets/desktop/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
