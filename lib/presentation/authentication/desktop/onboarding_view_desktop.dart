@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
-import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/constants.dart';
 
 class OnboardingViewDesktop extends StatefulWidget {
   const OnboardingViewDesktop({super.key});
@@ -94,116 +94,48 @@ class _OnboardingViewDesktopState extends State<OnboardingViewDesktop> {
                                 image = img;
                               });
                             },
-                            child: CircleAvatar(
-                              radius: 40,
-                              backgroundColor: AppColor.appGreyAccent,
-                              child: image != null
-                                  ? Image.file(File(image!.path))
-                                  : SvgPicture.asset(
+                            child: image != null
+                                ? CircleAvatar(
+                                    radius: 40,
+                                    backgroundImage:
+                                        FileImage(File(image!.path)))
+                                : CircleAvatar(
+                                    radius: 40,
+                                    backgroundColor: AppColor.appGreyAccent,
+                                    child: SvgPicture.asset(
                                       'assets/icons/ic_user.svg',
                                     ),
-                            ),
+                                  ),
                           ),
                           const SizedBox(
                             height: 22,
                           ),
-                          TextFormField(
-                            controller: nameController,
-                            decoration: InputDecoration(
-                              labelText: 'Name',
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColor.appSecondary,
-                                ),
-                              ),
-                              floatingLabelStyle: AppTextStyles.s14(
-                                color: AppColor.appSecondary,
-                                fontType: FontType.MEDIUM,
-                              ),
-                              border: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColor.appSecondaryBlack,
-                                ),
-                              ),
-                            ),
-                          ),
+                          CustomUI.customTextField(
+                              nameController, 'Name', false, null, null),
                           const SizedBox(
                             height: 16,
                           ),
-                          TextFormField(
-                            controller: usernameController,
-                            decoration: InputDecoration(
-                              labelText: 'Username',
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColor.appSecondary,
-                                ),
-                              ),
-                              floatingLabelStyle: AppTextStyles.s14(
-                                color: AppColor.appSecondary,
-                                fontType: FontType.MEDIUM,
-                              ),
-                              border: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColor.appSecondaryBlack,
-                                ),
-                              ),
-                            ),
-                          ),
+                          CustomUI.customTextField(usernameController,
+                              'Username', false, null, null),
                           const SizedBox(
                             height: 16,
                           ),
-                          TextFormField(
-                            controller: statusController,
-                            decoration: InputDecoration(
-                              labelText: 'Status',
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColor.appSecondary,
-                                ),
-                              ),
-                              floatingLabelStyle: AppTextStyles.s14(
-                                color: AppColor.appSecondary,
-                                fontType: FontType.MEDIUM,
-                              ),
-                              border: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: AppColor.appSecondaryBlack,
-                                ),
-                              ),
-                            ),
-                          ),
+                          CustomUI.customTextField(
+                              statusController, 'Status', false, null, null),
                           const SizedBox(
                             height: 48,
                           ),
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6),
+                            child: CustomUI.customElevatedButton(() {
+                              locator<LoginRegisterBloc>().add(
+                                SaveOnboardingDetails(
+                                  name: nameController.text,
+                                  status: statusController.text,
+                                  username: usernameController.text,
                                 ),
-                                backgroundColor: AppColor.appPrimary,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                              ),
-                              onPressed: () {
-                                locator<LoginRegisterBloc>().add(
-                                  SaveOnboardingDetails(
-                                    name: nameController.text,
-                                    status: statusController.text,
-                                    username: usernameController.text,
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'Continue',
-                                style: AppTextStyles.s14(
-                                  color: AppColor.appSecondary,
-                                  fontType: FontType.MEDIUM,
-                                ),
-                              ),
-                            ),
+                              );
+                            }, 'Continue'),
                           ),
                           const SizedBox(
                             height: 26,

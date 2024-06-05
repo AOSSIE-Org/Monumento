@@ -3,6 +3,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/constants.dart';
 
 class SignUpDeciderWidget extends StatefulWidget {
   final VoidCallback onSignUpWithEmailPressed;
@@ -26,7 +27,7 @@ class _SignUpDeciderWidgetState extends State<SignUpDeciderWidget> {
           width: double.infinity,
           child: SignInButton(
             padding: const EdgeInsets.all(4),
-            Buttons.GoogleDark,
+            Buttons.Google,
             text: 'Sign up with Google',
             onPressed: widget.onSignUpWithGooglePressed,
           ),
@@ -47,23 +48,8 @@ class _SignUpDeciderWidgetState extends State<SignUpDeciderWidget> {
         ),
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
-              ),
-              backgroundColor: AppColor.appPrimary,
-              padding: const EdgeInsets.symmetric(vertical: 20),
-            ),
-            onPressed: widget.onSignUpWithEmailPressed,
-            child: Text(
-              'Sign up with Email',
-              style: AppTextStyles.s14(
-                color: AppColor.appSecondary,
-                fontType: FontType.MEDIUM,
-              ),
-            ),
-          ),
+          child: CustomUI.customElevatedButton(
+              widget.onSignUpWithEmailPressed, 'Sign up with Email'),
         ),
         const SizedBox(
           height: 22,
