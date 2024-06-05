@@ -45,6 +45,7 @@ class _OnboardingViewMobileState extends State<OnboardingViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: AppColor.appBackground,
       body: Form(
         child: SizedBox(
@@ -54,18 +55,14 @@ class _OnboardingViewMobileState extends State<OnboardingViewMobile> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(
-                height: 64,
-              ),
+              const Spacer(),
               SvgPicture.asset(
                 'assets/desktop/logo_desktop.svg',
                 width: 220,
               ),
-              const Spacer(),
-              Card(
-                child: Container(
+            Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 80),
                   width: 380,
                   child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
                     bloc: locator<LoginRegisterBloc>(),
@@ -145,7 +142,6 @@ class _OnboardingViewMobileState extends State<OnboardingViewMobile> {
                     },
                   ),
                 ),
-              ),
               const Spacer(),
             ],
           ),
