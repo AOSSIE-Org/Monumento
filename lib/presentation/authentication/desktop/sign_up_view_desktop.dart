@@ -10,6 +10,7 @@ import 'package:monumento/application/authentication/login_register/login_regist
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/constants.dart';
 
 import 'widgets/sign_up_decider_widget.dart';
 
@@ -143,208 +144,97 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                       image = img;
                                     });
                                   },
-                                  child: CircleAvatar(
-                                    radius: 40,
-                                    backgroundColor: AppColor.appGreyAccent,
-                                    child: image != null
-                                        ? Image.file(File(image!.path))
-                                        : SvgPicture.asset(
+                                  child: image != null
+                                      ? CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage:
+                                              FileImage(File(image!.path)))
+                                      : CircleAvatar(
+                                          radius: 40,
+                                          backgroundColor:
+                                              AppColor.appGreyAccent,
+                                          child: SvgPicture.asset(
                                             'assets/icons/ic_user.svg',
                                           ),
-                                  ),
+                                        ),
                                 ),
                                 const SizedBox(
                                   height: 22,
                                 ),
-                                TextFormField(
-                                  controller: nameController,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Name cannot be empty';
-                                    }
-                                    return null;
-                                  },
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  decoration: InputDecoration(
-                                    labelText: 'Name',
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondary,
-                                      ),
-                                    ),
-                                    floatingLabelStyle: AppTextStyles.s14(
-                                      color: AppColor.appSecondary,
-                                      fontType: FontType.MEDIUM,
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondaryBlack,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                CustomUI.customTextField(
+                                    nameController, 'Name', false, (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Name cannot be empty';
+                                  }
+                                  return null;
+                                }, AutovalidateMode.onUserInteraction),
                                 const SizedBox(
                                   height: 16,
                                 ),
-                                TextFormField(
-                                  controller: usernameController,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Username cannot be empty';
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Username',
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondary,
-                                      ),
-                                    ),
-                                    floatingLabelStyle: AppTextStyles.s14(
-                                      color: AppColor.appSecondary,
-                                      fontType: FontType.MEDIUM,
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondaryBlack,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                CustomUI.customTextField(
+                                    usernameController, 'Username', false,
+                                    (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Username cannot be empty';
+                                  }
+                                  return null;
+                                }, null),
                                 const SizedBox(
                                   height: 16,
                                 ),
-                                TextFormField(
-                                  controller: statusController,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Status cannot be empty';
-                                    }
-                                    return null;
-                                  },
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  decoration: InputDecoration(
-                                    labelText: 'Status',
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondary,
-                                      ),
-                                    ),
-                                    floatingLabelStyle: AppTextStyles.s14(
-                                      color: AppColor.appSecondary,
-                                      fontType: FontType.MEDIUM,
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondaryBlack,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                CustomUI.customTextField(
+                                    statusController, 'Status', false, (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Status cannot be empty';
+                                  }
+                                  return null;
+                                }, AutovalidateMode.onUserInteraction),
                                 const SizedBox(
                                   height: 16,
                                 ),
-                                TextFormField(
-                                  controller: emailController,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Email cannot be empty';
-                                    } else if (!value.contains('@')) {
-                                      return 'Invalid email';
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Email',
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondary,
-                                      ),
-                                    ),
-                                    floatingLabelStyle: AppTextStyles.s14(
-                                      color: AppColor.appSecondary,
-                                      fontType: FontType.MEDIUM,
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondaryBlack,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                CustomUI.customTextField(
+                                    emailController, 'Email', false, (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Email cannot be empty';
+                                  } else if (!value.contains('@')) {
+                                    return 'Invalid email';
+                                  }
+                                  return null;
+                                }, AutovalidateMode.onUserInteraction),
                                 const SizedBox(
                                   height: 16,
                                 ),
-                                TextFormField(
-                                  controller: passwordController,
-                                  obscureText: true,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Password cannot be empty';
-                                    } else if (value.length < 6) {
-                                      return 'Password must be at least 6 characters';
-                                    }
-                                    return null;
-                                  },
-                                  decoration: InputDecoration(
-                                    labelText: 'Password',
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondary,
-                                      ),
-                                    ),
-                                    floatingLabelStyle: AppTextStyles.s14(
-                                      color: AppColor.appSecondary,
-                                      fontType: FontType.MEDIUM,
-                                    ),
-                                    border: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                        color: AppColor.appSecondaryBlack,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                CustomUI.customTextField(
+                                    passwordController, 'Password', true,
+                                    (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Password cannot be empty';
+                                  } else if (value.length < 6) {
+                                    return 'Password must be at least 6 characters';
+                                  }
+                                  return null;
+                                }, AutovalidateMode.onUserInteraction),
                                 const SizedBox(
                                   height: 48,
                                 ),
                                 SizedBox(
                                   width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(6),
-                                      ),
-                                      backgroundColor: AppColor.appPrimary,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 20),
-                                    ),
-                                    onPressed: () {
-                                      if (formKey.currentState!.validate()) {
-                                        locator<LoginRegisterBloc>().add(
-                                          SignUpWithEmailPressed(
-                                            email: emailController.text,
-                                            password: passwordController.text,
-                                            name: nameController.text,
-                                            username: usernameController.text,
-                                            status: statusController.text,
-                                            profilePictureFile: image != null
-                                                ? File(image!.path)
-                                                : null,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    child: Text(
-                                      'Sign Up',
-                                      style: AppTextStyles.s14(
-                                        color: AppColor.appSecondary,
-                                        fontType: FontType.MEDIUM,
-                                      ),
-                                    ),
-                                  ),
+                                  child: CustomUI.customElevatedButton(() {
+                                    if (formKey.currentState!.validate()) {
+                                      locator<LoginRegisterBloc>().add(
+                                        SignUpWithEmailPressed(
+                                          email: emailController.text,
+                                          password: passwordController.text,
+                                          name: nameController.text,
+                                          username: usernameController.text,
+                                          status: statusController.text,
+                                          profilePictureFile: image != null
+                                              ? File(image!.path)
+                                              : null,
+                                        ),
+                                      );
+                                    }
+                                  }, 'Sign Up'),
                                 ),
                                 const SizedBox(
                                   height: 26,

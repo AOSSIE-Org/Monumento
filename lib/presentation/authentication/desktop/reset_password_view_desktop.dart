@@ -6,6 +6,7 @@ import 'package:monumento/application/authentication/login_register/login_regist
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/constants.dart';
 
 class ResetPasswordViewDesktop extends StatefulWidget {
   const ResetPasswordViewDesktop({super.key});
@@ -97,93 +98,38 @@ class _ResetPasswordViewDesktopState extends State<ResetPasswordViewDesktop> {
                               ),
                               SizedBox(
                                 width: double.infinity,
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    backgroundColor: AppColor.appPrimary,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20),
-                                  ),
-                                  onPressed: () {
-                                    context.pop();
-                                  },
-                                  child: Text(
-                                    'Back to Login',
-                                    style: AppTextStyles.s14(
-                                      color: AppColor.appSecondary,
-                                      fontType: FontType.MEDIUM,
-                                    ),
-                                  ),
-                                ),
+                                child: CustomUI.customElevatedButton(() {
+                                  context.pop();
+                                }, 'Back to Login'),
                               ),
                             ],
                           );
                         }
                         return Column(
                           children: [
-                            TextFormField(
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your email';
-                                } else if (!value.contains('@')) {
-                                  return 'Please enter a valid email';
-                                }
-                                return null;
-                              },
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              controller: emailController,
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColor.appSecondary,
-                                  ),
-                                ),
-                                floatingLabelStyle: AppTextStyles.s14(
-                                  color: AppColor.appSecondary,
-                                  fontType: FontType.MEDIUM,
-                                ),
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColor.appSecondaryBlack,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            CustomUI.customTextField(
+                                emailController, 'Email', false, (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter email.';
+                              } else if (!value.contains('@')) {
+                                return 'Please enter a valid email.';
+                              }
+                              return null;
+                            }, AutovalidateMode.onUserInteraction),
                             const SizedBox(
                               height: 38,
                             ),
                             SizedBox(
                               width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  backgroundColor: AppColor.appPrimary,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 20),
-                                ),
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    locator<LoginRegisterBloc>().add(
-                                      ResetPasswordButtonPressed(
-                                        email: emailController.text,
-                                      ),
-                                    );
-                                  }
-                                },
-                                child: Text(
-                                  'Reset Password',
-                                  style: AppTextStyles.s14(
-                                    color: AppColor.appSecondary,
-                                    fontType: FontType.MEDIUM,
-                                  ),
-                                ),
-                              ),
+                              child: CustomUI.customElevatedButton(() {
+                                if (formKey.currentState!.validate()) {
+                                  locator<LoginRegisterBloc>().add(
+                                    ResetPasswordButtonPressed(
+                                      email: emailController.text,
+                                    ),
+                                  );
+                                }
+                              }, 'Reset Password'),
                             ),
                             const SizedBox(
                               height: 26,

@@ -7,6 +7,7 @@ import 'package:monumento/application/authentication/login_register/login_regist
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/constants.dart';
 
 class LoginViewDesktop extends StatefulWidget {
   const LoginViewDesktop({super.key});
@@ -125,70 +126,27 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                             const SizedBox(
                               height: 22,
                             ),
-                            TextFormField(
-                              controller: emailController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter email.';
-                                } else if (!value.contains('@')) {
-                                  return 'Please enter a valid email.';
-                                }
-                                return null;
-                              },
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              decoration: InputDecoration(
-                                labelText: 'Email',
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColor.appSecondary,
-                                  ),
-                                ),
-                                floatingLabelStyle: AppTextStyles.s14(
-                                  color: AppColor.appSecondary,
-                                  fontType: FontType.MEDIUM,
-                                ),
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColor.appSecondaryBlack,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            CustomUI.customTextField(
+                                emailController, 'Email', false, (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter email.';
+                              } else if (!value.contains('@')) {
+                                return 'Please enter a valid email.';
+                              }
+                              return null;
+                            }, AutovalidateMode.onUserInteraction),
                             const SizedBox(
                               height: 16,
                             ),
-                            TextFormField(
-                              controller: passwordController,
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter password.';
-                                } else if (value.length < 6) {
-                                  return 'Password must be at least 6 characters.';
-                                }
-                                return null;
-                              },
-                              autovalidateMode:
-                                  AutovalidateMode.onUserInteraction,
-                              decoration: InputDecoration(
-                                labelText: 'Password',
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColor.appSecondary,
-                                  ),
-                                ),
-                                floatingLabelStyle: AppTextStyles.s14(
-                                  color: AppColor.appSecondary,
-                                  fontType: FontType.MEDIUM,
-                                ),
-                                border: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColor.appSecondaryBlack,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            CustomUI.customTextField(
+                                passwordController, 'Password', true, (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter password.';
+                              } else if (value.length < 6) {
+                                return 'Password must be at least 6 characters.';
+                              }
+                              return null;
+                            }, AutovalidateMode.onUserInteraction),
                             const SizedBox(
                               height: 16,
                             ),
@@ -216,17 +174,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                               height: 48,
                             ),
                             SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  backgroundColor: AppColor.appPrimary,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 20),
-                                ),
-                                onPressed: () {
+                                width: double.infinity,
+                                child: CustomUI.customElevatedButton(() {
                                   if (formKey.currentState!.validate()) {
                                     locator<LoginRegisterBloc>().add(
                                       LoginWithEmailPressed(
@@ -248,16 +197,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       ),
                                     );
                                   }
-                                },
-                                child: Text(
-                                  'Login',
-                                  style: AppTextStyles.s14(
-                                    color: AppColor.appSecondary,
-                                    fontType: FontType.MEDIUM,
-                                  ),
-                                ),
-                              ),
-                            ),
+                                }, 'Login')),
                             const SizedBox(
                               height: 26,
                             ),
