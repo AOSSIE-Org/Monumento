@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/presentation/authentication/login_view.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -26,6 +30,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Size designSize;
+    if (kIsWeb) {
+      designSize = const Size(1440, 1024);
+    } else {
+      if (Platform.isIOS || Platform.isAndroid) {
+        designSize = const Size(390, 844);
+      } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+        designSize = const Size(1440, 1024);
+      } else {
+        designSize = const Size(360, 690);
+      }
+    }
+
     return MaterialApp.router(
       routerConfig: router,
       title: 'Monumento',
@@ -34,7 +51,11 @@ class MyApp extends StatelessWidget {
       ),
       builder: (context, child) {
         return ResponsiveBreakpoints.builder(
-          child: child!,
+          child: ScreenUtilInit(
+              designSize: designSize,
+              builder: (context, _) {
+                return child!;
+              }),
           breakpoints: [
             const Breakpoint(start: 0, end: 450, name: MOBILE),
             const Breakpoint(start: 451, end: 800, name: TABLET),

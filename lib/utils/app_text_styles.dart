@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app_colors.dart';
@@ -47,76 +48,76 @@ class AppTextStyles {
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 8, color: color, fontType: fontType, isBody: isBody);
+          size: 8.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s10(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 10, color: color, fontType: fontType, isBody: isBody);
+          size: 10.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s12(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 12, color: color, fontType: fontType, isBody: isBody);
+          size: 12.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s14(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 14, color: color, fontType: fontType, isBody: isBody);
+          size: 14.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s16(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 16, color: color, fontType: fontType, isBody: isBody);
+          size: 16.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s18(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 18, color: color, fontType: fontType, isBody: isBody);
+          size: 18.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s20(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 20, color: color, fontType: fontType, isBody: isBody);
+          size: 20.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s24(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 24, color: color, fontType: fontType, isBody: isBody);
+          size: 24.sp, color: color, fontType: fontType, isBody: isBody);
   static TextStyle s26(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 26, color: color, fontType: fontType, isBody: isBody);
+          size: 26.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s28(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 28, color: color, fontType: fontType, isBody: isBody);
+          size: 28.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle s30(
           {required Color color,
           required FontType fontType,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 30, color: color, fontType: fontType, isBody: isBody);
+          size: 30.sp, color: color, fontType: fontType, isBody: isBody);
 
   static TextStyle withLineThrough({
     required Color color,
