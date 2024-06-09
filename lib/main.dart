@@ -53,6 +53,7 @@ class MyApp extends StatelessWidget {
         return ResponsiveBreakpoints.builder(
           child: ScreenUtilInit(
               designSize: designSize,
+              minTextAdapt: true,
               builder: (context, _) {
                 return child!;
               }),
