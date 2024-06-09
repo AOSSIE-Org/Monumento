@@ -12,10 +12,12 @@ class UserEntity extends Equatable {
   final String? username;
   final List<String> following;
   final List<String> followers;
+  final List<String> posts;
 
   const UserEntity({
     this.following = const [],
     this.followers = const [],
+    this.posts = const [],
     required this.email,
     required this.uid,
     this.name = "Monumento User",

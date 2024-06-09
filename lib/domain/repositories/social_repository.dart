@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:monumento/data/models/user_model.dart';
 
-abstract class SocialRepository {
+abstract interface class SocialRepository {
   Future<String> uploadImageForUrl(
       {required File file, required String address});
 
