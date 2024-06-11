@@ -15,12 +15,15 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      posts:
+          (json['posts'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const [],
       email: json['email'] as String,
       uid: json['uid'] as String,
       name: json['name'] as String? ?? "Monumento User",
-      profilePictureUrl: json['profilePictureUrl'] as String,
+      profilePictureUrl: json['profilePictureUrl'] as String?,
       status: json['status'] as String? ?? " Status",
-      username: json['username'] as String,
+      username: json['username'] as String?,
     );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
@@ -32,4 +35,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'username': instance.username,
       'following': instance.following,
       'followers': instance.followers,
+      'posts': instance.posts,
     };

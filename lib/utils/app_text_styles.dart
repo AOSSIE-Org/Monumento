@@ -119,6 +119,27 @@ class AppTextStyles {
       AppTextStyles.textStyle(
           size: 30.sp, color: color, fontType: fontType, isBody: isBody);
 
+  static TextStyle responsive(
+      {required Color color,
+      required FontType fontType,
+      required double sizeDesktop,
+      required double sizeTablet,
+      bool isBody = false}) {
+    if (ScreenUtil().screenWidth > 1200) {
+      return AppTextStyles.textStyle(
+          size: sizeDesktop.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
+    } else {
+      return AppTextStyles.textStyle(
+          size: sizeTablet.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
+    }
+  }
+
   static TextStyle withLineThrough({
     required Color color,
     required FontType fontType,
