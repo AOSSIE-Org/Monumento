@@ -7,7 +7,7 @@ import 'package:monumento/domain/repositories/monument_repository.dart';
 import 'package:wikipedia/wikipedia.dart';
 
 class FirebaseMonumentRepository implements MonumentRepository {
-  FirebaseFirestore _database;
+  final FirebaseFirestore _database;
 
   FirebaseMonumentRepository({FirebaseFirestore? database})
       : _database = database ?? FirebaseFirestore.instance;

@@ -58,6 +58,7 @@ dependencies:
   # Utils
   uuid: ^4.4.0
   image_picker: ^1.1.1
+  image_cropper: ^7.0.5
   flutter_dotenv: ^5.1.0
   cached_network_image: ^3.3.1
   flutter_screenutil: ^5.9.3
@@ -120,6 +121,7 @@ flutter:
     - assets/icons/
     - assets/desktop/
     - assets/logo_auth.png
+    - assets/nav_icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
