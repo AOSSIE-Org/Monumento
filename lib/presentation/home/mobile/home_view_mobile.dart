@@ -71,13 +71,13 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
               icon: Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: SvgPicture.asset(
-                  'assets/nav_icons/home.svg',
+                  'assets/icons/ic_home_selected.svg',
                 ),
               ),
               activeIcon: Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: SvgPicture.asset(
-                  'assets/nav_icons/home.svg',
+                  'assets/icons/ic_home_selected.svg',
                   // ignore: deprecated_member_use
                   color: AppColor.appPrimary,
                 ),
@@ -86,12 +86,12 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
               label: 'Feed',
               icon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SvgPicture.asset('assets/nav_icons/feeds.svg'),
+                child: SvgPicture.asset('assets/icons/ic_feed_selected.svg'),
               ),
               activeIcon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SvgPicture.asset(
-                    'assets/nav_icons/feeds.svg',
+                    'assets/icons/ic_feed_selected.svg',
                     // ignore: deprecated_member_use
                     color: AppColor.appPrimary,
                   ))),
@@ -120,21 +120,21 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
               label: 'Discover',
               icon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SvgPicture.asset('assets/nav_icons/discover.svg')),
+                  child: SvgPicture.asset('assets/icons/ic_discover_selected.svg')),
               activeIcon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SvgPicture.asset('assets/nav_icons/discover.svg',
+                  child: SvgPicture.asset('assets/icons/ic_discover_selected.svg',
                       // ignore: deprecated_member_use
                       color: AppColor.appPrimary))),
           BottomNavigationBarItem(
               label: 'Profile',
               icon: Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: SvgPicture.asset('assets/nav_icons/user.svg'),
+                child: SvgPicture.asset('assets/icons/ic_profile_selected.svg'),
               ),
               activeIcon: Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: SvgPicture.asset('assets/nav_icons/user.svg',
+                child: SvgPicture.asset('assets/icons/ic_profile_selected.svg',
                     // ignore: deprecated_member_use
                     color: AppColor.appPrimary),
               )),
