@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:monumento/presentation/home/mobile/widgets/pick_imge.dart';
+import 'package:monumento/presentation/home/mobile/widgets/pick_image.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
