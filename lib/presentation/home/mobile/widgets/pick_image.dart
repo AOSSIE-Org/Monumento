@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:image_cropper/image_cropper.dart';
@@ -13,7 +14,7 @@ class PickImage {
       File imageFile = File(imagePickerFile!.path);
       return imageFile;
     } catch (e) {
-      print(e.toString());
+      log(e.toString());
       return File('');
     }
   }
@@ -27,7 +28,7 @@ class PickImage {
         aspectRatio: CropAspectRatio(ratioX: ratioX, ratioY: ratioY),
         compressQuality: 15);
     File croppedImage = File(croppedImageFile!.path);
-    print("${croppedImageFile.path} file name");
+    log("${croppedImageFile.path} file name");
     return croppedImage;
   }
 }

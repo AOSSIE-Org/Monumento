@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -65,6 +66,6 @@ class NewPostBottomSheet {
         //TODO: create a new post
     // Navigator.of(context).pushNamed(NewPostScreen.route,
     //     arguments: NewPostScreenArguments(pickedImage: croppedImage));
-    print(croppedImage);
+    log(croppedImage.toString());
   }
 }
