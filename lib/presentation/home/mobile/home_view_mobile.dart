@@ -25,30 +25,14 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: AppColor.appBackground,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SvgPicture.asset(
-                'assets/desktop/logo_desktop.svg',
-                height: 25,
-                width: 161,
-              ),
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.notifications_outlined,
-                      color: AppColor.appBlack))
-            ],
-          )),
       body: IndexedStack(
         index: selectedIndex,
         children:[
           const PopularMonumentsViewMobile(),
-          const Text("Feeds"),
+          const Center(child: Text("Feeds")),
           Container(),
-          const Text("Discover"),
-          const Text("Profile"),
+          const Center(child: Text("Discover")),
+          const Center(child: Text("Profile")),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
