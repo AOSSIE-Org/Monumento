@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_tile_mobile.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -30,6 +30,8 @@ class _MonumentDetailedViewMobileState
 
   @override
   Widget build(BuildContext context) {
+    List<String> images = widget.monument.images;
+
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColor.appWhite,
@@ -60,95 +62,18 @@ class _MonumentDetailedViewMobileState
               const SizedBox(
                 height: 15,
               ),
-              Container(
-                width: 367,
-                height: 225,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.sp),
-                  image: DecorationImage(
-                    image: CachedNetworkImageProvider(
-                      widget.monument.images[0],
-                    ),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
+              ImageTile(index: 0, images: images, width: 367, height: 225),
               const SizedBox(
                 height: 10,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(12.sp),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          widget.monument.images[1],
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(12.sp),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          widget.monument.images[2],
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: Colors.yellow,
-                      borderRadius: BorderRadius.circular(12.sp),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          widget.monument.images[3],
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: Colors.blue,
-                      borderRadius: BorderRadius.circular(12.sp),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          widget.monument.images[4],
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      color: Colors.yellow,
-                      borderRadius: BorderRadius.circular(12.sp),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                          widget.monument.images[5],
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
+                  ImageTile(index: 1, images: images),
+                  ImageTile(index: 2, images: images),
+                  ImageTile(index: 3, images: images),
+                  ImageTile(index: 4, images: images),
+                  ImageTile(index: 5, images: images),
                 ],
               ),
               const SizedBox(
@@ -237,7 +162,7 @@ class _MonumentDetailedViewMobileState
                     Row(
                       children: [
                         IconButton(
-                          //TODO:
+                            //TODO:
                             onPressed: () {},
                             icon: const Icon(Icons.star_border)),
                         const Text("4.3")
@@ -283,7 +208,8 @@ class _MonumentDetailedViewMobileState
                       child: Column(
                         children: [
                           Card(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             child: ExpansionTile(
                               collapsedBackgroundColor: AppColor.appWhite,
                               title: Text(state.wikiData.title),
@@ -294,9 +220,12 @@ class _MonumentDetailedViewMobileState
                               ],
                             ),
                           ),
-                          const SizedBox(height: 12,),
+                          const SizedBox(
+                            height: 12,
+                          ),
                           Card(
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
                             child: ExpansionTile(
                               collapsedBackgroundColor: AppColor.appWhite,
                               title: const Text("More Details"),
