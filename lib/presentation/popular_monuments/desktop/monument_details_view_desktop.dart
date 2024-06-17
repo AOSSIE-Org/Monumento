@@ -1,10 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
-import 'package:monumento/presentation/popular_monuments/desktop/widgets/image_tile_desktop.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -117,35 +117,71 @@ class _MonumentDetailsViewDesktopState
                 SizedBox(
                   width: 24.w,
                 ),
-                ImageTileDesktop(
-                    index: 0, images: images, width: 584.w, height: 380.w),
+                Container(
+                  width: 584.w,
+                  height: 380.w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12.sp),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        widget.monument.images[0],
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
                 SizedBox(
                   width: 14.w,
                 ),
-                ImageTileDesktop(
-                  index: 1,
-                  images: images,
+                Container(
                   width: 380.w,
                   height: 380.w,
-                  color: Colors.green,
+                  decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(12.sp),
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider(
+                        widget.monument.images[1],
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
                 SizedBox(
                   width: 14.w,
                 ),
                 Column(
                   children: [
-                    ImageTileDesktop(
-                      index: 2,
-                      images: images,
-                      color: Colors.blue,
+                    Container(
+                      width: 185.w,
+                      height: 185.w,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(12.sp),
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                            widget.monument.images[2],
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                     SizedBox(
                       height: 12.w,
                     ),
-                    ImageTileDesktop(
-                      index: 3,
-                      images: images,
-                      color: Colors.yellow,
+                    Container(
+                      width: 185.w,
+                      height: 185.w,
+                      decoration: BoxDecoration(
+                        color: Colors.yellow,
+                        borderRadius: BorderRadius.circular(12.sp),
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                            widget.monument.images[3],
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -154,18 +190,36 @@ class _MonumentDetailsViewDesktopState
                 ),
                 Column(
                   children: [
-                    ImageTileDesktop(
-                      index: 4,
-                      images: images,
-                      color: Colors.blue,
+                    Container(
+                      width: 185.w,
+                      height: 185.w,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(12.sp),
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                            widget.monument.images[4],
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                     SizedBox(
                       height: 14.w,
                     ),
-                    ImageTileDesktop(
-                      index: 5,
-                      images: images,
-                      color: Colors.yellow,
+                    Container(
+                      width: 185.w,
+                      height: 185.w,
+                      decoration: BoxDecoration(
+                        color: Colors.yellow,
+                        borderRadius: BorderRadius.circular(12.sp),
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider(
+                            widget.monument.images[5],
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ],
                 ),
