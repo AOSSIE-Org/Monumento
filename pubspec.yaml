@@ -58,10 +58,12 @@ dependencies:
   # Utils
   uuid: ^4.4.0
   image_picker: ^1.1.1
+  image_cropper: ^7.0.5
   flutter_dotenv: ^5.1.0
   cached_network_image: ^3.3.1
   flutter_screenutil: ^5.9.3
   wikipedia: ^0.0.8
+  carousel_slider: ^4.2.1
 
   # SVG / Vector Graphics
   flutter_svg: ^2.0.10+1
