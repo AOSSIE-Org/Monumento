@@ -53,6 +53,8 @@ dependencies:
   flutter_signin_button: ^2.0.0
   expandable_page_view: ^1.0.17
   easy_sidemenu: ^0.6.0
+  like_button: ^2.0.5
+  carousel_slider: ^4.2.1
 
   
   # Utils
@@ -63,7 +65,7 @@ dependencies:
   cached_network_image: ^3.3.1
   flutter_screenutil: ^5.9.3
   wikipedia: ^0.0.8
-  carousel_slider: ^4.2.1
+  timeago: ^3.6.1
 
   # SVG / Vector Graphics
   flutter_svg: ^2.0.10+1
