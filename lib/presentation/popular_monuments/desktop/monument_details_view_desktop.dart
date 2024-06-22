@@ -29,8 +29,6 @@ class _MonumentDetailsViewDesktopState
 
   @override
   Widget build(BuildContext context) {
-    List<String> images = widget.monument.images;
-
     return Scaffold(
       backgroundColor: AppColor.appBackground,
       appBar: AppBar(
