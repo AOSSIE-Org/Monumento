@@ -10,7 +10,7 @@ class PostModel {
   final String postId;
   final String? imageUrl;
   final String title;
-  final String location;
+  final String? location;
   final int timeStamp;
   final UserModel author;
   final String postByUid;
@@ -27,7 +27,7 @@ class PostModel {
     this.isPostLiked = false,
     this.imageUrl,
     required this.title,
-    required this.location,
+    this.location,
     required this.timeStamp,
     required this.author,
     required this.postByUid,

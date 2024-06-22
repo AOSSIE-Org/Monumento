@@ -112,9 +112,8 @@ class FirebaseSocialRepository implements SocialRepository {
         .collection("posts")
         .where("postByUid", whereIn: followingUids)
         .orderBy("timeStamp", descending: true)
-        .limit(2)
+        .limit(5)
         .get();
-
     List<PostModel> posts = await Future.wait(snap.docs.map((e) async {
       var data = e.data() as Map<String, dynamic>;
       if (data['postId'] == null) {
@@ -357,5 +356,47 @@ class FirebaseSocialRepository implements SocialRepository {
           .toList();
     }
     return users;
+  }
+
+  @override
+  Future<PostModel> uploadNewPost(
+      {required String title,
+      String? location,
+      String? imageUrl,
+      required int postType}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    DocumentReference doc = await _database.collection("posts").add({
+      "title": title,
+      "location": location,
+      "imageUrl": imageUrl,
+      "author": {
+        "name": user?.name,
+        "username": user?.username,
+        "uid": user?.uid,
+        "profilePictureUrl": user?.profilePictureUrl,
+        "email": user?.email,
+      },
+      "timeStamp": timeStamp,
+      "postType": postType,
+      "postByUid": user?.uid,
+      "likesCount": 0,
+      "commentsCount": 0,
+    });
+    return PostModel(
+      author: user!,
+      postByUid: user.uid,
+      title: title,
+      location: location,
+      imageUrl: imageUrl,
+      timeStamp: timeStamp,
+      postId: doc.id,
+      postType: postType,
+      likesCount: 0,
+      commentsCount: 0,
+    );
   }
 }

@@ -35,4 +35,11 @@ abstract interface class SocialRepository {
       {required String postDocId, required String startAfterDocId});
 
   Future<List<UserModel>> getRecommendedUsers();
+
+  Future<PostModel> uploadNewPost({
+    required String title,
+    String? location,
+    String? imageUrl,
+    required int postType,
+  });
 }

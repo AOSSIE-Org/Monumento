@@ -5,7 +5,7 @@ class PostEntity extends Equatable {
   final String postId;
   final String? imageUrl;
   final String title;
-  final String location;
+  final String? location;
   final int timeStamp;
   final UserEntity author;
   final String postByUid;

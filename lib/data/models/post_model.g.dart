@@ -14,7 +14,7 @@ PostModel _$PostModelFromJson(Map<String, dynamic> json) => PostModel(
       isPostLiked: json['isPostLiked'] as bool? ?? false,
       imageUrl: json['imageUrl'] as String?,
       title: json['title'] as String,
-      location: json['location'] as String,
+      location: json['location'] as String?,
       timeStamp: (json['timeStamp'] as num).toInt(),
       author: UserModel.fromJson(json['author'] as Map<String, dynamic>),
       postByUid: json['postByUid'] as String,
