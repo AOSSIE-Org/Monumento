@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monumento/presentation/feed/desktop/your_feed_view_desktop.dart';
 import 'package:monumento/presentation/popular_monuments/desktop/popular_monuments_view_desktop.dart';
 
 import 'widgets/scaffold_with_navigation.dart';
@@ -21,6 +22,7 @@ class _HomeViewDesktopState extends State<HomeViewDesktop> {
   @override
   Widget build(BuildContext context) {
     return ScaffoldWithNavigation(
+        title: getAppBarTitle(selectedIndex),
         selectedIndex: selectedIndex,
         onDestinationSelected: (index) {
           setState(() {
@@ -31,11 +33,28 @@ class _HomeViewDesktopState extends State<HomeViewDesktop> {
           index: selectedIndex,
           children: const [
             PopularMonumentsViewDesktop(),
-            Text('Your Feed'),
+            YourFeedViewDesktop(),
             Text('Discover'),
             Text('Profile'),
             Text('Settings'),
           ],
         ));
+  }
+}
+
+String getAppBarTitle(int index) {
+  switch (index) {
+    case 0:
+      return 'Popular Monuments';
+    case 1:
+      return 'Your Feed';
+    case 2:
+      return 'Discover';
+    case 3:
+      return 'Profile';
+    case 4:
+      return 'Settings';
+    default:
+      return 'Popular Monuments';
   }
 }

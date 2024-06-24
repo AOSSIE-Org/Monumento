@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
@@ -112,7 +113,9 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                           );
                         }
                         if (state is SignUpSuccess) {
-                          context.go('/');
+                          SchedulerBinding.instance.addPostFrameCallback((_) {
+                            context.go('/');
+                          });
                         }
                         return ExpandablePageView(
                           pageSnapping: false,

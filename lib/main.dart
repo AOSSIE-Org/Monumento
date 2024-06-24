@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,16 @@ void main() async {
   runApp(const MyApp());
 }
 
+class NoThumbScrollBehavior extends ScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.stylus,
+        PointerDeviceKind.trackpad,
+      };
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -45,6 +56,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp.router(
       routerConfig: router,
+      scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
       title: 'Monumento',
       theme: ThemeData(
         useMaterial3: false,

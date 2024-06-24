@@ -14,12 +14,14 @@ import 'navigation_app_bar.dart';
 class ScaffoldWithNavigation extends StatelessWidget {
   final Widget body;
   final int selectedIndex;
+  final String title;
   final Function(int) onDestinationSelected;
   const ScaffoldWithNavigation({
     super.key,
     required this.body,
     required this.selectedIndex,
     required this.onDestinationSelected,
+    required this.title,
   });
 
   @override
@@ -28,7 +30,7 @@ class ScaffoldWithNavigation extends StatelessWidget {
     return switch (breakpoint.name) {
       MOBILE ||
       TABLET =>
-        _ScaffoldWithDrawer(body, selectedIndex, onDestinationSelected),
+        _ScaffoldWithDrawer(body, selectedIndex, onDestinationSelected, title),
       (_) =>
         _ScaffoldWithNavigationRail(body, selectedIndex, onDestinationSelected),
     };
@@ -77,16 +79,19 @@ class _ScaffoldWithNavigationRail extends StatelessWidget {
 }
 
 class _ScaffoldWithDrawer extends StatelessWidget {
+  final String title;
   final Widget body;
   final int selectedIndex;
   final Function(int) onDestinationSelected;
   const _ScaffoldWithDrawer(
-      this.body, this.selectedIndex, this.onDestinationSelected);
+      this.body, this.selectedIndex, this.onDestinationSelected, this.title);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const NavigationAppBar(),
+      appBar: NavigationAppBar(
+        title: title,
+      ),
       body: body,
       drawer: Drawer(
         child: Column(

@@ -1,17 +1,24 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:monumento/data/models/comment_model.dart';
+import 'package:monumento/data/models/post_model.dart';
 import 'package:monumento/data/models/user_model.dart';
+import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class FirebaseSocialRepository implements SocialRepository {
   final FirebaseFirestore _database;
   final FirebaseStorage _storage;
+  final AuthenticationRepository authenticationRepository;
 
   FirebaseSocialRepository(
-      {FirebaseFirestore? database, FirebaseStorage? storage})
+      {required this.authenticationRepository,
+      FirebaseFirestore? database,
+      FirebaseStorage? storage})
       : _database = database ?? FirebaseFirestore.instance,
         _storage = storage ?? FirebaseStorage.instance;
 
@@ -89,5 +96,307 @@ class FirebaseSocialRepository implements SocialRepository {
         .where('username', isEqualTo: username)
         .get();
     return docs.docs.isEmpty;
+  }
+
+  @override
+  Future<List<PostModel>> getInitialFeedPosts() async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    List<String> followingUids = user!.following;
+    if (followingUids.isEmpty) {
+      return [];
+    }
+    QuerySnapshot snap = await _database
+        .collection("posts")
+        .where("postByUid", whereIn: followingUids)
+        .orderBy("timeStamp", descending: true)
+        .limit(5)
+        .get();
+    List<PostModel> posts = await Future.wait(snap.docs.map((e) async {
+      var data = e.data() as Map<String, dynamic>;
+      if (data['postId'] == null) {
+        data['postId'] = e.id;
+      }
+      if (data['likesCount'] != null || data['likesCount'] != 0) {
+        try {
+          var likeDoc = await _database
+              .collection('posts')
+              .doc(e.id)
+              .collection('likes')
+              .doc(user.uid)
+              .get();
+          if (likeDoc.exists) {
+            if (likeDoc.data()!['likedPost'] == true) {
+              data['isPostLiked'] = true;
+            } else {
+              data['isPostLiked'] = false;
+            }
+          } else {
+            data['isPostLiked'] = false;
+          }
+        } catch (e) {
+          log("Like doc not found");
+          data['isPostLiked'] = false;
+        }
+      }
+      return PostModel.fromJson(data);
+    }));
+    return posts;
+  }
+
+  @override
+  Future<List<PostModel>> getMorePosts(
+      {required String startAfterDocId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    DocumentSnapshot doc = await _database.doc('posts/$startAfterDocId').get();
+    List<String> followingUids = user!.following;
+    if (followingUids.isEmpty) {
+      return [];
+    }
+
+    QuerySnapshot snap = await _database
+        .collection("posts")
+        .where("postByUid", whereIn: followingUids)
+        .orderBy("timeStamp", descending: true)
+        .startAfterDocument(doc)
+        .limit(10)
+        .get();
+
+    List<PostModel> posts = snap.docs.map((e) {
+      var data = e.data() as Map<String, dynamic>;
+      if (data['postId'] == null) {
+        data['postId'] = e.id;
+      }
+      if (data['likesCount'] != null || data['likesCount'] != 0) {
+        _database
+            .collection('posts')
+            .doc(e.id)
+            .collection('likes')
+            .doc(user.uid)
+            .get()
+            .then((value) {
+          if (value.exists) {
+            if (value.data()!['likedPost'] == true) {
+              data['isPostLiked'] = true;
+            } else {
+              data['isPostLiked'] = false;
+            }
+          } else {
+            data['isPostLiked'] = false;
+          }
+        });
+      }
+      return PostModel.fromJson(data);
+    }).toList();
+
+    return posts;
+  }
+
+  @override
+  Future<void> likePost({required String postId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    _database
+        .collection('posts')
+        .doc(postId)
+        .collection('likes')
+        .doc(user!.uid)
+        .set({
+      'author': {
+        'uid': user.uid,
+        'name': user.name,
+        'profilePictureUrl': user.profilePictureUrl,
+        'email': user.email,
+        'username': user.username,
+      },
+      'timeStamp': FieldValue.serverTimestamp(),
+      'postInvoledId': postId,
+      'likedPost': true,
+    });
+    _database.collection('posts').doc(postId).update({
+      'likesCount': FieldValue.increment(1),
+    });
+  }
+
+  @override
+  Future<void> unlikePost({required String postId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    _database
+        .collection('posts')
+        .doc(postId)
+        .collection('likes')
+        .doc(user!.uid)
+        .set({
+      'author': {
+        'uid': user.uid,
+        'name': user.name,
+        'profilePictureUrl': user.profilePictureUrl,
+        'email': user.email,
+        'username': user.username,
+      },
+      'timeStamp': FieldValue.serverTimestamp(),
+      'postInvoledId': postId,
+      'likedPost': false,
+    });
+    _database.collection('posts').doc(postId).update({
+      'likesCount': FieldValue.increment(-1),
+    });
+  }
+
+  @override
+  Future<CommentModel> addNewComment(
+      {required String postDocId, required String comment}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    var doc = await _database.collection("posts/$postDocId/comments").add({
+      "comment": comment,
+      "timeStamp": timeStamp,
+      "postInvolvedId": postDocId,
+      "author": {
+        "name": user?.name,
+        "username": user?.username,
+        "uid": user?.uid,
+        "profilePictureUrl": user?.profilePictureUrl,
+        "email": user?.email,
+      }
+    });
+    // TODO: implement notification for comment
+    return CommentModel(
+      comment: comment,
+      postInvolvedId: postDocId,
+      author: user!,
+      timeStamp: timeStamp,
+      commentDocId: doc.id,
+    );
+  }
+
+  @override
+  Future<List<CommentModel>> getInitialComments(
+      {required String postDocId}) async {
+    QuerySnapshot snap = await _database
+        .collection("posts/$postDocId/comments")
+        .orderBy("timeStamp", descending: true)
+        .limit(20)
+        .get();
+
+    return snap.docs.map((e) {
+      var data = e.data() as Map<String, dynamic>;
+      data['commentDocId'] = e.id;
+      return CommentModel.fromJson(data);
+    }).toList();
+  }
+
+  @override
+  Future<List<CommentModel>> getMoreComments(
+      {required String postDocId, required String startAfterDocId}) async {
+    DocumentSnapshot startAfterDoc =
+        await _database.doc('posts/$postDocId/comments/$startAfterDocId').get();
+    QuerySnapshot snap = await _database
+        .collection("posts/$postDocId/comments")
+        .orderBy("timeStamp", descending: true)
+        .startAfterDocument(startAfterDoc)
+        .limit(10)
+        .get();
+
+    return snap.docs
+        .map((e) => CommentModel.fromJson(e.data() as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<List<UserModel>> getRecommendedUsers() async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    List<String> followingUids = user!.following;
+    // return five users who are not followed by the user, but are followed by the first five users followed by the user
+    List<UserModel> users = [];
+    for (String uid in followingUids) {
+      DocumentSnapshot snap =
+          await _database.collection('users').doc(uid).get();
+      UserModel user = UserModel.fromJson(snap.data() as Map<String, dynamic>);
+      List<String> followingUids = user.following;
+      for (String uid in followingUids) {
+        DocumentSnapshot snap =
+            await _database.collection('users').doc(uid).get();
+        UserModel user =
+            UserModel.fromJson(snap.data() as Map<String, dynamic>);
+        if (!user.followers.contains(user.uid)) {
+          users.add(user);
+        }
+        // stop when we have 5 users
+        if (users.length == 5) {
+          break;
+        }
+      }
+    }
+    // if we have 0 users, return 5 random users
+    if (users.isEmpty) {
+      QuerySnapshot snap = await _database
+          .collection('users')
+          .limit(5)
+          .where('uid', isNotEqualTo: user.uid)
+          .get();
+      users = snap.docs
+          .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
+          .toList();
+    }
+    return users;
+  }
+
+  @override
+  Future<PostModel> uploadNewPost(
+      {required String title,
+      String? location,
+      String? imageUrl,
+      required int postType}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    DocumentReference doc = await _database.collection("posts").add({
+      "title": title,
+      "location": location,
+      "imageUrl": imageUrl,
+      "author": {
+        "name": user?.name,
+        "username": user?.username,
+        "uid": user?.uid,
+        "profilePictureUrl": user?.profilePictureUrl,
+        "email": user?.email,
+      },
+      "timeStamp": timeStamp,
+      "postType": postType,
+      "postByUid": user?.uid,
+      "likesCount": 0,
+      "commentsCount": 0,
+    });
+    return PostModel(
+      author: user!,
+      postByUid: user.uid,
+      title: title,
+      location: location,
+      imageUrl: imageUrl,
+      timeStamp: timeStamp,
+      postId: doc.id,
+      postType: postType,
+      likesCount: 0,
+      commentsCount: 0,
+    );
   }
 }

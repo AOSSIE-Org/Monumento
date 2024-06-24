@@ -3,13 +3,14 @@ import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
 class NavigationAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const NavigationAppBar({super.key});
+  final String title;
+  const NavigationAppBar({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: Text(
-        'Popular Monuments',
+        title,
         style: AppTextStyles.s28(
           color: AppColor.appSecondary,
           fontType: FontType.MEDIUM,
