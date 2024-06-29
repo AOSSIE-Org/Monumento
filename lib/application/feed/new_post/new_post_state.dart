@@ -11,7 +11,7 @@ final class NewPostInitial extends NewPostState {}
 
 class NewPostAdded extends NewPostState {
   final PostEntity post;
-  NewPostAdded({required this.post});
+  const NewPostAdded({required this.post});
   @override
   List<Object> get props => [post];
 }
@@ -23,7 +23,7 @@ class AddingNewPost extends NewPostState {
 
 class NewPostFailed extends NewPostState {
   final String message;
-  NewPostFailed({required this.message});
+  const NewPostFailed({required this.message});
   @override
   // TODO: implement props
   List<Object> get props => [];

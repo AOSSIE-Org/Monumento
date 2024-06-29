@@ -20,6 +20,7 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isSeen = false;
 
   @override
   void initState() {
@@ -124,28 +125,46 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                   const SizedBox(
                                     height: 15,
                                   ),
-                                  CustomUI.customTextField(
-                                      emailController, 'Email', false, (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter email.';
-                                    } else if (!value.contains('@')) {
-                                      return 'Please enter a valid email.';
-                                    }
-                                    return null;
-                                  }, AutovalidateMode.onUserInteraction),
+                                  CustomTextField(
+                                      controller: emailController,
+                                      text: 'Email',
+                                      validateFunction: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter email.';
+                                        } else if (!value.contains('@')) {
+                                          return 'Please enter a valid email.';
+                                        }
+                                        return null;
+                                      },
+                                      autoValid:
+                                          AutovalidateMode.onUserInteraction),
                                   const SizedBox(
                                     height: 16,
                                   ),
-                                  CustomUI.customTextField(
-                                      passwordController, 'Password', true,
-                                      (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter password.';
-                                    } else if (value.length < 6) {
-                                      return 'Password must be at least 6 characters.';
-                                    }
-                                    return null;
-                                  }, AutovalidateMode.onUserInteraction),
+                                  CustomTextField(
+                                      controller: passwordController,
+                                      text: 'Password',
+                                      isSeen: isSeen,
+                                      suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            isSeen = !isSeen;
+                                          });
+                                        },
+                                        icon: Icon(!isSeen
+                                            ? Icons.visibility_off
+                                            : Icons.visibility),
+                                      ),
+                                      validateFunction: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter password.';
+                                        } else if (value.length < 6) {
+                                          return 'Password must be at least 6 characters.';
+                                        }
+                                        return null;
+                                      },
+                                      autoValid:
+                                          AutovalidateMode.onUserInteraction),
                                   const SizedBox(
                                     height: 4,
                                   ),
@@ -174,31 +193,35 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                   ),
                                   SizedBox(
                                       width: double.infinity,
-                                      child: CustomUI.customElevatedButton(() {
-                                        if (formKey.currentState!.validate()) {
-                                          locator<LoginRegisterBloc>().add(
-                                            LoginWithEmailPressed(
-                                              email: emailController.text,
-                                              password: passwordController.text,
-                                            ),
-                                          );
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                'Please enter valid email and password',
-                                                style: AppTextStyles.s14(
-                                                  color: AppColor.appWhite,
-                                                  fontType: FontType.MEDIUM,
+                                      child: CustomElevatedButton(
+                                          onPressed: () {
+                                            if (formKey.currentState!
+                                                .validate()) {
+                                              locator<LoginRegisterBloc>().add(
+                                                LoginWithEmailPressed(
+                                                  email: emailController.text,
+                                                  password:
+                                                      passwordController.text,
                                                 ),
-                                              ),
-                                              backgroundColor:
-                                                  AppColor.appSecondary,
-                                            ),
-                                          );
-                                        }
-                                      }, 'Login')),
+                                              );
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Please enter valid email and password',
+                                                    style: AppTextStyles.s14(
+                                                      color: AppColor.appWhite,
+                                                      fontType: FontType.MEDIUM,
+                                                    ),
+                                                  ),
+                                                  backgroundColor:
+                                                      AppColor.appSecondary,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          text: 'Login')),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [

@@ -48,8 +48,8 @@ class _SignUpDeciderWidgetState extends State<SignUpDeciderWidget> {
         ),
         SizedBox(
           width: double.infinity,
-          child: CustomUI.customElevatedButton(
-              widget.onSignUpWithEmailPressed, 'Sign up with Email'),
+          child: CustomElevatedButton(onPressed:
+              widget.onSignUpWithEmailPressed,text: 'Sign up with Email'),
         ),
         const SizedBox(
           height: 22,

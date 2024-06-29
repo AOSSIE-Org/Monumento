@@ -110,32 +110,34 @@ class _OnboardingViewDesktopState extends State<OnboardingViewDesktop> {
                           const SizedBox(
                             height: 22,
                           ),
-                          CustomUI.customTextField(
-                              nameController, 'Name', false, null, null),
+                          CustomTextField(
+                              controller: nameController, text: 'Name'),
                           const SizedBox(
                             height: 16,
                           ),
-                          CustomUI.customTextField(usernameController,
-                              'Username', false, null, null),
+                          CustomTextField(
+                              controller: usernameController, text: 'Username'),
                           const SizedBox(
                             height: 16,
                           ),
-                          CustomUI.customTextField(
-                              statusController, 'Status', false, null, null),
+                          CustomTextField(
+                              controller: statusController, text: 'Status'),
                           const SizedBox(
                             height: 48,
                           ),
                           SizedBox(
                             width: double.infinity,
-                            child: CustomUI.customElevatedButton(() {
-                              locator<LoginRegisterBloc>().add(
-                                SaveOnboardingDetails(
-                                  name: nameController.text,
-                                  status: statusController.text,
-                                  username: usernameController.text,
-                                ),
-                              );
-                            }, 'Continue'),
+                            child: CustomElevatedButton(
+                                onPressed: () {
+                                  locator<LoginRegisterBloc>().add(
+                                    SaveOnboardingDetails(
+                                      name: nameController.text,
+                                      status: statusController.text,
+                                      username: usernameController.text,
+                                    ),
+                                  );
+                                },
+                                text: 'Continue'),
                           ),
                           const SizedBox(
                             height: 26,

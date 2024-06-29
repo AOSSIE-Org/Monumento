@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
@@ -26,7 +28,7 @@ class AuthenticationBloc
       AuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
       final (userLoggedIn, user) = await _authRepository.getUser();
-      print('User: $userLoggedIn, $user');
+      log('User: $userLoggedIn, $user');
       if (userLoggedIn && user != null) {
         emit(Authenticated(user.toEntity()));
       } else if (userLoggedIn && user == null) {

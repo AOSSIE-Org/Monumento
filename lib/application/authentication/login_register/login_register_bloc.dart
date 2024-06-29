@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -79,7 +80,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       );
       if (user != null) {
         _authenticationBloc.add(LoggedIn());
-        print('User: $user');
+        log('User: $user');
         emit(LoginSuccess(user));
       } else {
         emit(const LoginFailed(message: 'Failed to login'));
@@ -90,7 +91,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
   }
 
   _mapLogoutEventToState(
-      LoginRegisterEvent event, Emitter<LoginRegisterState> emit) async* {
+      LoginRegisterEvent event, Emitter<LoginRegisterState> emit) async {
     await _authRepository.signOut();
     _authenticationBloc.add(LoggedOut());
     emit(const LogOutSuccess());

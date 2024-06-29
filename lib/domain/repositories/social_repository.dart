@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:monumento/data/models/comment_model.dart';
 import 'package:monumento/data/models/post_model.dart';
 import 'package:monumento/data/models/user_model.dart';
+import 'package:monumento/domain/entities/user_entity.dart';
 
 abstract interface class SocialRepository {
   Future<String> uploadImageForUrl(
@@ -42,4 +43,19 @@ abstract interface class SocialRepository {
     String? imageUrl,
     required int postType,
   });
+
+  Future<List<PostModel>> getInitialProfilePosts();
+
+  Future<List<PostModel>> getMoreProfilePosts(
+      {required String startAfterDocId});
+    
+  Future<void> followUser(
+      {required UserEntity targetUser, required UserEntity currentUser});
+
+  Future<void> unfollowUser(
+      {required UserEntity targetUser, required UserEntity currentUser});
+
+  Future<bool> getFollowStatus(
+      {required UserEntity targetUser, required UserEntity currentUser});
+  
 }
