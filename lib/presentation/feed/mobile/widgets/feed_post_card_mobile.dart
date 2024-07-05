@@ -55,401 +55,406 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
     return Card(
       child: Container(
         padding: const EdgeInsets.all(10),
-          width: 200,
-          decoration: BoxDecoration(
-            color: AppColor.appWhite,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    child: CachedNetworkImage(
-                      imageUrl: widget.post.author.profilePictureUrl ??
-                          defaultProfilePicture,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
-                    ),
+        width: 200,
+        decoration: BoxDecoration(
+          color: AppColor.appWhite,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 20,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.post.author.profilePictureUrl ??
+                        defaultProfilePicture,
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                   ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.post.author.name,
-                        style: AppTextStyles.s16(
-                          color: AppColor.appSecondary,
-                          fontType: FontType.MEDIUM,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        widget.post.location ?? "@${widget.post.author.username}",
-                        style: AppTextStyles.s14(
-                          color: AppColor.appSecondary,
-                          fontType: FontType.REGULAR,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      const Icon(Icons.more_horiz),
-                      Text(
-                        timeago.format(DateTime.fromMillisecondsSinceEpoch(
-                            widget.post.timeStamp)),
-                        style: AppTextStyles.s12(
-                          color: AppColor.appTextLightGrey,
-                          fontType: FontType.REGULAR,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              widget.post.imageUrl == null
-                  ? Text(
-                      widget.post.title,
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.post.author.name,
                       style: AppTextStyles.s16(
+                        color: AppColor.appSecondary,
+                        fontType: FontType.MEDIUM,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      widget.post.location ?? "@${widget.post.author.username}",
+                      style: AppTextStyles.s14(
                         color: AppColor.appSecondary,
                         fontType: FontType.REGULAR,
                       ),
-                    )
-                  : Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: const Color.fromARGB(255, 127, 127, 127),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                              widget.post.imageUrl ?? ""),
-                          fit: BoxFit.fitHeight,
-                        ),
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    const Icon(Icons.more_horiz),
+                    Text(
+                      timeago.format(DateTime.fromMillisecondsSinceEpoch(
+                          widget.post.timeStamp)),
+                      style: AppTextStyles.s12(
+                        color: AppColor.appTextLightGrey,
+                        fontType: FontType.REGULAR,
                       ),
                     ),
-              widget.post.imageUrl == null
-                  ? const SizedBox(
-                      height: 24,
-                    )
-                  : const SizedBox(),
-              Row(
-                children: [
-                  BlocListener<FeedBloc, FeedState>(
-                    bloc: locator<FeedBloc>(),
-                    listener: (context, state) {
-                      if (state is PostLiked) {
+                  ],
+                )
+              ],
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            widget.post.imageUrl == null
+                ? Text(
+                    widget.post.title,
+                    style: AppTextStyles.s16(
+                      color: AppColor.appSecondary,
+                      fontType: FontType.REGULAR,
+                    ),
+                  )
+                : Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color.fromARGB(255, 127, 127, 127),
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(
+                            widget.post.imageUrl ?? ""),
+                        fit: BoxFit.fitHeight,
+                      ),
+                    ),
+                  ),
+            widget.post.imageUrl == null
+                ? const SizedBox(
+                    height: 24,
+                  )
+                : const SizedBox(),
+            Row(
+              children: [
+                BlocListener<FeedBloc, FeedState>(
+                  bloc: locator<FeedBloc>(),
+                  listener: (context, state) {
+                    if (state is PostLiked) {
+                      if (state.postId == widget.post.postId) {
                         setState(() {
                           isLiked = true;
-                          likesCount++;
+                          likesCount = likesCount > 0 ? likesCount + 1 : 1;
                         });
-                      } else if (state is PostUnLiked) {
+                      }
+                    } else if (state is PostUnLiked) {
+                      if (state.postId == widget.post.postId) {
                         setState(() {
                           isLiked = false;
-                          likesCount--;
+                          likesCount = (likesCount - 1) > 0 ? likesCount - 1 : 0;
                         });
-                      } else if (state is PostLikeFailed) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Failed to like post"),
-                          ),
-                        );
-                      } else if (state is PostUnlikeFailed) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Failed to unlike post"),
-                          ),
-                        );
                       }
-                    },
-                    child: LikeButton(
-                      size: 24,
-                      isLiked: isLiked,
-                      postFrameCallback: (LikeButtonState state) {
-                        state.controller?.forward();
-                      },
-                      likeBuilder: (isLiked) {
-                        return SvgPicture.asset(
-                          isLiked
-                              ? 'assets/icons/ic_heart_filled.svg'
-                              : 'assets/icons/ic_heart.svg',
-                          width: 24,
-                          height: 24,
-                        );
-                      },
-                      likeCountAnimationType: LikeCountAnimationType.part,
-                      onTap: (bool isLiked) async {
-                        if (!isLiked) {
-                          locator<FeedBloc>().add(
-                            LikePost(postId: widget.post.postId),
-                          );
-                          return true;
-                        } else {
-                          locator<FeedBloc>().add(
-                            UnlikePost(postId: widget.post.postId),
-                          );
-                          return false;
-                        }
-                      },
-                    ),
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/ic_comment.svg',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {
-                      commentFocusNode.requestFocus();
-                    },
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/ic_share.svg',
-                      width: 24,
-                      height: 24,
-                    ),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 6,
-              ),
-              Text(
-                likesCount != 1 ? "$likesCount likes" : "$likesCount like",
-                style: AppTextStyles.s14(
-                  color: AppColor.appSecondary,
-                  fontType: FontType.MEDIUM,
-                ),
-              ),
-              const SizedBox(
-                height: 6,
-              ),
-              widget.post.postType == 0
-                  ? Text(
-                      widget.post.title,
-                      style: AppTextStyles.s16(
-                        color: AppColor.appSecondary,
-                        fontType: FontType.REGULAR,
-                      ),
-                    )
-                  : const SizedBox(),
-              const SizedBox(
-                height: 14,
-              ),
-              Row(
-                children: [
-                  BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                    bloc: locator<AuthenticationBloc>(),
-                    builder: (context, state) {
-                      state = state as Authenticated;
-                      return CircleAvatar(
-                        radius: 20,
-                        child: CachedNetworkImage(
-                          imageUrl: state.user.profilePictureUrl ??
-                              defaultProfilePicture,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
+                    } else if (state is PostLikeFailed) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Failed to like post"),
                         ),
                       );
-                    },
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  SizedBox(
-                    width: 310,
-                    child: TextFormField(
-                      focusNode: commentFocusNode,
-                      controller: commentController,
-                      decoration: InputDecoration(
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            locator<CommentsBloc>().add(
-                              AddCommentPressed(
-                                postDocId: widget.post.postId,
-                                comment: commentController.text,
-                              ),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SvgPicture.asset(
-                              'assets/icons/ic_share.svg',
-                              width: 24,
-                              height: 24,
-                            ),
-                          ),
+                    } else if (state is PostUnlikeFailed) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Failed to unlike post"),
                         ),
-                        isDense: true,
-                        hintText: "Add a comment...",
-                        border: const OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 14,
-              ),
-              BlocListener<CommentsBloc, CommentsState>(
-                bloc: locator<CommentsBloc>(),
-                listener: (context, state) {
-                  if (state is CommentAdded) {
-                    setState(() {
-                      comments.insert(0, state.comment);
-                    });
-                  }
-                },
-                child: BlocBuilder<CommentsBloc, CommentsState>(
-                  bloc: locator<CommentsBloc>(),
-                  buildWhen: (previous, current) {
-                    if (current is InitialCommentsLoaded) {
-                      var shouldRebuild = current.postId == widget.post.postId;
-                      if (shouldRebuild) {
-                        comments = current.initialComments
-                            .map((e) => e.toEntity())
-                            .toList();
-                      }
-                      return shouldRebuild;
-                    }
-                    if (current is LoadingInitialComments) {
-                      if (current.postId == widget.post.postId) {
-                        return true;
-                      }
-                    }
-                    if (current is LoadingMoreComments) {
-                      if (current.postId == widget.post.postId) {
-                        return true;
-                      }
-                    }
-                    return false;
-                  },
-                  builder: (context, state) {
-                    if (state is InitialCommentsLoaded ||
-                        state is MoreCommentsLoaded) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: comments
-                            .map(
-                              (comment) => Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: AppColor.appWhite,
-                                          width: 2,
-                                        ),
-                                        image: DecorationImage(
-                                          image: CachedNetworkImageProvider(
-                                            comment.author.profilePictureUrl ??
-                                                defaultProfilePicture,
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 440,
-                                    ),
-                                    child: Container(
-                                      decoration: const BoxDecoration(
-                                        color: AppColor.appGreyAccent,
-                                        borderRadius: BorderRadius.only(
-                                          topRight: Radius.circular(20),
-                                          bottomRight: Radius.circular(20),
-                                          bottomLeft: Radius.circular(20),
-                                        ),
-                                      ),
-                                      width: 320,
-                                      margin: const EdgeInsets.only(bottom: 12),
-                                      padding: const EdgeInsets.all(12),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            comment.author.name,
-                                            style: AppTextStyles.s14(
-                                              color: AppColor.appSecondary,
-                                              fontType: FontType.MEDIUM,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 4,
-                                          ),
-                                          Text(
-                                            comment.comment,
-                                            style: AppTextStyles.s14(
-                                              color: AppColor.appSecondary,
-                                              fontType: FontType.REGULAR,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                            .toList(),
                       );
                     }
-                    return const SizedBox();
                   },
+                  child: LikeButton(
+                    size: 24,
+                    isLiked: isLiked,
+                    postFrameCallback: (LikeButtonState state) {
+                      state.controller?.forward();
+                    },
+                    likeBuilder: (isLiked) {
+                      return SvgPicture.asset(
+                        isLiked
+                            ? 'assets/icons/ic_heart_filled.svg'
+                            : 'assets/icons/ic_heart.svg',
+                        width: 24,
+                        height: 24,
+                      );
+                    },
+                    likeCountAnimationType: LikeCountAnimationType.part,
+                    onTap: (bool isLiked) async {
+                      if (!isLiked) {
+                        locator<FeedBloc>().add(
+                          LikePost(postId: widget.post.postId),
+                        );
+                        return true;
+                      } else {
+                        locator<FeedBloc>().add(
+                          UnlikePost(postId: widget.post.postId),
+                        );
+                        return false;
+                      }
+                    },
+                  ),
                 ),
-              ),
-              if ((widget.post.commentsCount ?? 0) > comments.length)
-                TextButton(
+                IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons/ic_comment.svg',
+                    width: 24,
+                    height: 24,
+                  ),
                   onPressed: () {
-                    locator<CommentsBloc>().add(
-                      LoadMoreComments(
-                        postDocId: widget.post.postId,
-                        startAfterId: comments.last.commentDocId,
+                    commentFocusNode.requestFocus();
+                  },
+                ),
+                IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons/ic_share.svg',
+                    width: 24,
+                    height: 24,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 6,
+            ),
+            Text(
+              likesCount >= 0 ? "$likesCount likes" : "$likesCount like",
+              style: AppTextStyles.s14(
+                color: AppColor.appSecondary,
+                fontType: FontType.MEDIUM,
+              ),
+            ),
+            const SizedBox(
+              height: 6,
+            ),
+            widget.post.postType == 0
+                ? Text(
+                    widget.post.title,
+                    style: AppTextStyles.s16(
+                      color: AppColor.appSecondary,
+                      fontType: FontType.REGULAR,
+                    ),
+                  )
+                : const SizedBox(),
+            const SizedBox(
+              height: 14,
+            ),
+            Row(
+              children: [
+                BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                  bloc: locator<AuthenticationBloc>(),
+                  builder: (context, state) {
+                    state = state as Authenticated;
+                    return CircleAvatar(
+                      radius: 20,
+                      child: CachedNetworkImage(
+                        imageUrl: state.user.profilePictureUrl ??
+                            defaultProfilePicture,
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                       ),
                     );
                   },
-                  child: const Text(
-                    "View more comments",
-                    style: TextStyle(
-                      color: AppColor.appSecondary,
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                SizedBox(
+                  width: 310,
+                  child: TextFormField(
+                    focusNode: commentFocusNode,
+                    controller: commentController,
+                    decoration: InputDecoration(
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          locator<CommentsBloc>().add(
+                            AddCommentPressed(
+                              postDocId: widget.post.postId,
+                              comment: commentController.text,
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SvgPicture.asset(
+                            'assets/icons/ic_share.svg',
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                      ),
+                      isDense: true,
+                      hintText: "Add a comment...",
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-            ],
-          ),
+              ],
+            ),
+            const SizedBox(
+              height: 14,
+            ),
+            BlocListener<CommentsBloc, CommentsState>(
+              bloc: locator<CommentsBloc>(),
+              listener: (context, state) {
+                if (state is CommentAdded) {
+                  setState(() {
+                    comments.insert(0, state.comment);
+                  });
+                }
+              },
+              child: BlocBuilder<CommentsBloc, CommentsState>(
+                bloc: locator<CommentsBloc>(),
+                buildWhen: (previous, current) {
+                  if (current is InitialCommentsLoaded) {
+                    var shouldRebuild = current.postId == widget.post.postId;
+                    if (shouldRebuild) {
+                      comments = current.initialComments
+                          .map((e) => e.toEntity())
+                          .toList();
+                    }
+                    return shouldRebuild;
+                  }
+                  if (current is LoadingInitialComments) {
+                    if (current.postId == widget.post.postId) {
+                      return true;
+                    }
+                  }
+                  if (current is LoadingMoreComments) {
+                    if (current.postId == widget.post.postId) {
+                      return true;
+                    }
+                  }
+                  return false;
+                },
+                builder: (context, state) {
+                  if (state is InitialCommentsLoaded ||
+                      state is MoreCommentsLoaded) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: comments
+                          .map(
+                            (comment) => Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CircleAvatar(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: AppColor.appWhite,
+                                        width: 2,
+                                      ),
+                                      image: DecorationImage(
+                                        image: CachedNetworkImageProvider(
+                                          comment.author.profilePictureUrl ??
+                                              defaultProfilePicture,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 440,
+                                  ),
+                                  child: Container(
+                                    decoration: const BoxDecoration(
+                                      color: AppColor.appGreyAccent,
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(20),
+                                        bottomRight: Radius.circular(20),
+                                        bottomLeft: Radius.circular(20),
+                                      ),
+                                    ),
+                                    width: 320,
+                                    margin: const EdgeInsets.only(bottom: 12),
+                                    padding: const EdgeInsets.all(12),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          comment.author.name,
+                                          style: AppTextStyles.s14(
+                                            color: AppColor.appSecondary,
+                                            fontType: FontType.MEDIUM,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        Text(
+                                          comment.comment,
+                                          style: AppTextStyles.s14(
+                                            color: AppColor.appSecondary,
+                                            fontType: FontType.REGULAR,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    );
+                  }
+                  return const SizedBox();
+                },
+              ),
+            ),
+            if ((widget.post.commentsCount ?? 0) > comments.length)
+              TextButton(
+                onPressed: () {
+                  locator<CommentsBloc>().add(
+                    LoadMoreComments(
+                      postDocId: widget.post.postId,
+                      startAfterId: comments.last.commentDocId,
+                    ),
+                  );
+                },
+                child: const Text(
+                  "View more comments",
+                  style: TextStyle(
+                    color: AppColor.appSecondary,
+                  ),
+                ),
+              ),
+          ],
         ),
+      ),
     );
   }
+
   @override
   bool get wantKeepAlive => true;
 }

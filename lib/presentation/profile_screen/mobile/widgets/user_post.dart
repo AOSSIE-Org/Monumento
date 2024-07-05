@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/service_locator.dart';
-import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/constants.dart';
 
 class UserPost extends StatefulWidget {
@@ -32,7 +29,6 @@ class _UserPostState extends State<UserPost> {
         bloc: locator<ProfilePostsBloc>(),
         builder: (context, state) {
           if (state is InitialProfilePostsLoaded) {
-            log("currentUserPost: $posts");
             posts = [];
             posts.insertAll(posts.length, state.initialPosts);
           }
