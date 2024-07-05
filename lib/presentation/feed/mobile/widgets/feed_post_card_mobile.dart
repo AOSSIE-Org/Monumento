@@ -320,7 +320,7 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
             BlocListener<CommentsBloc, CommentsState>(
               bloc: locator<CommentsBloc>(),
               listener: (context, state) {
-                if (state is CommentAdded) {
+                if (state is CommentAdded && state.comment.postInvolvedId == widget.post.postId) {
                   setState(() {
                     comments.insert(0, state.comment);
                   });
