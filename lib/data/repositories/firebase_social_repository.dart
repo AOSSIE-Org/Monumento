@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:monumento/data/models/comment_model.dart';
 import 'package:monumento/data/models/post_model.dart';
 import 'package:monumento/data/models/user_model.dart';
+import 'package:monumento/domain/entities/user_entity.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -398,5 +399,150 @@ class FirebaseSocialRepository implements SocialRepository {
       likesCount: 0,
       commentsCount: 0,
     );
+  }
+
+  @override
+  Future<List<PostModel>> getInitialProfilePosts() async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    String userId = user!.uid;
+    
+    QuerySnapshot snap = await _database
+        .collection("posts")
+        .where("postByUid",isEqualTo: userId)
+        .orderBy("timeStamp", descending: true)
+        .limit(10)
+        .get();
+
+    List<PostModel> posts = await Future.wait(snap.docs.map((e) async {
+      var data = e.data() as Map<String, dynamic>;
+      if (data['postId'] == null) {
+        data['postId'] = e.id;
+      }
+      if (data['likesCount'] != null || data['likesCount'] != 0) {
+        try {
+          var likeDoc = await _database
+              .collection('posts')
+              .doc(e.id)
+              .collection('likes')
+              .doc(user.uid)
+              .get();
+          if (likeDoc.exists) {
+            if (likeDoc.data()!['likedPost'] == true) {
+              data['isPostLiked'] = true;
+            } else {
+              data['isPostLiked'] = false;
+            }
+          } else {
+            data['isPostLiked'] = false;
+          }
+        } catch (e) {
+          log("Like doc not found");
+          data['isPostLiked'] = false;
+        }
+      }
+      return PostModel.fromJson(data);
+    }));
+    return posts;
+  }
+
+  @override
+  Future<List<PostModel>> getMoreProfilePosts(
+      {required String startAfterDocId}) async {
+        var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    DocumentSnapshot doc = await _database.doc('posts/$startAfterDocId').get();
+    String userId = user!.uid;
+
+    QuerySnapshot snap = await _database
+        .collection("posts")
+        .where("postByUid", isEqualTo: userId)
+        .orderBy("timeStamp", descending: true)
+        .startAfterDocument(doc)
+        .limit(10)
+        .get();
+
+    List<PostModel> posts = snap.docs.map((e) {
+      var data = e.data() as Map<String, dynamic>;
+      if (data['postId'] == null) {
+        data['postId'] = e.id;
+      }
+      if (data['likesCount'] != null || data['likesCount'] != 0) {
+        _database
+            .collection('posts')
+            .doc(e.id)
+            .collection('likes')
+            .doc(user.uid)
+            .get()
+            .then((value) {
+          if (value.exists) {
+            if (value.data()!['likedPost'] == true) {
+              data['isPostLiked'] = true;
+            } else {
+              data['isPostLiked'] = false;
+            }
+          } else {
+            data['isPostLiked'] = false;
+          }
+        });
+      }
+      return PostModel.fromJson(data);
+    }).toList();
+
+    return posts;
+  }
+
+  @override
+  Future<void> followUser({required UserEntity targetUser, required UserEntity currentUser}) async {
+    await _database.collection('users').doc(targetUser.uid).update({
+      'followers': FieldValue.arrayUnion([currentUser.uid])
+    });
+
+    await _database.collection('users').doc(currentUser.uid).update({
+      'following': FieldValue.arrayUnion([targetUser.uid])
+    });
+    // var notification = NotificationModel(
+    //     notificationType: NotificationType.followedYou,
+    //     timeStamp: DateTime.now().millisecondsSinceEpoch,
+    //     userInvolved: currentUser);
+
+    // await addNewNotification(
+    //     targetUser: targetUser, notification: notification);
+  }
+
+  @override
+  Future<bool> getFollowStatus(
+      {required UserEntity targetUser, required UserEntity currentUser}) async {
+    DocumentSnapshot targetDoc =
+        await _database.collection('users').doc(targetUser.uid).get();
+
+    DocumentSnapshot currentDoc =
+        await _database.collection('users').doc(currentUser.uid).get();
+
+    UserModel targetUpdated =
+        UserModel.fromEntity(UserEntity.fromSnapshot(targetDoc));
+    UserModel currentUpdated =
+        UserModel.fromEntity(UserEntity.fromSnapshot(currentDoc));
+    if (targetUpdated.followers.contains(currentUpdated.uid) &&
+        currentUpdated.following.contains(targetUpdated.uid)) {
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<void> unfollowUser(
+      {required UserEntity targetUser, required UserEntity currentUser}) async {
+    await _database.collection('users').doc(targetUser.uid).update({
+      'followers': FieldValue.arrayRemove([currentUser.uid])
+    });
+
+    await _database.collection('users').doc(currentUser.uid).update({
+      'following': FieldValue.arrayRemove([targetUser.uid])
+    });
   }
 }

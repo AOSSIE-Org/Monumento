@@ -30,6 +30,7 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   XFile? image;
   bool render = false;
+  bool isSeen = false;
 
   @override
   void initState() {
@@ -164,80 +165,109 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                               const SizedBox(
                                 height: 22,
                               ),
-                              CustomUI.customTextField(
-                                  nameController, 'Name', false, (value) {
-                                if (value!.isEmpty) {
-                                  return 'Name cannot be empty';
-                                }
-                                return null;
-                              }, AutovalidateMode.onUserInteraction),
+                              CustomTextField(
+                                  controller: nameController,
+                                  text: 'Name',
+                                  validateFunction: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Name cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid:
+                                      AutovalidateMode.onUserInteraction),
                               const SizedBox(
                                 height: 16,
                               ),
-                              CustomUI.customTextField(
-                                  usernameController, 'Username', false,
-                                  (value) {
-                                if (value!.isEmpty) {
-                                  return 'Username cannot be empty';
-                                }
-                                return null;
-                              }, null),
+                              CustomTextField(
+                                  controller: usernameController,
+                                  text: 'Username',
+                                  validateFunction: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Username cannot be empty';
+                                    }
+                                    return null;
+                                  }),
                               const SizedBox(
                                 height: 16,
                               ),
-                              CustomUI.customTextField(
-                                  statusController, 'Status', false, (value) {
-                                if (value!.isEmpty) {
-                                  return 'Status cannot be empty';
-                                }
-                                return null;
-                              }, AutovalidateMode.onUserInteraction),
+                              CustomTextField(
+                                  controller: statusController,
+                                  text: 'Status',
+                                  validateFunction: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Status cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid:
+                                      AutovalidateMode.onUserInteraction),
                               const SizedBox(
                                 height: 16,
                               ),
-                              CustomUI.customTextField(
-                                  emailController, 'Email', false, (value) {
-                                if (value!.isEmpty) {
-                                  return 'Email cannot be empty';
-                                } else if (!value.contains('@')) {
-                                  return 'Invalid email';
-                                }
-                                return null;
-                              }, AutovalidateMode.onUserInteraction),
+                              CustomTextField(
+                                  controller: emailController,
+                                  text: 'Email',
+                                  validateFunction: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Email cannot be empty';
+                                    } else if (!value.contains('@')) {
+                                      return 'Invalid email';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid:
+                                      AutovalidateMode.onUserInteraction),
                               const SizedBox(
                                 height: 16,
                               ),
-                              CustomUI.customTextField(
-                                  passwordController, 'Password', true,
-                                  (value) {
-                                if (value!.isEmpty) {
-                                  return 'Password cannot be empty';
-                                } else if (value.length < 6) {
-                                  return 'Password must be at least 6 characters';
-                                }
-                                return null;
-                              }, AutovalidateMode.onUserInteraction),
+                              CustomTextField(
+                                  controller: passwordController,
+                                  text: 'Password',
+                                  isSeen: isSeen,
+                                  suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        isSeen = !isSeen;
+                                      });
+                                    },
+                                    icon: Icon(!isSeen
+                                        ? Icons.visibility_off
+                                        : Icons.visibility),
+                                  ),
+                                  validateFunction: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Password cannot be empty';
+                                    } else if (value.length < 6) {
+                                      return 'Password must be at least 6 characters';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid:
+                                      AutovalidateMode.onUserInteraction),
                               const SizedBox(
                                 height: 48,
                               ),
                               SizedBox(
                                 width: double.infinity,
-                                child: CustomUI.customElevatedButton(() {
-                                  if (formKey.currentState!.validate()) {
-                                    locator<LoginRegisterBloc>().add(
-                                      SignUpWithEmailPressed(
-                                        email: emailController.text,
-                                        password: passwordController.text,
-                                        name: nameController.text,
-                                        username: usernameController.text,
-                                        status: statusController.text,
-                                        profilePictureFile: image != null
-                                            ? File(image!.path)
-                                            : null,
-                                      ),
-                                    );
-                                  }
-                                }, 'Sign Up'),
+                                child: CustomElevatedButton(
+                                    onPressed: () {
+                                      if (formKey.currentState!.validate()) {
+                                        locator<LoginRegisterBloc>().add(
+                                          SignUpWithEmailPressed(
+                                            email: emailController.text,
+                                            password: passwordController.text,
+                                            name: nameController.text,
+                                            username: usernameController.text,
+                                            status: statusController.text,
+                                            profilePictureFile: image != null
+                                                ? File(image!.path)
+                                                : null,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    text: 'Sign Up'),
                               ),
                               const SizedBox(
                                 height: 10,

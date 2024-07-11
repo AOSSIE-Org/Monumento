@@ -60,88 +60,89 @@ class _OnboardingViewMobileState extends State<OnboardingViewMobile> {
                 'assets/desktop/logo_desktop.svg',
                 width: 220,
               ),
-            Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 80),
-                  width: 380,
-                  child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
-                    bloc: locator<LoginRegisterBloc>(),
-                    builder: (context, state) {
-                      if (state is LoginRegisterLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColor.appPrimary,
-                            ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 80),
+                width: 380,
+                child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+                  bloc: locator<LoginRegisterBloc>(),
+                  builder: (context, state) {
+                    if (state is LoginRegisterLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            AppColor.appPrimary,
                           ),
-                        );
-                      }
-                      if (state is SignUpSuccess) {
-                        context.go('/');
-                      }
-                      return Column(
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              final ImagePicker picker = ImagePicker();
-                              final img = await picker.pickImage(
-                                source: ImageSource.gallery,
-                              );
-                              setState(() {
-                                image = img;
-                              });
-                            },
-                            child: image != null
-                                ? CircleAvatar(
-                                    radius: 40,
-                                    backgroundImage:
-                                        FileImage(File(image!.path)))
-                                : CircleAvatar(
-                                    radius: 40,
-                                    backgroundColor: AppColor.appGreyAccent,
-                                    child: SvgPicture.asset(
-                                      'assets/icons/ic_user.svg',
-                                    ),
-                                  ),
-                          ),
-                          const SizedBox(
-                            height: 22,
-                          ),
-                          CustomUI.customTextField(
-                              nameController, 'Name', false, null, null),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          CustomUI.customTextField(usernameController,
-                              'Username', false, null, null),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          CustomUI.customTextField(
-                              statusController, 'Status', false, null, null),
-                          const SizedBox(
-                            height: 48,
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: CustomUI.customElevatedButton(() {
-                              locator<LoginRegisterBloc>().add(
-                                SaveOnboardingDetails(
-                                  name: nameController.text,
-                                  status: statusController.text,
-                                  username: usernameController.text,
-                                ),
-                              );
-                            }, 'Continue'),
-                          ),
-                          const SizedBox(
-                            height: 26,
-                          ),
-                        ],
+                        ),
                       );
-                    },
-                  ),
+                    }
+                    if (state is SignUpSuccess) {
+                      context.go('/');
+                    }
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            final ImagePicker picker = ImagePicker();
+                            final img = await picker.pickImage(
+                              source: ImageSource.gallery,
+                            );
+                            setState(() {
+                              image = img;
+                            });
+                          },
+                          child: image != null
+                              ? CircleAvatar(
+                                  radius: 40,
+                                  backgroundImage: FileImage(File(image!.path)))
+                              : CircleAvatar(
+                                  radius: 40,
+                                  backgroundColor: AppColor.appGreyAccent,
+                                  child: SvgPicture.asset(
+                                    'assets/icons/ic_user.svg',
+                                  ),
+                                ),
+                        ),
+                        const SizedBox(
+                          height: 22,
+                        ),
+                        CustomTextField(
+                            controller: nameController, text: 'Name'),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomTextField(
+                            controller: usernameController, text: 'Username'),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                        CustomTextField(
+                            controller: statusController, text: 'Status'),
+                        const SizedBox(
+                          height: 48,
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: CustomElevatedButton(
+                              onPressed: () {
+                                locator<LoginRegisterBloc>().add(
+                                  SaveOnboardingDetails(
+                                    name: nameController.text,
+                                    status: statusController.text,
+                                    username: usernameController.text,
+                                  ),
+                                );
+                              },
+                              text: 'Continue'),
+                        ),
+                        const SizedBox(
+                          height: 26,
+                        ),
+                      ],
+                    );
+                  },
                 ),
+              ),
               const Spacer(),
             ],
           ),

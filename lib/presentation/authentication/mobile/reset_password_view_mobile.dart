@@ -99,38 +99,46 @@ class _ResetPasswordViewMobileState extends State<ResetPasswordViewMobile> {
                                 ),
                                 SizedBox(
                                   width: double.infinity,
-                                  child: CustomUI.customElevatedButton(() {
-                                    context.pop();
-                                  }, 'Back to Login'),
+                                  child: CustomElevatedButton(
+                                      onPressed: () {
+                                        context.pop();
+                                      },
+                                      text: 'Back to Login'),
                                 ),
                               ],
                             );
                           }
                           return Column(
                             children: [
-                              CustomUI.customTextField(
-                                  emailController, 'Email', false, (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter email.';
-                                } else if (!value.contains('@')) {
-                                  return 'Please enter a valid email.';
-                                }
-                                return null;
-                              }, AutovalidateMode.onUserInteraction),
+                              CustomTextField(
+                                  controller: emailController,
+                                  text: 'Email',
+                                  validateFunction: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter email.';
+                                    } else if (!value.contains('@')) {
+                                      return 'Please enter a valid email.';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid:
+                                      AutovalidateMode.onUserInteraction),
                               const SizedBox(
                                 height: 38,
                               ),
                               SizedBox(
                                 width: double.infinity,
-                                child: CustomUI.customElevatedButton(() {
-                                  if (formKey.currentState!.validate()) {
-                                    locator<LoginRegisterBloc>().add(
-                                      ResetPasswordButtonPressed(
-                                        email: emailController.text,
-                                      ),
-                                    );
-                                  }
-                                }, 'Reset Password'),
+                                child: CustomElevatedButton(
+                                    onPressed: () {
+                                      if (formKey.currentState!.validate()) {
+                                        locator<LoginRegisterBloc>().add(
+                                          ResetPasswordButtonPressed(
+                                            email: emailController.text,
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    text: 'Reset Password'),
                               ),
                               const SizedBox(
                                 height: 26,

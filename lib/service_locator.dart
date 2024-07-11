@@ -5,8 +5,10 @@ import 'package:monumento/application/feed/comments/comments_bloc.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/application/feed/new_post/new_post_bloc.dart';
 import 'package:monumento/application/feed/recommended_users/recommended_users_bloc.dart';
+import 'package:monumento/application/profile/follow/follow_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/data/repositories/firebase_monument_repository.dart';
 import 'package:monumento/data/repositories/firebase_social_repository.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
@@ -45,4 +47,10 @@ void setupLocator() {
   locator.registerLazySingleton(
       () => RecommendedUsersBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(() => NewPostBloc(locator<SocialRepository>()));
+
+  locator.registerLazySingleton(() => FollowBloc(locator<SocialRepository>()));
+
+  locator.registerLazySingleton(() => ProfilePostsBloc(
+        locator<SocialRepository>(),
+      ));
 }

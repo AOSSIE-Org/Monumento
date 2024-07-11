@@ -20,6 +20,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isSeen = false;
 
   @override
   void initState() {
@@ -126,27 +127,27 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                             const SizedBox(
                               height: 22,
                             ),
-                            CustomUI.customTextField(
-                                emailController, 'Email', false, (value) {
+                            CustomTextField(controller:
+                                emailController,text: 'Email',validateFunction: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter email.';
                               } else if (!value.contains('@')) {
                                 return 'Please enter a valid email.';
                               }
                               return null;
-                            }, AutovalidateMode.onUserInteraction),
+                            },autoValid: AutovalidateMode.onUserInteraction),
                             const SizedBox(
                               height: 16,
                             ),
-                            CustomUI.customTextField(
-                                passwordController, 'Password', true, (value) {
+                            CustomTextField(controller:
+                                passwordController,text: 'Password', isSeen: isSeen,validateFunction: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter password.';
                               } else if (value.length < 6) {
                                 return 'Password must be at least 6 characters.';
                               }
                               return null;
-                            }, AutovalidateMode.onUserInteraction),
+                            },autoValid: AutovalidateMode.onUserInteraction),
                             const SizedBox(
                               height: 16,
                             ),
@@ -175,7 +176,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                             ),
                             SizedBox(
                                 width: double.infinity,
-                                child: CustomUI.customElevatedButton(() {
+                                child: CustomElevatedButton(onPressed: () {
                                   if (formKey.currentState!.validate()) {
                                     locator<LoginRegisterBloc>().add(
                                       LoginWithEmailPressed(
@@ -197,7 +198,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       ),
                                     );
                                   }
-                                }, 'Login')),
+                                },text: 'Login')),
                             const SizedBox(
                               height: 26,
                             ),
