@@ -68,8 +68,9 @@ class FirebaseSocialRepository implements SocialRepository {
 
   @override
   Future<List<UserModel>> getMoreSearchResults(
-      {required String searchQuery,
-      required DocumentSnapshot<Object?> startAfterDoc}) async {
+      {required String searchQuery, required String startAfterDocId}) async {
+    DocumentSnapshot startAfterDoc =
+        await _database.collection('users').doc(startAfterDocId).get();
     QuerySnapshot snap = await _database
         .collection("users")
         .where("searchParams", arrayContains: searchQuery)
@@ -195,6 +196,53 @@ class FirebaseSocialRepository implements SocialRepository {
       return PostModel.fromJson(data);
     }).toList();
 
+    return posts;
+  }
+
+  @override
+  Future<List<PostModel>> getInitialProfilePosts() async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    String userId = user!.uid;
+
+    QuerySnapshot snap = await _database
+        .collection("posts")
+        .where("postByUid", isEqualTo: userId)
+        .orderBy("timeStamp", descending: true)
+        .limit(10)
+        .get();
+
+    List<PostModel> posts = await Future.wait(snap.docs.map((e) async {
+      var data = e.data() as Map<String, dynamic>;
+      if (data['postId'] == null) {
+        data['postId'] = e.id;
+      }
+      if (data['likesCount'] != null || data['likesCount'] != 0) {
+        try {
+          var likeDoc = await _database
+              .collection('posts')
+              .doc(e.id)
+              .collection('likes')
+              .doc(user.uid)
+              .get();
+          if (likeDoc.exists) {
+            if (likeDoc.data()!['likedPost'] == true) {
+              data['isPostLiked'] = true;
+            } else {
+              data['isPostLiked'] = false;
+            }
+          } else {
+            data['isPostLiked'] = false;
+          }
+        } catch (e) {
+          log("Like doc not found");
+          data['isPostLiked'] = false;
+        }
+      }
+      return PostModel.fromJson(data);
+    }));
     return posts;
   }
 
@@ -402,18 +450,22 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<List<PostModel>> getInitialProfilePosts() async {
+  Future<List<PostModel>> getInitialDiscoverPosts() async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
-    String userId = user!.uid;
-    
+
+    List<String> followingUids = user!.following;
+    if (followingUids.isEmpty) {
+      return [];
+    }
     QuerySnapshot snap = await _database
         .collection("posts")
-        .where("postByUid",isEqualTo: userId)
-        .orderBy("timeStamp", descending: true)
-        .limit(10)
+        //  .where("postByUid", whereNotIn: followingUids)
+        .where("postType", isEqualTo: 0)
+        // .orderBy("timeStamp", descending: true)
+        .limit(8)
         .get();
 
     List<PostModel> posts = await Future.wait(snap.docs.map((e) async {
@@ -451,7 +503,7 @@ class FirebaseSocialRepository implements SocialRepository {
   @override
   Future<List<PostModel>> getMoreProfilePosts(
       {required String startAfterDocId}) async {
-        var (userLoggedIn, user) = await authenticationRepository.getUser();
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
@@ -497,7 +549,8 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<void> followUser({required UserEntity targetUser, required UserEntity currentUser}) async {
+  Future<void> followUser(
+      {required UserEntity targetUser, required UserEntity currentUser}) async {
     await _database.collection('users').doc(targetUser.uid).update({
       'followers': FieldValue.arrayUnion([currentUser.uid])
     });
