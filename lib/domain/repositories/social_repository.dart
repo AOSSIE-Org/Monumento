@@ -15,11 +15,13 @@ abstract interface class SocialRepository {
   Future<List<UserModel>> searchPeople({required String searchQuery});
 
   Future<List<UserModel>> getMoreSearchResults(
-      {required String searchQuery, required DocumentSnapshot startAfterDoc});
+      {required String searchQuery, required String startAfterDocId});
 
   Future<bool> checkUserNameAvailability({required String username});
 
   Future<List<PostModel>> getInitialFeedPosts();
+
+  Future<List<PostModel>> getInitialDiscoverPosts();
 
   Future<List<PostModel>> getMorePosts({required String startAfterDocId});
 
@@ -48,7 +50,7 @@ abstract interface class SocialRepository {
 
   Future<List<PostModel>> getMoreProfilePosts(
       {required String startAfterDocId});
-    
+
   Future<void> followUser(
       {required UserEntity targetUser, required UserEntity currentUser});
 
@@ -57,5 +59,4 @@ abstract interface class SocialRepository {
 
   Future<bool> getFollowStatus(
       {required UserEntity targetUser, required UserEntity currentUser});
-  
 }
