@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:like_button/like_button.dart';
-import 'package:monumento/application/authentication/authentication_bloc.dart';
-import 'package:monumento/application/feed/comments/comments_bloc.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
-import 'package:monumento/domain/entities/comment_entity.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/presentation/feed/mobile/widgets/comment_bottom_sheet.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -27,9 +25,6 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
     with AutomaticKeepAliveClientMixin<FeedPostCardMobile> {
   bool isLiked = false;
   int likesCount = 0;
-  List<CommentEntity> comments = [];
-  var commentFocusNode = FocusNode();
-  final TextEditingController commentController = TextEditingController();
 
   @override
   void initState() {
@@ -37,16 +32,7 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
       isLiked = widget.post.isPostLiked ?? false;
       likesCount = widget.post.likesCount ?? 0;
     });
-    locator<CommentsBloc>()
-        .add(LoadInitialComments(postDocId: widget.post.postId));
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    commentFocusNode.dispose();
-    commentController.dispose();
-    super.dispose();
   }
 
   @override
@@ -55,7 +41,7 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
     return Card(
       child: Container(
         padding: const EdgeInsets.all(10),
-        width: 200,
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: AppColor.appWhite,
           borderRadius: BorderRadius.circular(10),
@@ -67,14 +53,8 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
               children: [
                 CircleAvatar(
                   radius: 20,
-                  child: CachedNetworkImage(
-                    imageUrl: widget.post.author.profilePictureUrl ??
-                        defaultProfilePicture,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                  ),
+                  backgroundImage: CachedNetworkImageProvider(widget.post.author.profilePictureUrl ??
+                        defaultProfilePicture),
                 ),
                 const SizedBox(
                   width: 20,
@@ -129,18 +109,11 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                       fontType: FontType.REGULAR,
                     ),
                   )
-                : Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: const Color.fromARGB(255, 127, 127, 127),
-                      image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                            widget.post.imageUrl ?? ""),
-                        fit: BoxFit.fitHeight,
-                      ),
-                    ),
+                : Image(
+                    image:
+                        CachedNetworkImageProvider(widget.post.imageUrl ?? ""),
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
                   ),
             widget.post.imageUrl == null
                 ? const SizedBox(
@@ -163,7 +136,8 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                       if (state.postId == widget.post.postId) {
                         setState(() {
                           isLiked = false;
-                          likesCount = (likesCount - 1) > 0 ? likesCount - 1 : 0;
+                          likesCount =
+                              (likesCount - 1) > 0 ? likesCount - 1 : 0;
                         });
                       }
                     } else if (state is PostLikeFailed) {
@@ -218,7 +192,8 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                     height: 24,
                   ),
                   onPressed: () {
-                    commentFocusNode.requestFocus();
+                    CommentBottomSheet()
+                        .commentBottomSheet(context, widget.post);
                   },
                 ),
                 IconButton(
@@ -253,202 +228,6 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                     ),
                   )
                 : const SizedBox(),
-            const SizedBox(
-              height: 14,
-            ),
-            Row(
-              children: [
-                BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                  bloc: locator<AuthenticationBloc>(),
-                  builder: (context, state) {
-                    state = state as Authenticated;
-                    return CircleAvatar(
-                      radius: 20,
-                      child: CachedNetworkImage(
-                        imageUrl: state.user.profilePictureUrl ??
-                            defaultProfilePicture,
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                SizedBox(
-                  width: 310,
-                  child: TextFormField(
-                    focusNode: commentFocusNode,
-                    controller: commentController,
-                    decoration: InputDecoration(
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          locator<CommentsBloc>().add(
-                            AddCommentPressed(
-                              postDocId: widget.post.postId,
-                              comment: commentController.text,
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SvgPicture.asset(
-                            'assets/icons/ic_share.svg',
-                            width: 24,
-                            height: 24,
-                          ),
-                        ),
-                      ),
-                      isDense: true,
-                      hintText: "Add a comment...",
-                      border: const OutlineInputBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 14,
-            ),
-            BlocListener<CommentsBloc, CommentsState>(
-              bloc: locator<CommentsBloc>(),
-              listener: (context, state) {
-                if (state is CommentAdded && state.comment.postInvolvedId == widget.post.postId) {
-                  setState(() {
-                    comments.insert(0, state.comment);
-                  });
-                }
-              },
-              child: BlocBuilder<CommentsBloc, CommentsState>(
-                bloc: locator<CommentsBloc>(),
-                buildWhen: (previous, current) {
-                  if (current is InitialCommentsLoaded) {
-                    var shouldRebuild = current.postId == widget.post.postId;
-                    if (shouldRebuild) {
-                      comments = current.initialComments
-                          .map((e) => e.toEntity())
-                          .toList();
-                    }
-                    return shouldRebuild;
-                  }
-                  if (current is LoadingInitialComments) {
-                    if (current.postId == widget.post.postId) {
-                      return true;
-                    }
-                  }
-                  if (current is LoadingMoreComments) {
-                    if (current.postId == widget.post.postId) {
-                      return true;
-                    }
-                  }
-                  return false;
-                },
-                builder: (context, state) {
-                  if (state is InitialCommentsLoaded ||
-                      state is MoreCommentsLoaded) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: comments
-                          .map(
-                            (comment) => Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                CircleAvatar(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: AppColor.appWhite,
-                                        width: 2,
-                                      ),
-                                      image: DecorationImage(
-                                        image: CachedNetworkImageProvider(
-                                          comment.author.profilePictureUrl ??
-                                              defaultProfilePicture,
-                                        ),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                ConstrainedBox(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 440,
-                                  ),
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: AppColor.appGreyAccent,
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(20),
-                                        bottomRight: Radius.circular(20),
-                                        bottomLeft: Radius.circular(20),
-                                      ),
-                                    ),
-                                    width: 320,
-                                    margin: const EdgeInsets.only(bottom: 12),
-                                    padding: const EdgeInsets.all(12),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          comment.author.name,
-                                          style: AppTextStyles.s14(
-                                            color: AppColor.appSecondary,
-                                            fontType: FontType.MEDIUM,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 4,
-                                        ),
-                                        Text(
-                                          comment.comment,
-                                          style: AppTextStyles.s14(
-                                            color: AppColor.appSecondary,
-                                            fontType: FontType.REGULAR,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                          .toList(),
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
-            ),
-            if ((widget.post.commentsCount ?? 0) > comments.length)
-              TextButton(
-                onPressed: () {
-                  locator<CommentsBloc>().add(
-                    LoadMoreComments(
-                      postDocId: widget.post.postId,
-                      startAfterId: comments.last.commentDocId,
-                    ),
-                  );
-                },
-                child: const Text(
-                  "View more comments",
-                  style: TextStyle(
-                    color: AppColor.appSecondary,
-                  ),
-                ),
-              ),
           ],
         ),
       ),

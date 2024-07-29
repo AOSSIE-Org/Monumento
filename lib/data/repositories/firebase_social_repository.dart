@@ -51,6 +51,16 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
+  Future<void> updateUserProfile(
+      {required Map<Object, dynamic> userInfo}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    await _database.collection("users").doc(user!.uid).update(userInfo);
+  }
+
+  @override
   Future<List<UserModel>> searchPeople({required String searchQuery}) async {
     // TODO: implement dateJoined field.
     String query = searchQuery.toLowerCase().replaceAll(' ', '');
@@ -84,7 +94,8 @@ class FirebaseSocialRepository implements SocialRepository {
     return users;
   }
 
-  Future<UserModel> getUserByUid(String uid) async {
+  @override
+  Future<UserModel> getUserByUid({required String uid}) async {
     DocumentSnapshot snap = await _database.collection('user').doc(uid).get();
 
     UserModel user = UserModel.fromJson(snap.data() as Map<String, dynamic>);
@@ -549,13 +560,16 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<void> followUser(
-      {required UserEntity targetUser, required UserEntity currentUser}) async {
+  Future<void> followUser({required UserEntity targetUser}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
     await _database.collection('users').doc(targetUser.uid).update({
-      'followers': FieldValue.arrayUnion([currentUser.uid])
+      'followers': FieldValue.arrayUnion([user!.uid])
     });
 
-    await _database.collection('users').doc(currentUser.uid).update({
+    await _database.collection('users').doc(user.uid).update({
       'following': FieldValue.arrayUnion([targetUser.uid])
     });
     // var notification = NotificationModel(
@@ -568,13 +582,16 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<bool> getFollowStatus(
-      {required UserEntity targetUser, required UserEntity currentUser}) async {
+  Future<bool> getFollowStatus({required UserEntity targetUser}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
     DocumentSnapshot targetDoc =
         await _database.collection('users').doc(targetUser.uid).get();
 
     DocumentSnapshot currentDoc =
-        await _database.collection('users').doc(currentUser.uid).get();
+        await _database.collection('users').doc(user!.uid).get();
 
     UserModel targetUpdated =
         UserModel.fromEntity(UserEntity.fromSnapshot(targetDoc));
@@ -588,13 +605,16 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<void> unfollowUser(
-      {required UserEntity targetUser, required UserEntity currentUser}) async {
+  Future<void> unfollowUser({required UserEntity targetUser}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
     await _database.collection('users').doc(targetUser.uid).update({
-      'followers': FieldValue.arrayRemove([currentUser.uid])
+      'followers': FieldValue.arrayRemove([user!.uid])
     });
 
-    await _database.collection('users').doc(currentUser.uid).update({
+    await _database.collection('users').doc(user.uid).update({
       'following': FieldValue.arrayRemove([targetUser.uid])
     });
   }

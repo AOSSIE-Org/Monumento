@@ -35,4 +35,6 @@ abstract interface class AuthenticationRepository {
   });
 
   Future sendPasswordResetEmail({required String email});
+  
+  Future<void> updateEmailPassword({required Map<Object,dynamic> emailPassword});
 }

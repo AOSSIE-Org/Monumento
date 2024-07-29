@@ -11,18 +11,17 @@ part 'follow_state.dart';
 class FollowBloc extends Bloc<FollowEvent, FollowState> {
   final SocialRepository _socialRepository;
 
-  FollowBloc(this._socialRepository):super(FollowInitial()){
+  FollowBloc(this._socialRepository) : super(FollowInitial()) {
     on<FollowUser>(_mapFollowUserToState);
     on<UnfollowUser>(_mapUnfollowUserToState);
     on<GetFollowStatus>(_mapGetFollowStatusToState);
   }
 
-  _mapFollowUserToState(FollowUser event, Emitter<FollowState> emit) async{
+  _mapFollowUserToState(FollowUser event, Emitter<FollowState> emit) async {
     try {
       emit(LoadingFollowState());
-      await _socialRepository.followUser(
-          targetUser: event.targetUser, currentUser: event.currentUser);
-      add(GetFollowStatus(targetUser: event.targetUser, currentUser: event.currentUser));
+      await _socialRepository.followUser(targetUser: event.targetUser);
+      add(GetFollowStatus(targetUser: event.targetUser));
     } catch (e) {
       log('${e.toString()} follow');
 
@@ -30,13 +29,12 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
     }
   }
 
-  _mapUnfollowUserToState(UnfollowUser event, Emitter<FollowState> emit) async{
+  _mapUnfollowUserToState(UnfollowUser event, Emitter<FollowState> emit) async {
     try {
       emit(LoadingFollowState());
 
-      await _socialRepository.unfollowUser(
-          targetUser: event.targetUser, currentUser: event.currentUser);
-      add(GetFollowStatus(targetUser: event.targetUser, currentUser: event.currentUser));
+      await _socialRepository.unfollowUser(targetUser: event.targetUser);
+      add(GetFollowStatus(targetUser: event.targetUser));
     } catch (e) {
       log('${e.toString()} unfollow');
 
@@ -44,16 +42,13 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
     }
   }
 
-  _mapGetFollowStatusToState(GetFollowStatus event, Emitter<FollowState> emit) async{
+  _mapGetFollowStatusToState(
+      GetFollowStatus event, Emitter<FollowState> emit) async {
     try {
       emit(LoadingFollowState());
-      if (event.targetUser == event.currentUser) {
-        emit(CurrentUserProfile());
-      } else {
-        bool following = await _socialRepository.getFollowStatus(
-            targetUser: event.targetUser, currentUser: event.currentUser);
-        emit(FollowStatusRetrieved(following: following));
-      }
+      bool following =
+          await _socialRepository.getFollowStatus(targetUser: event.targetUser);
+      emit(FollowStatusRetrieved(following: following));
     } catch (e) {
       log('${e.toString()} status');
 

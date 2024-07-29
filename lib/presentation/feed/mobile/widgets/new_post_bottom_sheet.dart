@@ -99,14 +99,8 @@ class _PostImageState extends State<PostImage> {
                     children: [
                       CircleAvatar(
                         radius: 40,
-                        child: CachedNetworkImage(
-                          imageUrl: state.user.profilePictureUrl ??
-                              defaultProfilePicture,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
+                        backgroundImage: CachedNetworkImageProvider(state.user.profilePictureUrl ??
+                              defaultProfilePicture),
                       ),
                       const SizedBox(
                         height: 20,

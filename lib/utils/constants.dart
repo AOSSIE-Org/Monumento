@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -12,14 +13,20 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? Function(String?)? validateFunction;
   final AutovalidateMode? autoValid;
-  const CustomTextField({super.key, required this.controller, required this.text, this.suffixIcon, this.validateFunction, this.autoValid, this.isSeen});
+  const CustomTextField(
+      {super.key,
+      required this.controller,
+      required this.text,
+      this.suffixIcon,
+      this.validateFunction,
+      this.autoValid,
+      this.isSeen});
 
   @override
   Widget build(BuildContext context) {
-
     return TextFormField(
       controller: controller,
-      obscureText: isSeen??false,
+      obscureText: isSeen ?? false,
       validator: validateFunction,
       autovalidateMode: autoValid,
       decoration: InputDecoration(
@@ -49,7 +56,8 @@ class CustomTextField extends StatelessWidget {
 class CustomElevatedButton extends StatelessWidget {
   final void Function() onPressed;
   final String text;
-  const CustomElevatedButton({super.key, required this.onPressed, required this.text});
+  const CustomElevatedButton(
+      {super.key, required this.onPressed, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +76,46 @@ class CustomElevatedButton extends StatelessWidget {
           color: AppColor.appSecondary,
           fontType: FontType.MEDIUM,
         ),
+      ),
+    );
+  }
+}
+
+class CustomListTile extends StatelessWidget {
+  final VoidCallback onClick;
+  final Widget leadingIcon;
+  final String title;
+  final String? subtitle;
+  const CustomListTile(
+      {super.key,
+      required this.onClick,
+      required this.leadingIcon,
+      required this.title,
+      this.subtitle});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: onClick,
+      dense: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12))),
+      tileColor: AppColor.appPrimary,
+      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      leading: leadingIcon,
+      title: Text(
+        title,
+        style: AppTextStyles.s16(
+            color: AppColor.appBlack, fontType: FontType.MEDIUM),
+      ),
+      subtitle: subtitle != null?Text(
+        subtitle!,
+        style: AppTextStyles.s14(
+            color: AppColor.appGrey, fontType: FontType.REGULAR),
+      ):null,
+      trailing: const Icon(
+        Icons.arrow_forward_ios,
+        color: AppColor.appSecondaryBlack,
       ),
     );
   }

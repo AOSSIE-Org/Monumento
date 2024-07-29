@@ -8,7 +8,7 @@ sealed class RecommendedUsersEvent extends Equatable {
 }
 
 class GetRecommendedUsers extends RecommendedUsersEvent {
-  GetRecommendedUsers();
+  const GetRecommendedUsers();
 
   @override
   List<Object> get props => [];
