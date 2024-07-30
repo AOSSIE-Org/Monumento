@@ -36,3 +36,29 @@ class CurrentUserProfile extends FollowState {
   @override
   List<Object> get props => [];
 }
+
+class LoadingFollowUserListState extends FollowState {
+  @override
+  List<Object?> get props => [];
+  
+}
+
+class LoadedFollowUserListState extends FollowState {
+  final List<UserEntity> userData;
+
+  const LoadedFollowUserListState({required this.userData});
+
+  @override
+  List<Object?> get props => [userData];
+  
+}
+
+class FollowUserListErrorState extends FollowState {
+  final String message;
+
+  const FollowUserListErrorState({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+  
+}

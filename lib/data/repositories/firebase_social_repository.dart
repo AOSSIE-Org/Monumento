@@ -96,9 +96,9 @@ class FirebaseSocialRepository implements SocialRepository {
 
   @override
   Future<UserModel> getUserByUid({required String uid}) async {
-    DocumentSnapshot snap = await _database.collection('user').doc(uid).get();
+    DocumentSnapshot snap = await _database.collection("users").doc(uid).get();
 
-    UserModel user = UserModel.fromJson(snap.data() as Map<String, dynamic>);
+    UserModel user =UserModel.fromJson(snap.data() as Map<String, dynamic>);
     return user;
   }
 

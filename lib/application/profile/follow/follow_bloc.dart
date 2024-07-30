@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 
@@ -15,6 +17,7 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
     on<FollowUser>(_mapFollowUserToState);
     on<UnfollowUser>(_mapUnfollowUserToState);
     on<GetFollowStatus>(_mapGetFollowStatusToState);
+    on<LoadUser>(_mapLoadUserToState);
   }
 
   _mapFollowUserToState(FollowUser event, Emitter<FollowState> emit) async {
@@ -53,6 +56,30 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
       log('${e.toString()} status');
 
       emit(FollowStateError(e.toString()));
+    }
+  }
+
+  FutureOr<void> _mapLoadUserToState(
+      LoadUser event, Emitter<FollowState> emit) async {
+    try {
+      List<UserModel> userData = [];
+      emit(LoadingFollowUserListState());
+
+      for (int i = 0; i < event.following.length; i++) {
+        UserModel user =
+            await _socialRepository.getUserByUid(uid: event.following[i]);
+
+        userData.add(user);
+      }
+
+      List<UserEntity> userDataEntity =
+          userData.map((e) => e.toEntity()).toList();
+
+      emit(LoadedFollowUserListState(userData: userDataEntity));
+    } catch (e) {
+      log('${e.toString()} follow');
+
+      emit(FollowUserListErrorState(message: e.toString()));
     }
   }
 }

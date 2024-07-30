@@ -29,3 +29,13 @@ class GetFollowStatus extends FollowEvent {
   @override
   List<Object> get props => [];
 }
+
+class LoadUser extends FollowEvent {
+  final List<String> following;
+
+  const LoadUser({required this.following});
+
+  @override
+  List<Object?> get props => [];
+  
+}
