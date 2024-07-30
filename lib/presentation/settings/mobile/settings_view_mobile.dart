@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
-import 'package:monumento/presentation/settings/mobile/widgets/buttom_bar.dart';
+import 'package:monumento/presentation/settings/mobile/widgets/button_bar.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -43,24 +43,24 @@ class _SettingsViewMobileState extends State<SettingsViewMobile> {
                 thickness: BorderSide.strokeAlignOutside,
                 endIndent: 0,
               ),
-              CustomButtomBar(
+              CustomButtonBar(
                 image: "assets/icons/ic_update_profile.svg",
                 text: "Update Profile Details",
                 onTap: () {
                   context.push('/update_profile');
                 },
               ),
-              CustomButtomBar(
+              CustomButtonBar(
                 image: "assets/icons/ic_privacy_policy.svg",
                 text: "Privacy Policy",
                 onTap: () {},
               ),
-              CustomButtomBar(
+              CustomButtonBar(
                 image: "assets/icons/ic_github.svg",
                 text: "GitHub",
                 onTap: () {},
               ),
-              CustomButtomBar(
+              CustomButtonBar(
                 image: "assets/icons/ic_logout.svg",
                 text: "Log Out",
                 onTap: () {
