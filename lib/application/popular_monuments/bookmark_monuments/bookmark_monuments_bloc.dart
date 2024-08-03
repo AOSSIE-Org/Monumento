@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 import 'package:monumento/domain/repositories/monument_repository.dart';
