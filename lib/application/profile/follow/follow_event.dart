@@ -6,29 +6,36 @@ abstract class FollowEvent extends Equatable {
 
 class FollowUser extends FollowEvent {
   final UserEntity targetUser;
-  final UserEntity currentUser;
 
-  const FollowUser({required this.targetUser, required this.currentUser});
+  const FollowUser({required this.targetUser});
+
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
 class UnfollowUser extends FollowEvent {
   final UserEntity targetUser;
-  final UserEntity currentUser;
-  const UnfollowUser({required this.targetUser, required this.currentUser});
+  const UnfollowUser({required this.targetUser});
+
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
 class GetFollowStatus extends FollowEvent {
   final UserEntity targetUser;
-  final UserEntity currentUser;
 
-  const GetFollowStatus({required this.targetUser, required this.currentUser});
+  const GetFollowStatus({required this.targetUser});
+
   @override
-  // TODO: implement props
   List<Object> get props => [];
+}
+
+class LoadUser extends FollowEvent {
+  final List<String> following;
+
+  const LoadUser({required this.following});
+
+  @override
+  List<Object?> get props => [];
+  
 }

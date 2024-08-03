@@ -3,11 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
-class CustomButtomBar extends StatelessWidget {
+class CustomButtonBar extends StatelessWidget {
   final String image;
   final String text;
   final Function() onTap;
-  const CustomButtomBar(
+  const CustomButtonBar(
       {super.key, required this.image, required this.text, required this.onTap});
 
   @override

@@ -12,7 +12,7 @@ class AddNewPost extends NewPostEvent {
   final String? location;
   final File? image;
   final int postType;
-  AddNewPost(
+  const AddNewPost(
       {this.image, this.location, required this.title, required this.postType});
   @override
   List<Object> get props => [];

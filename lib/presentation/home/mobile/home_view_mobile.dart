@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/presentation/discover/mobile/discover_view_mobile.dart';
 import 'package:monumento/presentation/feed/mobile/your_feed_view_mobile.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/new_post_bottom_sheet.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/popular_monuments_view_mobile.dart';
@@ -33,7 +34,7 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
           const PopularMonumentsViewMobile(),
           const YourFeedViewMobile(),
           Container(),
-          const Center(child: Text("Discover")),
+          const DiscoverViewMobile(),
           const ProfileScreenMobile(),
         ],
       ),
