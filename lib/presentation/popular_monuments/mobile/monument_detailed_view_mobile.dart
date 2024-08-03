@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_tile_mobile.dart';
@@ -20,11 +21,12 @@ class MonumentDetailedViewMobile extends StatefulWidget {
 
 class _MonumentDetailedViewMobileState
     extends State<MonumentDetailedViewMobile> {
-
   @override
   void initState() {
     locator<MonumentDetailsBloc>().add(
         GetMonumentWikiDetails(monumentWikiId: widget.monument.wikiPageId));
+    locator<BookmarkMonumentsBloc>()
+        .add(CheckIfMonumentIsBookmarked(widget.monument.id));
     super.initState();
   }
 
@@ -47,10 +49,54 @@ class _MonumentDetailedViewMobileState
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.bookmark_add_outlined,
-                      color: AppColor.appBlack))
+              BlocConsumer<BookmarkMonumentsBloc, BookmarkMonumentsState>(
+                bloc: locator<BookmarkMonumentsBloc>(),
+                listener: (context, state) {
+                  if (state is MonumentBookmarked) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Monument Bookmarked"),
+                      ),
+                    );
+                  } else if (state is MonumentUnbookmarked) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Removed Monument from Bookmarks"),
+                      ),
+                    );
+                  }
+                },
+                builder: (context, state) {
+                  if (state is MonumentBookmarked ||
+                      state is MonumentAlreadyBookmarked) {
+                    return IconButton(
+                      onPressed: () {
+                        locator<BookmarkMonumentsBloc>().add(
+                          UnbookmarkMonument(widget.monument),
+                        );
+                      },
+                      icon: SvgPicture.asset(
+                        "assets/icons/ic_bookmark_filled.svg",
+                        width: 24,
+                        height: 24,
+                      ),
+                    );
+                  } else {
+                    return IconButton(
+                      onPressed: () {
+                        locator<BookmarkMonumentsBloc>().add(
+                          BookmarkMonument(widget.monument),
+                        );
+                      },
+                      icon: SvgPicture.asset(
+                        "assets/icons/ic_bookmark.svg",
+                        width: 24,
+                        height: 24,
+                      ),
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ),
