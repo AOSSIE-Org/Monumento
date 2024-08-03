@@ -9,6 +9,7 @@ import 'package:monumento/application/discover/discover_posts/discover_posts_blo
 import 'package:monumento/application/discover/search/search_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/presentation/discover/desktop/widgets/discover_post_card_widget.dart';
+import 'package:monumento/presentation/discover/desktop/widgets/post_details_popup_widget.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -97,8 +98,7 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                                     controller: searchController,
                                     autofocus: true,
                                     decoration: const InputDecoration(
-                                      hintText:
-                                          'Search for people to connect with',
+                                      hintText: 'Search for people to connect with',
                                       border: InputBorder.none,
                                     ),
                                     onChanged: (query) {
@@ -130,19 +130,13 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                                       itemBuilder: (context, index) {
                                         return ListTile(
                                           leading: CircleAvatar(
-                                            backgroundImage:
-                                                CachedNetworkImageProvider(
-                                              state.searchedUsers[index]
-                                                      .profilePictureUrl ??
-                                                  defaultProfilePicture,
+                                            backgroundImage: CachedNetworkImageProvider(
+                                              state.searchedUsers[index].profilePictureUrl ?? defaultProfilePicture,
                                             ),
                                           ),
-                                          title: Text(
-                                              state.searchedUsers[index].name),
+                                          title: Text(state.searchedUsers[index].name),
                                           subtitle: Text(
-                                            state.searchedUsers[index]
-                                                    .username ??
-                                                '',
+                                            state.searchedUsers[index].username ?? '',
                                           ),
                                           onTap: () {
                                             hideOverlay();
@@ -248,10 +242,19 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                             child: DiscoverPostCardWidget(
                               post: post,
                               onTap: () {
-                                showOverlay(context);
-                                // showSearch(
-                                //     context: context,
-                                //     delegate: MySearchDelegate());
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return Dialog(
+                                        child: Container(
+                                          width: MediaQuery.sizeOf(context).width * 0.92,
+                                          height: MediaQuery.sizeOf(context).height * 0.8,
+                                          child: PostDetailsPopupWidget(
+                                            post: post,
+                                          ),
+                                        ),
+                                      );
+                                    });
                               },
                             ),
                           );
