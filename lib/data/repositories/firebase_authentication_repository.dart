@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -134,6 +135,20 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
     );
   }
 
+  @override
+  Future<void> updateEmailPassword({required Map<Object,dynamic> emailPassword}) async {
+    User? currentUser = (_firebaseAuth.currentUser);
+    if (currentUser != null) {
+      if (emailPassword.keys.first=='email'){
+        log("${emailPassword.keys.first}:${emailPassword.values.first}");
+        await currentUser.verifyBeforeUpdateEmail(emailPassword.values.first);
+        await _database.collection('users').doc(currentUser.uid).update({'email':emailPassword.values.first});
+      }
+      log("newPass: ${emailPassword.values.first}");
+      await currentUser.updatePassword(emailPassword.values.first);
+    }
+  }
+
   Future<DocumentSnapshot> getOrCreateUserDocForEmailSignup({
     required String uid,
     required String name,
@@ -194,12 +209,12 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
       {required String userName, required String name}) {
     List<String> searchParams = [];
     for (int i = 0; i < userName.length; i++) {
-      print(userName.substring(0, i + 1));
+      log(userName.substring(0, i + 1));
       searchParams
           .add(userName.toLowerCase().substring(0, i + 1).replaceAll(' ', ''));
     }
     for (int i = 0; i < name.trim().length; i++) {
-      print(name.trim().substring(0, i + 1));
+      log(name.trim().substring(0, i + 1));
       searchParams.add(
           name.trim().toLowerCase().substring(0, i + 1).replaceAll(' ', ''));
     }

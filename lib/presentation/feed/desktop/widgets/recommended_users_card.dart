@@ -17,7 +17,7 @@ class RecommendedUsersCard extends StatefulWidget {
 class _RecommendedUsersCardState extends State<RecommendedUsersCard> {
   @override
   void initState() {
-    locator<RecommendedUsersBloc>().add(GetRecommendedUsers());
+    locator<RecommendedUsersBloc>().add(const GetRecommendedUsers());
     super.initState();
   }
 

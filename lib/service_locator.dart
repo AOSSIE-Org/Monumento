@@ -12,6 +12,7 @@ import 'package:monumento/application/profile/follow/follow_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.dart';
+import 'package:monumento/application/profile/update_profile/update_profile_bloc.dart';
 import 'package:monumento/data/repositories/firebase_monument_repository.dart';
 import 'package:monumento/data/repositories/firebase_social_repository.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
@@ -61,4 +62,6 @@ void setupLocator() {
   locator.registerLazySingleton(() => SearchBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(
       () => BookmarkMonumentsBloc(locator<MonumentRepository>()));
+   locator.registerLazySingleton(() => UpdateProfileBloc(
+     locator<SocialRepository>(), locator<AuthenticationRepository>()));
 }

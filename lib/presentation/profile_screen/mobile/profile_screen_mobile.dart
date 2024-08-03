@@ -5,8 +5,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/profile/follow/follow_bloc.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
-import 'package:monumento/presentation/profile_screen/mobile/widgets/settings_bottom_sheet.dart';
-import 'package:monumento/presentation/profile_screen/mobile/widgets/user_post.dart';
+import 'package:monumento/presentation/profile_screen/mobile/user_connections_screen.dart';
+import 'package:monumento/presentation/profile_screen/mobile/widgets/profile_tabs_view.dart';
+import 'package:monumento/presentation/settings/mobile/settings_view_mobile.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -21,10 +22,17 @@ class ProfileScreenMobile extends StatefulWidget {
 
 class _ProfileScreenMobileState extends State<ProfileScreenMobile>
     with TickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    TabController tabController = TabController(length: 2, vsync: this);
-
+    
     return Scaffold(
         appBar: AppBar(
             backgroundColor: AppColor.appBackground,
@@ -71,22 +79,20 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   CircleAvatar(
-                                    radius: 40,
-                                    child: CachedNetworkImage(
-                                      imageUrl: state.user.profilePictureUrl ??
-                                          defaultProfilePicture,
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Icons.error),
-                                    ),
-                                  ),
+                                      radius: 40,
+                                      backgroundImage:
+                                          CachedNetworkImageProvider(
+                                        state.user.profilePictureUrl ??
+                                            defaultProfilePicture,
+                                      )),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          _tabController.animateTo(0);
+                                        },
                                         child: Column(
                                           children: [
                                             Text(
@@ -110,7 +116,16 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                                       ),
                                       const SizedBox(width: 20),
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const UserConnectionsScreen(
+                                                      index: 0,
+                                                    )),
+                                          );
+                                        },
                                         child: Column(
                                           children: [
                                             Text(
@@ -134,7 +149,16 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                                       ),
                                       const SizedBox(width: 20),
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const UserConnectionsScreen(
+                                                      index: 1,
+                                                    )),
+                                          );
+                                        },
                                         child: Column(
                                           children: [
                                             Text(
@@ -191,23 +215,10 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                             ),
                           ],
                         )),
-                    const Divider(thickness: BorderSide.strokeAlignOutside),
-                    TabBar(
-                        controller: tabController,
-                        labelColor: AppColor.appBlack,
-                        unselectedLabelColor: AppColor.appGrey,
-                        tabs: const [
-                          Tab(icon: Icon(Icons.window_rounded)),
-                          Tab(icon: Icon(Icons.bookmark_border_rounded)),
-                        ]),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      height: double.maxFinite,
-                      child: TabBarView(
-                        controller: tabController,
-                        children: const [UserPost(), Text("bookmarks")],
-                      ),
-                    ),
+                    const Divider(thickness: 2),
+                    ProfileTabsView(
+                      tabController: _tabController,
+                    )
                   ],
                 ),
               );
@@ -223,10 +234,8 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
         child: TextButton(
           onPressed: () {
             state.following
-                ? locator<FollowBloc>().add(UnfollowUser(
-                    currentUser: currentUser, targetUser: currentUser))
-                : locator<FollowBloc>().add(FollowUser(
-                    currentUser: currentUser, targetUser: currentUser));
+                ? locator<FollowBloc>().add(UnfollowUser(targetUser: currentUser))
+                : locator<FollowBloc>().add(FollowUser(targetUser: currentUser));
           },
           style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.amberAccent)),

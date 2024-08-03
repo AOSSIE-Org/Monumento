@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:monumento/data/models/comment_model.dart';
 import 'package:monumento/data/models/post_model.dart';
 import 'package:monumento/data/models/user_model.dart';
@@ -11,6 +10,10 @@ abstract interface class SocialRepository {
       {required File file, required String address});
 
   Future<String> uploadProfilePicForUrl({required File file});
+
+  Future<UserModel>getUserByUid({required String uid});
+
+  Future<void> updateUserProfile({required Map<Object, dynamic> userInfo});
 
   Future<List<UserModel>> searchPeople({required String searchQuery});
 
@@ -51,12 +54,9 @@ abstract interface class SocialRepository {
   Future<List<PostModel>> getMoreProfilePosts(
       {required String startAfterDocId});
 
-  Future<void> followUser(
-      {required UserEntity targetUser, required UserEntity currentUser});
+  Future<void> followUser({required UserEntity targetUser});
 
-  Future<void> unfollowUser(
-      {required UserEntity targetUser, required UserEntity currentUser});
+  Future<void> unfollowUser({required UserEntity targetUser});
 
-  Future<bool> getFollowStatus(
-      {required UserEntity targetUser, required UserEntity currentUser});
+  Future<bool> getFollowStatus({required UserEntity targetUser});
 }

@@ -83,7 +83,7 @@ class _YourFeedViewMobileState extends State<YourFeedViewMobile> {
                   },
                   separatorBuilder: (ctx, i) {
                     return SizedBox(
-                      height: 20.h,
+                      height: 15.h,
                     );
                   },
                 ),
