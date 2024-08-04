@@ -12,6 +12,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc(this._socialRepository) : super(SearchInitial()) {
     on<SearchPeople>(_mapSearchPeopleToState);
     on<SearchMorePeople>(_mapSearchMorePeopleToState);
+    on<SelectSearchedPeople>(_mapSelectSearchedPeopleToState);
   }
 
   Future<void> _mapSearchPeopleToState(
@@ -53,5 +54,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     } catch (e) {
       emit(SearchingMorePeopleFailed());
     }
+  }
+
+  void _mapSelectSearchedPeopleToState(
+      SelectSearchedPeople event, Emitter<SearchState> emit) {
+    emit(SearchedPeopleSelected(user: event.user));
   }
 }

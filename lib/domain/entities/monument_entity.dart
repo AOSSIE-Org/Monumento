@@ -12,6 +12,8 @@ class MonumentEntity extends Equatable {
   final List<double> coordinates;
   final String wikiPageId;
   final List<String> images;
+  final bool has3DModel;
+  final String? modelLink;
 
   const MonumentEntity({
     required this.rating,
@@ -25,6 +27,8 @@ class MonumentEntity extends Equatable {
     required this.wiki,
     required this.wikiPageId,
     this.images = const [],
+    this.has3DModel = false,
+    this.modelLink,
   });
 
   @override
@@ -40,5 +44,7 @@ class MonumentEntity extends Equatable {
         wiki,
         wikiPageId,
         images,
+        has3DModel,
+        modelLink,
       ];
 }

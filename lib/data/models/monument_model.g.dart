@@ -8,6 +8,7 @@ part of 'monument_model.dart';
 
 MonumentModel _$MonumentModelFromJson(Map<String, dynamic> json) =>
     MonumentModel(
+      modelLink: json['modelLink'] as String?,
       rating: (json['rating'] as num).toDouble(),
       coordinates: (json['coordinates'] as List<dynamic>)
           .map((e) => (e as num).toDouble())
@@ -24,6 +25,7 @@ MonumentModel _$MonumentModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           const [],
+      has3DModel: json['has3DModel'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$MonumentModelToJson(MonumentModel instance) =>
@@ -39,4 +41,6 @@ Map<String, dynamic> _$MonumentModelToJson(MonumentModel instance) =>
       'rating': instance.rating,
       'coordinates': instance.coordinates,
       'images': instance.images,
+      'modelLink': instance.modelLink,
+      'has3DModel': instance.has3DModel,
     };

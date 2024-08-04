@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:monumento/data/models/comment_model.dart';
+import 'package:monumento/data/models/notification_model.dart';
 import 'package:monumento/data/models/post_model.dart';
 import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
@@ -98,7 +99,7 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<UserModel> getUserByUid({required String uid}) async {
     DocumentSnapshot snap = await _database.collection("users").doc(uid).get();
 
-    UserModel user =UserModel.fromJson(snap.data() as Map<String, dynamic>);
+    UserModel user = UserModel.fromJson(snap.data() as Map<String, dynamic>);
     return user;
   }
 
@@ -572,13 +573,15 @@ class FirebaseSocialRepository implements SocialRepository {
     await _database.collection('users').doc(user.uid).update({
       'following': FieldValue.arrayUnion([targetUser.uid])
     });
-    // var notification = NotificationModel(
-    //     notificationType: NotificationType.followedYou,
-    //     timeStamp: DateTime.now().millisecondsSinceEpoch,
-    //     userInvolved: currentUser);
+    var notification = NotificationModel(
+      notificationType: NotificationType.followedYou,
+      timeStamp: DateTime.now().millisecondsSinceEpoch,
+      userInvolved: user,
+    );
 
-    // await addNewNotification(
-    //     targetUser: targetUser, notification: notification);
+    await addNewNotification(
+        targetUser: UserModel.fromEntity(targetUser),
+        notification: notification);
   }
 
   @override
@@ -617,5 +620,109 @@ class FirebaseSocialRepository implements SocialRepository {
     await _database.collection('users').doc(user.uid).update({
       'following': FieldValue.arrayRemove([targetUser.uid])
     });
+  }
+
+  @override
+  Future<List<PostModel>> getInitialUserPosts({required String uid}) async {
+    QuerySnapshot snap = await _database
+        .collection("posts")
+        .where("postByUid", isEqualTo: uid)
+        .orderBy("timeStamp", descending: true)
+        .limit(10)
+        .get();
+
+    List<PostModel> posts = await Future.wait(snap.docs.map((e) async {
+      var data = e.data() as Map<String, dynamic>;
+      if (data['postId'] == null) {
+        data['postId'] = e.id;
+      }
+      if (data['likesCount'] != null || data['likesCount'] != 0) {
+        try {
+          var likeDoc = await _database
+              .collection('posts')
+              .doc(e.id)
+              .collection('likes')
+              .doc(uid)
+              .get();
+          if (likeDoc.exists) {
+            if (likeDoc.data()!['likedPost'] == true) {
+              data['isPostLiked'] = true;
+            } else {
+              data['isPostLiked'] = false;
+            }
+          } else {
+            data['isPostLiked'] = false;
+          }
+        } catch (e) {
+          log("Like doc not found");
+          data['isPostLiked'] = false;
+        }
+      }
+      return PostModel.fromJson(data);
+    }));
+    return posts;
+  }
+
+  @override
+  Future<NotificationModel> addNewNotification(
+      {required UserModel targetUser,
+      required NotificationModel notification}) async {
+    DocumentReference ref = await _database
+        .collection('users')
+        .doc(targetUser.uid)
+        .collection('notifications')
+        .add(notification.toJson());
+    DocumentSnapshot snap = await ref.get();
+    NotificationModel addedNotification =
+        NotificationModel.fromJson(snap.data() as Map<String, dynamic>);
+    return addedNotification;
+  }
+
+  @override
+  Future<List<NotificationModel>> getInitialNotifications() async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    QuerySnapshot snap = await _database
+        .collection('users')
+        .doc(user!.uid)
+        .collection('notifications')
+        .orderBy('timeStamp', descending: true)
+        .limit(10)
+        .get();
+    List<NotificationModel> notifications = snap.docs
+        .map(
+            (e) => NotificationModel.fromJson(e.data() as Map<String, dynamic>))
+        .toList();
+    return notifications;
+  }
+
+  @override
+  Future<List<NotificationModel>> getMoreNotifications(
+      {required String startAfterDocId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    DocumentSnapshot startAfterDoc = await _database
+        .collection('users')
+        .doc(user!.uid)
+        .collection('notifications')
+        .doc(startAfterDocId)
+        .get();
+    QuerySnapshot snap = await _database
+        .collection('users')
+        .doc(user.uid)
+        .collection('notifications')
+        .orderBy('timeStamp', descending: true)
+        .startAfterDocument(startAfterDoc)
+        .limit(10)
+        .get();
+    List<NotificationModel> notifications = snap.docs
+        .map(
+            (e) => NotificationModel.fromJson(e.data() as Map<String, dynamic>))
+        .toList();
+    return notifications;
   }
 }

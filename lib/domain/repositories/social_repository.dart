@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:monumento/data/models/comment_model.dart';
+import 'package:monumento/data/models/notification_model.dart';
 import 'package:monumento/data/models/post_model.dart';
 import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
@@ -11,7 +12,7 @@ abstract interface class SocialRepository {
 
   Future<String> uploadProfilePicForUrl({required File file});
 
-  Future<UserModel>getUserByUid({required String uid});
+  Future<UserModel> getUserByUid({required String uid});
 
   Future<void> updateUserProfile({required Map<Object, dynamic> userInfo});
 
@@ -59,4 +60,14 @@ abstract interface class SocialRepository {
   Future<void> unfollowUser({required UserEntity targetUser});
 
   Future<bool> getFollowStatus({required UserEntity targetUser});
+
+  Future<List<PostModel>> getInitialUserPosts({required String uid});
+
+  Future<NotificationModel> addNewNotification(
+      {required UserModel targetUser, required NotificationModel notification});
+
+  Future<List<NotificationModel>> getInitialNotifications();
+
+  Future<List<NotificationModel>> getMoreNotifications(
+      {required String startAfterDocId});
 }

@@ -18,8 +18,11 @@ class MonumentModel {
   final double rating;
   final List<double> coordinates;
   final List<String> images;
+  final String? modelLink;
+  final bool has3DModel;
 
   const MonumentModel({
+    this.modelLink,
     required this.rating,
     required this.coordinates,
     required this.id,
@@ -31,6 +34,7 @@ class MonumentModel {
     required this.wiki,
     required this.wikiPageId,
     this.images = const [],
+    this.has3DModel = false,
   });
 
   factory MonumentModel.fromJson(Map<String, dynamic> json) {
@@ -67,6 +71,8 @@ class MonumentModel {
       coordinates: coordinates,
       wikiPageId: wikiPageId,
       images: images,
+      modelLink: modelLink,
+      has3DModel: has3DModel,
     );
   }
 

@@ -24,3 +24,11 @@ class SearchMorePeople extends SearchEvent {
   @override
   List<Object> get props => [searchQuery, startAfterDocId];
 }
+
+class SelectSearchedPeople extends SearchEvent {
+  final UserEntity user;
+
+  const SelectSearchedPeople({required this.user});
+  @override
+  List<Object> get props => [user];
+}

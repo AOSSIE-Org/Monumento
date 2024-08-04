@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
 import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
+import 'package:monumento/application/discover/discover_profile/discover_profile_bloc.dart';
 import 'package:monumento/application/discover/search/search_bloc.dart';
 import 'package:monumento/application/feed/comments/comments_bloc.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
@@ -61,7 +62,9 @@ void setupLocator() {
       () => DiscoverPostsBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(() => SearchBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(
+      () => DiscoverProfileBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
       () => BookmarkMonumentsBloc(locator<MonumentRepository>()));
-   locator.registerLazySingleton(() => UpdateProfileBloc(
-     locator<SocialRepository>(), locator<AuthenticationRepository>()));
+  locator.registerLazySingleton(() => UpdateProfileBloc(
+      locator<SocialRepository>(), locator<AuthenticationRepository>()));
 }
