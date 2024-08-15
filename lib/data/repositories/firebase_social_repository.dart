@@ -222,6 +222,7 @@ class FirebaseSocialRepository implements SocialRepository {
     QuerySnapshot snap = await _database
         .collection("posts")
         .where("postByUid", isEqualTo: userId)
+        // .where("postType", isEqualTo: 0)
         .orderBy("timeStamp", descending: true)
         .limit(10)
         .get();
@@ -724,5 +725,77 @@ class FirebaseSocialRepository implements SocialRepository {
             (e) => NotificationModel.fromJson(e.data() as Map<String, dynamic>))
         .toList();
     return notifications;
+  }
+
+  @override
+  Future<bool> monumentCheckIn(
+      {required String monumentId, String? title}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    // get monument details
+    DocumentSnapshot monumentDoc =
+        await _database.collection("monuments").doc(monumentId).get();
+
+    // check if the user has already checked in
+    QuerySnapshot snap = await _database
+        .collection("users")
+        .doc(user?.uid)
+        .collection("checkIns")
+        .where("monumentId", isEqualTo: monumentId)
+        .get();
+
+    if (snap.docs.isNotEmpty) {
+      return false;
+    }
+
+    // add the check-in to the user's check-ins
+    await _database
+        .collection("users")
+        .doc(user?.uid)
+        .collection("checkIns")
+        .add({
+      "monumentId": monumentId,
+      "title": title ?? "",
+      "timeStamp": DateTime.now().millisecondsSinceEpoch,
+    });
+
+    // add the check-in as a post
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    DocumentReference doc = await _database.collection("posts").add({
+      "title": title ?? "",
+      "location": monumentDoc['city'] + ", " + monumentDoc['country'],
+      "imageUrl": "",
+      "author": {
+        "name": user?.name,
+        "username": user?.username,
+        "uid": user?.uid,
+        "profilePictureUrl": user?.profilePictureUrl,
+        "email": user?.email,
+      },
+      "timeStamp": timeStamp,
+      "postType": 2,
+      "postByUid": user?.uid,
+      "likesCount": 0,
+      "commentsCount": 0,
+    });
+
+    return true;
+  }
+
+  @override
+  Future<bool> checkInStatus({required String monumentId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    QuerySnapshot snap = await _database
+        .collection("users")
+        .doc(user?.uid)
+        .collection("checkIns")
+        .where("monumentId", isEqualTo: monumentId)
+        .get();
+    return snap.docs.isNotEmpty;
   }
 }

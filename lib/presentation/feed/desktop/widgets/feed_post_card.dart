@@ -122,13 +122,42 @@ class _FeedPostCardState extends State<FeedPostCard>
               height: 24,
             ),
             widget.post.imageUrl == null
-                ? Text(
-                    widget.post.title,
-                    style: AppTextStyles.s16(
-                      color: AppColor.appSecondary,
-                      fontType: FontType.REGULAR,
-                    ),
-                  )
+                ? (widget.post.postType == 2
+                    ? Container(
+                        width: double.infinity,
+                        height: 210,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/desktop/checkedin.png",
+                              width: 160,
+                              height: 160,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              widget.post.title.isEmpty
+                                  ? "${widget.post.author.name} visited ${widget.post.location ?? "a place"}"
+                                  : widget.post.title,
+                              style: AppTextStyles.s16(
+                                color: AppColor.appSecondary,
+                                fontType: FontType.REGULAR,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Text(
+                        widget.post.title,
+                        style: AppTextStyles.s16(
+                          color: AppColor.appSecondary,
+                          fontType: FontType.REGULAR,
+                        ),
+                      ))
                 : Container(
                     width: double.infinity,
                     height: 380,

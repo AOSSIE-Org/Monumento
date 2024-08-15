@@ -75,6 +75,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   wikipedia: ^0.0.8
   timeago: ^3.6.1
+  geolocator:
 
   # SVG / Vector Graphics
   flutter_svg: ^2.0.10+1
