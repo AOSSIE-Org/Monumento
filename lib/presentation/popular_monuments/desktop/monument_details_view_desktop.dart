@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,9 +11,13 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
+import 'monument_model_view_desktop.dart';
+
 class MonumentDetailsViewDesktop extends StatefulWidget {
   final MonumentEntity monument;
-  const MonumentDetailsViewDesktop({super.key, required this.monument});
+  final bool isBookmarked;
+  const MonumentDetailsViewDesktop(
+      {super.key, required this.monument, this.isBookmarked = false});
 
   @override
   State<MonumentDetailsViewDesktop> createState() =>
@@ -25,8 +30,11 @@ class _MonumentDetailsViewDesktopState
   void initState() {
     locator<MonumentDetailsBloc>().add(
         GetMonumentWikiDetails(monumentWikiId: widget.monument.wikiPageId));
-    locator<BookmarkMonumentsBloc>()
-        .add(CheckIfMonumentIsBookmarked(widget.monument.id));
+    if (!widget.isBookmarked) {
+      locator<BookmarkMonumentsBloc>()
+          .add(CheckIfMonumentIsBookmarked(widget.monument.id));
+    }
+
     super.initState();
   }
 
@@ -65,8 +73,9 @@ class _MonumentDetailsViewDesktopState
               }
             },
             builder: (context, state) {
-              if (state is MonumentBookmarked ||
-                  state is MonumentAlreadyBookmarked) {
+              if (widget.isBookmarked ||
+                  (state is MonumentBookmarked ||
+                      state is MonumentAlreadyBookmarked)) {
                 return IconButton(
                   onPressed: () {
                     locator<BookmarkMonumentsBloc>().add(
@@ -104,7 +113,34 @@ class _MonumentDetailsViewDesktopState
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColor.appPrimary,
               ),
-              onPressed: () {},
+              onPressed: () async {
+                if (kIsWeb) {
+                  if (widget.monument.has3DModel) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MonumentModelViewDesktop(
+                          monument: widget.monument,
+                        ),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content:
+                            Text("3D Model not available for this monument"),
+                      ),
+                    );
+                    return;
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                          "3D Model Viewer is only available on Web as of now"),
+                    ),
+                  );
+                }
+              },
               child: Row(
                 children: [
                   SvgPicture.asset(

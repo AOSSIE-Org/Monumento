@@ -8,8 +8,10 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/application/discover/search/search_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/presentation/discover/desktop/discover_profile_view_desktop.dart';
 import 'package:monumento/presentation/discover/desktop/widgets/discover_post_card_widget.dart';
 import 'package:monumento/presentation/discover/desktop/widgets/post_details_popup_widget.dart';
+import 'package:monumento/presentation/profile_screen/desktop/profile_screen_desktop.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -23,6 +25,8 @@ class DiscoverViewDesktop extends StatefulWidget {
   @override
   State<DiscoverViewDesktop> createState() => _DiscoverViewDesktopState();
 }
+
+final GlobalKey<ScaffoldState> _key = GlobalKey();
 
 class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
   List<PostEntity> posts = [];
@@ -98,7 +102,8 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                                     controller: searchController,
                                     autofocus: true,
                                     decoration: const InputDecoration(
-                                      hintText: 'Search for people to connect with',
+                                      hintText:
+                                          'Search for people to connect with',
                                       border: InputBorder.none,
                                     ),
                                     onChanged: (query) {
@@ -130,16 +135,29 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                                       itemBuilder: (context, index) {
                                         return ListTile(
                                           leading: CircleAvatar(
-                                            backgroundImage: CachedNetworkImageProvider(
-                                              state.searchedUsers[index].profilePictureUrl ?? defaultProfilePicture,
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                              state.searchedUsers[index]
+                                                      .profilePictureUrl ??
+                                                  defaultProfilePicture,
                                             ),
                                           ),
-                                          title: Text(state.searchedUsers[index].name),
+                                          title: Text(
+                                              state.searchedUsers[index].name),
                                           subtitle: Text(
-                                            state.searchedUsers[index].username ?? '',
+                                            state.searchedUsers[index]
+                                                    .username ??
+                                                '',
                                           ),
                                           onTap: () {
+                                            locator<SearchBloc>().add(
+                                              SelectSearchedPeople(
+                                                user:
+                                                    state.searchedUsers[index],
+                                              ),
+                                            );
                                             hideOverlay();
+                                            _key.currentState!.openEndDrawer();
                                           },
                                         );
                                       },
@@ -167,7 +185,28 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _key,
       backgroundColor: AppColor.appBackground,
+      endDrawer: BlocConsumer<SearchBloc, SearchState>(
+        bloc: locator<SearchBloc>(),
+        listener: (context, state) {
+          // TODO: implement listener
+        },
+        builder: (context, state) {
+          if (state is SearchedPeopleSelected) {
+            return SizedBox(
+              width: 900.w,
+              child: Drawer(
+                child: DiscoverProfileViewDesktop(
+                  user: state.user,
+                ),
+              ),
+            );
+          } else {
+            return const SizedBox();
+          }
+        },
+      ),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.h),
         child: ResponsiveVisibility(
@@ -246,9 +285,13 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                                     context: context,
                                     builder: (context) {
                                       return Dialog(
-                                        child: Container(
-                                          width: MediaQuery.sizeOf(context).width * 0.92,
-                                          height: MediaQuery.sizeOf(context).height * 0.8,
+                                        child: SizedBox(
+                                          width:
+                                              MediaQuery.sizeOf(context).width *
+                                                  0.92,
+                                          height: MediaQuery.sizeOf(context)
+                                                  .height *
+                                              0.8,
                                           child: PostDetailsPopupWidget(
                                             post: post,
                                           ),

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:monumento/data/models/bookmarked_monument_model.dart';
 import 'package:monumento/data/models/monument_model.dart';
 import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/data/models/wiki_data_model.dart';
@@ -130,5 +129,14 @@ class FirebaseMonumentRepository implements MonumentRepository {
     } catch (e) {
       return false;
     }
+  }
+
+  @override
+  Future<MonumentModel> getMonumentDetails(String monumentId) async {
+    final snap = await _database.collection('monuments').doc(monumentId).get();
+    if (snap.exists) {
+      return MonumentModel.fromJson(snap.data()!);
+    }
+    throw Exception("Monument not found");
   }
 }

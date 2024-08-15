@@ -33,10 +33,10 @@ dependencies:
   responsive_framework: ^1.4.0
 
   # Firebase
-  firebase_core: ^2.31.1
-  firebase_auth: ^4.19.6
-  firebase_storage: ^11.7.6
-  cloud_firestore: ^4.17.4
+  firebase_core: ^3.3.0
+  firebase_auth: ^5.1.3
+  firebase_storage: ^12.1.2
+  cloud_firestore: ^5.2.0
   google_sign_in: ^6.2.1
 
   # State Management
@@ -56,6 +56,14 @@ dependencies:
   like_button: ^2.0.5
   carousel_slider: ^4.2.1
   flutter_staggered_grid_view: ^0.7.0
+
+
+  # AR/3D
+  model_viewer_plus: ^1.8.0
+
+
+  # Notifications
+  firebase_messaging: ^15.0.4
 
   
   # Utils

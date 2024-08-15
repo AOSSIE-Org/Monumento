@@ -56,19 +56,21 @@ class CustomTextField extends StatelessWidget {
 class CustomElevatedButton extends StatelessWidget {
   final void Function() onPressed;
   final String text;
+  final ButtonStyle? style;
   const CustomElevatedButton(
-      {super.key, required this.onPressed, required this.text});
+      {super.key, required this.onPressed, required this.text, this.style});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-        ),
-        backgroundColor: AppColor.appPrimary,
-        padding: const EdgeInsets.symmetric(vertical: 15),
-      ),
+      style: style ??
+          ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6),
+            ),
+            backgroundColor: AppColor.appPrimary,
+            padding: const EdgeInsets.symmetric(vertical: 15),
+          ),
       onPressed: onPressed,
       child: Text(
         text,
@@ -108,11 +110,13 @@ class CustomListTile extends StatelessWidget {
         style: AppTextStyles.s16(
             color: AppColor.appBlack, fontType: FontType.MEDIUM),
       ),
-      subtitle: subtitle != null?Text(
-        subtitle!,
-        style: AppTextStyles.s14(
-            color: AppColor.appGrey, fontType: FontType.REGULAR),
-      ):null,
+      subtitle: subtitle != null
+          ? Text(
+              subtitle!,
+              style: AppTextStyles.s14(
+                  color: AppColor.appGrey, fontType: FontType.REGULAR),
+            )
+          : null,
       trailing: const Icon(
         Icons.arrow_forward_ios,
         color: AppColor.appSecondaryBlack,

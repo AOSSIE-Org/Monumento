@@ -47,3 +47,12 @@ class LoadingMorePeople extends SearchState {
   @override
   List<Object> get props => [];
 }
+
+class SearchedPeopleSelected extends SearchState {
+  final UserEntity user;
+
+  const SearchedPeopleSelected({required this.user});
+
+  @override
+  List<Object> get props => [user];
+}

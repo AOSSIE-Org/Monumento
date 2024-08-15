@@ -5,6 +5,7 @@ import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/presentation/popular_monuments/desktop/monument_details_view_desktop.dart';
 import 'package:monumento/presentation/profile_screen/desktop/widgets/user_details_card_widget.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -93,6 +94,7 @@ class _ProfileScreenDesktopState extends State<ProfileScreenDesktop> {
                 height: 20,
               ),
               UserDetailsCardWidget(
+                isAccountOwner: true,
                 user: state.user,
                 onPostsTap: () {
                   _jumpToPage(0);
@@ -176,7 +178,18 @@ class _ProfileScreenDesktopState extends State<ProfileScreenDesktop> {
                             itemCount: state.bookmarkedMonuments.length,
                             itemBuilder: (context, index) {
                               return InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          MonumentDetailsViewDesktop(
+                                        isBookmarked: true,
+                                        monument:
+                                            state.bookmarkedMonuments[index],
+                                      ),
+                                    ),
+                                  );
+                                },
                                 child: CachedNetworkImage(
                                   imageUrl:
                                       state.bookmarkedMonuments[index].imageUrl,

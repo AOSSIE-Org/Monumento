@@ -1,11 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:monumento/application/authentication/authentication_bloc.dart';
+import 'package:monumento/application/profile/follow/follow_bloc.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
+import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
 
 class UserDetailsCardWidget extends StatelessWidget {
+  final bool isAccountOwner;
   final UserEntity user;
   final VoidCallback onPostsTap;
   final VoidCallback onBookmarksTap;
@@ -15,7 +20,8 @@ class UserDetailsCardWidget extends StatelessWidget {
       required this.user,
       required this.onPostsTap,
       required this.onBookmarksTap,
-      this.currentPage = 0});
+      this.currentPage = 0,
+      required this.isAccountOwner});
 
   @override
   Widget build(BuildContext context) {
@@ -190,18 +196,57 @@ class UserDetailsCardWidget extends StatelessWidget {
                 const SizedBox(
                   width: 16,
                 ),
-                GestureDetector(
-                  onTap: onBookmarksTap,
-                  child: Text(
-                    'Bookmarks',
-                    style: AppTextStyles.s16(
-                      color: currentPage == 1
-                          ? AppColor.appSecondary
-                          : AppColor.appTextGrey,
-                      fontType: FontType.MEDIUM,
-                    ),
-                  ),
-                ),
+                !isAccountOwner
+                    ? const SizedBox()
+                    : GestureDetector(
+                        onTap: onBookmarksTap,
+                        child: Text(
+                          'Bookmarks',
+                          style: AppTextStyles.s16(
+                            color: currentPage == 1
+                                ? AppColor.appSecondary
+                                : AppColor.appTextGrey,
+                            fontType: FontType.MEDIUM,
+                          ),
+                        ),
+                      ),
+                Spacer(),
+                isAccountOwner
+                    ? const SizedBox()
+                    : BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                        bloc: locator<AuthenticationBloc>(),
+                        builder: (context, state) {
+                          state as Authenticated;
+                          return CustomElevatedButton(
+                            onPressed: () {
+                              if (user.followers.contains(state.user.uid)) {
+                                locator<FollowBloc>().add(
+                                  UnfollowUser(
+                                    targetUser: user,
+                                  ),
+                                );
+                              } else {
+                                locator<FollowBloc>().add(
+                                  FollowUser(
+                                    targetUser: user,
+                                  ),
+                                );
+                              }
+                            },
+                            text: user.followers.contains(state.user.uid)
+                                ? 'Following'
+                                : ' Follow ',
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              backgroundColor: AppColor.appPrimary,
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 15, horizontal: 20),
+                            ),
+                          );
+                        },
+                      ),
               ],
             ),
           ],
