@@ -4,11 +4,20 @@ sealed class UpdateProfileEvent extends Equatable {
   const UpdateProfileEvent();
 }
 
-class UpdateUserDetails extends UpdateProfileEvent{
-  final Map<Object,dynamic> userInfo;
+class UpdateUserDetails extends UpdateProfileEvent {
+  final Map<Object, dynamic> userInfo;
 
   const UpdateUserDetails({required this.userInfo});
-  
+
+  @override
+  List<Object?> get props => [userInfo];
+}
+
+class UpdateUserDetailsDesktop extends UpdateProfileEvent {
+  final Map<Object, dynamic> userInfo;
+
+  const UpdateUserDetailsDesktop({required this.userInfo});
+
   @override
   List<Object?> get props => [userInfo];
 }

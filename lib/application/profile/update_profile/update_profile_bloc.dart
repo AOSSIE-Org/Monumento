@@ -16,6 +16,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
   UpdateProfileBloc(this._socialRepository, this._authenticationRepository)
       : super(UpdateProfileInitial()) {
     on<UpdateUserDetails>(_mapUpdateUserDetails);
+    on<UpdateUserDetailsDesktop>(_mapUpdateUserDetailsDesktop);
   }
 
   FutureOr<void> _mapUpdateUserDetails(
@@ -54,6 +55,35 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
           emit(UpdateProfileSuccess());
         }
       }
+    } catch (e) {
+      emit(UpdateProfileFailure(message: e.toString()));
+    }
+  }
+
+  FutureOr<void> _mapUpdateUserDetailsDesktop(
+      UpdateUserDetailsDesktop event, Emitter<UpdateProfileState> emit) async {
+    try {
+      emit(UpdateProfileLoading());
+      if (event.userInfo.keys.contains('image') &&
+          event.userInfo['image'] != null) {
+        String url = await _socialRepository.uploadProfilePicForUrl(
+            file: event.userInfo['image']);
+        event.userInfo['profilePictureUrl'] = url;
+        event.userInfo.remove('image');
+      }
+      if (event.userInfo['shouldUpdateUsername']) {
+        if (event.userInfo.keys.contains('username')) {
+          bool isUserNameAvailable = await _socialRepository
+              .checkUserNameAvailability(username: event.userInfo['username']);
+          if (!isUserNameAvailable) {
+            emit(const UpdateProfileFailure(message: "Username already taken"));
+            return;
+          }
+        }
+      }
+
+      await _socialRepository.updateUserProfile(userInfo: event.userInfo);
+      emit(UpdateProfileSuccess());
     } catch (e) {
       emit(UpdateProfileFailure(message: e.toString()));
     }

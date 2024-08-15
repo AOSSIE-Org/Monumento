@@ -114,7 +114,9 @@ class _ProfileScreenDesktopState extends State<ProfileScreenDesktop> {
                         if (postsState is InitialProfilePostsLoaded) {
                           posts = [];
                           posts.insertAll(
-                              posts.length, postsState.initialPosts);
+                              posts.length,
+                              postsState.initialPosts
+                                  .where((e) => e.postType == 0));
                         }
                         if (postsState is MoreProfilePostsLoaded) {
                           posts.insertAll(posts.length,

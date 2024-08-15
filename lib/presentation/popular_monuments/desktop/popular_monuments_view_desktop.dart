@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/presentation/popular_monuments/desktop/widgets/monument_details_card.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -53,7 +54,16 @@ class _PopularMonumentsViewDesktopState
                   Icons.notifications_none_rounded,
                   color: AppColor.appSecondary,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return NotificationViewDesktop();
+                      },
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 width: 20,

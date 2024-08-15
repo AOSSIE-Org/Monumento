@@ -10,7 +10,7 @@ sealed class NotificationsState extends Equatable {
 final class NotificationsInitial extends NotificationsState {}
 
 class InitialNotificationsLoaded extends NotificationsState {
-  final List<NotificationModel> initialNotifications;
+  final List<NotificationEntity> initialNotifications;
 
   const InitialNotificationsLoaded({required this.initialNotifications});
 
@@ -19,7 +19,7 @@ class InitialNotificationsLoaded extends NotificationsState {
 }
 
 class MoreNotificationsLoaded extends NotificationsState {
-  final List<NotificationModel> notifications;
+  final List<NotificationEntity> notifications;
   final bool hasReachedMax;
   const MoreNotificationsLoaded(
       {required this.notifications, required this.hasReachedMax});
