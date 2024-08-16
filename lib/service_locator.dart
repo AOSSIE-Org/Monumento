@@ -22,6 +22,7 @@ import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/monument_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 
+import 'application/popular_monuments/nearby_places/nearby_places_bloc.dart';
 import 'data/repositories/firebase_authentication_repository.dart';
 
 final GetIt locator = GetIt.instance;
@@ -73,4 +74,6 @@ void setupLocator() {
       () => NotificationsBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(
       () => MonumentCheckinBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
+      () => NearbyPlacesBloc(locator<MonumentRepository>()));
 }

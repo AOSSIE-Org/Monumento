@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import 'local_expert_entity.dart';
+
 class MonumentEntity extends Equatable {
   final String id;
   final String name;
@@ -14,6 +16,7 @@ class MonumentEntity extends Equatable {
   final List<String> images;
   final bool has3DModel;
   final String? modelLink;
+  final List<LocalExpertEntity> localExperts;
 
   const MonumentEntity({
     required this.rating,
@@ -29,6 +32,7 @@ class MonumentEntity extends Equatable {
     this.images = const [],
     this.has3DModel = false,
     this.modelLink,
+    this.localExperts = const [],
   });
 
   @override
@@ -46,5 +50,6 @@ class MonumentEntity extends Equatable {
         images,
         has3DModel,
         modelLink,
+        localExperts,
       ];
 }

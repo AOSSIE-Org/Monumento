@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:monumento/data/models/monument_model.dart';
+import 'package:monumento/data/models/nearby_place_model.dart';
 import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/data/models/wiki_data_model.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/monument_repository.dart';
+import 'package:monumento/utils/enums.dart';
 import 'package:wikipedia/wikipedia.dart';
+import 'package:http/http.dart' as http;
 
 class FirebaseMonumentRepository implements MonumentRepository {
   final AuthenticationRepository authenticationRepository;
@@ -138,5 +143,38 @@ class FirebaseMonumentRepository implements MonumentRepository {
       return MonumentModel.fromJson(snap.data()!);
     }
     throw Exception("Monument not found");
+  }
+
+  @override
+  Future<List<NearbyPlaceModel>> getPlacesNearby(
+      double latitude, double longitude) async {
+    //TODO: Setup ENV to store API key
+    var key = "YOUR_API_KEY";
+    var url =
+        "https://api.geoapify.com/v2/place-details?lat=$latitude&lon=$longitude&features=walk_15.restaurant,walk_15.toilet,walk_15.hotel,walk_15.atm,walk_15.supermarket,walk_15.restaurant&apiKey=$key";
+
+    var response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      var res = jsonDecode(response.body);
+      List<NearbyPlaceModel> nearbyPlaces = [];
+      for (var place in res['features']) {
+        if (place['properties']['feature_type'] != null &&
+            place['properties']['name'] != null) {
+          if (FeatureType.values
+              .contains(getFeatureType(place['properties']['feature_type']))) {
+            nearbyPlaces.add(NearbyPlaceModel(
+              name: place['properties']['name'],
+              longitude: place['geometry']['coordinates'][0],
+              latitude: place['geometry']['coordinates'][1],
+              address: place['properties']['formatted'],
+              featureType: getFeatureType(place['properties']['feature_type']),
+            ));
+          }
+        }
+      }
+      return nearbyPlaces;
+    } else {
+      throw Exception("Failed to load places nearby");
+    }
   }
 }

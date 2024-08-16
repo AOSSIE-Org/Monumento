@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,10 +8,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
+import 'package:monumento/application/popular_monuments/nearby_places/nearby_places_bloc.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/enums.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'monument_model_view_desktop.dart';
 
@@ -27,6 +31,7 @@ class MonumentDetailsViewDesktop extends StatefulWidget {
 
 class _MonumentDetailsViewDesktopState
     extends State<MonumentDetailsViewDesktop> {
+  int _selectedPlace = 0;
   @override
   void initState() {
     locator<MonumentDetailsBloc>().add(
@@ -37,7 +42,12 @@ class _MonumentDetailsViewDesktopState
     }
     locator<MonumentCheckinBloc>()
         .add(CheckIfMonumentIsCheckedIn(monument: widget.monument));
-
+    locator<NearbyPlacesBloc>().add(
+      GetNearbyPlaces(
+        latitude: widget.monument.coordinates[0],
+        longitude: widget.monument.coordinates[1],
+      ),
+    );
     super.initState();
   }
 
@@ -212,14 +222,14 @@ class _MonumentDetailsViewDesktopState
                             child: Column(
                               children: [
                                 Image.asset('assets/desktop/checkin.png'),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
                                 const Text(
                                   "Your current location will be used to figure out whether you are near to the Monument or not",
                                   textAlign: TextAlign.center,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 20,
                                 ),
                                 Row(
@@ -241,10 +251,17 @@ class _MonumentDetailsViewDesktopState
                                     ),
                                     const Spacer(),
                                     ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        locator<MonumentCheckinBloc>().add(
+                                          CheckinMonument(
+                                            monument: widget.monument,
+                                          ),
+                                        );
+                                        Navigator.pop(context);
+                                      },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColor.appPrimary,
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                           horizontal: 24,
                                           vertical: 12,
                                         ),
@@ -453,51 +470,280 @@ class _MonumentDetailsViewDesktopState
             SizedBox(
               height: 36.h,
             ),
-            BlocBuilder<MonumentDetailsBloc, MonumentDetailsState>(
-              bloc: locator<MonumentDetailsBloc>(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlocBuilder<MonumentDetailsBloc, MonumentDetailsState>(
+                  bloc: locator<MonumentDetailsBloc>(),
+                  builder: (context, state) {
+                    if (state is LoadingMonumentWikiDetails) {
+                      return SizedBox(
+                        width: 1024.w,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColor.appPrimary,
+                          ),
+                        ),
+                      );
+                    } else if (state is MonumentWikiDetailsRetrieved) {
+                      return Column(
+                        children: [
+                          SizedBox(
+                            width: 1024.w,
+                            child: Card(
+                              child: ExpansionTile(
+                                collapsedBackgroundColor: AppColor.appWhite,
+                                title: Text(state.wikiData.title),
+                                children: [
+                                  ListTile(
+                                    title: Text(state.wikiData.description),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 1024.w,
+                            child: Card(
+                              child: ExpansionTile(
+                                collapsedBackgroundColor: AppColor.appWhite,
+                                title: const Text("More Details"),
+                                children: [
+                                  ListTile(
+                                    title: Text(state.wikiData.extract),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
+                ),
+                widget.monument.localExperts.isEmpty
+                    ? const SizedBox()
+                    : Card(
+                        child: SizedBox(
+                          width: 400.w,
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            itemBuilder: (ctx, index) {
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: CachedNetworkImageProvider(
+                                    widget
+                                        .monument.localExperts[index].imageUrl,
+                                  ),
+                                ),
+                                title: Text(
+                                    widget.monument.localExperts[index].name),
+                                subtitle: Text(
+                                  widget
+                                      .monument.localExperts[index].designation,
+                                ),
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.phone),
+                                  onPressed: () async {
+                                    if (await canLaunchUrl(
+                                      Uri.parse(
+                                          'tel:${widget.monument.localExperts[index].phoneNumber}'),
+                                    )) {
+                                      launchUrl(
+                                        Uri.parse(
+                                            'tel:${widget.monument.localExperts[index].phoneNumber}'),
+                                      );
+                                    } else {
+                                      if (mounted) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text(
+                                                  "Contact ${widget.monument.localExperts[index].name}"),
+                                              content: Text(
+                                                  "You can contact ${widget.monument.localExperts[index].name} at ${widget.monument.localExperts[index].phoneNumber}"),
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: const Text("Close"),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
+                                    }
+                                  },
+                                ),
+                              );
+                            },
+                            separatorBuilder: (ctx, index) {
+                              return const Divider();
+                            },
+                            itemCount: widget.monument.localExperts.length,
+                          ),
+                        ),
+                      ),
+              ],
+            ),
+            BlocConsumer<NearbyPlacesBloc, NearbyPlacesState>(
+              bloc: locator<NearbyPlacesBloc>(),
+              listener: (context, state) {
+                // TODO: implement listener
+              },
               builder: (context, state) {
-                if (state is LoadingMonumentWikiDetails) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColor.appPrimary,
+                if (state is NearbyPlacesLoading) {
+                  return SizedBox(
+                    width: 1024.w,
+                    child: const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColor.appPrimary,
+                      ),
                     ),
                   );
-                } else if (state is MonumentWikiDetailsRetrieved) {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        width: 1024.w,
-                        child: Card(
-                          child: ExpansionTile(
-                            collapsedBackgroundColor: AppColor.appWhite,
-                            title: Text(state.wikiData.title),
-                            children: [
-                              ListTile(
-                                title: Text(state.wikiData.description),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 1024.w,
-                        child: Card(
-                          child: ExpansionTile(
-                            collapsedBackgroundColor: AppColor.appWhite,
-                            title: const Text("More Details"),
-                            children: [
-                              ListTile(
-                                title: Text(state.wikiData.extract),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                } else {
-                  return const SizedBox();
                 }
+                if (state is NearbyPlacesLoaded) {
+                  return Card(
+                    child: Container(
+                      width: 1024.w,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 12.h,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 12.h,
+                          ),
+                          Text(
+                            "Places Nearby",
+                            style: AppTextStyles.s18(
+                                color: AppColor.appSecondary,
+                                fontType: FontType.MEDIUM),
+                          ),
+                          SizedBox(
+                            height: 12.h,
+                          ),
+                          const Divider(),
+                          ChipsChoice.single(
+                            value: _selectedPlace,
+                            onChanged: (v) {
+                              setState(() {
+                                _selectedPlace = v;
+                              });
+                            },
+                            choiceItems: const [
+                              C2Choice(
+                                value: 0,
+                                label: 'Restaurants',
+                              ),
+                              C2Choice(
+                                value: 1,
+                                label: 'Toilets',
+                              ),
+                              C2Choice(
+                                value: 2,
+                                label: 'Hotels',
+                              ),
+                              C2Choice(
+                                value: 3,
+                                label: 'ATMs',
+                              ),
+                              C2Choice(
+                                value: 4,
+                                label: 'Supermarkets',
+                              ),
+                              C2Choice(
+                                value: 5,
+                                label: 'Pharmacies',
+                              ),
+                            ],
+                          ),
+                          state.nearbyPlaces
+                                  .where((element) =>
+                                      element.featureType ==
+                                      FeatureType.values[_selectedPlace])
+                                  .isEmpty
+                              ? const Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Text("No nearby places found"),
+                                  ),
+                                )
+                              : Wrap(
+                                  children: state.nearbyPlaces
+                                      .where((element) =>
+                                          element.featureType ==
+                                          FeatureType.values[_selectedPlace])
+                                      .map(
+                                        (e) => Card(
+                                          child: SizedBox(
+                                            width: 450,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: ListTile(
+                                                title: Text(e.name),
+                                                subtitle: Text(e.address),
+                                                trailing: IconButton(
+                                                  icon: const Icon(
+                                                      Icons.directions),
+                                                  onPressed: () async {
+                                                    if (await canLaunchUrl(
+                                                      Uri.parse(
+                                                          'https://www.google.com/maps/search/?api=1&query=${e.latitude},${e.longitude}'),
+                                                    )) {
+                                                      launchUrl(
+                                                        Uri.parse(
+                                                            'https://www.google.com/maps/search/?api=1&query=${e.latitude},${e.longitude}'),
+                                                      );
+                                                    } else {
+                                                      if (mounted) {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (context) {
+                                                            return AlertDialog(
+                                                              title: Text(
+                                                                  "Directions to ${e.name}"),
+                                                              content: Text(
+                                                                  "You can get directions to ${e.name} at ${e.address}"),
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  child: const Text(
+                                                                      "Close"),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                      }
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                )
+                        ],
+                      ),
+                    ),
+                  );
+                }
+                return const SizedBox();
               },
             ),
           ],

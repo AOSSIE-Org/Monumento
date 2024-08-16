@@ -56,6 +56,7 @@ dependencies:
   like_button: ^2.0.5
   carousel_slider: ^4.2.1
   flutter_staggered_grid_view: ^0.7.0
+  chips_choice: ^3.0.1
 
 
   # AR/3D
@@ -76,6 +77,8 @@ dependencies:
   wikipedia: ^0.0.8
   timeago: ^3.6.1
   geolocator:
+  url_launcher: ^6.3.0
+  http:
 
   # SVG / Vector Graphics
   flutter_svg: ^2.0.10+1

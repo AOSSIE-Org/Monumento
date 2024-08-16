@@ -1,6 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 
+import 'local_expert_model.dart';
+
 part 'monument_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -20,6 +22,7 @@ class MonumentModel {
   final List<String> images;
   final String? modelLink;
   final bool has3DModel;
+  final List<LocalExpertModel> localExperts;
 
   const MonumentModel({
     this.modelLink,
@@ -35,6 +38,7 @@ class MonumentModel {
     required this.wikiPageId,
     this.images = const [],
     this.has3DModel = false,
+    this.localExperts = const [],
   });
 
   factory MonumentModel.fromJson(Map<String, dynamic> json) {
@@ -73,36 +77,7 @@ class MonumentModel {
       images: images,
       modelLink: modelLink,
       has3DModel: has3DModel,
+      localExperts: localExperts.map((e) => e.toEntity()).toList(),
     );
-  }
-
-  factory MonumentModel.fromMap(Map<String, Object> data) {
-    return MonumentModel(
-      rating: data['rating'] as double,
-      coordinates: (data['coordinates'] as List).map<double>((e) => e).toList(),
-      id: data['id'] as String,
-      city: data['city'] as String,
-      country: data['country'] as String,
-      imageUrl: data['imageUrl'] as String,
-      image_1x1_: data['image_1x1_'] as String,
-      name: data['name'] as String,
-      wiki: data['wiki'] as String,
-      wikiPageId: data['wikiPageId'] as String,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'rating': rating,
-      'coordinates': coordinates,
-      'id': id,
-      'city': city,
-      'country': country,
-      'imageUrl': imageUrl,
-      'image_1x1_': image_1x1_,
-      'name': name,
-      'wiki': wiki,
-      'wikiPageId': wikiPageId,
-    };
   }
 }
