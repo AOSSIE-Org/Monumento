@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monumento/data/models/monument_model.dart';
 import 'package:monumento/data/models/nearby_place_model.dart';
 import 'package:monumento/data/models/user_model.dart';
@@ -148,8 +149,7 @@ class FirebaseMonumentRepository implements MonumentRepository {
   @override
   Future<List<NearbyPlaceModel>> getPlacesNearby(
       double latitude, double longitude) async {
-    //TODO: Setup ENV to store API key
-    var key = "YOUR_API_KEY";
+    var key = dotenv.env['GEOAPIFY_API_KEY'];
     var url =
         "https://api.geoapify.com/v2/place-details?lat=$latitude&lon=$longitude&features=walk_15.restaurant,walk_15.toilet,walk_15.hotel,walk_15.atm,walk_15.supermarket,walk_15.restaurant&apiKey=$key";
 
