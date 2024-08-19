@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:monumento/domain/entities/notification_entity.dart';
+import 'package:monumento/utils/enums.dart';
 
 import 'post_model.dart';
 import 'user_model.dart';
@@ -33,12 +34,4 @@ class NotificationModel {
       timeStamp: timeStamp,
     );
   }
-}
-
-enum NotificationType {
-  likeNotification,
-  commentNotification,
-  followRequest,
-  acceptedFollowRequested,
-  followedYou,
 }

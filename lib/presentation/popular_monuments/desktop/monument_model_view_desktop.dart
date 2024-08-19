@@ -27,10 +27,8 @@ class _MonumentModelViewDesktopState extends State<MonumentModelViewDesktop> {
       body: ModelViewer(
         backgroundColor: Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
         src: widget.monument.modelLink!,
-        alt: 'A 3D model of an astronaut',
         ar: true,
         autoRotate: true,
-        iosSrc: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
         disableZoom: true,
       ),
       // body: Container(

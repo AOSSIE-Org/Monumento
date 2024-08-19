@@ -48,8 +48,11 @@ class _SignUpDeciderWidgetState extends State<SignUpDeciderWidget> {
         ),
         SizedBox(
           width: double.infinity,
-          child: CustomElevatedButton(onPressed:
-              widget.onSignUpWithEmailPressed,text: 'Sign up with Email'),
+          child: CustomElevatedButton(
+            isDesktop: true,
+            onPressed: widget.onSignUpWithEmailPressed,
+            text: 'Sign up with Email',
+          ),
         ),
         const SizedBox(
           height: 22,
@@ -62,6 +65,7 @@ class _SignUpDeciderWidgetState extends State<SignUpDeciderWidget> {
               style: AppTextStyles.s14(
                 color: AppColor.appSecondaryBlack,
                 fontType: FontType.REGULAR,
+                isDesktop: true,
               ),
             ),
             TextButton(
@@ -78,6 +82,7 @@ class _SignUpDeciderWidgetState extends State<SignUpDeciderWidget> {
                 style: AppTextStyles.s14(
                   color: AppColor.appPrimary,
                   fontType: FontType.MEDIUM,
+                  isDesktop: true,
                 ),
               ),
             ),

@@ -29,6 +29,8 @@ class _PopularMonumentsViewDesktopState
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.sizeOf(context).width;
+    var height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       backgroundColor: AppColor.appBackground,
       appBar: PreferredSize(
@@ -43,6 +45,7 @@ class _PopularMonumentsViewDesktopState
               style: AppTextStyles.s18(
                 color: AppColor.appSecondary,
                 fontType: FontType.MEDIUM,
+                isDesktop: true,
               ),
             ),
             backgroundColor: AppColor.appBackground,
@@ -87,7 +90,7 @@ class _PopularMonumentsViewDesktopState
               itemCount: state.popularMonuments.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 400.w / 250.h,
+                childAspectRatio: width / height,
               ),
               itemBuilder: (BuildContext context, int index) {
                 return MonumentDetailsCard(

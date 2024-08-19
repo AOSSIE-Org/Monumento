@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
@@ -11,9 +12,10 @@ class NavigationAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: Text(
         title,
-        style: AppTextStyles.s28(
+        style: AppTextStyles.s20(
           color: AppColor.appSecondary,
           fontType: FontType.MEDIUM,
+          isDesktop: true,
         ),
       ),
       iconTheme: const IconThemeData(
@@ -28,7 +30,16 @@ class NavigationAppBar extends StatelessWidget implements PreferredSizeWidget {
             Icons.notifications_none_rounded,
             color: AppColor.appSecondary,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (ctx) {
+                  return const NotificationViewDesktop();
+                },
+              ),
+            );
+          },
         ),
         const SizedBox(
           width: 20,

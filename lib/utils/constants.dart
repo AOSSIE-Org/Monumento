@@ -13,6 +13,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? Function(String?)? validateFunction;
   final AutovalidateMode? autoValid;
+  final bool isDesktop;
   const CustomTextField(
       {super.key,
       required this.controller,
@@ -20,7 +21,8 @@ class CustomTextField extends StatelessWidget {
       this.suffixIcon,
       this.validateFunction,
       this.autoValid,
-      this.isSeen});
+      this.isSeen,
+      this.isDesktop = false});
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,7 @@ class CustomTextField extends StatelessWidget {
         floatingLabelStyle: AppTextStyles.s14(
           color: AppColor.appSecondary,
           fontType: FontType.MEDIUM,
+          isDesktop: isDesktop,
         ),
         border: const OutlineInputBorder(
           borderSide: BorderSide(
@@ -57,8 +60,13 @@ class CustomElevatedButton extends StatelessWidget {
   final void Function() onPressed;
   final String text;
   final ButtonStyle? style;
+  final bool isDesktop;
   const CustomElevatedButton(
-      {super.key, required this.onPressed, required this.text, this.style});
+      {super.key,
+      required this.onPressed,
+      required this.text,
+      this.style,
+      this.isDesktop = false});
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +85,7 @@ class CustomElevatedButton extends StatelessWidget {
         style: AppTextStyles.s14(
           color: AppColor.appSecondary,
           fontType: FontType.MEDIUM,
+          isDesktop: isDesktop,
         ),
       ),
     );

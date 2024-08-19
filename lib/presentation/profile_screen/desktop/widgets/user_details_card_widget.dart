@@ -57,6 +57,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s18(
                             color: AppColor.appSecondary,
                             fontType: FontType.MEDIUM,
+                            isDesktop: true,
                           ),
                         ),
                         const SizedBox(
@@ -71,6 +72,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s14(
                             color: AppColor.appSecondary,
                             fontType: FontType.MEDIUM,
+                            isDesktop: true,
                           ),
                         ),
                       ],
@@ -85,6 +87,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s14(
                             color: AppColor.appSecondary,
                             fontType: FontType.REGULAR,
+                            isDesktop: true,
                           ),
                         ),
                       ],
@@ -101,6 +104,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s24(
                             color: AppColor.appSecondary,
                             fontType: FontType.MEDIUM,
+                            isDesktop: true,
                           ),
                         ),
                         const SizedBox(
@@ -111,6 +115,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s14(
                             color: AppColor.appGrey,
                             fontType: FontType.REGULAR,
+                            isDesktop: true,
                           ),
                         ),
                       ],
@@ -125,6 +130,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s24(
                             color: AppColor.appSecondary,
                             fontType: FontType.MEDIUM,
+                            isDesktop: true,
                           ),
                         ),
                         const SizedBox(
@@ -135,6 +141,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s14(
                             color: AppColor.appGrey,
                             fontType: FontType.REGULAR,
+                            isDesktop: true,
                           ),
                         ),
                       ],
@@ -149,6 +156,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s24(
                             color: AppColor.appSecondary,
                             fontType: FontType.MEDIUM,
+                            isDesktop: true,
                           ),
                         ),
                         const SizedBox(
@@ -159,6 +167,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           style: AppTextStyles.s14(
                             color: AppColor.appGrey,
                             fontType: FontType.REGULAR,
+                            isDesktop: true,
                           ),
                         ),
                       ],
@@ -190,6 +199,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           ? AppColor.appSecondary
                           : AppColor.appTextGrey,
                       fontType: FontType.MEDIUM,
+                      isDesktop: true,
                     ),
                   ),
                 ),
@@ -207,6 +217,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                                 ? AppColor.appSecondary
                                 : AppColor.appTextGrey,
                             fontType: FontType.MEDIUM,
+                            isDesktop: true,
                           ),
                         ),
                       ),

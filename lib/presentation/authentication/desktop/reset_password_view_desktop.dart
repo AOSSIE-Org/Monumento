@@ -127,16 +127,18 @@ class _ResetPasswordViewDesktopState extends State<ResetPasswordViewDesktop> {
                             SizedBox(
                               width: double.infinity,
                               child: CustomElevatedButton(
-                                  onPressed: () {
-                                    if (formKey.currentState!.validate()) {
-                                      locator<LoginRegisterBloc>().add(
-                                        ResetPasswordButtonPressed(
-                                          email: emailController.text,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  text: 'Reset Password'),
+                                isDesktop: true,
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    locator<LoginRegisterBloc>().add(
+                                      ResetPasswordButtonPressed(
+                                        email: emailController.text,
+                                      ),
+                                    );
+                                  }
+                                },
+                                text: 'Reset Password',
+                              ),
                             ),
                             const SizedBox(
                               height: 26,
@@ -149,6 +151,7 @@ class _ResetPasswordViewDesktopState extends State<ResetPasswordViewDesktop> {
                                   style: AppTextStyles.s14(
                                     color: AppColor.appSecondaryBlack,
                                     fontType: FontType.REGULAR,
+                                    isDesktop: true,
                                   ),
                                 ),
                                 TextButton(
@@ -165,6 +168,7 @@ class _ResetPasswordViewDesktopState extends State<ResetPasswordViewDesktop> {
                                     style: AppTextStyles.s14(
                                       color: AppColor.appPrimary,
                                       fontType: FontType.MEDIUM,
+                                      isDesktop: true,
                                     ),
                                   ),
                                 ),

@@ -46,10 +46,12 @@ class _SettingsViewDesktopState extends State<SettingsViewDesktop> {
                   selectedTitleTextStyle: AppTextStyles.s14(
                     color: AppColor.appSecondary,
                     fontType: FontType.MEDIUM,
+                    isDesktop: true,
                   ),
                   unselectedTitleTextStyle: AppTextStyles.s14(
                     color: AppColor.appTextGrey,
                     fontType: FontType.MEDIUM,
+                    isDesktop: true,
                   ),
                 ),
                 items: [

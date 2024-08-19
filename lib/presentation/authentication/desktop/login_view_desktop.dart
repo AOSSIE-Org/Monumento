@@ -73,6 +73,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                               style: AppTextStyles.s14(
                                 color: AppColor.appWhite,
                                 fontType: FontType.MEDIUM,
+                                isDesktop: true,
                               ),
                             ),
                             backgroundColor: AppColor.appSecondary,
@@ -127,27 +128,47 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                             const SizedBox(
                               height: 22,
                             ),
-                            CustomTextField(controller:
-                                emailController,text: 'Email',validateFunction: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter email.';
-                              } else if (!value.contains('@')) {
-                                return 'Please enter a valid email.';
-                              }
-                              return null;
-                            },autoValid: AutovalidateMode.onUserInteraction),
+                            CustomTextField(
+                                controller: emailController,
+                                text: 'Email',
+                                isDesktop: true,
+                                validateFunction: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter email.';
+                                  } else if (!value.contains('@')) {
+                                    return 'Please enter a valid email.';
+                                  }
+                                  return null;
+                                },
+                                autoValid: AutovalidateMode.onUserInteraction),
                             const SizedBox(
                               height: 16,
                             ),
-                            CustomTextField(controller:
-                                passwordController,text: 'Password', isSeen: isSeen,validateFunction: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter password.';
-                              } else if (value.length < 6) {
-                                return 'Password must be at least 6 characters.';
-                              }
-                              return null;
-                            },autoValid: AutovalidateMode.onUserInteraction),
+                            CustomTextField(
+                              controller: passwordController,
+                              text: 'Password',
+                              isDesktop: true,
+                              isSeen: isSeen,
+                              validateFunction: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter password.';
+                                } else if (value.length < 6) {
+                                  return 'Password must be at least 6 characters.';
+                                }
+                                return null;
+                              },
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isSeen = !isSeen;
+                                  });
+                                },
+                                icon: Icon(!isSeen
+                                    ? Icons.visibility_off
+                                    : Icons.visibility),
+                              ),
+                              autoValid: AutovalidateMode.onUserInteraction,
+                            ),
                             const SizedBox(
                               height: 16,
                             ),
@@ -167,6 +188,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                   style: AppTextStyles.s14(
                                     color: AppColor.appSecondary,
                                     fontType: FontType.MEDIUM,
+                                    isDesktop: true,
                                   ),
                                 ),
                               ),
@@ -175,8 +197,10 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                               height: 48,
                             ),
                             SizedBox(
-                                width: double.infinity,
-                                child: CustomElevatedButton(onPressed: () {
+                              width: double.infinity,
+                              child: CustomElevatedButton(
+                                isDesktop: true,
+                                onPressed: () {
                                   if (formKey.currentState!.validate()) {
                                     locator<LoginRegisterBloc>().add(
                                       LoginWithEmailPressed(
@@ -192,13 +216,17 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                           style: AppTextStyles.s14(
                                             color: AppColor.appWhite,
                                             fontType: FontType.MEDIUM,
+                                            isDesktop: true,
                                           ),
                                         ),
                                         backgroundColor: AppColor.appSecondary,
                                       ),
                                     );
                                   }
-                                },text: 'Login')),
+                                },
+                                text: 'Login',
+                              ),
+                            ),
                             const SizedBox(
                               height: 26,
                             ),
@@ -210,6 +238,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                   style: AppTextStyles.s14(
                                     color: AppColor.appSecondaryBlack,
                                     fontType: FontType.REGULAR,
+                                    isDesktop: true,
                                   ),
                                 ),
                                 TextButton(
@@ -226,6 +255,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                     style: AppTextStyles.s14(
                                       color: AppColor.appPrimary,
                                       fontType: FontType.MEDIUM,
+                                      isDesktop: true,
                                     ),
                                   ),
                                 ),

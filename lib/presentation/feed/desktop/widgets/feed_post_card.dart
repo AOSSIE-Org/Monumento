@@ -74,6 +74,17 @@ class _FeedPostCardState extends State<FeedPostCard>
                         const CircularProgressIndicator(),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(
@@ -87,6 +98,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                       style: AppTextStyles.s16(
                         color: AppColor.appSecondary,
                         fontType: FontType.MEDIUM,
+                        isDesktop: true,
                       ),
                     ),
                     const SizedBox(
@@ -97,6 +109,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                       style: AppTextStyles.s14(
                         color: AppColor.appSecondary,
                         fontType: FontType.REGULAR,
+                        isDesktop: true,
                       ),
                     ),
                   ],
@@ -112,6 +125,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                       style: AppTextStyles.s12(
                         color: AppColor.appTextLightGrey,
                         fontType: FontType.REGULAR,
+                        isDesktop: true,
                       ),
                     ),
                   ],
@@ -146,6 +160,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                               style: AppTextStyles.s16(
                                 color: AppColor.appSecondary,
                                 fontType: FontType.REGULAR,
+                                isDesktop: true,
                               ),
                             ),
                           ],
@@ -156,6 +171,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                         style: AppTextStyles.s16(
                           color: AppColor.appSecondary,
                           fontType: FontType.REGULAR,
+                          isDesktop: true,
                         ),
                       ))
                 : Container(
@@ -264,6 +280,7 @@ class _FeedPostCardState extends State<FeedPostCard>
               style: AppTextStyles.s14(
                 color: AppColor.appSecondary,
                 fontType: FontType.MEDIUM,
+                isDesktop: true,
               ),
             ),
             const SizedBox(
@@ -275,6 +292,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                     style: AppTextStyles.s16(
                       color: AppColor.appSecondary,
                       fontType: FontType.REGULAR,
+                      isDesktop: true,
                     ),
                   )
                 : const SizedBox(),
@@ -431,6 +449,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                                           style: AppTextStyles.s14(
                                             color: AppColor.appSecondary,
                                             fontType: FontType.MEDIUM,
+                                            isDesktop: true,
                                           ),
                                         ),
                                         const SizedBox(
@@ -441,6 +460,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                                           style: AppTextStyles.s14(
                                             color: AppColor.appSecondary,
                                             fontType: FontType.REGULAR,
+                                            isDesktop: true,
                                           ),
                                         ),
                                       ],

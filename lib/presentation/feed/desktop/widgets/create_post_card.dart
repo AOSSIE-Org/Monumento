@@ -62,10 +62,11 @@ class _CreatePostCardState extends State<CreatePostCard>
                       child: TextFormField(
                         controller: _titleController,
                         decoration: InputDecoration(
-                          hintText: 'Write a comment...',
+                          hintText: 'What\'s on your mind?',
                           hintStyle: AppTextStyles.s14(
                             color: AppColor.appSecondary,
                             fontType: FontType.REGULAR,
+                            isDesktop: true,
                           ),
                           border: const UnderlineInputBorder(),
                         ),
@@ -119,6 +120,7 @@ class _CreatePostCardState extends State<CreatePostCard>
                                   style: AppTextStyles.s14(
                                     color: AppColor.appSecondary,
                                     fontType: FontType.MEDIUM,
+                                    isDesktop: true,
                                   ),
                                 ),
                               ],
@@ -135,6 +137,16 @@ class _CreatePostCardState extends State<CreatePostCard>
                               }
                               return ElevatedButton(
                                 onPressed: () {
+                                  if (_image == null &&
+                                      _titleController.text.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            "Please add a title or an image"),
+                                      ),
+                                    );
+                                    return;
+                                  }
                                   if (_image != null) {
                                     locator<NewPostBloc>().add(
                                       AddNewPost(
@@ -163,6 +175,7 @@ class _CreatePostCardState extends State<CreatePostCard>
                                   style: AppTextStyles.s14(
                                     color: AppColor.appSecondary,
                                     fontType: FontType.MEDIUM,
+                                    isDesktop: true,
                                   ),
                                 ),
                               );

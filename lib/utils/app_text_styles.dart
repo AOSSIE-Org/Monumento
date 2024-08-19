@@ -46,78 +46,122 @@ class AppTextStyles {
   static TextStyle s8(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 8.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 8 : 8.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s10(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 10.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 10 : 10.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s12(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 12.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 12 : 12.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s14(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 14.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 14 : 14.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s16(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 16.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 16 : 16.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s18(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 18.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 18 : 18.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s20(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 20.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 20 : 20.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s24(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 24.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 24 : 24.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
   static TextStyle s26(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 26.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 26 : 26.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s28(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 28.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 28 : 28.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle s30(
           {required Color color,
           required FontType fontType,
+          bool isDesktop = false,
           bool isBody = false}) =>
       AppTextStyles.textStyle(
-          size: 30.sp, color: color, fontType: fontType, isBody: isBody);
+          size: isDesktop ? 30 : 30.sp,
+          color: color,
+          fontType: fontType,
+          isBody: isBody);
 
   static TextStyle responsive(
       {required Color color,
@@ -127,16 +171,10 @@ class AppTextStyles {
       bool isBody = false}) {
     if (ScreenUtil().screenWidth > 1200) {
       return AppTextStyles.textStyle(
-          size: sizeDesktop.sp,
-          color: color,
-          fontType: fontType,
-          isBody: isBody);
+          size: sizeDesktop, color: color, fontType: fontType, isBody: isBody);
     } else {
       return AppTextStyles.textStyle(
-          size: sizeTablet.sp,
-          color: color,
-          fontType: fontType,
-          isBody: isBody);
+          size: sizeTablet, color: color, fontType: fontType, isBody: isBody);
     }
   }
 

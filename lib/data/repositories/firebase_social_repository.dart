@@ -10,6 +10,7 @@ import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
+import 'package:monumento/utils/enums.dart';
 import 'package:uuid/uuid.dart';
 
 class FirebaseSocialRepository implements SocialRepository {
@@ -380,11 +381,11 @@ class FirebaseSocialRepository implements SocialRepository {
 
   @override
   Future<List<UserModel>> getRecommendedUsers() async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    var (userLoggedIn, currentUser) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
-    List<String> followingUids = user!.following;
+    List<String> followingUids = currentUser!.following;
     // return five users who are not followed by the user, but are followed by the first five users followed by the user
     List<UserModel> users = [];
     for (String uid in followingUids) {
@@ -400,6 +401,9 @@ class FirebaseSocialRepository implements SocialRepository {
         if (!user.followers.contains(user.uid)) {
           users.add(user);
         }
+        if (users.contains(currentUser)) {
+          users.remove(currentUser);
+        }
         // stop when we have 5 users
         if (users.length == 5) {
           break;
@@ -411,7 +415,7 @@ class FirebaseSocialRepository implements SocialRepository {
       QuerySnapshot snap = await _database
           .collection('users')
           .limit(5)
-          .where('uid', isNotEqualTo: user.uid)
+          .where('uid', isNotEqualTo: currentUser.uid)
           .get();
       users = snap.docs
           .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))

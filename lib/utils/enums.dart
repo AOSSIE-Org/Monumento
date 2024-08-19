@@ -21,3 +21,18 @@ FeatureType getFeatureType(String feature) {
     orElse: () => FeatureType.restaurant,
   );
 }
+
+enum NotificationType {
+  likeNotification,
+  commentNotification,
+  followRequest,
+  acceptedFollowRequested,
+  followedYou,
+}
+
+NotificationType getNotificationType(String type) {
+  return NotificationType.values.firstWhere(
+    (e) => e.toString().split('.').last == type.split('.').last,
+    orElse: () => NotificationType.likeNotification,
+  );
+}

@@ -166,21 +166,23 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                   height: 22,
                                 ),
                                 CustomTextField(
-                                    controller: nameController,
-                                    text: 'Name',
-                                    validateFunction: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Name cannot be empty';
-                                      }
-                                      return null;
-                                    },
-                                    autoValid:
-                                        AutovalidateMode.onUserInteraction),
+                                  controller: nameController,
+                                  isDesktop: true,
+                                  text: 'Name',
+                                  validateFunction: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Name cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid: AutovalidateMode.onUserInteraction,
+                                ),
                                 const SizedBox(
                                   height: 16,
                                 ),
                                 CustomTextField(
                                     controller: usernameController,
+                                    isDesktop: true,
                                     text: 'Username',
                                     validateFunction: (value) {
                                       if (value!.isEmpty) {
@@ -192,38 +194,41 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                   height: 16,
                                 ),
                                 CustomTextField(
-                                    controller: statusController,
-                                    text: 'Status',
-                                    validateFunction: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Status cannot be empty';
-                                      }
-                                      return null;
-                                    },
-                                    autoValid:
-                                        AutovalidateMode.onUserInteraction),
+                                  controller: statusController,
+                                  isDesktop: true,
+                                  text: 'Status',
+                                  validateFunction: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Status cannot be empty';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid: AutovalidateMode.onUserInteraction,
+                                ),
                                 const SizedBox(
                                   height: 16,
                                 ),
                                 CustomTextField(
-                                    controller: emailController,
-                                    text: 'Email',
-                                    validateFunction: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Email cannot be empty';
-                                      } else if (!value.contains('@')) {
-                                        return 'Invalid email';
-                                      }
-                                      return null;
-                                    },
-                                    autoValid:
-                                        AutovalidateMode.onUserInteraction),
+                                  controller: emailController,
+                                  isDesktop: true,
+                                  text: 'Email',
+                                  validateFunction: (value) {
+                                    if (value!.isEmpty) {
+                                      return 'Email cannot be empty';
+                                    } else if (!value.contains('@')) {
+                                      return 'Invalid email';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid: AutovalidateMode.onUserInteraction,
+                                ),
                                 const SizedBox(
                                   height: 16,
                                 ),
                                 CustomTextField(
                                     controller: passwordController,
                                     text: 'Password',
+                                    isDesktop: true,
                                     isSeen: isSeen,
                                     suffixIcon: IconButton(
                                       onPressed: () {
@@ -251,6 +256,7 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                 SizedBox(
                                   width: double.infinity,
                                   child: CustomElevatedButton(
+                                      isDesktop: true,
                                       onPressed: () {
                                         if (formKey.currentState!.validate()) {
                                           locator<LoginRegisterBloc>().add(
@@ -280,6 +286,7 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                       style: AppTextStyles.s14(
                                         color: AppColor.appSecondaryBlack,
                                         fontType: FontType.REGULAR,
+                                        isDesktop: true,
                                       ),
                                     ),
                                     TextButton(
@@ -296,6 +303,7 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         style: AppTextStyles.s14(
                                           color: AppColor.appPrimary,
                                           fontType: FontType.MEDIUM,
+                                          isDesktop: true,
                                         ),
                                       ),
                                     ),

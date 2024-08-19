@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monumento/application/notifications/notifications_bloc.dart';
@@ -5,6 +6,7 @@ import 'package:monumento/domain/entities/notification_entity.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/enums.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NotificationViewDesktop extends StatefulWidget {
@@ -31,7 +33,7 @@ class _NotificationViewDesktopState extends State<NotificationViewDesktop> {
         backgroundColor: AppColor.appBackground,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: AppColor.appBlack,
           ),
@@ -58,7 +60,9 @@ class _NotificationViewDesktopState extends State<NotificationViewDesktop> {
             );
           } else {
             return const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: AppColor.appPrimary,
+              ),
             );
           }
         },
@@ -77,7 +81,8 @@ class NotificationListWidget extends StatelessWidget {
       itemCount: notifications.length,
       itemBuilder: (context, index) {
         final notification = notifications[index];
-        if (notification.notificationType == 'NotificationType.followedYou') {
+        if (getNotificationType(notification.notificationType) ==
+            NotificationType.followedYou) {
           return Card(
             child: ListTile(
               leading: CircleAvatar(
@@ -92,9 +97,55 @@ class NotificationListWidget extends StatelessWidget {
               ),
             ),
           );
-        } else if (notification.notificationType ==
-            'NotificationType.likedYourPost') {
-          return Card();
+        } else if (getNotificationType(notification.notificationType) ==
+            NotificationType.likeNotification) {
+          return Card(
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(
+                    notification.userInvolved.profilePictureUrl ??
+                        defaultProfilePicture),
+              ),
+              title: Text("${notification.userInvolved.name} liked your post"),
+              subtitle: Text(
+                timeago.format(DateTime.fromMillisecondsSinceEpoch(
+                    notification.timeStamp)),
+              ),
+              trailing: CachedNetworkImage(
+                imageUrl: notification.postInvolved?.imageUrl ??
+                    defaultProfilePicture,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        } else if (getNotificationType(notification.notificationType) ==
+            NotificationType.commentNotification) {
+          return Card(
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundImage: NetworkImage(
+                    notification.userInvolved.profilePictureUrl ??
+                        defaultProfilePicture),
+              ),
+              title: Text(
+                  "${notification.userInvolved.name} commented on your post"),
+              subtitle: Text(
+                timeago.format(DateTime.fromMillisecondsSinceEpoch(
+                    notification.timeStamp)),
+              ),
+              trailing: CachedNetworkImage(
+                imageUrl: notification.postInvolved?.imageUrl ??
+                    defaultProfilePicture,
+                width: 50,
+                height: 50,
+                fit: BoxFit.cover,
+              ),
+            ),
+          );
+        } else {
+          return const SizedBox();
         }
       },
     );
