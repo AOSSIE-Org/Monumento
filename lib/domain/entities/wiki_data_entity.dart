@@ -13,6 +13,5 @@ class WikiDataEntity extends Equatable {
       required this.extract});
 
   @override
-  // TODO: implement props
   List<Object?> get props => [pageId, title, description, extract];
 }

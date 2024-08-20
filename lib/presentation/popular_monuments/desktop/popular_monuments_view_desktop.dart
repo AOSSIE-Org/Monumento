@@ -62,7 +62,7 @@ class _PopularMonumentsViewDesktopState
                     context,
                     MaterialPageRoute(
                       builder: (ctx) {
-                        return NotificationViewDesktop();
+                        return const NotificationViewDesktop();
                       },
                     ),
                   );

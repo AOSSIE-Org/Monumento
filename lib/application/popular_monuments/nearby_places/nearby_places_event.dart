@@ -11,7 +11,7 @@ class GetNearbyPlaces extends NearbyPlacesEvent {
   final double latitude;
   final double longitude;
 
-  GetNearbyPlaces({
+  const GetNearbyPlaces({
     required this.latitude,
     required this.longitude,
   });

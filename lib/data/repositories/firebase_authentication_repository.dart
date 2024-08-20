@@ -57,7 +57,7 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
     if (googleSignInAccount == null) {
-      print("current null");
+      log("current null");
     }
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount!.authentication;
@@ -136,13 +136,17 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
   }
 
   @override
-  Future<void> updateEmailPassword({required Map<Object,dynamic> emailPassword}) async {
+  Future<void> updateEmailPassword(
+      {required Map<Object, dynamic> emailPassword}) async {
     User? currentUser = (_firebaseAuth.currentUser);
     if (currentUser != null) {
-      if (emailPassword.keys.first=='email'){
+      if (emailPassword.keys.first == 'email') {
         log("${emailPassword.keys.first}:${emailPassword.values.first}");
         await currentUser.verifyBeforeUpdateEmail(emailPassword.values.first);
-        await _database.collection('users').doc(currentUser.uid).update({'email':emailPassword.values.first});
+        await _database
+            .collection('users')
+            .doc(currentUser.uid)
+            .update({'email': emailPassword.values.first});
       }
       log("newPass: ${emailPassword.values.first}");
       await currentUser.updatePassword(emailPassword.values.first);

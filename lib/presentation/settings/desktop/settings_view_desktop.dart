@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +23,6 @@ class _SettingsViewDesktopState extends State<SettingsViewDesktop> {
   @override
   void initState() {
     sideMenu.addListener((i) {
-      print(i);
       setState(() {
         selectedIndex = i;
       });
@@ -77,7 +78,7 @@ class _SettingsViewDesktopState extends State<SettingsViewDesktop> {
                 controller: sideMenu,
               ),
             )),
-            VerticalDivider(
+            const VerticalDivider(
               width: 1,
               thickness: 1,
             ),
@@ -95,7 +96,7 @@ class _SettingsViewDesktopState extends State<SettingsViewDesktop> {
                         return EditProfileWidget(user: state.user);
                       },
                     ),
-                    Text('Notifications'),
+                    const Text('Notifications'),
                   ],
                 ),
               ),

@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:monumento/domain/entities/local_expert_entity.dart';
+import 'package:monumento/utils/app_colors.dart';
+import 'package:monumento/utils/app_text_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LocalExpertsCard extends StatefulWidget {
@@ -56,7 +58,13 @@ class _LocalExpertsCardState extends State<LocalExpertsCard> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: const Text("Close"),
+                                child: Text(
+                                  "Close",
+                                  style: AppTextStyles.s14(
+                                      color: AppColor.appPrimary,
+                                      fontType: FontType.MEDIUM,
+                                      isDesktop: true),
+                                ),
                               ),
                             ],
                           );

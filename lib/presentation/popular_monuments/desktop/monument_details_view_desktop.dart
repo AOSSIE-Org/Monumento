@@ -215,7 +215,7 @@ class _MonumentDetailsViewDesktopState
                             "Mark this monument as visited?",
                             textAlign: TextAlign.center,
                           ),
-                          content: Container(
+                          content: SizedBox(
                             height: 320,
                             width: 500,
                             child: Column(

@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monumento/application/profile/follow/follow_bloc.dart';
@@ -16,7 +15,6 @@ class FollowersScreen extends StatefulWidget {
 }
 
 class _FollowersScreenState extends State<FollowersScreen> {
-
   @override
   void initState() {
     locator<FollowBloc>().add(LoadUser(following: widget.followers));
@@ -26,7 +24,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
   @override
   Widget build(BuildContext context) {
     List<UserEntity> userFollowers = [];
-  
+
     return Scaffold(
       body: BlocBuilder<FollowBloc, FollowState>(
         bloc: locator<FollowBloc>(),
@@ -39,11 +37,13 @@ class _FollowersScreenState extends State<FollowersScreen> {
                 ),
               ),
             );
-          }else if (state is LoadedFollowUserListState){
+          } else if (state is LoadedFollowUserListState) {
             userFollowers = [];
             userFollowers.insertAll(userFollowers.length, state.userData);
           }
-          return UserConnectionsTile(user: userFollowers,);
+          return UserConnectionsTile(
+            user: userFollowers,
+          );
         },
       ),
     );

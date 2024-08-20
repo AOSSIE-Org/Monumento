@@ -38,7 +38,7 @@ class _DiscoverProfileViewDesktopState
         backgroundColor: AppColor.appBackground,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: AppColor.appBlack,
           ),

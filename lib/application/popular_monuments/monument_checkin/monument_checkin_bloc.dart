@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';

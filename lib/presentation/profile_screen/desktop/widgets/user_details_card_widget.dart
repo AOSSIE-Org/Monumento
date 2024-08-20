@@ -221,7 +221,7 @@ class UserDetailsCardWidget extends StatelessWidget {
                           ),
                         ),
                       ),
-                Spacer(),
+                const Spacer(),
                 isAccountOwner
                     ? const SizedBox()
                     : BlocBuilder<AuthenticationBloc, AuthenticationState>(

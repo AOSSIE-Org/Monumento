@@ -54,12 +54,8 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
           username: event.username,
           profilePictureUrl: url,
         );
-        if (user != null) {
-          emit(SignUpSuccess(user));
-          _authenticationBloc.add(LoggedIn());
-        } else {
-          emit(const SignUpFailed(message: 'Failed to complete onboarding'));
-        }
+        emit(SignUpSuccess(user));
+        _authenticationBloc.add(LoggedIn());
       } else {
         emit(const SignUpFailed(
             message: 'Username already taken, please try with another one.'));

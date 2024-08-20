@@ -294,11 +294,15 @@ class FirebaseSocialRepository implements SocialRepository {
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
+    if (user == null) {
+      throw Exception("User not found");
+    }
+
     _database
         .collection('posts')
         .doc(postId)
         .collection('likes')
-        .doc(user!.uid)
+        .doc(user.uid)
         .set({
       'author': {
         'uid': user.uid,
@@ -336,11 +340,27 @@ class FirebaseSocialRepository implements SocialRepository {
         "email": user?.email,
       }
     });
-    // TODO: implement notification for comment
+
+    DocumentSnapshot postDoc =
+        await _database.collection('posts').doc(postDocId).get();
+    UserModel postAuthor =
+        UserModel.fromJson(postDoc.data() as Map<String, dynamic>);
+
+    var notification = NotificationModel(
+      notificationType: NotificationType.commentNotification,
+      timeStamp: DateTime.now().millisecondsSinceEpoch,
+      userInvolved: user!,
+    );
+
+    await addNewNotification(
+      targetUser: postAuthor,
+      notification: notification,
+    );
+
     return CommentModel(
       comment: comment,
       postInvolvedId: postDocId,
-      author: user!,
+      author: user,
       timeStamp: timeStamp,
       commentDocId: doc.id,
     );
@@ -585,8 +605,9 @@ class FirebaseSocialRepository implements SocialRepository {
     );
 
     await addNewNotification(
-        targetUser: UserModel.fromEntity(targetUser),
-        notification: notification);
+      targetUser: UserModel.fromEntity(targetUser),
+      notification: notification,
+    );
   }
 
   @override

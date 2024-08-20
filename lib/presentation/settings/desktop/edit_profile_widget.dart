@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/application/profile/update_profile/update_profile_bloc.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
@@ -105,14 +104,14 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                         image = img;
                       });
                     },
-                    child: const Text(
-                      'Change Profile Picture',
-                      style: TextStyle(color: AppColor.appPrimary),
-                    ),
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Colors.white,
                       side: const BorderSide(
                           color: AppColor.appPrimary, width: 1),
+                    ),
+                    child: const Text(
+                      'Change Profile Picture',
+                      style: TextStyle(color: AppColor.appPrimary),
                     ),
                   )
                 ],

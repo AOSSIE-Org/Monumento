@@ -189,9 +189,7 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
       backgroundColor: AppColor.appBackground,
       endDrawer: BlocConsumer<SearchBloc, SearchState>(
         bloc: locator<SearchBloc>(),
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           if (state is SearchedPeopleSelected) {
             return SizedBox(
@@ -274,7 +272,9 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
             }
             return posts.isEmpty
                 ? const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: AppColor.appPrimary,
+                    ),
                   )
                 : SingleChildScrollView(
                     child: Padding(
