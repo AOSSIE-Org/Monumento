@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/feed_post_card_mobile.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 
@@ -47,7 +48,16 @@ class _YourFeedViewMobileState extends State<YourFeedViewMobile> {
               width: 161,
             ),
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return const NotificationViewDesktop();
+                      },
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.notifications_outlined,
                     color: AppColor.appBlack)),
           ])),

@@ -823,4 +823,14 @@ class FirebaseSocialRepository implements SocialRepository {
         .get();
     return snap.docs.isNotEmpty;
   }
+
+  @override
+  Future<List<UserModel>> loadUser (List<String> userConnections) async {
+    List<UserModel> users = [];
+    for (String connection in userConnections) {
+      DocumentSnapshot doc = await _database.collection("users").doc(connection).get();
+      users.add(UserModel.fromJson(doc.data() as Map<String,dynamic>));
+    }
+    return users;
+  }
 }

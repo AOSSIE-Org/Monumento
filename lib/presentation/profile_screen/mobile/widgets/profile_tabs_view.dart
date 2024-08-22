@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:monumento/presentation/profile_screen/mobile/widgets/user_post.dart';
+import 'package:monumento/presentation/profile_screen/mobile/widgets/bookmark_tab_view.dart';
+import 'package:monumento/presentation/profile_screen/mobile/widgets/user_post_tab_view.dart';
 import 'package:monumento/utils/app_colors.dart';
 
 class ProfileTabsView extends StatefulWidget {
@@ -28,7 +29,7 @@ class _ProfileTabsViewState extends State<ProfileTabsView> {
           height: double.maxFinite,
           child: TabBarView(
             controller: widget.tabController,
-            children: const [UserPost(), Text("bookmarks")],
+            children: const [UserPostTabView(), BookmarkTabView()],
           ),
         ),
       ],

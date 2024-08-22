@@ -85,7 +85,9 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Icon(Icons.more_horiz),
+                    IconButton(onPressed: (){
+                      
+                    },icon:const Icon(Icons.more_horiz)),
                     Text(
                       timeago.format(DateTime.fromMillisecondsSinceEpoch(
                           widget.post.timeStamp)),

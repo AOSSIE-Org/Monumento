@@ -3,7 +3,6 @@ import 'dart:developer';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 
@@ -62,15 +61,9 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
   FutureOr<void> _mapLoadUserToState(
       LoadUser event, Emitter<FollowState> emit) async {
     try {
-      List<UserModel> userData = [];
       emit(LoadingFollowUserListState());
 
-      for (int i = 0; i < event.following.length; i++) {
-        UserModel user =
-            await _socialRepository.getUserByUid(uid: event.following[i]);
-
-        userData.add(user);
-      }
+      final userData = await _socialRepository.loadUser(event.following);
 
       List<UserEntity> userDataEntity =
           userData.map((e) => e.toEntity()).toList();

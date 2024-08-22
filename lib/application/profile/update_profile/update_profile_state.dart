@@ -17,11 +17,15 @@ class UpdateProfileLoading extends UpdateProfileState{
 }
 
 class UpdateProfileSuccess extends UpdateProfileState{
+  final Map<Object,dynamic> userInfo;
+
+  const UpdateProfileSuccess({required this.userInfo});
+  
   @override
   String toString() => 'Profile Updated Successfully!';
   
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [userInfo];
   
 }
 

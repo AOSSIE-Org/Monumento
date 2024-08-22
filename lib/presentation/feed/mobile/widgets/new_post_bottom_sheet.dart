@@ -25,7 +25,7 @@ class _PostImageState extends State<PostImage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         height: MediaQuery.of(context).size.height * 1.0,
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           bloc: locator<AuthenticationBloc>(),
@@ -215,6 +215,7 @@ class NewPostBottomSheet {
   newPostBottomSheet(BuildContext context) {
     showModalBottomSheet(
         context: context,
+        useSafeArea: true,
         isScrollControlled: true,
         builder: (_) {
           return const PostImage();
