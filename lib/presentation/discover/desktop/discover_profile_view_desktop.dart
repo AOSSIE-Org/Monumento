@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/application/discover/discover_profile/discover_profile_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
@@ -39,7 +38,7 @@ class _DiscoverProfileViewDesktopState
         backgroundColor: AppColor.appBackground,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: AppColor.appBlack,
           ),

@@ -52,6 +52,7 @@ class _RecommendedUsersCardState extends State<RecommendedUsersCard> {
                               style: AppTextStyles.s16(
                                 color: AppColor.appSecondary,
                                 fontType: FontType.MEDIUM,
+                                isDesktop: true,
                               ),
                             ),
                           ),

@@ -1,6 +1,7 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:monumento/data/models/notification_model.dart';
+import 'package:monumento/domain/entities/notification_entity.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 
 part 'notifications_event.dart';
@@ -21,7 +22,10 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     try {
       List<NotificationModel> notifications =
           await _socialRepository.getInitialNotifications();
-      emit(InitialNotificationsLoaded(initialNotifications: notifications));
+      List<NotificationEntity> notificationEntities =
+          notifications.map((notification) => notification.toEntity()).toList();
+      emit(InitialNotificationsLoaded(
+          initialNotifications: notificationEntities));
     } catch (e) {
       emit(InitialNotificationsLoadingFailed());
     }
@@ -37,9 +41,11 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     try {
       final notifications = await _socialRepository.getMoreNotifications(
           startAfterDocId: event.startAfterDocId);
+      final notificationEntities =
+          notifications.map((notification) => notification.toEntity()).toList();
       emit(MoreNotificationsLoaded(
         hasReachedMax: notifications.isEmpty,
-        notifications: notifications,
+        notifications: notificationEntities,
       ));
     } catch (e) {
       emit(MoreNotificationsLoadingFailed());

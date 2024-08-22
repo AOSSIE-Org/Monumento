@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/presentation/popular_monuments/desktop/widgets/monument_details_card.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -28,6 +29,8 @@ class _PopularMonumentsViewDesktopState
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.sizeOf(context).width;
+    var height = MediaQuery.sizeOf(context).height;
     return Scaffold(
       backgroundColor: AppColor.appBackground,
       appBar: PreferredSize(
@@ -42,6 +45,7 @@ class _PopularMonumentsViewDesktopState
               style: AppTextStyles.s18(
                 color: AppColor.appSecondary,
                 fontType: FontType.MEDIUM,
+                isDesktop: true,
               ),
             ),
             backgroundColor: AppColor.appBackground,
@@ -53,7 +57,16 @@ class _PopularMonumentsViewDesktopState
                   Icons.notifications_none_rounded,
                   color: AppColor.appSecondary,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return const NotificationViewDesktop();
+                      },
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 width: 20,
@@ -77,7 +90,7 @@ class _PopularMonumentsViewDesktopState
               itemCount: state.popularMonuments.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 400.w / 250.h,
+                childAspectRatio: width / height,
               ),
               itemBuilder: (BuildContext context, int index) {
                 return MonumentDetailsCard(

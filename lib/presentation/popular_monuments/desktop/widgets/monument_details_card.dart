@@ -13,6 +13,7 @@ class MonumentDetailsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var width = MediaQuery.sizeOf(context).width;
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -48,12 +49,12 @@ class MonumentDetailsCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(
-                          width: 320.w,
+                          width: width * 0.24,
                           child: Text(
                             monument.name,
                             style: AppTextStyles.responsive(
                               sizeDesktop: 18,
-                              sizeTablet: 22,
+                              sizeTablet: 18,
                               color: AppColor.appWhite,
                               fontType: FontType.MEDIUM,
                             ),
@@ -66,7 +67,7 @@ class MonumentDetailsCard extends StatelessWidget {
                           "${monument.city}, ${monument.country}",
                           style: AppTextStyles.responsive(
                             sizeDesktop: 14,
-                            sizeTablet: 16,
+                            sizeTablet: 14,
                             color: AppColor.appWhite,
                             fontType: FontType.MEDIUM,
                           ),

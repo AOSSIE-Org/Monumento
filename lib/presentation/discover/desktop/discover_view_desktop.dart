@@ -11,7 +11,7 @@ import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/presentation/discover/desktop/discover_profile_view_desktop.dart';
 import 'package:monumento/presentation/discover/desktop/widgets/discover_post_card_widget.dart';
 import 'package:monumento/presentation/discover/desktop/widgets/post_details_popup_widget.dart';
-import 'package:monumento/presentation/profile_screen/desktop/profile_screen_desktop.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -189,9 +189,7 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
       backgroundColor: AppColor.appBackground,
       endDrawer: BlocConsumer<SearchBloc, SearchState>(
         bloc: locator<SearchBloc>(),
-        listener: (context, state) {
-          // TODO: implement listener
-        },
+        listener: (context, state) {},
         builder: (context, state) {
           if (state is SearchedPeopleSelected) {
             return SizedBox(
@@ -242,7 +240,16 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                   Icons.notifications_none_rounded,
                   color: AppColor.appSecondary,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return const NotificationViewDesktop();
+                      },
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 width: 30,
@@ -265,13 +272,16 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
             }
             return posts.isEmpty
                 ? const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: AppColor.appPrimary,
+                    ),
                   )
                 : SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: StaggeredGrid.count(
-                        crossAxisCount: 4,
+                        crossAxisCount:
+                            MediaQuery.sizeOf(context).width <= 600 ? 3 : 4,
                         mainAxisSpacing: 16,
                         crossAxisSpacing: 16,
                         children: posts.map((post) {
@@ -282,22 +292,23 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                               post: post,
                               onTap: () {
                                 showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                        child: SizedBox(
-                                          width:
-                                              MediaQuery.sizeOf(context).width *
-                                                  0.92,
-                                          height: MediaQuery.sizeOf(context)
-                                                  .height *
-                                              0.8,
-                                          child: PostDetailsPopupWidget(
-                                            post: post,
-                                          ),
+                                  context: context,
+                                  builder: (context) {
+                                    return Dialog(
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                0.9,
+                                        height:
+                                            MediaQuery.sizeOf(context).height *
+                                                0.8,
+                                        child: PostDetailsPopupWidget(
+                                          post: post,
                                         ),
-                                      );
-                                    });
+                                      ),
+                                    );
+                                  },
+                                );
                               },
                             ),
                           );

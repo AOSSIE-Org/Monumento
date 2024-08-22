@@ -26,6 +26,10 @@ MonumentModel _$MonumentModelFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const [],
       has3DModel: json['has3DModel'] as bool? ?? false,
+      localExperts: (json['localExperts'] as List<dynamic>?)
+              ?.map((e) => LocalExpertModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$MonumentModelToJson(MonumentModel instance) =>
@@ -43,4 +47,5 @@ Map<String, dynamic> _$MonumentModelToJson(MonumentModel instance) =>
       'images': instance.images,
       'modelLink': instance.modelLink,
       'has3DModel': instance.has3DModel,
+      'localExperts': instance.localExperts.map((e) => e.toJson()).toList(),
     };

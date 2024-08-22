@@ -25,54 +25,12 @@ class _MonumentModelViewDesktopState extends State<MonumentModelViewDesktop> {
         title: Text(widget.monument.name),
       ),
       body: ModelViewer(
-        backgroundColor: Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
+        backgroundColor: const Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),
         src: widget.monument.modelLink!,
-        alt: 'A 3D model of an astronaut',
         ar: true,
         autoRotate: true,
-        iosSrc: 'https://modelviewer.dev/shared-assets/models/Astronaut.usdz',
         disableZoom: true,
       ),
-      // body: Container(
-      //   color: Colors.white,
-      //   child: Stack(
-      //     children: [
-      //       ThreeJSViewer(
-      //         scale: 4500,
-      //         onError: ((message, code) {
-      //           print("Error: $message, Code: $code");
-      //         }),
-      //         progressBuilder: (double? progress, String message) {
-      //           return Column(
-      //             mainAxisAlignment: MainAxisAlignment.center,
-      //             children: [
-      //               CircularProgressIndicator(
-      //                 value: progress,
-      //                 color: Colors.red,
-      //                 backgroundColor: Colors.black,
-      //               ),
-      //               SizedBox(
-      //                 height: 20,
-      //                 width: double.infinity,
-      //               ),
-      //               Text(message),
-      //             ],
-      //           );
-      //         },
-      //         onWebViewCreated: (c) {
-      //           controller = c;
-      //         },
-      //         debug: kDebugMode,
-      //         models: [
-      //           ThreeModel(
-      //             src: widget.monument.modelLink!,
-      //             playAnimation: false,
-      //           ),
-      //         ],
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

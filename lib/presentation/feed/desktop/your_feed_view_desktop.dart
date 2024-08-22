@@ -5,6 +5,7 @@ import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/presentation/feed/desktop/widgets/feed_post_card.dart';
 import 'package:monumento/presentation/feed/desktop/widgets/recommended_users_card.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -65,7 +66,16 @@ class _YourFeedViewDesktopState extends State<YourFeedViewDesktop> {
                   Icons.notifications_none_rounded,
                   color: AppColor.appSecondary,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return const NotificationViewDesktop();
+                      },
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 width: 20,

@@ -3,6 +3,7 @@ import 'package:monumento/presentation/discover/desktop/discover_view_desktop.da
 import 'package:monumento/presentation/feed/desktop/your_feed_view_desktop.dart';
 import 'package:monumento/presentation/popular_monuments/desktop/popular_monuments_view_desktop.dart';
 import 'package:monumento/presentation/profile_screen/desktop/profile_screen_desktop.dart';
+import 'package:monumento/presentation/settings/desktop/settings_view_desktop.dart';
 
 import 'widgets/scaffold_with_navigation.dart';
 
@@ -38,7 +39,7 @@ class _HomeViewDesktopState extends State<HomeViewDesktop> {
             YourFeedViewDesktop(),
             DiscoverViewDesktop(),
             ProfileScreenDesktop(),
-            Text('Settings'),
+            SettingsViewDesktop(),
           ],
         ));
   }

@@ -10,6 +10,7 @@ import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
+import 'package:monumento/utils/enums.dart';
 import 'package:uuid/uuid.dart';
 
 class FirebaseSocialRepository implements SocialRepository {
@@ -222,6 +223,7 @@ class FirebaseSocialRepository implements SocialRepository {
     QuerySnapshot snap = await _database
         .collection("posts")
         .where("postByUid", isEqualTo: userId)
+        // .where("postType", isEqualTo: 0)
         .orderBy("timeStamp", descending: true)
         .limit(10)
         .get();
@@ -292,11 +294,15 @@ class FirebaseSocialRepository implements SocialRepository {
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
+    if (user == null) {
+      throw Exception("User not found");
+    }
+
     _database
         .collection('posts')
         .doc(postId)
         .collection('likes')
-        .doc(user!.uid)
+        .doc(user.uid)
         .set({
       'author': {
         'uid': user.uid,
@@ -334,11 +340,27 @@ class FirebaseSocialRepository implements SocialRepository {
         "email": user?.email,
       }
     });
-    // TODO: implement notification for comment
+
+    DocumentSnapshot postDoc =
+        await _database.collection('posts').doc(postDocId).get();
+    UserModel postAuthor =
+        UserModel.fromJson(postDoc.data() as Map<String, dynamic>);
+
+    var notification = NotificationModel(
+      notificationType: NotificationType.commentNotification,
+      timeStamp: DateTime.now().millisecondsSinceEpoch,
+      userInvolved: user!,
+    );
+
+    await addNewNotification(
+      targetUser: postAuthor,
+      notification: notification,
+    );
+
     return CommentModel(
       comment: comment,
       postInvolvedId: postDocId,
-      author: user!,
+      author: user,
       timeStamp: timeStamp,
       commentDocId: doc.id,
     );
@@ -379,11 +401,11 @@ class FirebaseSocialRepository implements SocialRepository {
 
   @override
   Future<List<UserModel>> getRecommendedUsers() async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    var (userLoggedIn, currentUser) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
-    List<String> followingUids = user!.following;
+    List<String> followingUids = currentUser!.following;
     // return five users who are not followed by the user, but are followed by the first five users followed by the user
     List<UserModel> users = [];
     for (String uid in followingUids) {
@@ -399,6 +421,9 @@ class FirebaseSocialRepository implements SocialRepository {
         if (!user.followers.contains(user.uid)) {
           users.add(user);
         }
+        if (users.contains(currentUser)) {
+          users.remove(currentUser);
+        }
         // stop when we have 5 users
         if (users.length == 5) {
           break;
@@ -410,7 +435,7 @@ class FirebaseSocialRepository implements SocialRepository {
       QuerySnapshot snap = await _database
           .collection('users')
           .limit(5)
-          .where('uid', isNotEqualTo: user.uid)
+          .where('uid', isNotEqualTo: currentUser.uid)
           .get();
       users = snap.docs
           .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
@@ -580,8 +605,9 @@ class FirebaseSocialRepository implements SocialRepository {
     );
 
     await addNewNotification(
-        targetUser: UserModel.fromEntity(targetUser),
-        notification: notification);
+      targetUser: UserModel.fromEntity(targetUser),
+      notification: notification,
+    );
   }
 
   @override
@@ -724,5 +750,77 @@ class FirebaseSocialRepository implements SocialRepository {
             (e) => NotificationModel.fromJson(e.data() as Map<String, dynamic>))
         .toList();
     return notifications;
+  }
+
+  @override
+  Future<bool> monumentCheckIn(
+      {required String monumentId, String? title}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    // get monument details
+    DocumentSnapshot monumentDoc =
+        await _database.collection("monuments").doc(monumentId).get();
+
+    // check if the user has already checked in
+    QuerySnapshot snap = await _database
+        .collection("users")
+        .doc(user?.uid)
+        .collection("checkIns")
+        .where("monumentId", isEqualTo: monumentId)
+        .get();
+
+    if (snap.docs.isNotEmpty) {
+      return false;
+    }
+
+    // add the check-in to the user's check-ins
+    await _database
+        .collection("users")
+        .doc(user?.uid)
+        .collection("checkIns")
+        .add({
+      "monumentId": monumentId,
+      "title": title ?? "",
+      "timeStamp": DateTime.now().millisecondsSinceEpoch,
+    });
+
+    // add the check-in as a post
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    DocumentReference doc = await _database.collection("posts").add({
+      "title": title ?? "",
+      "location": monumentDoc['city'] + ", " + monumentDoc['country'],
+      "imageUrl": "",
+      "author": {
+        "name": user?.name,
+        "username": user?.username,
+        "uid": user?.uid,
+        "profilePictureUrl": user?.profilePictureUrl,
+        "email": user?.email,
+      },
+      "timeStamp": timeStamp,
+      "postType": 2,
+      "postByUid": user?.uid,
+      "likesCount": 0,
+      "commentsCount": 0,
+    });
+
+    return true;
+  }
+
+  @override
+  Future<bool> checkInStatus({required String monumentId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    QuerySnapshot snap = await _database
+        .collection("users")
+        .doc(user?.uid)
+        .collection("checkIns")
+        .where("monumentId", isEqualTo: monumentId)
+        .get();
+    return snap.docs.isNotEmpty;
   }
 }

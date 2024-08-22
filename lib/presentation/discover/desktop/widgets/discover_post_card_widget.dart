@@ -57,7 +57,7 @@ class _DiscoverPostCardWidgetState extends State<DiscoverPostCardWidget> {
                         color: Colors.white,
                         height: 18.sp,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
                       Text(
@@ -67,7 +67,7 @@ class _DiscoverPostCardWidgetState extends State<DiscoverPostCardWidget> {
                           fontType: FontType.MEDIUM,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       SvgPicture.asset(
@@ -75,7 +75,7 @@ class _DiscoverPostCardWidgetState extends State<DiscoverPostCardWidget> {
                         color: Colors.white,
                         height: 18.sp,
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 4,
                       ),
                       Text(

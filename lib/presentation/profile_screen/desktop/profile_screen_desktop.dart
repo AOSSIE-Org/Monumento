@@ -5,6 +5,7 @@ import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/presentation/popular_monuments/desktop/monument_details_view_desktop.dart';
 import 'package:monumento/presentation/profile_screen/desktop/widgets/user_details_card_widget.dart';
 import 'package:monumento/service_locator.dart';
@@ -63,6 +64,7 @@ class _ProfileScreenDesktopState extends State<ProfileScreenDesktop> {
               style: AppTextStyles.s18(
                 color: AppColor.appSecondary,
                 fontType: FontType.MEDIUM,
+                isDesktop: true,
               ),
             ),
             backgroundColor: AppColor.appBackground,
@@ -74,7 +76,16 @@ class _ProfileScreenDesktopState extends State<ProfileScreenDesktop> {
                   Icons.notifications_none_rounded,
                   color: AppColor.appSecondary,
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return const NotificationViewDesktop();
+                      },
+                    ),
+                  );
+                },
               ),
               const SizedBox(
                 width: 30,
@@ -114,7 +125,9 @@ class _ProfileScreenDesktopState extends State<ProfileScreenDesktop> {
                         if (postsState is InitialProfilePostsLoaded) {
                           posts = [];
                           posts.insertAll(
-                              posts.length, postsState.initialPosts);
+                              posts.length,
+                              postsState.initialPosts
+                                  .where((e) => e.postType == 0));
                         }
                         if (postsState is MoreProfilePostsLoaded) {
                           posts.insertAll(posts.length,

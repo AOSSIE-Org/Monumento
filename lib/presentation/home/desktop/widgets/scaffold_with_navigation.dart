@@ -215,13 +215,15 @@ class _NavigationRailDrawerState extends State<_NavigationRailDrawer> {
         selectedColor: AppColor.appPrimary,
         itemHeight: 44,
         iconSize: 18,
-        selectedTitleTextStyle: AppTextStyles.s20(
+        selectedTitleTextStyle: AppTextStyles.s16(
           color: AppColor.appSecondary,
           fontType: FontType.MEDIUM,
+          isDesktop: true,
         ),
-        unselectedTitleTextStyle: AppTextStyles.s20(
+        unselectedTitleTextStyle: AppTextStyles.s14(
           color: AppColor.appTextGrey,
           fontType: FontType.MEDIUM,
+          isDesktop: true,
         ),
       ),
       controller: sideMenu,

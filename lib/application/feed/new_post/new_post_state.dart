@@ -25,6 +25,5 @@ class NewPostFailed extends NewPostState {
   final String message;
   const NewPostFailed({required this.message});
   @override
-  // TODO: implement props
-  List<Object> get props => [];
+  List<Object> get props => [message];
 }

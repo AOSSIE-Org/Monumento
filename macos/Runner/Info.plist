@@ -43,5 +43,7 @@
 		</array>
 	</dict>
 	</array>
+	<key>NSLocationUsageDescription</key>
+	<string>This app needs access to location.</string>
 	</dict>
 </plist>

@@ -74,6 +74,17 @@ class _FeedPostCardState extends State<FeedPostCard>
                         const CircularProgressIndicator(),
                     errorWidget: (context, url, error) =>
                         const Icon(Icons.error),
+                    imageBuilder: (context, imageProvider) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 const SizedBox(
@@ -87,6 +98,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                       style: AppTextStyles.s16(
                         color: AppColor.appSecondary,
                         fontType: FontType.MEDIUM,
+                        isDesktop: true,
                       ),
                     ),
                     const SizedBox(
@@ -97,6 +109,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                       style: AppTextStyles.s14(
                         color: AppColor.appSecondary,
                         fontType: FontType.REGULAR,
+                        isDesktop: true,
                       ),
                     ),
                   ],
@@ -112,6 +125,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                       style: AppTextStyles.s12(
                         color: AppColor.appTextLightGrey,
                         fontType: FontType.REGULAR,
+                        isDesktop: true,
                       ),
                     ),
                   ],
@@ -122,13 +136,44 @@ class _FeedPostCardState extends State<FeedPostCard>
               height: 24,
             ),
             widget.post.imageUrl == null
-                ? Text(
-                    widget.post.title,
-                    style: AppTextStyles.s16(
-                      color: AppColor.appSecondary,
-                      fontType: FontType.REGULAR,
-                    ),
-                  )
+                ? (widget.post.postType == 2
+                    ? Container(
+                        width: double.infinity,
+                        height: 210,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/desktop/checkedin.png",
+                              width: 160,
+                              height: 160,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              widget.post.title.isEmpty
+                                  ? "${widget.post.author.name} visited ${widget.post.location ?? "a place"}"
+                                  : widget.post.title,
+                              style: AppTextStyles.s16(
+                                color: AppColor.appSecondary,
+                                fontType: FontType.REGULAR,
+                                isDesktop: true,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Text(
+                        widget.post.title,
+                        style: AppTextStyles.s16(
+                          color: AppColor.appSecondary,
+                          fontType: FontType.REGULAR,
+                          isDesktop: true,
+                        ),
+                      ))
                 : Container(
                     width: double.infinity,
                     height: 380,
@@ -235,6 +280,7 @@ class _FeedPostCardState extends State<FeedPostCard>
               style: AppTextStyles.s14(
                 color: AppColor.appSecondary,
                 fontType: FontType.MEDIUM,
+                isDesktop: true,
               ),
             ),
             const SizedBox(
@@ -246,6 +292,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                     style: AppTextStyles.s16(
                       color: AppColor.appSecondary,
                       fontType: FontType.REGULAR,
+                      isDesktop: true,
                     ),
                   )
                 : const SizedBox(),
@@ -402,6 +449,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                                           style: AppTextStyles.s14(
                                             color: AppColor.appSecondary,
                                             fontType: FontType.MEDIUM,
+                                            isDesktop: true,
                                           ),
                                         ),
                                         const SizedBox(
@@ -412,6 +460,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                                           style: AppTextStyles.s14(
                                             color: AppColor.appSecondary,
                                             fontType: FontType.REGULAR,
+                                            isDesktop: true,
                                           ),
                                         ),
                                       ],

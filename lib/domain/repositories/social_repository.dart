@@ -70,4 +70,8 @@ abstract interface class SocialRepository {
 
   Future<List<NotificationModel>> getMoreNotifications(
       {required String startAfterDocId});
+
+  Future<bool> monumentCheckIn({required String monumentId, String? title});
+
+  Future<bool> checkInStatus({required String monumentId});
 }
