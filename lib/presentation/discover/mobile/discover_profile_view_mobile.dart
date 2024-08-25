@@ -1,9 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:monumento/application/discover/discover_profile/discover_profile_bloc.dart';
+import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
+import 'package:monumento/presentation/discover/mobile/discover_tabs_view.dart';
 import 'package:monumento/presentation/profile_screen/mobile/user_connections_screen.dart';
-import 'package:monumento/presentation/profile_screen/mobile/widgets/follow_button.dart';
+import 'package:monumento/presentation/profile_screen/mobile/user_post_details_screen.dart';
+import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
@@ -30,6 +36,8 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
 
   @override
   Widget build(BuildContext context) {
+    List<PostEntity> posts = [];
+
     return Scaffold(
         appBar: AppBar(
             backgroundColor: AppColor.appBackground,
@@ -197,9 +205,73 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
                       ),
                     ],
                   )),
-              FollowButton(
-                  isAccountOwner: isAccountOwner, targetUser: widget.user),
               const Divider(thickness: 2),
+              DiscoverTabsView(
+                user: widget.user,
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                height: MediaQuery.of(context).size.height,
+                child: Expanded(
+                  child: BlocBuilder<DiscoverProfileBloc, DiscoverProfileState>(
+                    bloc: locator<DiscoverProfileBloc>(),
+                    builder: (context, postsState) {
+                      if (postsState is DiscoverProfilePostsLoaded) {
+                        posts = [];
+                        posts.insertAll(posts.length, postsState.posts);
+                      }
+                      // if (postsState is MoreDiscoverPostsLoaded) {
+                      //   posts.insertAll(posts.length,
+                      //       postsState.posts as Iterable<PostEntity>);
+                      // }
+                      return posts.isEmpty
+                          ? const Center(
+                              child: Text("No posts to display"),
+                            )
+                          : GridView.builder(
+                              physics: const BouncingScrollPhysics(),
+                              itemCount: posts.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 3,
+                                      childAspectRatio: 1,
+                                      mainAxisSpacing: 8,
+                                      crossAxisSpacing: 8),
+                              itemBuilder: (BuildContext context, int index) {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserPostDetailsScreen(
+                                          post: posts,
+                                          index: index,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: CachedNetworkImage(
+                                      imageUrl: posts[index].imageUrl ??
+                                          defaultProfilePicture,
+                                      imageBuilder: (context, imageProvider) =>
+                                          Container(
+                                              decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12.sp),
+                                            image: DecorationImage(
+                                              image: imageProvider,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ))),
+                                );
+                              });
+                    },
+                  ),
+                ),
+              ),
             ],
           ),
         ));
