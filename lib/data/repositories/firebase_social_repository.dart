@@ -219,6 +219,7 @@ class FirebaseSocialRepository implements SocialRepository {
       throw Exception("User not logged in");
     }
     String userId = user!.uid;
+    List<String> postIds = [];
 
     QuerySnapshot snap = await _database
         .collection("posts")
@@ -257,6 +258,56 @@ class FirebaseSocialRepository implements SocialRepository {
       }
       return PostModel.fromJson(data);
     }));
+    posts.map((e) => postIds.add(e.postId)).toList();
+    await _database.collection("users").doc(userId).update({"posts": postIds});
+    return posts;
+  }
+
+  @override
+  Future<List<PostModel>> getMoreProfilePosts(
+      {required String startAfterDocId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+    DocumentSnapshot doc = await _database.doc('posts/$startAfterDocId').get();
+    String userId = user!.uid;
+
+    QuerySnapshot snap = await _database
+        .collection("posts")
+        .where("postByUid", isEqualTo: userId)
+        .orderBy("timeStamp", descending: true)
+        .startAfterDocument(doc)
+        .limit(10)
+        .get();
+
+    List<PostModel> posts = snap.docs.map((e) {
+      var data = e.data() as Map<String, dynamic>;
+      if (data['postId'] == null) {
+        data['postId'] = e.id;
+      }
+      if (data['likesCount'] != null || data['likesCount'] != 0) {
+        _database
+            .collection('posts')
+            .doc(e.id)
+            .collection('likes')
+            .doc(user.uid)
+            .get()
+            .then((value) {
+          if (value.exists) {
+            if (value.data()!['likedPost'] == true) {
+              data['isPostLiked'] = true;
+            } else {
+              data['isPostLiked'] = false;
+            }
+          } else {
+            data['isPostLiked'] = false;
+          }
+        });
+      }
+      return PostModel.fromJson(data);
+    }).toList();
+
     return posts;
   }
 
@@ -538,54 +589,6 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<List<PostModel>> getMoreProfilePosts(
-      {required String startAfterDocId}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-    DocumentSnapshot doc = await _database.doc('posts/$startAfterDocId').get();
-    String userId = user!.uid;
-
-    QuerySnapshot snap = await _database
-        .collection("posts")
-        .where("postByUid", isEqualTo: userId)
-        .orderBy("timeStamp", descending: true)
-        .startAfterDocument(doc)
-        .limit(10)
-        .get();
-
-    List<PostModel> posts = snap.docs.map((e) {
-      var data = e.data() as Map<String, dynamic>;
-      if (data['postId'] == null) {
-        data['postId'] = e.id;
-      }
-      if (data['likesCount'] != null || data['likesCount'] != 0) {
-        _database
-            .collection('posts')
-            .doc(e.id)
-            .collection('likes')
-            .doc(user.uid)
-            .get()
-            .then((value) {
-          if (value.exists) {
-            if (value.data()!['likedPost'] == true) {
-              data['isPostLiked'] = true;
-            } else {
-              data['isPostLiked'] = false;
-            }
-          } else {
-            data['isPostLiked'] = false;
-          }
-        });
-      }
-      return PostModel.fromJson(data);
-    }).toList();
-
-    return posts;
-  }
-
-  @override
   Future<void> followUser({required UserEntity targetUser}) async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
@@ -825,11 +828,12 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<List<UserModel>> loadUser (List<String> userConnections) async {
+  Future<List<UserModel>> loadUser(List<String> userConnections) async {
     List<UserModel> users = [];
     for (String connection in userConnections) {
-      DocumentSnapshot doc = await _database.collection("users").doc(connection).get();
-      users.add(UserModel.fromJson(doc.data() as Map<String,dynamic>));
+      DocumentSnapshot doc =
+          await _database.collection("users").doc(connection).get();
+      users.add(UserModel.fromJson(doc.data() as Map<String, dynamic>));
     }
     return users;
   }

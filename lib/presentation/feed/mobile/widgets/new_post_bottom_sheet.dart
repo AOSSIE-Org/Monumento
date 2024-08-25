@@ -53,6 +53,15 @@ class _PostImageState extends State<PostImage> {
                         }
                         return ElevatedButton(
                           onPressed: () {
+                            if (image == null && titleController.text.isEmpty) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content:
+                                      Text("Please add a title or an image"),
+                                ),
+                              );
+                              return;
+                            }
                             if (image != null) {
                               locator<NewPostBloc>().add(
                                 AddNewPost(
@@ -99,8 +108,9 @@ class _PostImageState extends State<PostImage> {
                     children: [
                       CircleAvatar(
                         radius: 40,
-                        backgroundImage: CachedNetworkImageProvider(state.user.profilePictureUrl ??
-                              defaultProfilePicture),
+                        backgroundImage: CachedNetworkImageProvider(
+                            state.user.profilePictureUrl ??
+                                defaultProfilePicture),
                       ),
                       const SizedBox(
                         height: 20,
@@ -139,8 +149,8 @@ class _PostImageState extends State<PostImage> {
                     ],
                   ),
                 ),
-                
-                Row(mainAxisAlignment: MainAxisAlignment.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     GestureDetector(

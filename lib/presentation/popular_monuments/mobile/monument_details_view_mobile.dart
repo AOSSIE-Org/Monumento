@@ -469,7 +469,9 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                                   color: AppColor.appBlack,
                                   fontType: FontType.MEDIUM),
                             ),
-                            Divider(thickness: BorderSide.strokeAlignCenter,),
+                            const Divider(
+                              thickness: BorderSide.strokeAlignCenter,
+                            ),
                             ListView.separated(
                               shrinkWrap: true,
                               itemBuilder: (ctx, index) {

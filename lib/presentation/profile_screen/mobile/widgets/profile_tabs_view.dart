@@ -26,7 +26,7 @@ class _ProfileTabsViewState extends State<ProfileTabsView> {
             ]),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          height: double.maxFinite,
+          height: MediaQuery.of(context).size.height,
           child: TabBarView(
             controller: widget.tabController,
             children: const [UserPostTabView(), BookmarkTabView()],

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,6 +76,7 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
             bloc: locator<AuthenticationBloc>(),
             builder: (context, state) {
               state as Authenticated;
+              log(state.user.posts.length.toString());
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

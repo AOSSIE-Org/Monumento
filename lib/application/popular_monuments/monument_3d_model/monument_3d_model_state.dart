@@ -22,7 +22,7 @@ class LoadingMonumentModelSuccess extends MonumentModelState {
 
   const LoadingMonumentModelSuccess({required this.monumentModel});
   @override
-  List<Object> get props => [];
+  List<Object> get props => [monumentModel];
 }
 
 class MonumentModelLoadFailed extends MonumentModelState {

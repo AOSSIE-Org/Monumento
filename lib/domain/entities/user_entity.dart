@@ -38,6 +38,9 @@ class UserEntity extends Equatable {
     List<String> mappedFollowing = data['following'] != null
         ? (data['following'] as List).map<String>((e) => e).toList()
         : [];
+    List<String> mappedPosts = data['posts'] != null
+        ? (data['posts'] as List).map<String>((e) => e).toList()
+        : [];
 
     return UserEntity(
         uid: data['uid'] as String,
@@ -47,7 +50,8 @@ class UserEntity extends Equatable {
         status: data['status'] as String,
         username: data['username'] as String,
         followers: mappedFollowers,
-        following: mappedFollowing);
+        following: mappedFollowing,
+        posts: mappedPosts);
   }
 
   factory UserEntity.fromSnapshot(DocumentSnapshot snap) {
@@ -58,6 +62,9 @@ class UserEntity extends Equatable {
     List<String> mappedFollowing = data['following'] != null
         ? (data['following'] as List).map<String>((e) => e).toList()
         : [];
+    List<String> mappedPosts = data['posts'] != null
+        ? (data['posts'] as List).map<String>((e) => e).toList()
+        : [];
 
     return UserEntity(
         uid: data['uid'],
@@ -67,7 +74,8 @@ class UserEntity extends Equatable {
         status: data['status'],
         username: data['username'],
         followers: mappedFollowers,
-        following: mappedFollowing);
+        following: mappedFollowing,
+        posts: mappedPosts);
   }
 
   factory UserEntity.fromJson(String source) =>
@@ -82,7 +90,8 @@ class UserEntity extends Equatable {
       'status': status,
       'username': username ?? "",
       'following': following,
-      'followers': followers
+      'followers': followers,
+      'posts': posts,
     };
   }
 
