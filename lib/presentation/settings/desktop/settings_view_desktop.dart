@@ -94,7 +94,12 @@ class _SettingsViewDesktopState extends State<SettingsViewDesktop> {
                         return EditProfileWidget(user: state.user);
                       },
                     ),
-                    const Text('Notifications'),
+                    Center(
+                        child: const Text(
+                            'In future you will be able to set preferences for notifications')),
+                    Center(
+                        child: const Text(
+                            'In future you will be able to set privacy settings like private account')),
                   ],
                 ),
               ),

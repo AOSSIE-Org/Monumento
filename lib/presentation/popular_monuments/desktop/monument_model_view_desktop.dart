@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
+import 'package:monumento/utils/app_colors.dart';
 
 class MonumentModelViewDesktop extends StatefulWidget {
   final MonumentEntity monument;
@@ -22,7 +23,21 @@ class _MonumentModelViewDesktopState extends State<MonumentModelViewDesktop> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.monument.name),
+        title: Text(
+          widget.monument.name,
+          style: TextStyle(color: AppColor.appBlack),
+        ),
+        backgroundColor: AppColor.appWhite,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: AppColor.appBlack,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
       ),
       body: ModelViewer(
         backgroundColor: const Color.fromARGB(0xFF, 0xEE, 0xEE, 0xEE),

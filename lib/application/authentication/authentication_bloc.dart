@@ -15,6 +15,7 @@ class AuthenticationBloc
     on<AppStarted>(_mapAppStartedToState);
     on<LoggedIn>(_mapLoggedInToState);
     on<LoggedOut>(_mapLoggedOutToState);
+    on<LogOutPressed>(_mapLogOutToState);
     on<LoggedInWithInCompleteOnboarding>(
         _mapLoggedInWithInCompleteOnboardingToState);
   }
@@ -52,6 +53,12 @@ class AuthenticationBloc
     } else {
       emit(Unauthenticated());
     }
+  }
+
+  _mapLogOutToState(
+      AuthenticationEvent event, Emitter<AuthenticationState> emit) async {
+    await _authRepository.signOut();
+    emit(Unauthenticated());
   }
 
   _mapLoggedOutToState(
