@@ -135,8 +135,8 @@ class _CommentScreenState extends State<CommentScreen> {
                                     width: 10,
                                   ),
                                   ConstrainedBox(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 440,
+                                    constraints: BoxConstraints(
+                                      maxWidth: MediaQuery.sizeOf(context).width*2.2/3,
                                     ),
                                     child: Container(
                                       decoration: const BoxDecoration(
@@ -207,7 +207,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   width: 20,
                 ),
                 SizedBox(
-                  width: 310,
+                  width: MediaQuery.sizeOf(context).width*2.2/3,
                   child: TextFormField(
                     focusNode: commentFocusNode,
                     controller: commentController,
@@ -252,6 +252,7 @@ class _CommentScreenState extends State<CommentScreen> {
 class CommentBottomSheet {
   commentBottomSheet(BuildContext context, PostEntity post) {
     showModalBottomSheet(
+        useSafeArea: true,
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(

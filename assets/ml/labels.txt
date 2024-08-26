@@ -1,0 +1,4 @@
+0 Mount Rushmore National Memorial
+1 Pyramids of Giza
+2 Colosseum
+3 Taj Mahal

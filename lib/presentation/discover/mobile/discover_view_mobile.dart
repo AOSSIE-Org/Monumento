@@ -8,7 +8,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/application/discover/search/search_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
-import 'package:monumento/presentation/discover/desktop/widgets/discover_post_card_widget.dart';
+import 'package:monumento/presentation/discover/mobile/discover_profile_view_mobile.dart';
+import 'package:monumento/presentation/discover/mobile/widgets/discover_post_card_mobile.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -143,6 +145,15 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
                                                 '',
                                           ),
                                           onTap: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DiscoverProfileViewMobile(
+                                                        user:
+                                                            state.searchedUsers[
+                                                                index],
+                                                      )),
+                                            );
                                             hideOverlay();
                                           },
                                         );
@@ -186,7 +197,16 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
               width: 161,
             ),
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) {
+                        return const NotificationViewDesktop();
+                      },
+                    ),
+                  );
+                },
                 icon: const Icon(Icons.notifications_outlined,
                     color: AppColor.appBlack)),
           ])),
@@ -256,15 +276,11 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
                             crossAxisSpacing: 16,
                             children: posts.map((post) {
                               return StaggeredGridTile.count(
-                                crossAxisCellCount: 1,
-                                mainAxisCellCount: 1,
-                                child: DiscoverPostCardWidget(
-                                  post: post,
-                                  onTap: () {
-                                    
-                                  },
-                                ),
-                              );
+                                  crossAxisCellCount: 1,
+                                  mainAxisCellCount: 1,
+                                  child: DiscoverPostCardMobile(
+                                    post: post,
+                                  ));
                             }).toList(),
                           ),
                         ),

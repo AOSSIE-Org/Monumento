@@ -32,6 +32,8 @@ class BookmarkedMonumentEntity extends Equatable {
         rating: source['rating'],
         coordinates: source['coordinates'],
         wikiPageId: source['wikiPageId'],
+        has3DModel: source['has3DModel'],
+        modelLink: source['modelLink'],
       ),
     );
   }

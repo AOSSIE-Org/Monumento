@@ -43,6 +43,7 @@ class BookmarkMonumentsBloc
 
   Future _mapGetBookmarkedMonumentsToState(GetBookmarkedMonuments event,
       Emitter<BookmarkMonumentsState> emit) async {
+    emit(BookmarkedMonumentsLoading());
     final bookmarkedMonuments =
         await _monumentRepository.getBookmarkedMonuments();
 

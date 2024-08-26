@@ -33,25 +33,25 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
         }
         await _socialRepository
             .updateUserProfile(userInfo: {'profilePictureUrl': url});
-        emit(UpdateProfileSuccess());
+        emit(UpdateProfileSuccess(userInfo: event.userInfo));
       } else if (event.userInfo.keys.first == "email" ||
           event.userInfo.keys.first == "password") {
         await _authenticationRepository.updateEmailPassword(
             emailPassword: event.userInfo);
-        emit(UpdateProfileSuccess());
+        emit(UpdateProfileSuccess(userInfo: event.userInfo));
       } else {
         if (event.userInfo.keys.first == "username") {
           bool isUserNameAvailable = await _socialRepository
               .checkUserNameAvailability(username: event.userInfo.values.first);
           if (isUserNameAvailable) {
             await _socialRepository.updateUserProfile(userInfo: event.userInfo);
-            emit(UpdateProfileSuccess());
+            emit(UpdateProfileSuccess(userInfo: event.userInfo));
           } else {
             emit(const UpdateProfileFailure(message: "Username already taken"));
           }
         } else {
           await _socialRepository.updateUserProfile(userInfo: event.userInfo);
-          emit(UpdateProfileSuccess());
+          emit(UpdateProfileSuccess(userInfo: event.userInfo));
         }
       }
     } catch (e) {
@@ -82,7 +82,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       }
 
       await _socialRepository.updateUserProfile(userInfo: event.userInfo);
-      emit(UpdateProfileSuccess());
+      emit(UpdateProfileSuccess(userInfo: event.userInfo));
     } catch (e) {
       emit(UpdateProfileFailure(message: e.toString()));
     }

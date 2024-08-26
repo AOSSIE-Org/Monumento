@@ -43,6 +43,7 @@ class UserModel {
       username: entity.username,
       followers: entity.followers,
       following: entity.following,
+      posts: entity.posts,
     );
   }
 
@@ -56,6 +57,7 @@ class UserModel {
       username: username,
       followers: followers,
       following: following,
+      posts: posts,
     );
   }
 
@@ -65,6 +67,9 @@ class UserModel {
         : [];
     List<String> mappedFollowing = data['following'] != null
         ? (data['following'] as List).map<String>((e) => e).toList()
+        : [];
+    List<String> mappedPosts = data['posts'] != null
+        ? (data['posts'] as List).map<String>((e) => e).toList()
         : [];
 
     return UserModel(
@@ -76,6 +81,7 @@ class UserModel {
       username: data['username'] as String,
       followers: mappedFollowers,
       following: mappedFollowing,
+      posts: mappedPosts,
     );
   }
 
@@ -89,6 +95,7 @@ class UserModel {
       'username': username,
       'followers': followers,
       'following': following,
+      'posts': posts,
     };
   }
 }

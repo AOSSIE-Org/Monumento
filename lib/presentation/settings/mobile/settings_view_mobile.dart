@@ -3,10 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
+import 'package:monumento/presentation/settings/mobile/about_screen.dart';
 import 'package:monumento/presentation/settings/mobile/widgets/button_bar.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsViewMobile extends StatefulWidget {
   const SettingsViewMobile({super.key});
@@ -53,12 +55,19 @@ class _SettingsViewMobileState extends State<SettingsViewMobile> {
               CustomButtonBar(
                 image: "assets/icons/ic_privacy_policy.svg",
                 text: "Privacy Policy",
-                onTap: () {},
+                onTap: () {
+                  launchUrl(Uri.parse("https://www.termsfeed.com/live/a33e0b4f-b0de-4174-bbf7-33d48dbf540d"));
+                },
               ),
               CustomButtonBar(
                 image: "assets/icons/ic_github.svg",
                 text: "GitHub",
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const AboutScreen()),
+                  );
+                },
               ),
               CustomButtonBar(
                 image: "assets/icons/ic_logout.svg",

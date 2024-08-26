@@ -1,41 +1,41 @@
 part of 'follow_bloc.dart';
 
-abstract class FollowEvent extends Equatable {
+sealed class FollowEvent extends Equatable {
   const FollowEvent();
 }
 
-class FollowUser extends FollowEvent {
+final class FollowUser extends FollowEvent {
   final UserEntity targetUser;
 
   const FollowUser({required this.targetUser});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [targetUser];
 }
 
-class UnfollowUser extends FollowEvent {
+final class UnfollowUser extends FollowEvent {
   final UserEntity targetUser;
   const UnfollowUser({required this.targetUser});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [targetUser];
 }
 
-class GetFollowStatus extends FollowEvent {
+final class GetFollowStatus extends FollowEvent {
   final UserEntity targetUser;
 
   const GetFollowStatus({required this.targetUser});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [targetUser];
 }
 
-class LoadUser extends FollowEvent {
+final class LoadUser extends FollowEvent {
   final List<String> following;
 
   const LoadUser({required this.following});
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [following];
   
 }

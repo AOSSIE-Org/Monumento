@@ -1,11 +1,13 @@
+import 'dart:developer';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
-import 'package:monumento/application/profile/follow/follow_bloc.dart';
-import 'package:monumento/domain/entities/user_entity.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/presentation/profile_screen/mobile/user_connections_screen.dart';
+import 'package:monumento/presentation/profile_screen/mobile/widgets/follow_button.dart';
 import 'package:monumento/presentation/profile_screen/mobile/widgets/profile_tabs_view.dart';
 import 'package:monumento/presentation/settings/mobile/settings_view_mobile.dart';
 import 'package:monumento/service_locator.dart';
@@ -32,7 +34,8 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
 
   @override
   Widget build(BuildContext context) {
-    
+    bool isAccountOwner = true;
+
     return Scaffold(
         appBar: AppBar(
             backgroundColor: AppColor.appBackground,
@@ -47,7 +50,16 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                 Row(
                   children: [
                     IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (ctx) {
+                                return const NotificationViewDesktop();
+                              },
+                            ),
+                          );
+                        },
                         icon: const Icon(Icons.notifications_outlined,
                             color: AppColor.appBlack)),
                     IconButton(
@@ -64,6 +76,7 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
             bloc: locator<AuthenticationBloc>(),
             builder: (context, state) {
               state as Authenticated;
+              log(state.user.posts.length.toString());
               return SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,6 +228,8 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                             ),
                           ],
                         )),
+                    FollowButton(
+                        isAccountOwner: isAccountOwner, targetUser: state.user),
                     const Divider(thickness: 2),
                     ProfileTabsView(
                       tabController: _tabController,
@@ -223,47 +238,5 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                 ),
               );
             }));
-  }
-
-// TODO: when implementing followUser and bookmark functionality
-  Widget getFollowButton(FollowState state, UserEntity currentUser) {
-    if (state is FollowStatusRetrieved) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * .06,
-        child: TextButton(
-          onPressed: () {
-            state.following
-                ? locator<FollowBloc>().add(UnfollowUser(targetUser: currentUser))
-                : locator<FollowBloc>().add(FollowUser(targetUser: currentUser));
-          },
-          style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.amberAccent)),
-          child: Text(
-            state.following ? 'Unfollow' : 'Follow',
-            style: const TextStyle(color: Colors.black),
-          ),
-        ),
-      );
-    }
-    if (state is LoadingFollowState) {
-      return SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height * .06,
-        child: TextButton(
-          onPressed: () {},
-          style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.amberAccent)),
-          child: SizedBox(
-              height: MediaQuery.of(context).size.height * .03,
-              width: MediaQuery.of(context).size.height * .03,
-              child: const CircularProgressIndicator(
-                backgroundColor: Colors.white,
-                strokeWidth: 3,
-              )),
-        ),
-      );
-    }
-    return Container();
   }
 }

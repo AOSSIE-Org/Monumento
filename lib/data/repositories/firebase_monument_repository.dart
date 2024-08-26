@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -134,6 +135,24 @@ class FirebaseMonumentRepository implements MonumentRepository {
       return snap.docs.isNotEmpty;
     } catch (e) {
       return false;
+    }
+  }
+
+  @override
+  Future<MonumentModel?> getMonumentModelByName(
+      {required String monumentName}) async {
+    try {
+      QuerySnapshot snap = await _database
+          .collection('monuments')
+          .where('name', isEqualTo: monumentName)
+          .get();
+      List<MonumentModel> monument = snap.docs
+          .map((e) => MonumentModel.fromJson(e.data() as Map<String, dynamic>))
+          .toList();
+      return monument[0];
+    } catch (e) {
+      log(e.toString());
+      return null;
     }
   }
 

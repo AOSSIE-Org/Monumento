@@ -2,15 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:monumento/application/popular_monuments/monument_3d_model/monument_3d_model_bloc.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/presentation/popular_monuments/desktop/widgets/monument_details_card.dart';
-import 'package:monumento/presentation/popular_monuments/mobile/monument_detailed_view_mobile.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/monument_details_view_mobile.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/widgets/scan_monuments_screen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
-class PopularMonumentsViewMobile extends StatelessWidget {
+class PopularMonumentsViewMobile extends StatefulWidget {
   const PopularMonumentsViewMobile({super.key});
+
+  @override
+  State<PopularMonumentsViewMobile> createState() =>
+      _PopularMonumentsViewMobileState();
+}
+
+class _PopularMonumentsViewMobileState
+    extends State<PopularMonumentsViewMobile> {
+  String output = '';
+
+  @override
+  void initState() {
+    locator<Monument3dModelBloc>().add(const ViewMonument3DModel(
+        monumentName: "Mount Rushmore National Memorial"));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +45,16 @@ class PopularMonumentsViewMobile extends StatelessWidget {
                 width: 161,
               ),
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) {
+                          return const NotificationViewDesktop();
+                        },
+                      ),
+                    );
+                  },
                   icon: const Icon(Icons.notifications_outlined,
                       color: AppColor.appBlack))
             ],
@@ -57,7 +85,7 @@ class PopularMonumentsViewMobile extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (ctx) {
-                            return MonumentDetailedViewMobile(
+                            return MonumentDetailsViewMobile(
                               monument: state.popularMonuments[index],
                             );
                           },
@@ -74,7 +102,12 @@ class PopularMonumentsViewMobile extends StatelessWidget {
             }
           }),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () async {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (context) => const ScanMonumentsScreen()),
+          );
+        },
         label: Text(
           "Scan Monuments",
           style: AppTextStyles.textStyle(

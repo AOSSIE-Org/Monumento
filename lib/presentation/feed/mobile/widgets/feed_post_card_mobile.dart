@@ -53,8 +53,9 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: CachedNetworkImageProvider(widget.post.author.profilePictureUrl ??
-                        defaultProfilePicture),
+                  backgroundImage: CachedNetworkImageProvider(
+                      widget.post.author.profilePictureUrl ??
+                          defaultProfilePicture),
                 ),
                 const SizedBox(
                   width: 20,
@@ -72,11 +73,16 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                     const SizedBox(
                       height: 4,
                     ),
-                    Text(
-                      widget.post.location ?? "@${widget.post.author.username}",
-                      style: AppTextStyles.s14(
-                        color: AppColor.appSecondary,
-                        fontType: FontType.REGULAR,
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        overflow: TextOverflow.clip,
+                        widget.post.location ??
+                            "@${widget.post.author.username}",
+                        style: AppTextStyles.s14(
+                          color: AppColor.appSecondary,
+                          fontType: FontType.REGULAR,
+                        ),
                       ),
                     ),
                   ],
@@ -85,7 +91,8 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Icon(Icons.more_horiz),
+                    IconButton(
+                        onPressed: () {}, icon: const Icon(Icons.more_horiz)),
                     Text(
                       timeago.format(DateTime.fromMillisecondsSinceEpoch(
                           widget.post.timeStamp)),
@@ -102,18 +109,54 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
               height: 24,
             ),
             widget.post.imageUrl == null
-                ? Text(
-                    widget.post.title,
-                    style: AppTextStyles.s16(
-                      color: AppColor.appSecondary,
-                      fontType: FontType.REGULAR,
+                ? (widget.post.postType == 2
+                    ? Container(
+                        width: double.infinity,
+                        height: 210,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/desktop/checkedin.png",
+                              width: 160,
+                              height: 160,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              widget.post.title.isEmpty
+                                  ? "${widget.post.author.name} visited ${widget.post.location ?? "a place"}"
+                                  : widget.post.title,
+                              style: AppTextStyles.s16(
+                                color: AppColor.appSecondary,
+                                fontType: FontType.REGULAR,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Text(
+                        widget.post.title,
+                        style: AppTextStyles.s16(
+                          color: AppColor.appSecondary,
+                          fontType: FontType.REGULAR,
+                        ),
+                      ))
+                : Container(
+                    width: double.infinity,
+                    height: 380,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: const Color.fromARGB(255, 127, 127, 127),
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(
+                            widget.post.imageUrl ?? ""),
+                        fit: BoxFit.fitHeight,
+                      ),
                     ),
-                  )
-                : Image(
-                    image:
-                        CachedNetworkImageProvider(widget.post.imageUrl ?? ""),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.center,
                   ),
             widget.post.imageUrl == null
                 ? const SizedBox(
