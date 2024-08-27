@@ -43,7 +43,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Size designSize;
     if (kIsWeb) {
-      designSize = const Size(1440, 1024);
+      // if width is less than 530, it means the user resized the window to a smaller size
+      if (MediaQuery.of(context).size.width < 530) {
+        designSize = const Size(390, 844);
+      } else {
+        designSize = const Size(1440, 1024);
+      }
     } else {
       if (Platform.isIOS || Platform.isAndroid) {
         designSize = const Size(390, 844);
