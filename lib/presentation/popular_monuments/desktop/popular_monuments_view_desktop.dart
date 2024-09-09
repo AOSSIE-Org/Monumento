@@ -37,7 +37,7 @@ class _PopularMonumentsViewDesktopState
         preferredSize: Size.fromHeight(70.h),
         child: ResponsiveVisibility(
           hiddenConditions: const [
-            Condition.smallerThan(breakpoint: 800),
+            Condition.smallerThan(breakpoint: 801),
           ],
           child: AppBar(
             title: Text(

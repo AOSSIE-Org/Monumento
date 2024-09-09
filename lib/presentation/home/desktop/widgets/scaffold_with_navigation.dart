@@ -3,6 +3,7 @@ import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -321,8 +322,10 @@ class _NavigationRailState extends State<_NavigationRail> {
         ),
       ),
       SideMenuItem(
-        title: 'Exit',
-        onTap: (a, b) {},
+        title: 'Log Out',
+        onTap: (a, b) {
+          locator<AuthenticationBloc>().add(LogOutPressed());
+        },
         icon: const Icon(Icons.exit_to_app),
       ),
     ];
@@ -361,8 +364,18 @@ class _NavigationRailState extends State<_NavigationRail> {
                 ],
               ),
             )
-          : BlocBuilder<AuthenticationBloc, AuthenticationState>(
+          : BlocConsumer<AuthenticationBloc, AuthenticationState>(
               bloc: locator<AuthenticationBloc>(),
+              listener: (context, state) {
+                if (state is Unauthenticated) {
+                  while (context.canPop() == true) {
+                    context.pop();
+                  }
+                  if (mounted) {
+                    context.pushReplacement('/');
+                  }
+                }
+              },
               builder: (context, state) {
                 state as Authenticated;
                 return SizedBox(

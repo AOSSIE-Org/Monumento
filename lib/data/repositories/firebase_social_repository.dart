@@ -394,8 +394,9 @@ class FirebaseSocialRepository implements SocialRepository {
 
     DocumentSnapshot postDoc =
         await _database.collection('posts').doc(postDocId).get();
+    var postData = postDoc.data() as Map<String, dynamic>;
     UserModel postAuthor =
-        UserModel.fromJson(postDoc.data() as Map<String, dynamic>);
+        UserModel.fromJson(postData['author'] as Map<String, dynamic>);
 
     var notification = NotificationModel(
       notificationType: NotificationType.commentNotification,

@@ -1,10 +1,21 @@
-# Monumento
-An AR integrated social app for sharing landmarks, visited places and visualizing their 3D models right from a mobile device
+<div align="center">
+ <span>
+ <img src="assets/cover.png" alt="Resonate logo" width="800" height="auto" />
+ </span>
+<br><br>
 
+# Monumento 🌎
+ </div>
+ <div align="center">
+
+[![Discord Follow](https://dcbadge.vercel.app/api/server/6mFZ2S846n?style=flat)](https://discord.gg/6mFZ2S846n) &ensp;&ensp;
+[![License:GPL-3.0](https://img.shields.io/badge/License-GPL-yellow.svg)](https://opensource.org/license/gpl-3-0/)&ensp;&ensp;
+![GitHub Org's stars](https://img.shields.io/github/stars/AOSSIE-Org/monumento?style=social)
+
+</div>
+Monumento is an AR-integrated social app that transforms how you connect with the world’s most iconic landmarks. Through Monumento, you can check in to popular monuments, explore famous sites, and discover new people, all within a social platform dedicated to cultural and historical experiences. Whether you're a traveler or a history enthusiast, Monumento offers an immersive way to engage with the world’s most treasured locations.
 
 ## 💻 Technologies Used
-- Java
-- Kotlin
 - Dart
 - Flutter
 - Firebase
@@ -28,7 +39,13 @@ Install dependencies
   flutter pub get
 ```
 
-Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will add the `google-services.json` and `GoogleService-Info.plist` file for android and iOS, and also creates a `firebase_options.dart` file in the lib folder
+Create `.env` using template `.env.template` and add API keys
+```
+cat .env.template > .dev.env
+```
+
+
+Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will add the `google-services.json` and `GoogleService-Info.plist` file for android, iOS, MacOS and Web, and also creates a `firebase_options.dart` file in the lib folder
 
 
 
@@ -57,3 +74,10 @@ If you have any questions, need clarifications, or want to discuss ideas, feel f
 
 [Discord Server](https://discord.com/invite/6mFZ2S846n)\
 [Email](aossie.oss@gmail.com)
+
+## Made by the Community, with ❤️
+
+<a href="https://github.com/AOSSIE-Org/monumento/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=AOSSIE-Org/monumento" alt="Contributors"/>
+</a>
+<br>

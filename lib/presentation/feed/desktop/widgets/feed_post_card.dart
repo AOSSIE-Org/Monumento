@@ -135,7 +135,7 @@ class _FeedPostCardState extends State<FeedPostCard>
             const SizedBox(
               height: 24,
             ),
-            widget.post.imageUrl == null
+            widget.post.imageUrl == null || widget.post.imageUrl!.isEmpty
                 ? (widget.post.postType == 2
                     ? Container(
                         width: double.infinity,
@@ -363,10 +363,24 @@ class _FeedPostCardState extends State<FeedPostCard>
             BlocListener<CommentsBloc, CommentsState>(
               bloc: locator<CommentsBloc>(),
               listener: (context, state) {
-                if (state is CommentAdded) {
+                if (state is CommentAdded &&
+                    state.comment.postInvolvedId == widget.post.postId) {
+                  commentController.clear();
                   setState(() {
                     comments.insert(0, state.comment);
                   });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Comment added successfully"),
+                    ),
+                  );
+                }
+                if (state is FailedToAddComment) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Failed to add comment"),
+                    ),
+                  );
                 }
               },
               child: BlocBuilder<CommentsBloc, CommentsState>(

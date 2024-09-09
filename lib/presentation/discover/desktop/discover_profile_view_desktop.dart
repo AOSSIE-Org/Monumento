@@ -68,7 +68,10 @@ class _DiscoverProfileViewDesktopState
                 builder: (context, postsState) {
                   if (postsState is DiscoverProfilePostsLoaded) {
                     posts = [];
-                    posts.insertAll(posts.length, postsState.posts);
+                    var imagePosts = postsState.posts
+                        .where((element) => element.postType == 0)
+                        .toList();
+                    posts.insertAll(posts.length, imagePosts);
                   }
                   // if (postsState is MoreDiscoverPostsLoaded) {
                   //   posts.insertAll(posts.length,
