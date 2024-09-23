@@ -1,0 +1,57 @@
+{
+    "flutter": {
+      "platforms": {
+        "android": {
+          "default": {
+            "projectId": "monumento-277103",
+            "appId": "1:23340623187:android:322a3550e70d4590f8eda6",
+            "fileOutput": "android/app/google-services.json"
+          }
+        },
+        "ios": {
+          "default": {
+            "projectId": "monumento-277103",
+            "appId": "1:23340623187:ios:c441fcc6a636db09f8eda6",
+            "uploadDebugSymbols": false,
+            "fileOutput": "ios/Runner/GoogleService-Info.plist"
+          }
+        },
+        "macos": {
+          "default": {
+            "projectId": "monumento-277103",
+            "appId": "1:23340623187:ios:c441fcc6a636db09f8eda6",
+            "uploadDebugSymbols": false,
+            "fileOutput": "macos/Runner/GoogleService-Info.plist"
+          }
+        },
+        "dart": {
+          "lib/firebase_options.dart": {
+            "projectId": "monumento-277103",
+            "configurations": {
+              "android": "1:23340623187:android:322a3550e70d4590f8eda6",
+              "ios": "1:23340623187:ios:c441fcc6a636db09f8eda6",
+              "macos": "1:23340623187:ios:c441fcc6a636db09f8eda6",
+              "web": "1:23340623187:web:3d0590873cf64fb4f8eda6",
+              "windows": "1:23340623187:web:8a938193f6650440f8eda6"
+            }
+          }
+        }
+      }
+    },
+    "hosting": {
+      "public": "build/web",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "headers": [ {
+        "source": "**",
+        "headers": [ {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        } ]
+      } ]
+    }
+  }
+  

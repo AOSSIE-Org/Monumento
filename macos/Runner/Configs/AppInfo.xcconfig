@@ -8,7 +8,7 @@
 PRODUCT_NAME = monumento
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.jddeep.monumento
+PRODUCT_BUNDLE_IDENTIFIER = org.aossie.monumento
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2024 com.jddeep. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2024 org.aossie. All rights reserved.

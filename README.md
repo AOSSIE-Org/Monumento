@@ -1,10 +1,21 @@
-# Monumento
-An AR integrated social app for sharing landmarks, visited places and visualizing their 3D models right from a mobile device
+<div align="center">
+ <span>
+ <img src="assets/cover.png" alt="Resonate logo" width="800" height="auto" />
+ </span>
+<br><br>
 
+# Monumento 🌎
+ </div>
+ <div align="center">
+
+[![Discord Follow](https://dcbadge.vercel.app/api/server/6mFZ2S846n?style=flat)](https://discord.gg/6mFZ2S846n) &ensp;&ensp;
+[![License:GPL-3.0](https://img.shields.io/badge/License-GPL-yellow.svg)](https://opensource.org/license/gpl-3-0/)&ensp;&ensp;
+![GitHub Org's stars](https://img.shields.io/github/stars/AOSSIE-Org/monumento?style=social)
+
+</div>
+Monumento is an AR-integrated social app that transforms how you connect with the world’s most iconic landmarks. Through Monumento, you can check in to popular monuments, explore famous sites, and discover new people, all within a social platform dedicated to cultural and historical experiences. Whether you're a traveler or a history enthusiast, Monumento offers an immersive way to engage with the world’s most treasured locations.
 
 ## 💻 Technologies Used
-- Java
-- Kotlin
 - Dart
 - Flutter
 - Firebase
@@ -21,48 +32,22 @@ Go to the project directory
 ```
   cd Monumento
 ```
-Monumento requires Flutter version to be less than 3.10.0. If your version is more than 3.10.0, you can follow the below steps or downgrade your local version of Flutter
 
-1. Install [FVM](https://fvm.app)
-2. Install Flutter 3.7.12 through FVM
-    ```
-    fvm install 3.7.12
-    ```
-3. Once installed, run the following command to set it as the default version for FVM
-    ```
-    fvm use 3.7.12
-    ```
-4. Now open a terminal and move to the `monumento_module` directory
-5. Upgrade the dependencies
-    ```
-    fvm flutter pub upgrade
-    ```
-6. Now try running the app
-    ```
-    fvm flutter run
-    ```
+Install dependencies
 
-Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will add the `google-services.json` and `GoogleService-Info.plist` file for android and iOS, and also creates a `firebase_options.dart` file in the lib folder
+```
+  flutter pub get
+```
 
-Enable [Google Cloud Vision API](https://console.cloud.google.com/marketplace/product/google/vision.googleapis.com) in GCP and generate a private key. In android folder, open `local.properties` file. Create it if it doesn't exist and add the following line
+Create `.env` using template `.env.template` and add API keys
 ```
-cloud.vision.api.key=abcd_your_api_key_here_xyz
+cat .env.template > .dev.env
 ```
-\
-Tip: If you are using VS Code, create `.vscode/seetings.json` file if doen't already exist and add the following lines
-```
-{
-    "dart.flutterSdkPath": "/path/to/fvm/versions/3.7.12", //example path: "/Users/xyz/fvm/versions/3.7.12"
-    // Remove .fvm files from search
-    "search.exclude": {
-      "**/.fvm": true
-    },
-    // Remove from file watching
-    "files.watcherExclude": {
-      "**/.fvm": true
-    }
-  }
-  ```
+
+
+Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will add the `google-services.json` and `GoogleService-Info.plist` file for android, iOS, MacOS and Web, and also creates a `firebase_options.dart` file in the lib folder
+
+
 
 ## ✌️ Maintainers
 
@@ -89,3 +74,10 @@ If you have any questions, need clarifications, or want to discuss ideas, feel f
 
 [Discord Server](https://discord.com/invite/6mFZ2S846n)\
 [Email](aossie.oss@gmail.com)
+
+## Made by the Community, with ❤️
+
+<a href="https://github.com/AOSSIE-Org/monumento/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=AOSSIE-Org/monumento" alt="Contributors"/>
+</a>
+<br>
