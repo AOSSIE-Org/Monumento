@@ -51,30 +51,54 @@ class _NearbyPlacesCardState extends State<NearbyPlacesCard> {
                   _selectedPlace = v;
                 });
               },
-              choiceItems: const [
+              choiceItems: [
                 C2Choice(
                   value: 0,
                   label: 'Restaurants',
+                  style: C2ChipStyle(
+                    backgroundColor:
+                        AppColor.appLightGrey, // Set color for Restaurants
+                  ),
                 ),
                 C2Choice(
                   value: 1,
                   label: 'Toilets',
+                  style: C2ChipStyle(
+                    backgroundColor: AppColor
+                        .appLightGrey, // Set background color for Toilets
+                  ),
                 ),
                 C2Choice(
                   value: 2,
                   label: 'Hotels',
+                  style: C2ChipStyle(
+                    backgroundColor:
+                        AppColor.appLightGrey, // Set color for Hotels
+                  ),
                 ),
                 C2Choice(
                   value: 3,
                   label: 'ATMs',
+                  style: C2ChipStyle(
+                    backgroundColor:
+                        AppColor.appLightGrey, // Set color for ATMs
+                  ),
                 ),
                 C2Choice(
                   value: 4,
                   label: 'Supermarkets',
+                  style: C2ChipStyle(
+                    backgroundColor:
+                        AppColor.appLightGrey, // Set color for Supermarkets
+                  ),
                 ),
                 C2Choice(
                   value: 5,
                   label: 'Pharmacies',
+                  style: C2ChipStyle(
+                    backgroundColor:
+                        AppColor.appLightGrey, // Set color for Pharmacies
+                  ),
                 ),
               ],
             ),
