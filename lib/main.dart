@@ -14,14 +14,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'application/authentication/authentication_bloc.dart';
 import 'presentation/authentication/onboarding_view.dart';
-// import 'firebase_options.dart';
+import 'firebase_options.dart';
 import 'presentation/home/home_view.dart';
 import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
   runApp(const MyApp());
 }
