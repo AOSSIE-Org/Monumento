@@ -70,7 +70,7 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
             children: [
               const Spacer(),
               render == false
-                  ? Assets.logoAuth.image(width: 220)
+                  ? Assets.logoAuth.image(width: 136, height: 105)
                   : Assets.desktop.logoDesktop.svg(width: 161, height: 25),
               Container(
                 padding:
