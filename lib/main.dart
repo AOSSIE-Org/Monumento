@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/presentation/authentication/login_view.dart';
@@ -19,7 +20,7 @@ import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await dotenv.load(fileName: ".env");
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
   runApp(const MyApp());
