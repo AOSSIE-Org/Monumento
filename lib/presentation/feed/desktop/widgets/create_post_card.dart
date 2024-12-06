@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/feed/new_post/new_post_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -130,10 +130,9 @@ class _CreatePostCardState extends State<CreatePostCard>
                               },
                               child: Row(
                                 children: [
-                                  SvgPicture.asset(
-                                    'assets/icons/ic_media.svg',
-                                    width: 18,
+                                  Assets.icons.icMedia.svg(
                                     height: 18,
+                                    width: 18,
                                   ),
                                   const SizedBox(
                                     width: 4,

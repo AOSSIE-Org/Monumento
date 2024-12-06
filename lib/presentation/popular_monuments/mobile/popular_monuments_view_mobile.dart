@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/popular_monuments/monument_3d_model/monument_3d_model_bloc.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/presentation/popular_monuments/desktop/widgets/monument_details_card.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_details_view_mobile.dart';
@@ -39,10 +39,9 @@ class _PopularMonumentsViewMobileState
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SvgPicture.asset(
-                'assets/desktop/logo_desktop.svg',
-                height: 25,
+              Assets.desktop.logoDesktop.svg(
                 width: 161,
+                height: 25,
               ),
               IconButton(
                   onPressed: () {

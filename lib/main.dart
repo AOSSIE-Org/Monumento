@@ -4,23 +4,22 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/presentation/authentication/login_view.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'application/authentication/authentication_bloc.dart';
-import 'presentation/authentication/onboarding_view.dart';
 import 'firebase_options.dart';
+import 'presentation/authentication/onboarding_view.dart';
 import 'presentation/home/home_view.dart';
 import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  // await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
   runApp(const MyApp());

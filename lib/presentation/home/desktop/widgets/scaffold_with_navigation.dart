@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -101,10 +102,8 @@ class _ScaffoldWithDrawer extends StatelessWidget {
               decoration: const BoxDecoration(border: Border()),
               margin: EdgeInsets.zero,
               child: Center(
-                  child: Image.asset(
-                'assets/logo_auth.png',
-                height: 72,
-              )),
+                child: Assets.logoAuth.image(height: 72),
+              ),
             ),
             Expanded(
               child: _NavigationRailDrawer(
@@ -158,8 +157,8 @@ class _NavigationRailDrawerState extends State<_NavigationRailDrawer> {
           },
           iconWidget: SvgPicture.asset(
             widget.selectedIndex == 0
-                ? 'assets/icons/ic_home_selected.svg'
-                : 'assets/icons/ic_home.svg',
+                ? Assets.icons.icHomeSelected.path
+                : Assets.icons.icHome.path,
             height: 18,
           ),
         ),
@@ -170,8 +169,8 @@ class _NavigationRailDrawerState extends State<_NavigationRailDrawer> {
           },
           iconWidget: SvgPicture.asset(
             widget.selectedIndex == 1
-                ? 'assets/icons/ic_feed_selected.svg'
-                : 'assets/icons/ic_feed.svg',
+                ? Assets.icons.icFeedSelected.path
+                : Assets.icons.icFeed.path,
             height: 18,
           ),
         ),
@@ -182,8 +181,8 @@ class _NavigationRailDrawerState extends State<_NavigationRailDrawer> {
           },
           iconWidget: SvgPicture.asset(
             widget.selectedIndex == 2
-                ? 'assets/icons/ic_discover_selected.svg'
-                : 'assets/icons/ic_discover.svg',
+                ? Assets.icons.icDiscoverSelected.path
+                : Assets.icons.icDiscover.path,
             height: 18,
           ),
         ),
@@ -194,8 +193,8 @@ class _NavigationRailDrawerState extends State<_NavigationRailDrawer> {
           },
           iconWidget: SvgPicture.asset(
             widget.selectedIndex == 3
-                ? 'assets/icons/ic_profile_selected.svg'
-                : 'assets/icons/ic_profile.svg',
+                ? Assets.icons.icProfileSelected.path
+                : Assets.icons.icProfile.path,
             height: 18,
           ),
         ),
@@ -206,8 +205,8 @@ class _NavigationRailDrawerState extends State<_NavigationRailDrawer> {
           },
           iconWidget: SvgPicture.asset(
             widget.selectedIndex == 4
-                ? 'assets/icons/ic_settings_selected.svg'
-                : 'assets/icons/ic_settings.svg',
+                ? Assets.icons.icSettingsSelected.path
+                : Assets.icons.icSettings.path,
             height: 18,
           ),
         ),
@@ -268,8 +267,8 @@ class _NavigationRailState extends State<_NavigationRail> {
         },
         iconWidget: SvgPicture.asset(
           widget.selectedIndex != 0
-              ? 'assets/icons/ic_home.svg'
-              : 'assets/icons/ic_home_selected.svg',
+              ? Assets.icons.icHome.path
+              : Assets.icons.icHomeSelected.path,
           height: 18,
         ),
       ),
@@ -280,8 +279,8 @@ class _NavigationRailState extends State<_NavigationRail> {
         },
         iconWidget: SvgPicture.asset(
           widget.selectedIndex != 1
-              ? 'assets/icons/ic_feed.svg'
-              : 'assets/icons/ic_feed_selected.svg',
+              ? Assets.icons.icFeed.path
+              : Assets.icons.icFeedSelected.path,
           height: 18,
         ),
       ),
@@ -292,8 +291,8 @@ class _NavigationRailState extends State<_NavigationRail> {
         },
         iconWidget: SvgPicture.asset(
           widget.selectedIndex != 2
-              ? 'assets/icons/ic_discover.svg'
-              : 'assets/icons/ic_discover_selected.svg',
+              ? Assets.icons.icDiscover.path
+              : Assets.icons.icDiscoverSelected.path,
           height: 18,
         ),
       ),
@@ -304,8 +303,8 @@ class _NavigationRailState extends State<_NavigationRail> {
         },
         iconWidget: SvgPicture.asset(
           widget.selectedIndex != 3
-              ? 'assets/icons/ic_profile.svg'
-              : 'assets/icons/ic_profile_selected.svg',
+              ? Assets.icons.icProfile.path
+              : Assets.icons.icProfileSelected.path,
           height: 18,
         ),
       ),
@@ -316,8 +315,8 @@ class _NavigationRailState extends State<_NavigationRail> {
         },
         iconWidget: SvgPicture.asset(
           widget.selectedIndex != 4
-              ? 'assets/icons/ic_settings.svg'
-              : 'assets/icons/ic_settings_selected.svg',
+              ? Assets.icons.icSettings.path
+              : Assets.icons.icSettingsSelected.path,
           height: 18,
         ),
       ),
@@ -354,10 +353,7 @@ class _NavigationRailState extends State<_NavigationRail> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Image.asset(
-                    'assets/logo_black.png',
-                    height: 36,
-                  ),
+                  Assets.logoBlack.image(height: 36),
                   const SizedBox(
                     height: 20,
                   ),
@@ -387,8 +383,7 @@ class _NavigationRailState extends State<_NavigationRail> {
                       const SizedBox(
                         height: 20,
                       ),
-                      SvgPicture.asset(
-                        'assets/desktop/logo_desktop.svg',
+                      Assets.desktop.logoDesktop.svg(
                         height: 24,
                       ),
                       const SizedBox(
@@ -401,7 +396,7 @@ class _NavigationRailState extends State<_NavigationRail> {
                               backgroundColor: AppColor.appGreyAccent,
                               child: state.user.profilePictureUrl == null
                                   ? SvgPicture.asset(
-                                      'assets/icons/ic_user.svg',
+                                      Assets.icons.icUser.path,
                                     )
                                   : CachedNetworkImage(
                                       imageUrl: state.user.profilePictureUrl!,

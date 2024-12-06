@@ -8,12 +8,12 @@ import 'package:monumento/application/feed/comments/comments_bloc.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/domain/entities/comment_entity.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostDetailsPopupWidget extends StatefulWidget {
@@ -323,8 +323,8 @@ class _PostDetailsPopupWidgetState extends State<PostDetailsPopupWidget> {
                         likeBuilder: (isLiked) {
                           return SvgPicture.asset(
                             isLiked
-                                ? 'assets/icons/ic_heart_filled.svg'
-                                : 'assets/icons/ic_heart.svg',
+                                ? Assets.icons.icHeartFilled.path
+                                : Assets.icons.icHeart.path,
                             width: 24,
                             height: 24,
                           );
@@ -347,7 +347,7 @@ class _PostDetailsPopupWidgetState extends State<PostDetailsPopupWidget> {
                     ),
                     IconButton(
                       icon: SvgPicture.asset(
-                        'assets/icons/ic_comment.svg',
+                        Assets.icons.icComment.path,
                         width: 24,
                         height: 24,
                       ),
@@ -355,7 +355,7 @@ class _PostDetailsPopupWidgetState extends State<PostDetailsPopupWidget> {
                     ),
                     IconButton(
                       icon: SvgPicture.asset(
-                        'assets/icons/ic_share.svg',
+                        Assets.icons.icShare.path,
                         width: 24,
                         height: 24,
                       ),

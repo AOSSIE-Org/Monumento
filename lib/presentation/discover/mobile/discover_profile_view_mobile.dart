@@ -2,10 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/discover/discover_profile/discover_profile_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/discover/mobile/discover_tabs_view.dart';
 import 'package:monumento/presentation/profile_screen/mobile/user_connections_screen.dart';
 import 'package:monumento/presentation/profile_screen/mobile/user_post_details_screen.dart';
@@ -53,8 +53,7 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SvgPicture.asset(
-                  'assets/mobile/logo_profile.svg',
+                Assets.mobile.logoProfile.svg(
                   height: 25,
                   width: 161,
                 ),
@@ -209,7 +208,9 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
               DiscoverTabsView(
                 user: widget.user,
               ),
-              const SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

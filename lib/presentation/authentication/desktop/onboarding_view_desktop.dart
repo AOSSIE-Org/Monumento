@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/constants.dart';
@@ -57,10 +57,7 @@ class _OnboardingViewDesktopState extends State<OnboardingViewDesktop> {
               const SizedBox(
                 height: 64,
               ),
-              SvgPicture.asset(
-                'assets/desktop/logo_desktop.svg',
-                width: 220,
-              ),
+              Assets.desktop.logoDesktop.svg(width: 220),
               const Spacer(),
               Card(
                 child: Container(
@@ -102,9 +99,7 @@ class _OnboardingViewDesktopState extends State<OnboardingViewDesktop> {
                                 : CircleAvatar(
                                     radius: 40,
                                     backgroundColor: AppColor.appGreyAccent,
-                                    child: SvgPicture.asset(
-                                      'assets/icons/ic_user.svg',
-                                    ),
+                                    child: Assets.icons.icUser.svg(),
                                   ),
                           ),
                           const SizedBox(

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/discover/mobile/discover_view_mobile.dart';
-import 'package:monumento/presentation/feed/mobile/your_feed_view_mobile.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/new_post_bottom_sheet.dart';
+import 'package:monumento/presentation/feed/mobile/your_feed_view_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/popular_monuments_view_mobile.dart';
 import 'package:monumento/presentation/profile_screen/mobile/profile_screen_mobile.dart';
 import 'package:monumento/service_locator.dart';
@@ -30,7 +31,7 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
     return Scaffold(
       body: IndexedStack(
         index: selectedIndex,
-        children:[
+        children: [
           const PopularMonumentsViewMobile(),
           const YourFeedViewMobile(),
           Container(),
@@ -40,11 +41,12 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
-          if (index==2){NewPostBottomSheet().newPostBottomSheet(context);}
-          else{
+          if (index == 2) {
+            NewPostBottomSheet().newPostBottomSheet(context);
+          } else {
             setState(() {
-            selectedIndex = index;
-          });
+              selectedIndex = index;
+            });
           }
         },
         backgroundColor: AppColor.appWhite,
@@ -58,13 +60,13 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
               icon: Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: SvgPicture.asset(
-                  'assets/icons/ic_home_selected.svg',
+                  Assets.icons.icHomeSelected.path,
                 ),
               ),
               activeIcon: Padding(
                 padding: const EdgeInsets.only(left: 16),
                 child: SvgPicture.asset(
-                  'assets/icons/ic_home_selected.svg',
+                  Assets.icons.icHomeSelected.path,
                   // ignore: deprecated_member_use
                   color: AppColor.appPrimary,
                 ),
@@ -73,12 +75,12 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
               label: 'Feed',
               icon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: SvgPicture.asset('assets/icons/ic_feed_selected.svg'),
+                child: Assets.icons.icFeedSelected.svg(),
               ),
               activeIcon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SvgPicture.asset(
-                    'assets/icons/ic_feed_selected.svg',
+                    Assets.icons.icFeedSelected.path,
                     // ignore: deprecated_member_use
                     color: AppColor.appPrimary,
                   ))),
@@ -107,21 +109,22 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
               label: 'Discover',
               icon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SvgPicture.asset('assets/icons/ic_discover_selected.svg')),
+                  child:
+                      SvgPicture.asset(Assets.icons.icDiscoverSelected.path)),
               activeIcon: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: SvgPicture.asset('assets/icons/ic_discover_selected.svg',
+                  child: SvgPicture.asset(Assets.icons.icDiscoverSelected.path,
                       // ignore: deprecated_member_use
                       color: AppColor.appPrimary))),
           BottomNavigationBarItem(
               label: 'Profile',
               icon: Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: SvgPicture.asset('assets/icons/ic_profile_selected.svg'),
+                child: SvgPicture.asset(Assets.icons.icProfileSelected.path),
               ),
               activeIcon: Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: SvgPicture.asset('assets/icons/ic_profile_selected.svg',
+                child: SvgPicture.asset(Assets.icons.icProfileSelected.path,
                     // ignore: deprecated_member_use
                     color: AppColor.appPrimary),
               )),

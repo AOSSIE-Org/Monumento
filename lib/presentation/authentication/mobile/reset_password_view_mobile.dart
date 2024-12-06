@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -45,11 +46,7 @@ class _ResetPasswordViewMobileState extends State<ResetPasswordViewMobile> {
                 const SizedBox(
                   height: 24,
                 ),
-                Image.asset(
-                  'assets/logo_auth.png',
-                  height: 105,
-                  width: 136,
-                ),
+                Assets.logoAuth.image(height: 105, width: 136),
                 const SizedBox(
                   height: 24,
                 ),

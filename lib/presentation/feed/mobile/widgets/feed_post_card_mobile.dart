@@ -5,12 +5,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:like_button/like_button.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/comment_bottom_sheet.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
-
 import 'package:timeago/timeago.dart' as timeago;
 
 class FeedPostCardMobile extends StatefulWidget {
@@ -118,11 +118,8 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                         ),
                         child: Column(
                           children: [
-                            Image.asset(
-                              "assets/desktop/checkedin.png",
-                              width: 160,
-                              height: 160,
-                            ),
+                            Assets.desktop.checkedin
+                                .image(width: 160, height: 160),
                             const SizedBox(
                               height: 8,
                             ),
@@ -206,8 +203,8 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                     likeBuilder: (isLiked) {
                       return SvgPicture.asset(
                         isLiked
-                            ? 'assets/icons/ic_heart_filled.svg'
-                            : 'assets/icons/ic_heart.svg',
+                            ? Assets.icons.icHeartFilled.path
+                            : Assets.icons.icHeart.path,
                         width: 24,
                         height: 24,
                       );
@@ -229,22 +226,14 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                   ),
                 ),
                 IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/ic_comment.svg',
-                    width: 24,
-                    height: 24,
-                  ),
+                  icon: Assets.icons.icComment.svg(width: 24, height: 24),
                   onPressed: () {
                     CommentBottomSheet()
                         .commentBottomSheet(context, widget.post);
                   },
                 ),
                 IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/ic_share.svg',
-                    width: 24,
-                    height: 24,
-                  ),
+                  icon: Assets.icons.icShare.svg(width: 24, height: 24),
                   onPressed: () {},
                 ),
               ],

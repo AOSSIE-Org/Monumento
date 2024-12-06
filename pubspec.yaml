@@ -68,7 +68,7 @@ dependencies:
   # Notifications
   firebase_messaging: ^15.0.4
 
-  
+
   # Utils
   uuid: ^4.4.2
   image_picker: ^1.1.2
@@ -81,6 +81,8 @@ dependencies:
   geolocator:
   url_launcher: ^6.3.0
   http:
+  flutter_gen: ^5.8.0
+
 
   # SVG / Vector Graphics
   flutter_svg: ^2.0.10+1
@@ -113,7 +115,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner:
+  flutter_gen_runner:
 
+flutter_gen:
+  output: lib/gen/ # Optional (default: lib/gen/)
+  line_length: 80 # Optional (default: 80)
+
+  # Optional
+  integrations:
+    flutter_svg: true
+    flare_flutter: true
+    rive: true
+    lottie: true
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

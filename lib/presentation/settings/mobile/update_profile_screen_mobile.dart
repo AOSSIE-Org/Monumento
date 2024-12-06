@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/profile/update_profile/update_profile_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/settings/mobile/settings_view_mobile.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -68,10 +68,9 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SvgPicture.asset(
-                  'assets/mobile/logo_update_profile.svg',
-                  height: 25,
+                Assets.mobile.logoUpdateProfile.svg(
                   width: 161,
+                  height: 25,
                 ),
                 IconButton(
                     onPressed: () {

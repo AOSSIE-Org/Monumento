@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
@@ -53,7 +54,7 @@ class _DiscoverPostCardWidgetState extends State<DiscoverPostCardWidget> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SvgPicture.asset(
-                        'assets/icons/ic_heart.svg',
+                        Assets.icons.icHeart.path,
                         color: Colors.white,
                         height: 18.sp,
                       ),
@@ -71,7 +72,7 @@ class _DiscoverPostCardWidgetState extends State<DiscoverPostCardWidget> {
                         width: 20,
                       ),
                       SvgPicture.asset(
-                        'assets/icons/ic_comment.svg',
+                        Assets.icons.icComment.path,
                         color: Colors.white,
                         height: 18.sp,
                       ),
