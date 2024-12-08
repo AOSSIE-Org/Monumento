@@ -44,7 +44,9 @@ class _ResetPasswordViewDesktopState extends State<ResetPasswordViewDesktop> {
             const SizedBox(
               height: 24,
             ),
-            Assets.desktop.logoDesktop.svg(),
+            Assets.desktop.logoDesktop.svg(
+              width: 220,
+            ),
             const SizedBox(
               height: 24,
             ),

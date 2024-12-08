@@ -49,7 +49,10 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Assets.logoAuth.image(height: 105),
+                  Assets.logoAuth.image(
+                    height: 105,
+                    width: 136,
+                  ),
                   const SizedBox(
                     width: 390,
                     height: 40,
