@@ -41,7 +41,7 @@ Install dependencies
 
 Create `.env` using template `.env.template` and add API keys
 ```
-cat .env.template > env
+cat .env.template > .env
 ```
 
 Add the following API keys to the `.env` file
