@@ -3,12 +3,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/nearby_places/nearby_places_bloc.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/popular_monuments/desktop/widgets/local_experts_card.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -93,8 +93,7 @@ class _MonumentDetailsViewDesktopState
                       UnbookmarkMonument(widget.monument),
                     );
                   },
-                  icon: SvgPicture.asset(
-                    "assets/icons/ic_bookmark_filled.svg",
+                  icon: Assets.icons.icBookmarkFilled.svg(
                     width: 24,
                     height: 24,
                   ),
@@ -106,8 +105,7 @@ class _MonumentDetailsViewDesktopState
                       BookmarkMonument(widget.monument),
                     );
                   },
-                  icon: SvgPicture.asset(
-                    "assets/icons/ic_bookmark.svg",
+                  icon: Assets.icons.icBookmark.svg(
                     width: 24,
                     height: 24,
                   ),
@@ -154,8 +152,7 @@ class _MonumentDetailsViewDesktopState
               },
               child: Row(
                 children: [
-                  SvgPicture.asset(
-                    "assets/icons/ic_3d.svg",
+                  Assets.icons.ic3d.svg(
                     width: 24,
                     height: 24,
                   ),
@@ -220,7 +217,7 @@ class _MonumentDetailsViewDesktopState
                             width: 500,
                             child: Column(
                               children: [
-                                Image.asset('assets/desktop/checkin.png'),
+                                Assets.desktop.checkedin.image(),
                                 const SizedBox(
                                   height: 20,
                                 ),
@@ -289,8 +286,7 @@ class _MonumentDetailsViewDesktopState
                   },
                   child: Row(
                     children: [
-                      SvgPicture.asset(
-                        "assets/icons/ic_checkin.svg",
+                      Assets.icons.icCheckin.svg(
                         width: 24,
                         height: 24,
                       ),

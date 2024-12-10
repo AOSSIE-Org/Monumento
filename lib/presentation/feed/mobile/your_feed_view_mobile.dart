@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/feed_post_card_mobile.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/service_locator.dart';
@@ -43,7 +44,7 @@ class _YourFeedViewMobileState extends State<YourFeedViewMobile> {
           title:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             SvgPicture.asset(
-              'assets/mobile/logo_feed.svg',
+              Assets.mobile.logoFeed.path,
               height: 25,
               width: 161,
             ),

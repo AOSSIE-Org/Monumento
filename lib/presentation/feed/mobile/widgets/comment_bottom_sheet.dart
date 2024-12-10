@@ -7,6 +7,7 @@ import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/feed/comments/comments_bloc.dart';
 import 'package:monumento/domain/entities/comment_entity.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -136,7 +137,10 @@ class _CommentScreenState extends State<CommentScreen> {
                                   ),
                                   ConstrainedBox(
                                     constraints: BoxConstraints(
-                                      maxWidth: MediaQuery.sizeOf(context).width*2.2/3,
+                                      maxWidth:
+                                          MediaQuery.sizeOf(context).width *
+                                              2.2 /
+                                              3,
                                     ),
                                     child: Container(
                                       decoration: const BoxDecoration(
@@ -207,7 +211,7 @@ class _CommentScreenState extends State<CommentScreen> {
                   width: 20,
                 ),
                 SizedBox(
-                  width: MediaQuery.sizeOf(context).width*2.2/3,
+                  width: MediaQuery.sizeOf(context).width * 2.2 / 3,
                   child: TextFormField(
                     focusNode: commentFocusNode,
                     controller: commentController,
@@ -224,7 +228,7 @@ class _CommentScreenState extends State<CommentScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: SvgPicture.asset(
-                            'assets/icons/ic_share.svg',
+                            Assets.icons.icShare.path,
                             width: 24,
                             height: 24,
                           ),

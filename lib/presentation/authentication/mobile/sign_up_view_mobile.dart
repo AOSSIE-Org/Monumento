@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/authentication/desktop/widgets/sign_up_decider_widget.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -70,16 +70,8 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
             children: [
               const Spacer(),
               render == false
-                  ? Image.asset(
-                      'assets/logo_auth.png',
-                      height: 105,
-                      width: 136,
-                    )
-                  : SvgPicture.asset(
-                      'assets/desktop/logo_desktop.svg',
-                      height: 25,
-                      width: 161,
-                    ),
+                  ? Assets.logoAuth.image(width: 136, height: 105)
+                  : Assets.desktop.logoDesktop.svg(width: 161, height: 25),
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
@@ -157,9 +149,7 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                     : CircleAvatar(
                                         radius: 40,
                                         backgroundColor: AppColor.appGreyAccent,
-                                        child: SvgPicture.asset(
-                                          'assets/icons/ic_user.svg',
-                                        ),
+                                        child: Assets.icons.icUser.svg(),
                                       ),
                               ),
                               const SizedBox(

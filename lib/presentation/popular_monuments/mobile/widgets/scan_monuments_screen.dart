@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:monumento/application/popular_monuments/monument_3d_model/monument_3d_model_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_model_view_mobile.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -68,22 +68,20 @@ class _ScanMonumentsScreenState extends State<ScanMonumentsScreen> {
             }
             return Scaffold(
               appBar: AppBar(
-                backgroundColor: AppColor.appBackground,
-                leading: IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: AppColor.appBlack,
+                  backgroundColor: AppColor.appBackground,
+                  leading: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back,
+                      color: AppColor.appBlack,
+                    ),
                   ),
-                ),
-                title: SvgPicture.asset(
-                  'assets/mobile/logo_profile.svg',
-                  height: 25,
-                  width: 161,
-                ),
-              ),
+                  title: Assets.mobile.logoProfile.svg(
+                    height: 25,
+                    width: 161,
+                  )),
               body: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -244,10 +242,11 @@ class _ScanMonumentsScreenState extends State<ScanMonumentsScreen> {
                       width: 150,
                       child: ElevatedButton(
                         onPressed: () {
-                          locator<Monument3dModelBloc>().add(ViewMonument3DModel(
-                              monumentName: monument == ""
-                                  ? "Mount Rushmore National Memorial"
-                                  : monument));
+                          locator<Monument3dModelBloc>().add(
+                              ViewMonument3DModel(
+                                  monumentName: monument == ""
+                                      ? "Mount Rushmore National Memorial"
+                                      : monument));
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -256,11 +255,7 @@ class _ScanMonumentsScreenState extends State<ScanMonumentsScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(
-                              "assets/icons/ic_3d.svg",
-                              width: 24,
-                              height: 24,
-                            ),
+                            Assets.icons.ic3d.svg(),
                             SizedBox(
                               width: 8.w,
                             ),

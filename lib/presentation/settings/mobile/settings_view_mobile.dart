@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/settings/mobile/about_screen.dart';
 import 'package:monumento/presentation/settings/mobile/widgets/button_bar.dart';
 import 'package:monumento/service_locator.dart';
@@ -46,21 +47,22 @@ class _SettingsViewMobileState extends State<SettingsViewMobile> {
                 endIndent: 0,
               ),
               CustomButtonBar(
-                image: "assets/icons/ic_update_profile.svg",
+                image: Assets.icons.icUpdateProfile.path,
                 text: "Update Profile Details",
                 onTap: () {
                   context.push('/update_profile');
                 },
               ),
               CustomButtonBar(
-                image: "assets/icons/ic_privacy_policy.svg",
+                image: Assets.icons.icPrivacyPolicy.path,
                 text: "Privacy Policy",
                 onTap: () {
-                  launchUrl(Uri.parse("https://www.termsfeed.com/live/a33e0b4f-b0de-4174-bbf7-33d48dbf540d"));
+                  launchUrl(Uri.parse(
+                      "https://www.termsfeed.com/live/a33e0b4f-b0de-4174-bbf7-33d48dbf540d"));
                 },
               ),
               CustomButtonBar(
-                image: "assets/icons/ic_github.svg",
+                image: Assets.icons.icGithubSvg.path,
                 text: "GitHub",
                 onTap: () {
                   Navigator.of(context).push(
@@ -70,7 +72,7 @@ class _SettingsViewMobileState extends State<SettingsViewMobile> {
                 },
               ),
               CustomButtonBar(
-                image: "assets/icons/ic_logout.svg",
+                image: Assets.icons.icLogout.path,
                 text: "Log Out",
                 onTap: () {
                   locator<LoginRegisterBloc>().add(LogOutEvent());

@@ -3,12 +3,12 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/nearby_places/nearby_places_bloc.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_model_view_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_tile_mobile.dart';
 import 'package:monumento/service_locator.dart';
@@ -96,8 +96,7 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                           UnbookmarkMonument(widget.monument),
                         );
                       },
-                      icon: SvgPicture.asset(
-                        "assets/icons/ic_bookmark_filled.svg",
+                      icon: Assets.icons.icBookmarkFilled.svg(
                         width: 24,
                         height: 24,
                       ),
@@ -109,8 +108,7 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                           BookmarkMonument(widget.monument),
                         );
                       },
-                      icon: SvgPicture.asset(
-                        "assets/icons/ic_bookmark.svg",
+                      icon: Assets.icons.icBookmark.svg(
                         width: 24,
                         height: 24,
                       ),
@@ -176,8 +174,7 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                     },
                     child: Row(
                       children: [
-                        SvgPicture.asset(
-                          "assets/icons/ic_3d.svg",
+                        Assets.icons.ic3d.svg(
                           width: 24,
                           height: 24,
                         ),
@@ -244,10 +241,10 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                                   child: Column(
                                     children: [
                                       SizedBox(
-                                          height: 180,
-                                          width: 200,
-                                          child: Image.asset(
-                                              'assets/desktop/checkin.png')),
+                                        height: 180,
+                                        width: 200,
+                                        child: Assets.desktop.checkedin.image(),
+                                      ),
                                       const SizedBox(
                                         height: 20,
                                       ),
@@ -317,8 +314,7 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                         },
                         child: Row(
                           children: [
-                            SvgPicture.asset(
-                              "assets/icons/ic_checkin.svg",
+                            Assets.icons.icCheckin.svg(
                               width: 24,
                               height: 24,
                             ),

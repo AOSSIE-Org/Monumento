@@ -3,8 +3,8 @@ import 'dart:developer';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/presentation/profile_screen/mobile/user_connections_screen.dart';
 import 'package:monumento/presentation/profile_screen/mobile/widgets/follow_button.dart';
@@ -42,8 +42,7 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SvgPicture.asset(
-                  'assets/mobile/logo_profile.svg',
+                Assets.mobile.logoProfile.svg(
                   height: 25,
                   width: 161,
                 ),

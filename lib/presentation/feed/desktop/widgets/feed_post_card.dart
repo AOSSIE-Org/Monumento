@@ -8,11 +8,11 @@ import 'package:monumento/application/feed/comments/comments_bloc.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/domain/entities/comment_entity.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
-
 import 'package:timeago/timeago.dart' as timeago;
 
 class FeedPostCard extends StatefulWidget {
@@ -145,8 +145,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                         ),
                         child: Column(
                           children: [
-                            Image.asset(
-                              "assets/desktop/checkedin.png",
+                            Assets.desktop.checkedin.image(
                               width: 160,
                               height: 160,
                             ),
@@ -230,8 +229,8 @@ class _FeedPostCardState extends State<FeedPostCard>
                     likeBuilder: (isLiked) {
                       return SvgPicture.asset(
                         isLiked
-                            ? 'assets/icons/ic_heart_filled.svg'
-                            : 'assets/icons/ic_heart.svg',
+                            ? Assets.icons.icHeartFilled.path
+                            : Assets.icons.icHeart.path,
                         width: 24,
                         height: 24,
                       );
@@ -253,21 +252,13 @@ class _FeedPostCardState extends State<FeedPostCard>
                   ),
                 ),
                 IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/ic_comment.svg',
-                    width: 24,
-                    height: 24,
-                  ),
+                  icon: Assets.icons.icComment.svg(width: 24, height: 24),
                   onPressed: () {
                     commentFocusNode.requestFocus();
                   },
                 ),
                 IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/ic_share.svg',
-                    width: 24,
-                    height: 24,
-                  ),
+                  icon: Assets.icons.icShare.svg(width: 24, height: 24),
                   onPressed: () {},
                 ),
               ],
@@ -338,11 +329,8 @@ class _FeedPostCardState extends State<FeedPostCard>
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: SvgPicture.asset(
-                            'assets/icons/ic_share.svg',
-                            width: 24,
-                            height: 24,
-                          ),
+                          child:
+                              Assets.icons.icShare.svg(width: 24, height: 24),
                         ),
                       ),
                       isDense: true,

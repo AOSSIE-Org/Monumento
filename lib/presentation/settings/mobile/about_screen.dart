@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -55,7 +56,7 @@ class AboutScreen extends StatelessWidget {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
                         child: SvgPicture.asset(
-                          'assets/monumento_logo.svg',
+                          Assets.monumentoLogo.path,
                         ),
                       ),
                       const SizedBox(
@@ -89,9 +90,7 @@ class AboutScreen extends StatelessWidget {
                             color: AppColor.appBlack,
                             borderRadius:
                                 BorderRadius.all(Radius.circular(10))),
-                        child: Image.asset(
-                          'assets/aossie.png',
-                        ),
+                        child: Assets.aossie.image(),
                       ),
                       const SizedBox(
                         height: 20,
@@ -146,8 +145,7 @@ class AboutScreen extends StatelessWidget {
                             WidgetStatePropertyAll(AppColor.appPrimary)),
                     child: Row(
                       children: [
-                        Image.asset(
-                          'assets/icons/ic_github.png',
+                        Assets.icons.icGithubPng.image(
                           height: 20,
                           width: 20,
                         ),

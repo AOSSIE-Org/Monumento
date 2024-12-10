@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -49,10 +49,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
             const SizedBox(
               height: 24,
             ),
-            SvgPicture.asset(
-              'assets/desktop/logo_desktop.svg',
-              width: 220,
-            ),
+            Assets.desktop.logoDesktop.svg(width: 220),
             const SizedBox(
               height: 24,
             ),

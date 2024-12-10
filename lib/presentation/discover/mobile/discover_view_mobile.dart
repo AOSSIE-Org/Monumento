@@ -4,10 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/application/discover/search/search_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/discover/mobile/discover_profile_view_mobile.dart';
 import 'package:monumento/presentation/discover/mobile/widgets/discover_post_card_mobile.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
@@ -191,8 +191,7 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
           backgroundColor: AppColor.appBackground,
           title:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            SvgPicture.asset(
-              'assets/mobile/logo_discover.svg',
+            Assets.mobile.logoDiscover.svg(
               height: 25,
               width: 161,
             ),
