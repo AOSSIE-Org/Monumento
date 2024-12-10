@@ -57,105 +57,108 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppColor.appBackground,
       body: Form(
         key: formKey,
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Spacer(),
-              render == false
-                  ? Assets.logoAuth.image(width: 136, height: 105)
-                  : Assets.desktop.logoDesktop.svg(width: 161, height: 25),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
-                width: 380,
-                child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
-                  bloc: locator<LoginRegisterBloc>(),
-                  listener: (context, state) {
-                    if (state is SignUpFailed) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.message),
-                        ),
-                      );
-                    }
-                    if (state is SigninWithGoogleFailed) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.message),
-                        ),
-                      );
-                    }
-                  },
-                  child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                render == false
+                    ? Assets.logoAuth.image(width: 136, height: 105)
+                    : Assets.desktop.logoDesktop.svg(width: 161, height: 25),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
+                  width: 380,
+                  child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
                     bloc: locator<LoginRegisterBloc>(),
-                    builder: (context, state) {
-                      if (state is LoginRegisterLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColor.appPrimary,
-                            ),
+                    listener: (context, state) {
+                      if (state is SignUpFailed) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.message),
                           ),
                         );
                       }
-                      if (state is SignUpSuccess) {
-                        context.go('/');
-                      }
-                      return ExpandablePageView(
-                        pageSnapping: false,
-                        physics: const NeverScrollableScrollPhysics(),
-                        controller: controller,
-                        children: [
-                          SignUpDeciderWidget(
-                            onSignUpWithEmailPressed: () {
-                              render = true;
-                              setState(() {});
-                              controller.nextPage(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeIn,
-                              );
-                            },
-                            onSignUpWithGooglePressed: () {
-                              locator<LoginRegisterBloc>().add(
-                                LoginWithGooglePressed(),
-                              );
-                            },
+                      if (state is SigninWithGoogleFailed) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(state.message),
                           ),
-                          Column(
-                            children: [
-                              InkWell(
-                                onTap: () async {
-                                  final ImagePicker picker = ImagePicker();
-                                  final img = await picker.pickImage(
-                                    source: ImageSource.gallery,
-                                  );
-                                  setState(() {
-                                    image = img;
-                                  });
-                                },
-                                child: image != null
-                                    ? CircleAvatar(
-                                        radius: 40,
-                                        backgroundImage:
-                                            FileImage(File(image!.path)))
-                                    : CircleAvatar(
-                                        radius: 40,
-                                        backgroundColor: AppColor.appGreyAccent,
-                                        child: Assets.icons.icUser.svg(),
-                                      ),
+                        );
+                      }
+                    },
+                    child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+                      bloc: locator<LoginRegisterBloc>(),
+                      builder: (context, state) {
+                        if (state is LoginRegisterLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                AppColor.appPrimary,
                               ),
-                              const SizedBox(
-                                height: 22,
-                              ),
-                              CustomTextField(
+                            ),
+                          );
+                        }
+                        if (state is SignUpSuccess) {
+                          context.go('/');
+                        }
+                        return ExpandablePageView(
+                          pageSnapping: false,
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: controller,
+                          children: [
+                            SignUpDeciderWidget(
+                              onSignUpWithEmailPressed: () {
+                                render = true;
+                                setState(() {});
+                                controller.nextPage(
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeIn,
+                                );
+                              },
+                              onSignUpWithGooglePressed: () {
+                                locator<LoginRegisterBloc>().add(
+                                  LoginWithGooglePressed(),
+                                );
+                              },
+                            ),
+                            Column(
+                              children: [
+                                InkWell(
+                                  onTap: () async {
+                                    final ImagePicker picker = ImagePicker();
+                                    final img = await picker.pickImage(
+                                      source: ImageSource.gallery,
+                                    );
+                                    setState(() {
+                                      image = img;
+                                    });
+                                  },
+                                  child: image != null
+                                      ? CircleAvatar(
+                                          radius: 40,
+                                          backgroundImage:
+                                              FileImage(File(image!.path)))
+                                      : CircleAvatar(
+                                          radius: 40,
+                                          backgroundColor:
+                                              AppColor.appGreyAccent,
+                                          child: Assets.icons.icUser.svg(),
+                                        ),
+                                ),
+                                const SizedBox(
+                                  height: 22,
+                                ),
+                                CustomTextField(
                                   controller: nameController,
                                   text: 'Name',
                                   validateFunction: (value) {
@@ -164,24 +167,24 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                     }
                                     return null;
                                   },
-                                  autoValid:
-                                      AutovalidateMode.onUserInteraction),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              CustomTextField(
-                                  controller: usernameController,
-                                  text: 'Username',
-                                  validateFunction: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Username cannot be empty';
-                                    }
-                                    return null;
-                                  }),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              CustomTextField(
+                                  autoValid: AutovalidateMode.onUserInteraction,
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                CustomTextField(
+                                    controller: usernameController,
+                                    text: 'Username',
+                                    validateFunction: (value) {
+                                      if (value!.isEmpty) {
+                                        return 'Username cannot be empty';
+                                      }
+                                      return null;
+                                    }),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                CustomTextField(
                                   controller: statusController,
                                   text: 'Status',
                                   validateFunction: (value) {
@@ -190,12 +193,12 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                     }
                                     return null;
                                   },
-                                  autoValid:
-                                      AutovalidateMode.onUserInteraction),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              CustomTextField(
+                                  autoValid: AutovalidateMode.onUserInteraction,
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                CustomTextField(
                                   controller: emailController,
                                   text: 'Email',
                                   validateFunction: (value) {
@@ -206,12 +209,12 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                     }
                                     return null;
                                   },
-                                  autoValid:
-                                      AutovalidateMode.onUserInteraction),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              CustomTextField(
+                                  autoValid: AutovalidateMode.onUserInteraction,
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                CustomTextField(
                                   controller: passwordController,
                                   text: 'Password',
                                   isSeen: isSeen,
@@ -233,74 +236,74 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                     }
                                     return null;
                                   },
-                                  autoValid:
-                                      AutovalidateMode.onUserInteraction),
-                              const SizedBox(
-                                height: 48,
-                              ),
-                              SizedBox(
-                                width: double.infinity,
-                                child: CustomElevatedButton(
-                                    onPressed: () {
-                                      if (formKey.currentState!.validate()) {
-                                        locator<LoginRegisterBloc>().add(
-                                          SignUpWithEmailPressed(
-                                            email: emailController.text,
-                                            password: passwordController.text,
-                                            name: nameController.text,
-                                            username: usernameController.text,
-                                            status: statusController.text,
-                                            profilePictureFile: image != null
-                                                ? File(image!.path)
-                                                : null,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    text: 'Sign Up'),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Already have an account?',
-                                    style: AppTextStyles.s14(
-                                      color: AppColor.appSecondaryBlack,
-                                      fontType: FontType.REGULAR,
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      context.pop();
-                                    },
-                                    style: ButtonStyle(
-                                      overlayColor: WidgetStateProperty.all(
-                                        Colors.transparent,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Login',
+                                  autoValid: AutovalidateMode.onUserInteraction,
+                                ),
+                                const SizedBox(
+                                  height: 48,
+                                ),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: CustomElevatedButton(
+                                      onPressed: () {
+                                        if (formKey.currentState!.validate()) {
+                                          locator<LoginRegisterBloc>().add(
+                                            SignUpWithEmailPressed(
+                                              email: emailController.text,
+                                              password: passwordController.text,
+                                              name: nameController.text,
+                                              username: usernameController.text,
+                                              status: statusController.text,
+                                              profilePictureFile: image != null
+                                                  ? File(image!.path)
+                                                  : null,
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      text: 'Sign Up'),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Already have an account?',
                                       style: AppTextStyles.s14(
-                                        color: AppColor.appPrimary,
-                                        fontType: FontType.MEDIUM,
+                                        color: AppColor.appSecondaryBlack,
+                                        fontType: FontType.REGULAR,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      );
-                    },
+                                    TextButton(
+                                      onPressed: () {
+                                        context.pop();
+                                      },
+                                      style: ButtonStyle(
+                                        overlayColor: WidgetStateProperty.all(
+                                          Colors.transparent,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Login',
+                                        style: AppTextStyles.s14(
+                                          color: AppColor.appPrimary,
+                                          fontType: FontType.MEDIUM,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(),
-            ],
+              ],
+            ),
           ),
         ),
       ),
