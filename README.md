@@ -41,11 +41,27 @@ Install dependencies
 
 Create `.env` using template `.env.template` and add API keys
 ```
-cat .env.template > .dev.env
+cat .env.template > .env
 ```
 
+Add the following API keys to the `.env` file
 
-Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will add the `google-services.json` and `GoogleService-Info.plist` file for android, iOS, MacOS and Web, and also creates a `firebase_options.dart` file in the lib folder
+- `GOOGLE_SIGNIN_ANDROID_CLIENT_ID`: Obtain this from the Google Cloud Console for Android configuration.
+- `GOOGLE_SIGNIN_APPLE_CLIENT_ID`: Obtain this from the Google Cloud Console for iOS configuration.
+- `GOOGLE_SIGNIN_WEB_CLIENT_ID`: Obtain this from the Google Cloud Console for web configuration.
+- `GEOAPIFY_API_KEY`: Obtain this from the [Geoapify](https://www.geoapify.com/) website for fetching location.
+
+Refer to the updated guide below for obtaining these API keys:
+
+- [Google Cloud Console Guide](https://developers.google.com/identity) for Google Sign-In.
+- [Geoapify API Setup](https://www.geoapify.com/get-started-with-maps-api/)
+
+## Configure Firebase
+Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will:
+
+- Add the `google-services.json` file for Android.
+- Add the `GoogleService-Info.plist` file for iOS and MacOS.
+- Create the `firebase_options.dart` file in the lib folder.
 
 
 
