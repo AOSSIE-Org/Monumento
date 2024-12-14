@@ -63,7 +63,142 @@ Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/se
 - Add the `GoogleService-Info.plist` file for iOS and MacOS.
 - Create the `firebase_options.dart` file in the lib folder.
 
+## 📜 Populating Monument Data
 
+This script allows you to populate your Firestore database with predefined monument data. It’s a standalone tool that you can run once to seed your database—no need to run or modify any Flutter app.
+
+### Prerequisites
+
+1. **Node.js**:
+   Install Node.js from [https://nodejs.org](https://nodejs.org).
+   Verify installation: node -v
+   You should see a version number like i.e:
+
+2. **Firebase Project with Firestore Enabled**:
+- Go to [Firebase Console](https://console.firebase.google.com).
+- Create or select a project.
+- Enable Firestore.
+
+3. **Service Account Key**:
+- In the Firebase console, go to "Project Settings" → "Service accounts".
+- Click "Generate new private key" to download `serviceAccountKey.json`.
+- Save `serviceAccountKey.json` in a folder dedicated to running the script (not necessarily inside the Monumento project folder).
+
+### Steps to Populate Data
+
+1. **Set Up a Separate Folder**:
+Create a new folder (for example `firestore_scripts`):
+
+2. **Add the Script and Key**:
+- Place your `serviceAccountKey.json` here.
+- Create a `populate_monuments.js` file and copy the following script into it.
+```
+// populate_monuments.js
+
+
+// Import Firebase Admin SDK
+const admin = require('firebase-admin');
+
+// Load configuration from environment variables or a config file if desired.
+const serviceAccount = require('./serviceAccountKey.json'); // Update with your key file path
+
+// Initialize Firebase Admin SDK
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
+
+// Sample monument data
+const monumentsData = [
+    {
+      "city": "NA",
+      "communityId": "8zDOMVBZHO38gGLODH1d",
+      "coordinates": [43.8789472, -103.459825],
+      "country": "South Dakota",
+      "has3DModel": true,
+      "image":
+          "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/monuments%2FRushmore.png?alt=media&token=a33ee419-70ae-4c2c-bd20-091ff49f668f",
+      "image_1x1_":
+          "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/monuments%2FRushmore.png?alt=media&token=a33ee419-70ae-4c2c-bd20-091ff49f668f",
+      "images": [
+        "https://i0.wp.com/gregdisch.com/wp-content/uploads/2021/01/Mount-Rushmore-National-Memorial-20140915-_MG_7930.jpg?ssl=1",
+        "https://www.nps.gov/moru/learn/historyculture/images/Hall-of-Records-2017-2_1.jpg?maxwidth=1300&maxheight=1300&autorotate=false",
+        "https://regal-holidays.net/wp-content/uploads/2019/07/hawa-mahal-441563_1920.jpg",
+        "https://regal-holidays.net/wp-content/uploads/2019/07/architecture-3187940_1920.jpg",
+      ],
+      "isPopular": true,
+      "localExperts": [
+        {
+          "designation": "Local Guide",
+          "expertId": "A98DB973KW",
+          "imageUrl":
+              "https://tse4.mm.bing.net/th?id=OIP.dv5bNWXzayD0yiL_-sKuuwHaHa&pid=Api",
+          "name": "Thomas Baker",
+          "phoneNumber": "+911234567890"
+        },
+        {
+          "designation": "Freelance Photographer",
+          "expertId": "NKCRKENUII",
+          "imageUrl":
+              "https://tse4.mm.bing.net/th?id=OIP.dv5bNWXzayD0yiL_-sKuuwHaHa&pid=Api",
+          "name": "Andrew Harris",
+          "phoneNumber": "+910987654321"
+        }
+      ],
+      "modelLink":
+          "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/3dModels%2Fmount_rushmore%2Fscene?alt=media&token=522ada26-b7ae-4ef0-b682-dc595d6bf732",
+      "name": "Mount Rushmore National Memorial",
+      "rating": 3.9,
+      "wikiPageId": "185973",
+      "wikipediaLink": "https://en.wikipedia.org/wiki/Mount_Rushmore"
+    },
+  ];
+(async () => {
+  try {
+    console.log('Starting to populate the monuments collection...');
+
+    const batch = db.batch();
+
+    monumentsData.forEach(monument => {
+      // Create a new doc reference
+      const docRef = db.collection('monuments').doc();
+      // Set the id field inside the document to the docRef ID
+      const monumentWithId = { ...monument, id: docRef.id };
+      batch.set(docRef, monumentWithId);
+    });
+
+    await batch.commit();
+
+    console.log('Monuments collection populated successfully.');
+    process.exit(0);
+  } catch (error) {
+    console.error('Error populating monuments:', error);
+    process.exit(1);
+  }
+})();
+
+```
+
+3. **Install Dependencies**:
+- Install the Firebase Admin SDK:
+```
+npm install firebase-admin
+```
+If everything goes well, you should see:
+```
+Starting to populate the monuments collection...
+Monuments collection populated successfully.
+```
+Run the Script using this command:
+```
+node populate_monuments.js
+```
+4. **Verify in firestore**:: Check the Firebase console → Firestore Database → monuments collection. Your data should appear there.
+
+Notes:
+- You can rerun this script whenever you need to seed the data.
+- To add more monuments, modify the monumentsData array before running the script again.
 
 ## ✌️ Maintainers
 
