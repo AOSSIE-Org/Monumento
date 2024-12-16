@@ -82,25 +82,14 @@ This script allows you to populate your Firestore database with predefined monum
 3. **Service Account Key**:
 - In the Firebase console, go to "Project Settings" → "Service accounts".
 - Click "Generate new private key" to download `serviceAccountKey.json`.
-- Save `serviceAccountKey.json` in a folder dedicated to running the script (not necessarily inside the Monumento project folder).
+- Save `serviceAccountKey.json` in app root directory inside scripts folder.
 
-### Steps to Populate Data
-
-1. **Set Up a Separate Folder**:
-- Create a new folder (for example `firestore_scripts`) outside of the app directory, such as on your desktop, to organize and manage Firestore-related   scripts independently.
-
-2. **Add the Script and Key**:
-- Place your `serviceAccountKey.json` here.
-- First, create a file named populate_monuments.js in the firestore_scripts folder you created outside of the app directory (e.g., on your desktop).
-- Then, copy the contents of the populate_monuments.js script located in the scripts/populate_monuments.js folder at the root level of the app into this new file.
-
-3. **Install Dependencies**:
+4. **Install Dependencies**:
 - Install the Firebase Admin SDK:
 ```
 npm install firebase-admin
 ```
-- To run the script, open the Command Prompt (or terminal) and navigate to the firestore_scripts folder you created earlier outside of the app directory.
-- Once inside the firestore_scripts folder, execute the script using the following command:
+inside scripts folder, execute the script using the following command:
 ```
 node populate_monuments.js
 ```

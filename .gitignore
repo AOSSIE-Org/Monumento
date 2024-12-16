@@ -46,3 +46,15 @@ app.*.map.json
 
 # ENV related
 .env
+
+# Firebase Service Account Key
+scripts/serviceAccountKey.json
+
+# Node.js dependencies
+scripts/node_modules/
+
+# Lockfile
+scripts/package-lock.json
+
+# Other potential generated files
+scripts/package.json
