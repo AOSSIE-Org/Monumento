@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -23,7 +24,13 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
-  runApp(const MyApp());
+
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(),
+    ),
+  );
 }
 
 class NoThumbScrollBehavior extends ScrollBehavior {
@@ -65,6 +72,9 @@ class MyApp extends StatelessWidget {
     }
 
     return MaterialApp.router(
+      // ignore: deprecated_member_use
+      useInheritedMediaQuery: true,
+      locale: DevicePreview.locale(context),
       routerConfig: router,
       scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
       title: 'Monumento',
@@ -72,19 +82,22 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
       ),
       builder: (context, child) {
-        return ResponsiveBreakpoints.builder(
-          child: ScreenUtilInit(
-              designSize: designSize,
-              minTextAdapt: true,
-              builder: (context, _) {
-                return child!;
-              }),
-          breakpoints: [
-            const Breakpoint(start: 0, end: 450, name: MOBILE),
-            const Breakpoint(start: 451, end: 800, name: TABLET),
-            const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-            const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
-          ],
+        return DevicePreview.appBuilder(
+          context,
+          ResponsiveBreakpoints.builder(
+            child: ScreenUtilInit(
+                designSize: designSize,
+                minTextAdapt: true,
+                builder: (context, _) {
+                  return child!;
+                }),
+            breakpoints: [
+              const Breakpoint(start: 0, end: 450, name: MOBILE),
+              const Breakpoint(start: 451, end: 800, name: TABLET),
+              const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+              const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+            ],
+          ),
         );
       },
     );
