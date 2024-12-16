@@ -87,27 +87,27 @@ This script allows you to populate your Firestore database with predefined monum
 ### Steps to Populate Data
 
 1. **Set Up a Separate Folder**:
-Create a new folder (for example `firestore_scripts`):
+- Create a new folder (for example `firestore_scripts`) outside of the app directory, such as on your desktop, to organize and manage Firestore-related   scripts independently.
 
 2. **Add the Script and Key**:
 - Place your `serviceAccountKey.json` here.
-- Download the populate_monuments.js script from the link below and place it in the same folder, ensuring it retains the populate_monuments.js filename.
-
-[Download populate_monuments.js](https://drive.google.com/file/d/1PJT2qhH1hIMTIEf-r44FVWTVz4a5QShT/view?usp=drivesdk)
+- First, create a file named populate_monuments.js in the firestore_scripts folder you created outside of the app directory (e.g., on your desktop).
+- Then, copy the contents of the populate_monuments.js script located in the scripts/populate_monuments.js folder at the root level of the app into this new file.
 
 3. **Install Dependencies**:
 - Install the Firebase Admin SDK:
 ```
 npm install firebase-admin
 ```
+- To run the script, open the Command Prompt (or terminal) and navigate to the firestore_scripts folder you created earlier outside of the app directory.
+- Once inside the firestore_scripts folder, execute the script using the following command:
+```
+node populate_monuments.js
+```
 If everything goes well, you should see:
 ```
 Starting to populate the monuments collection...
 Monuments collection populated successfully.
-```
-Run the Script using this command:
-```
-node populate_monuments.js
 ```
 4. **Verify in firestore**:: Check the Firebase console → Firestore Database → monuments collection. Your data should appear there.
 
