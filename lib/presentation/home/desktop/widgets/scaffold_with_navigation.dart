@@ -210,6 +210,13 @@ class _NavigationRailDrawerState extends State<_NavigationRailDrawer> {
             height: 18,
           ),
         ),
+        SideMenuItem(
+          title: 'Log Out',
+          onTap: (a, b) {
+            locator<AuthenticationBloc>().add(LogOutPressed());
+          },
+          icon: const Icon(Icons.exit_to_app),
+        ),
       ],
       style: SideMenuStyle(
         selectedColor: AppColor.appPrimary,
