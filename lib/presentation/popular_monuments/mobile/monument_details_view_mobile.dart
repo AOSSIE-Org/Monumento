@@ -133,13 +133,10 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ImageTile(index: 1, images: images),
-                  ImageTile(index: 2, images: images),
-                  ImageTile(index: 3, images: images),
-                  ImageTile(index: 4, images: images),
-                  ImageTile(index: 5, images: images),
-                ],
+                children: List.generate(
+                  images.length,
+                  (index) => ImageTile(index: index, images: images),
+                ),
               ),
               const SizedBox(
                 height: 10,

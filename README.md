@@ -63,7 +63,46 @@ Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/se
 - Add the `GoogleService-Info.plist` file for iOS and MacOS.
 - Create the `firebase_options.dart` file in the lib folder.
 
+## 📜 Populating Monument Data
 
+This script allows you to populate your Firestore database with predefined monument data. It’s a standalone tool that you can run once to seed your database—no need to run or modify any Flutter app.
+
+### Prerequisites
+
+1. **Node.js**:
+   Install Node.js from [https://nodejs.org](https://nodejs.org).
+   Verify installation: node -v
+   You should see a version number like i.e:
+
+2. **Firebase Project with Firestore Enabled**:
+- Go to [Firebase Console](https://console.firebase.google.com).
+- Create or select a project.
+- Enable Firestore.
+
+3. **Service Account Key**:
+- In the Firebase console, go to "Project Settings" → "Service accounts".
+- Click "Generate new private key" to download `serviceAccountKey.json`.
+- Save `serviceAccountKey.json` in app root directory inside scripts folder.
+
+4. **Install Dependencies**:
+- Install the Firebase Admin SDK:
+```
+npm install firebase-admin
+```
+inside scripts folder, execute the script using the following command:
+```
+node populate_monuments.js
+```
+If everything goes well, you should see:
+```
+Starting to populate the monuments collection...
+Monuments collection populated successfully.
+```
+4. **Verify in firestore**:: Check the Firebase console → Firestore Database → monuments collection. Your data should appear there.
+
+Notes:
+- You can rerun this script whenever you need to seed the data.
+- To add more monuments, modify the monumentsData array before running the script again.
 
 ## ✌️ Maintainers
 
