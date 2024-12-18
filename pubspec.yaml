@@ -82,7 +82,7 @@ dependencies:
   url_launcher: ^6.3.0
   http:
   flutter_gen: ^5.8.0
-
+  device_preview: ^1.2.0 #Approximate how your Flutter app looks and performs on another device.
 
   # SVG / Vector Graphics
   flutter_svg: ^2.0.10+1
