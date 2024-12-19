@@ -8,6 +8,7 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/monument_details_view_mobile.dart';
 
 import 'monument_details_view_desktop.dart';
 

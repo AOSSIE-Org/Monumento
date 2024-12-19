@@ -396,41 +396,41 @@ class _MonumentDetailsViewDesktopState
                 SizedBox(
                   width: 14.w,
                 ),
-                Column(
-                  children: [
-                    Container(
-                      width: 185.w,
-                      height: 185.w,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(12.sp),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            widget.monument.images[4],
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 14.w,
-                    ),
-                    Container(
-                      width: 185.w,
-                      height: 185.w,
-                      decoration: BoxDecoration(
-                        color: Colors.yellow,
-                        borderRadius: BorderRadius.circular(12.sp),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            widget.monument.images[5],
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                // Column(
+                //   children: [
+                //     Container(
+                //       width: 185.w,
+                //       height: 185.w,
+                //       decoration: BoxDecoration(
+                //         color: Colors.blue,
+                //         borderRadius: BorderRadius.circular(12.sp),
+                //         image: DecorationImage(
+                //           image: CachedNetworkImageProvider(
+                //             widget.monument.images[3],
+                //           ),
+                //           fit: BoxFit.cover,
+                //         ),
+                //       ),
+                //     ),
+                //     SizedBox(
+                //       height: 14.w,
+                //     ),
+                //     Container(
+                //       width: 185.w,
+                //       height: 185.w,
+                //       decoration: BoxDecoration(
+                //         color: Colors.yellow,
+                //         borderRadius: BorderRadius.circular(12.sp),
+                //         image: DecorationImage(
+                //           image: CachedNetworkImageProvider(
+                //             widget.monument.images[3],
+                //           ),
+                //           fit: BoxFit.cover,
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
             SizedBox(
