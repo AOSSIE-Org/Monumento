@@ -48,7 +48,7 @@ app.*.map.json
 .env
 
 # Firebase Service Account Key
-scripts/serviceAccountKey.json
+lib/scripts/serviceAccountKey.json
 
 # Node.js dependencies
 scripts/node_modules/
