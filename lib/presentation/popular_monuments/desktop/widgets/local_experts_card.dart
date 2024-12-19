@@ -19,7 +19,7 @@ class _LocalExpertsCardState extends State<LocalExpertsCard> {
     var width = MediaQuery.sizeOf(context).width;
     return Card(
       child: SizedBox(
-        width: width * 0.26,
+        width: width * 0.25 -12,
         child: ListView.separated(
           shrinkWrap: true,
           itemBuilder: (ctx, index) {
