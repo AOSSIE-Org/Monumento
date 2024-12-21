@@ -38,211 +38,145 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColor.appBackground,
-      body: Form(
-        key: formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(
-              height: 24,
-            ),
-            Assets.desktop.logoDesktop.svg(width: 220),
-            const SizedBox(
-              height: 24,
-            ),
-            Center(
-              child: Card(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
-                  width: 380,
-                  child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
-                    bloc: locator<LoginRegisterBloc>(),
-                    listener: (context, state) {
-                      if (state is LoginFailed) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              state.message,
-                              style: AppTextStyles.s14(
-                                color: AppColor.appWhite,
-                                fontType: FontType.MEDIUM,
-                                isDesktop: true,
-                              ),
-                            ),
-                            backgroundColor: AppColor.appSecondary,
-                          ),
-                        );
-                      }
-                    },
-                    child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+    return SingleChildScrollView(
+      child: Container(
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 24,
+              ),
+              Assets.desktop.logoDesktop.svg(width: 220),
+              const SizedBox(
+                height: 24,
+              ),
+              Center(
+                child: Card(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 32, vertical: 50),
+                    width: 380,
+                    child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
                       bloc: locator<LoginRegisterBloc>(),
-                      builder: (context, state) {
-                        if (state is LoginRegisterLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColor.appPrimary,
+                      listener: (context, state) {
+                        if (state is LoginFailed) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                state.message,
+                                style: AppTextStyles.s14(
+                                  color: AppColor.appWhite,
+                                  fontType: FontType.MEDIUM,
+                                  isDesktop: true,
+                                ),
                               ),
+                              backgroundColor: AppColor.appSecondary,
                             ),
                           );
                         }
+                      },
+                      child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+                        bloc: locator<LoginRegisterBloc>(),
+                        builder: (context, state) {
+                          if (state is LoginRegisterLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColor.appPrimary,
+                                ),
+                              ),
+                            );
+                          }
 
-                        if (state is SigninWithGoogleSuccess) {
-                          while (context.canPop() == true) {
-                            context.pop();
+                          if (state is SigninWithGoogleSuccess) {
+                            while (context.canPop() == true) {
+                              context.pop();
+                            }
+                            if (mounted) {
+                              context.pushReplacement('/');
+                            }
                           }
-                          if (mounted) {
-                            context.pushReplacement('/');
-                          }
-                        }
-                        return Column(
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: SignInButton(
-                                padding: const EdgeInsets.all(4),
-                                Buttons.GoogleDark,
-                                onPressed: () {
-                                  locator<LoginRegisterBloc>().add(
-                                    LoginWithGooglePressed(),
-                                  );
-                                },
+                          return Column(
+                            children: [
+                              SizedBox(
+                                width: double.infinity,
+                                child: SignInButton(
+                                  padding: const EdgeInsets.all(4),
+                                  Buttons.GoogleDark,
+                                  onPressed: () {
+                                    locator<LoginRegisterBloc>().add(
+                                      LoginWithGooglePressed(),
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 22,
-                            ),
-                            const Text(
-                              'Or',
-                              style: TextStyle(
-                                color: AppColor.appSecondaryBlack,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
+                              const SizedBox(
+                                height: 22,
                               ),
-                            ),
-                            const SizedBox(
-                              height: 22,
-                            ),
-                            CustomTextField(
-                                controller: emailController,
-                                text: 'Email',
+                              const Text(
+                                'Or',
+                                style: TextStyle(
+                                  color: AppColor.appSecondaryBlack,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 22,
+                              ),
+                              CustomTextField(
+                                  controller: emailController,
+                                  text: 'Email',
+                                  isDesktop: true,
+                                  validateFunction: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter email.';
+                                    } else if (!value.contains('@')) {
+                                      return 'Please enter a valid email.';
+                                    }
+                                    return null;
+                                  },
+                                  autoValid:
+                                      AutovalidateMode.onUserInteraction),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              CustomTextField(
+                                controller: passwordController,
+                                text: 'Password',
                                 isDesktop: true,
+                                isSeen: isObscure,
                                 validateFunction: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Please enter email.';
-                                  } else if (!value.contains('@')) {
-                                    return 'Please enter a valid email.';
+                                    return 'Please enter password.';
+                                  } else if (value.length < 6) {
+                                    return 'Password must be at least 6 characters.';
                                   }
                                   return null;
                                 },
-                                autoValid: AutovalidateMode.onUserInteraction),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            CustomTextField(
-                              controller: passwordController,
-                              text: 'Password',
-                              isDesktop: true,
-                              isSeen: isObscure,
-                              validateFunction: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter password.';
-                                } else if (value.length < 6) {
-                                  return 'Password must be at least 6 characters.';
-                                }
-                                return null;
-                              },
-                              suffixIcon: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isObscure = !isObscure;
-                                  });
-                                },
-                                icon: Icon(isObscure
-                                    ? Icons.visibility_off
-                                    : Icons.visibility),
-                              ),
-                              autoValid: AutovalidateMode.onUserInteraction,
-                            ),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  context.push('/reset-password');
-                                },
-                                style: ButtonStyle(
-                                  overlayColor: WidgetStateProperty.all(
-                                    Colors.transparent,
-                                  ),
-                                ),
-                                child: Text(
-                                  'Forgot Password?',
-                                  style: AppTextStyles.s14(
-                                    color: AppColor.appSecondary,
-                                    fontType: FontType.MEDIUM,
-                                    isDesktop: true,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 48,
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: CustomElevatedButton(
-                                isDesktop: true,
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    locator<LoginRegisterBloc>().add(
-                                      LoginWithEmailPressed(
-                                        email: emailController.text,
-                                        password: passwordController.text,
-                                      ),
-                                    );
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          'Please enter valid email and password',
-                                          style: AppTextStyles.s14(
-                                            color: AppColor.appWhite,
-                                            fontType: FontType.MEDIUM,
-                                            isDesktop: true,
-                                          ),
-                                        ),
-                                        backgroundColor: AppColor.appSecondary,
-                                      ),
-                                    );
-                                  }
-                                },
-                                text: 'Login',
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 26,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Don\'t have an account?',
-                                  style: AppTextStyles.s14(
-                                    color: AppColor.appSecondaryBlack,
-                                    fontType: FontType.REGULAR,
-                                    isDesktop: true,
-                                  ),
-                                ),
-                                TextButton(
+                                suffixIcon: IconButton(
                                   onPressed: () {
-                                    context.push('/register');
+                                    setState(() {
+                                      isObscure = !isObscure;
+                                    });
+                                  },
+                                  icon: Icon(isObscure
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                ),
+                                autoValid: AutovalidateMode.onUserInteraction,
+                              ),
+                              const SizedBox(
+                                height: 16,
+                              ),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: TextButton(
+                                  onPressed: () {
+                                    context.push('/reset-password');
                                   },
                                   style: ButtonStyle(
                                     overlayColor: WidgetStateProperty.all(
@@ -250,25 +184,95 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                     ),
                                   ),
                                   child: Text(
-                                    'Sign Up',
+                                    'Forgot Password?',
                                     style: AppTextStyles.s14(
-                                      color: AppColor.appPrimary,
+                                      color: AppColor.appSecondary,
                                       fontType: FontType.MEDIUM,
                                       isDesktop: true,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
+                              ),
+                              const SizedBox(
+                                height: 48,
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: CustomElevatedButton(
+                                  isDesktop: true,
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate()) {
+                                      locator<LoginRegisterBloc>().add(
+                                        LoginWithEmailPressed(
+                                          email: emailController.text,
+                                          password: passwordController.text,
+                                        ),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Please enter valid email and password',
+                                            style: AppTextStyles.s14(
+                                              color: AppColor.appWhite,
+                                              fontType: FontType.MEDIUM,
+                                              isDesktop: true,
+                                            ),
+                                          ),
+                                          backgroundColor:
+                                              AppColor.appSecondary,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  text: 'Login',
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 26,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Don\'t have an account?',
+                                    style: AppTextStyles.s14(
+                                      color: AppColor.appSecondaryBlack,
+                                      fontType: FontType.REGULAR,
+                                      isDesktop: true,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      context.push('/register');
+                                    },
+                                    style: ButtonStyle(
+                                      overlayColor: WidgetStateProperty.all(
+                                        Colors.transparent,
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Sign Up',
+                                      style: AppTextStyles.s14(
+                                        color: AppColor.appPrimary,
+                                        fontType: FontType.MEDIUM,
+                                        isDesktop: true,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
