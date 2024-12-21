@@ -21,7 +21,7 @@ class _NearbyPlacesCardState extends State<NearbyPlacesCard> {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
-        width: 1024.w,
+        width: MediaQuery.of(context).size.width < 530 ? 380.w :1024.w,
         padding: EdgeInsets.symmetric(
           horizontal: 24.w,
           vertical: 12.h,

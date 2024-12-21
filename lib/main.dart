@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
     if (kIsWeb) {
       // if width is less than 530, it means the user resized the window to a smaller size
       if (MediaQuery.of(context).size.width < 530) {
-        designSize = const Size(1390, 844);
+        designSize = const Size(390, 844);
       } else {
         designSize = const Size(1440, 1024);
       }
