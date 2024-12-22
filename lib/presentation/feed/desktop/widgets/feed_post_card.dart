@@ -182,7 +182,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                       image: DecorationImage(
                         image: CachedNetworkImageProvider(
                             widget.post.imageUrl ?? ""),
-                        fit: BoxFit.fitHeight,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),
