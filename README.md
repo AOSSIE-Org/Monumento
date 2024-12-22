@@ -5,6 +5,7 @@
 <br><br>
 
 # Monumento 🌎
+
  </div>
  <div align="center">
 
@@ -16,11 +17,29 @@
 Monumento is an AR-integrated social app that transforms how you connect with the world’s most iconic landmarks. Through Monumento, you can check in to popular monuments, explore famous sites, and discover new people, all within a social platform dedicated to cultural and historical experiences. Whether you're a traveler or a history enthusiast, Monumento offers an immersive way to engage with the world’s most treasured locations.
 
 ## 💻 Technologies Used
+
 - Dart
 - Flutter
 - Firebase
 
-## 🖥️ How to setup locally
+## **▶️ How to run the Monumento app**
+
+### 1) First clone the app into your local machine
+
+- Follow these [guidelines](#step-1-️-how-to-setup-project-locally) to setup project locally
+
+### 2) Then Configure Firebase
+
+- Follw these [guidelines](#step-2-configure-firebase) to Configure Firebase
+
+### 3) Adds the monuments Data
+
+- Use these [guidelines](#step-3-populating-monument-data) to run a script which adds monuments data.
+
+<a id="setup-project-locally"></a>
+
+## Step 1) 🖥️ How to setup Project locally
+
 Clone the project
 
 ```
@@ -40,6 +59,7 @@ Install dependencies
 ```
 
 Create `.env` using template `.env.template` and add API keys
+
 ```
 cat .env.template > .env
 ```
@@ -56,14 +76,15 @@ Refer to the updated guide below for obtaining these API keys:
 - [Google Cloud Console Guide](https://developers.google.com/identity) for Google Sign-In.
 - [Geoapify API Setup](https://www.geoapify.com/get-started-with-maps-api/)
 
-## Configure Firebase
+## Step 2) Configure Firebase
+
 Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will:
 
 - Add the `google-services.json` file for Android.
 - Add the `GoogleService-Info.plist` file for iOS and MacOS.
 - Create the `firebase_options.dart` file in the lib folder.
 
-## 📜 Populating Monument Data
+## Step 3)📜 Populating Monument Data
 
 This script allows you to populate your Firestore database with predefined monument data. It’s a standalone tool that you can run once to seed your database—no need to run or modify any Flutter app.
 
@@ -75,42 +96,52 @@ This script allows you to populate your Firestore database with predefined monum
    You should see a version number like i.e:
 
 2. **Firebase Project with Firestore Enabled**:
+
 - Go to [Firebase Console](https://console.firebase.google.com).
 - Create or select a project.
 - Enable Firestore.
 
 3. **Service Account Key**:
+
 - In the Firebase console, go to "Project Settings" → "Service accounts".
 - Click "Generate new private key" to download `serviceAccountKey.json`.
 - Save `serviceAccountKey.json` in app root directory inside scripts folder.
 
 4. **Install Dependencies**:
+
 - Install the Firebase Admin SDK:
+
 ```
 npm install firebase-admin
 ```
+
 inside scripts folder, execute the script using the following command:
+
 ```
 node populate_monuments.js
 ```
+
 If everything goes well, you should see:
+
 ```
 Starting to populate the monuments collection...
 Monuments collection populated successfully.
 ```
+
 4. **Verify in firestore**:: Check the Firebase console → Firestore Database → monuments collection. Your data should appear there.
 
 Notes:
+
 - You can rerun this script whenever you need to seed the data.
 - To add more monuments, modify the monumentsData array before running the script again.
 
 ## ✌️ Maintainers
 
--   [Jaideep Prasad](https://github.com/jddeep)
--   [Chandan S Gowda](https://github.com/chandansgowda)
-
+- [Jaideep Prasad](https://github.com/jddeep)
+- [Chandan S Gowda](https://github.com/chandansgowda)
 
 ## 🙌 Contributing
+
 ⭐ Don't forget to star this repository if you find it useful! ⭐
 
 Thank you for considering contributing to this project! Contributions are highly appreciated and welcomed. To ensure a smooth collaboration, Refer to the [Contribution Guidelines](https://github.com/AOSSIE-Org/Monumento/blob/master/contributing.md).
@@ -119,12 +150,12 @@ We appreciate your contributions and look forward to working with you to make th
 
 By following these guidelines, we can maintain a productive and collaborative open-source environment. Thank you for your support!
 
-
 ## 📍 License
 
 Distributed under the [GNU General Public License](https://opensource.org/license/gpl-3-0/). See [LICENSE](https://github.com/AOSSIE-Org/Monumento/blob/master/LICENSE) for more information.
 
 ## 📫 Communication Channels
+
 If you have any questions, need clarifications, or want to discuss ideas, feel free to reach out through the following channels:
 
 [Discord Server](https://discord.com/invite/6mFZ2S846n)\
