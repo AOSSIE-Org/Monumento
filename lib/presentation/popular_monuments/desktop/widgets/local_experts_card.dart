@@ -7,7 +7,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class LocalExpertsCard extends StatefulWidget {
   final List<LocalExpertEntity> localExperts;
-  const LocalExpertsCard({super.key, required this.localExperts});
+  final double width;
+  const LocalExpertsCard({super.key, required this.localExperts, required this.width});
 
   @override
   State<LocalExpertsCard> createState() => _LocalExpertsCardState();
@@ -16,10 +17,10 @@ class LocalExpertsCard extends StatefulWidget {
 class _LocalExpertsCardState extends State<LocalExpertsCard> {
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.sizeOf(context).width;
+    var width = widget.width;
     return Card(
       child: SizedBox(
-        width: width * 0.26,
+        width: width ,
         child: ListView.separated(
           shrinkWrap: true,
           itemBuilder: (ctx, index) {

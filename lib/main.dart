@@ -25,6 +25,8 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
 
+  // runApp(MyApp());
+
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,

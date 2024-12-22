@@ -13,6 +13,7 @@ import 'package:monumento/presentation/popular_monuments/desktop/widgets/local_e
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import 'monument_model_view_desktop.dart';
 import 'widgets/nearby_places_card.dart';
@@ -320,119 +321,80 @@ class _MonumentDetailsViewDesktopState
             SizedBox(
               height: 12.h,
             ),
-            Row(
-              children: [
-                SizedBox(
-                  width: 24.w,
-                ),
-                Container(
-                  width: 584.w,
-                  height: 380.w,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.sp),
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        widget.monument.images[0],
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 14.w,
-                ),
-                Container(
-                  width: 380.w,
-                  height: 380.w,
-                  decoration: BoxDecoration(
-                    color: Colors.green,
-                    borderRadius: BorderRadius.circular(12.sp),
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(
-                        widget.monument.images[1],
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 14.w,
-                ),
-                Column(
-                  children: [
-                    Container(
-                      width: 185.w,
-                      height: 185.w,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(12.sp),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            widget.monument.images[2],
-                          ),
-                          fit: BoxFit.cover,
+            if (widget.monument.images.isNotEmpty) // Add null check
+              MediaQuery.of(context).size.width > 530
+                  ? Container(
+                      height: 380.w, // Match your previous container height
+                      child: CarouselSlider.builder(
+                        options: CarouselOptions(
+                          aspectRatio: 2.0,
+                          enlargeCenterPage: false,
+                          viewportFraction: 1,
+                          enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+                          enlargeFactor: 0.4,
+                          height: 380.w, // Set explicit height
                         ),
+                        itemCount: ((widget.monument.images.length + 1) ~/
+                            2), // Better division handling
+                        itemBuilder: (context, index, realIdx) {
+                          final int first = index * 2;
+                          final int second = first + 1;
+                          return Row(
+                            children: [first, second].map((idx) {
+                              return Expanded(
+                                flex: 1,
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 10),
+                                  child: idx < widget.monument.images.length
+                                      ? CachedNetworkImage(
+                                          imageUrl: widget.monument.images[idx],
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) =>
+                                              Container(
+                                            width: double.infinity,
+                                            height: 380.w,
+                                            child: Center(
+                                              child: SizedBox(
+                                                width: 50,
+                                                height: 50,
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              ),
+                                            ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(Icons.error),
+                                        )
+                                      : Container(), // Handle odd number of images
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        },
                       ),
-                    ),
-                    SizedBox(
-                      height: 12.w,
-                    ),
-                    Container(
-                      width: 185.w,
-                      height: 185.w,
-                      decoration: BoxDecoration(
-                        color: Colors.yellow,
-                        borderRadius: BorderRadius.circular(12.sp),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            widget.monument.images[3],
-                          ),
-                          fit: BoxFit.cover,
+                    )
+                  : Container(
+                      height: 380.w, // Match your previous container height
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          aspectRatio: 2.0,
+                          enlargeCenterPage: false,
+                          viewportFraction: 1,
+                          enlargeStrategy: CenterPageEnlargeStrategy.zoom,
+                          enlargeFactor: 0.4,
+                          height: 380.w, // Set explicit height
                         ),
+                        items: widget.monument.images
+                            .map((image) => CachedNetworkImage(
+                                  imageUrl: image,
+                                  placeholder: (context, url) =>
+                                      new CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      new Icon(Icons.error),
+                                ))
+                            .toList(),
                       ),
                     ),
-                  ],
-                ),
-                SizedBox(
-                  width: 14.w,
-                ),
-                Column(
-                  children: [
-                    Container(
-                      width: 185.w,
-                      height: 185.w,
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(12.sp),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            widget.monument.images[4],
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 14.w,
-                    ),
-                    Container(
-                      width: 185.w,
-                      height: 185.w,
-                      decoration: BoxDecoration(
-                        color: Colors.yellow,
-                        borderRadius: BorderRadius.circular(12.sp),
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider(
-                            widget.monument.images[5],
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
             SizedBox(
               height: 12.w,
             ),
@@ -492,7 +454,9 @@ class _MonumentDetailsViewDesktopState
                           return Column(
                             children: [
                               SizedBox(
-                                width: 1030.w,
+                                width: MediaQuery.of(context).size.width < 530
+                                    ? 380.w
+                                    : 1030.w,
                                 child: Card(
                                   child: ExpansionTile(
                                     collapsedBackgroundColor: AppColor.appWhite,
@@ -506,7 +470,9 @@ class _MonumentDetailsViewDesktopState
                                 ),
                               ),
                               SizedBox(
-                                width: 1030.w,
+                                width: MediaQuery.of(context).size.width < 530
+                                    ? 380.w
+                                    : 1030.w,
                                 child: Card(
                                   child: ExpansionTile(
                                     collapsedBackgroundColor: AppColor.appWhite,
@@ -534,7 +500,9 @@ class _MonumentDetailsViewDesktopState
                       builder: (context, state) {
                         if (state is NearbyPlacesLoading) {
                           return SizedBox(
-                            width: 1020.w,
+                            width: MediaQuery.of(context).size.width < 530
+                                ? 380.w
+                                : 1020.w,
                             child: const Center(
                               child: CircularProgressIndicator(
                                 color: AppColor.appPrimary,
@@ -557,9 +525,17 @@ class _MonumentDetailsViewDesktopState
                     ? const SizedBox()
                     : LocalExpertsCard(
                         localExperts: widget.monument.localExperts,
+                        width: MediaQuery.sizeOf(context).width * 0.25,
                       ),
               ],
             ),
+            widget.monument.localExperts.isEmpty ||
+                    MediaQuery.sizeOf(context).width > 870
+                ? const SizedBox()
+                : LocalExpertsCard(
+                    localExperts: widget.monument.localExperts,
+                    width: MediaQuery.sizeOf(context).width * 0.74,
+                  ),
           ],
         ),
       ),
