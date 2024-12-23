@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/application/discover/search/search_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
@@ -11,6 +12,7 @@ import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/discover/mobile/discover_profile_view_mobile.dart';
 import 'package:monumento/presentation/discover/mobile/widgets/discover_post_card_mobile.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
+import 'package:monumento/presentation/profile_screen/mobile/profile_screen_mobile.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
@@ -128,33 +130,49 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
                                       shrinkWrap: true,
                                       itemCount: state.searchedUsers.length,
                                       itemBuilder: (context, index) {
-                                        return ListTile(
-                                          leading: CircleAvatar(
-                                            backgroundImage:
-                                                CachedNetworkImageProvider(
-                                              state.searchedUsers[index]
-                                                      .profilePictureUrl ??
-                                                  defaultProfilePicture,
-                                            ),
-                                          ),
-                                          title: Text(
-                                              state.searchedUsers[index].name),
-                                          subtitle: Text(
-                                            state.searchedUsers[index]
-                                                    .username ??
-                                                '',
-                                          ),
-                                          onTap: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      DiscoverProfileViewMobile(
-                                                        user:
-                                                            state.searchedUsers[
+                                        // add the authbloc to check whether the currentuser is the same as the user being searched for/clicked on
+                                        return BlocBuilder<AuthenticationBloc,
+                                            AuthenticationState>(
+                                          bloc: locator<AuthenticationBloc>(),
+                                          builder: (context, authState) {
+                                            authState as Authenticated;
+                                            return ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundImage:
+                                                    CachedNetworkImageProvider(
+                                                  state.searchedUsers[index]
+                                                          .profilePictureUrl ??
+                                                      defaultProfilePicture,
+                                                ),
+                                              ),
+                                              title: Text(state
+                                                  .searchedUsers[index].name),
+                                              subtitle: Text(
+                                                state.searchedUsers[index]
+                                                        .username ??
+                                                    '',
+                                              ),
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                    return (authState
+                                                                .user.uid ==
+                                                            state
+                                                                .searchedUsers[
+                                                                    index]
+                                                                .uid)
+                                                        ? ProfileScreenMobile()
+                                                        : DiscoverProfileViewMobile(
+                                                            user: state
+                                                                    .searchedUsers[
                                                                 index],
-                                                      )),
+                                                          );
+                                                  }),
+                                                );
+                                                hideOverlay();
+                                              },
                                             );
-                                            hideOverlay();
                                           },
                                         );
                                       },
