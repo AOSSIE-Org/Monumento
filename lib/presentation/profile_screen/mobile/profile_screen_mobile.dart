@@ -38,6 +38,7 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
 
     return Scaffold(
         appBar: AppBar(
+            foregroundColor: AppColor.appBlack,
             backgroundColor: AppColor.appBackground,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
