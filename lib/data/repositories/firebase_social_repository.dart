@@ -544,20 +544,34 @@ class FirebaseSocialRepository implements SocialRepository {
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
+/*
+    Unnecessary check for empty followingUids 
 
     List<String> followingUids = user!.following;
     if (followingUids.isEmpty) {
-      return [];
+    return [];
     }
+
+*/
+
     QuerySnapshot snap = await _database
         .collection("posts")
-        //  .where("postByUid", whereNotIn: followingUids)
         .where("postType", isEqualTo: 0)
-        // .orderBy("timeStamp", descending: true)
         .limit(8)
         .get();
+/*chetak's code*/
 
-    List<PostModel> posts = await Future.wait(snap.docs.map((e) async {
+    // filtering out posts from users other than the current user
+    final filteredDocs = snap.docs.where((doc) {
+      return !(doc.get("author.uid") == user!.uid);
+    }).toList();
+
+    // for (var doc in filteredDocs) {
+    //   print("Filtered Document: ${doc.data()}");
+    // }
+    // print(filteredDocs.length);
+
+    List<PostModel> posts = await Future.wait(filteredDocs.map((e) async {
       var data = e.data() as Map<String, dynamic>;
       if (data['postId'] == null) {
         data['postId'] = e.id;
@@ -568,7 +582,7 @@ class FirebaseSocialRepository implements SocialRepository {
               .collection('posts')
               .doc(e.id)
               .collection('likes')
-              .doc(user.uid)
+              .doc(user!.uid)
               .get();
           if (likeDoc.exists) {
             if (likeDoc.data()!['likedPost'] == true) {
@@ -595,8 +609,15 @@ class FirebaseSocialRepository implements SocialRepository {
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
+
+    if (user!.uid == targetUser.uid) {
+      throw Exception("Can't follow urself!");
+
+      // add a scaffoldMessenger for this :/
+    }
+    /*chetak's code ends */
     await _database.collection('users').doc(targetUser.uid).update({
-      'followers': FieldValue.arrayUnion([user!.uid])
+      'followers': FieldValue.arrayUnion([user.uid])
     });
 
     await _database.collection('users').doc(user.uid).update({

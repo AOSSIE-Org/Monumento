@@ -31,13 +31,15 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    // the Bloc event for getting the discover profile posts wasn't being called at all, added the event
+    locator<DiscoverProfileBloc>()
+        .add(LoadDiscoverProfilePosts(userId: widget.user.uid));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     List<PostEntity> posts = [];
-
     return Scaffold(
         appBar: AppBar(
             backgroundColor: AppColor.appBackground,
@@ -215,62 +217,70 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 height: MediaQuery.of(context).size.height,
-                child: Expanded(
-                  child: BlocBuilder<DiscoverProfileBloc, DiscoverProfileState>(
-                    bloc: locator<DiscoverProfileBloc>(),
-                    builder: (context, postsState) {
-                      if (postsState is DiscoverProfilePostsLoaded) {
-                        posts = [];
-                        posts.insertAll(posts.length, postsState.posts);
-                      }
-                      // if (postsState is MoreDiscoverPostsLoaded) {
-                      //   posts.insertAll(posts.length,
-                      //       postsState.posts as Iterable<PostEntity>);
-                      // }
-                      return posts.isEmpty
-                          ? const Center(
-                              child: Text("No posts to display"),
-                            )
-                          : GridView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              itemCount: posts.length,
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      childAspectRatio: 1,
-                                      mainAxisSpacing: 8,
-                                      crossAxisSpacing: 8),
-                              itemBuilder: (BuildContext context, int index) {
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserPostDetailsScreen(
-                                          post: posts,
-                                          index: index,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: CachedNetworkImage(
-                                      imageUrl: posts[index].imageUrl ??
-                                          defaultProfilePicture,
-                                      imageBuilder: (context, imageProvider) =>
-                                          Container(
-                                              decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12.sp),
-                                            image: DecorationImage(
-                                              image: imageProvider,
-                                              fit: BoxFit.cover,
+                child: BlocBuilder<DiscoverProfileBloc, DiscoverProfileState>(
+                  bloc: locator<DiscoverProfileBloc>(),
+                  builder: (context, postsState) {
+                    if (postsState is DiscoverProfilePostsLoaded) {
+                      posts = [];
+                      posts.insertAll(posts.length, postsState.posts);
+                    }
+                    // if (postsState is MoreDiscoverPostsLoaded) {
+                    //   posts.insertAll(posts.length,
+                    //       postsState.posts as Iterable<PostEntity>);
+                    // }
+                    return posts.isEmpty
+                        ? const Center(
+                            child: Text("No posts to display"),
+                          )
+                        : Flex(
+                            direction: Axis.vertical,
+                            children: [
+                              Expanded(
+                                child: GridView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: posts.length,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            childAspectRatio: 1,
+                                            mainAxisSpacing: 8,
+                                            crossAxisSpacing: 8),
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  UserPostDetailsScreen(
+                                                post: posts,
+                                                index: index,
+                                              ),
                                             ),
-                                          ))),
-                                );
-                              });
-                    },
-                  ),
+                                          );
+                                        },
+                                        child: CachedNetworkImage(
+                                            imageUrl: posts[index].imageUrl ??
+                                                defaultProfilePicture,
+                                            imageBuilder: (context,
+                                                    imageProvider) =>
+                                                Container(
+                                                    decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.sp),
+                                                  image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ))),
+                                      );
+                                    }),
+                              ),
+                            ],
+                          );
+                  },
                 ),
               ),
             ],
