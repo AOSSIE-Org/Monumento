@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/domain/entities/local_expert_entity.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/extensions_helper.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LocalExpertsCard extends StatefulWidget {
@@ -34,7 +35,7 @@ class _LocalExpertsCardState extends State<LocalExpertsCard> {
           ),
           Divider(),
           SizedBox(
-            width: MediaQuery.of(context).size.width < 530 ? 380.w : 1030.w,
+            width: context.screenWidth < 530 ? 380.w : 1030.w,
             child: ListView.separated(
               shrinkWrap: true,
               itemBuilder: (ctx, index) {
