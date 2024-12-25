@@ -33,10 +33,16 @@ class _UserConnectionsScreenState extends State<UserConnectionsScreen> {
                   color: AppColor.appBlack,
                 ),
               ),
-              title: Text(
-                "Post",
-                style: AppTextStyles.s18(
-                    color: AppColor.appBlack, fontType: FontType.BOLD),
+              title: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                bloc: locator<AuthenticationBloc>(),
+                builder: (context, state) {
+                  state as Authenticated;
+                  return Text(
+                    "@${state.user.username}",
+                    style: AppTextStyles.s18(
+                        color: AppColor.appBlack, fontType: FontType.BOLD),
+                  );
+                },
               ),
               bottom: const TabBar(
                   labelColor: AppColor.appBlack,
