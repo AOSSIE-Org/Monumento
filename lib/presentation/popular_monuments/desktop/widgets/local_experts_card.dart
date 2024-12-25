@@ -18,25 +18,25 @@ class LocalExpertsCard extends StatefulWidget {
 class _LocalExpertsCardState extends State<LocalExpertsCard> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "Local Guides and Experts",
-              style: AppTextStyles.s18(
-                color: AppColor.appSecondary,
-                fontType: FontType.MEDIUM,
-                isDesktop: true,
+    return SizedBox(
+      width: context.screenWidth < 530 ? 380.w : 1030.w,
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "Local Guides and Experts",
+                style: AppTextStyles.s18(
+                  color: AppColor.appSecondary,
+                  fontType: FontType.MEDIUM,
+                  isDesktop: true,
+                ),
               ),
             ),
-          ),
-          Divider(),
-          SizedBox(
-            width: context.screenWidth < 530 ? 380.w : 1030.w,
-            child: ListView.separated(
+            Divider(),
+            ListView.separated(
               shrinkWrap: true,
               itemBuilder: (ctx, index) {
                 return ListTile(
@@ -98,8 +98,8 @@ class _LocalExpertsCardState extends State<LocalExpertsCard> {
               },
               itemCount: widget.localExperts.length,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

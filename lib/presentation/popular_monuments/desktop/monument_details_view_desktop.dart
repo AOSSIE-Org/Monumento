@@ -520,16 +520,9 @@ class _MonumentDetailsViewDesktopState
                     ),
                   ],
                 ),
-                widget.monument.localExperts.isEmpty ||
-                        MediaQuery.sizeOf(context).width < 870
-                    ? const SizedBox()
-                    : LocalExpertsCard(
-                        localExperts: widget.monument.localExperts,
-                      ),
               ],
             ),
-            widget.monument.localExperts.isEmpty ||
-                    MediaQuery.sizeOf(context).width > 870
+            widget.monument.localExperts.isEmpty
                 ? const SizedBox()
                 : LocalExpertsCard(
                     localExperts: widget.monument.localExperts,
