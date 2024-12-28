@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +14,6 @@ import 'package:monumento/presentation/popular_monuments/desktop/widgets/local_e
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 import 'monument_model_view_desktop.dart';
 import 'widgets/nearby_places_card.dart';
@@ -520,21 +520,12 @@ class _MonumentDetailsViewDesktopState
                     ),
                   ],
                 ),
-                widget.monument.localExperts.isEmpty ||
-                        MediaQuery.sizeOf(context).width < 870
-                    ? const SizedBox()
-                    : LocalExpertsCard(
-                        localExperts: widget.monument.localExperts,
-                        width: MediaQuery.sizeOf(context).width * 0.25,
-                      ),
               ],
             ),
-            widget.monument.localExperts.isEmpty ||
-                    MediaQuery.sizeOf(context).width > 870
+            widget.monument.localExperts.isEmpty
                 ? const SizedBox()
                 : LocalExpertsCard(
                     localExperts: widget.monument.localExperts,
-                    width: MediaQuery.sizeOf(context).width * 0.74,
                   ),
           ],
         ),
