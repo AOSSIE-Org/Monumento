@@ -77,7 +77,7 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                       fontType: FontType.MEDIUM,
                                     ),
                                   ),
-                                  backgroundColor: AppColor.appSecondary,
+                                  backgroundColor: AppColor.appWarningRed,
                                 ),
                               );
                             }
