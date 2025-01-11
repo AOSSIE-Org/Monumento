@@ -86,6 +86,9 @@ class MyApp extends StatelessWidget {
       title: 'Monumento',
       theme: ThemeData(
         useMaterial3: false,
+        tabBarTheme: TabBarTheme(
+          indicatorColor: AppColor.appPrimary,
+        )
       ),
       builder: (context, child) {
         return DevicePreview.appBuilder(
