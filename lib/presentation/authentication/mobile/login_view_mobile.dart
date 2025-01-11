@@ -71,13 +71,13 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    state.message,
+                                    "Invalid email or password, please try again.",
                                     style: AppTextStyles.s14(
                                       color: AppColor.appWhite,
                                       fontType: FontType.MEDIUM,
                                     ),
                                   ),
-                                  backgroundColor: AppColor.appSecondary,
+                                  backgroundColor: AppColor.appWarningRed,
                                 ),
                               );
                             }
