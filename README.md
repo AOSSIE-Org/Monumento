@@ -66,7 +66,7 @@ cat .env.template > .env
 
 Add the following API keys to the `.env` file
 
-- `GOOGLE_SIGNIN_ANDROID_CLIENT_ID`: Obtain this from the Google Cloud Console for Android configuration.
+- `SERVER_CLIENT_ID`: Obtain this from the Google Cloud Console for Android configuration.
 - `GOOGLE_SIGNIN_APPLE_CLIENT_ID`: Obtain this from the Google Cloud Console for iOS configuration.
 - `GOOGLE_SIGNIN_WEB_CLIENT_ID`: Obtain this from the Google Cloud Console for web configuration.
 - `GEOAPIFY_API_KEY`: Obtain this from the [Geoapify](https://www.geoapify.com/) website for fetching location.
