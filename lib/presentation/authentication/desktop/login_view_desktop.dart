@@ -67,22 +67,25 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 32, vertical: 50),
                           width: 380,
-                          child:
-                              BlocListener<LoginRegisterBloc, LoginRegisterState>(
+                          child: BlocListener<LoginRegisterBloc,
+                              LoginRegisterState>(
                             bloc: locator<LoginRegisterBloc>(),
                             listener: (context, state) {
                               if (state is LoginFailed) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text(
-                                      "Invalid email or password, please try again.",
-                                      style: AppTextStyles.s14(
-                                        color: AppColor.appWhite,
-                                        fontType: FontType.MEDIUM,
-                                        isDesktop: true,
+                                    content: Center(
+                                      child: Text(
+                                        "Invalid email or password, please try again.",
+                                        style: AppTextStyles.s14(
+                                          color: AppColor.appWhite,
+                                          fontType: FontType.MEDIUM,
+                                          isDesktop: true,
+                                        ),
                                       ),
                                     ),
                                     backgroundColor: AppColor.appWarningRed,
+                                    behavior: SnackBarBehavior.floating, 
                                   ),
                                 );
                               }
@@ -100,7 +103,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                     ),
                                   );
                                 }
-      
+
                                 if (state is SigninWithGoogleSuccess) {
                                   while (context.canPop() == true) {
                                     context.pop();
@@ -212,11 +215,13 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       child: CustomElevatedButton(
                                         isDesktop: true,
                                         onPressed: () {
-                                          if (formKey.currentState!.validate()) {
+                                          if (formKey.currentState!
+                                              .validate()) {
                                             locator<LoginRegisterBloc>().add(
                                               LoginWithEmailPressed(
                                                 email: emailController.text,
-                                                password: passwordController.text,
+                                                password:
+                                                    passwordController.text,
                                               ),
                                             );
                                           } else {
@@ -244,7 +249,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       height: 26,
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Don\'t have an account?',
@@ -259,7 +265,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                             context.push('/register');
                                           },
                                           style: ButtonStyle(
-                                            overlayColor: WidgetStateProperty.all(
+                                            overlayColor:
+                                                WidgetStateProperty.all(
                                               Colors.transparent,
                                             ),
                                           ),
