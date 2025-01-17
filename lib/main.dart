@@ -12,6 +12,8 @@ import 'package:monumento/presentation/authentication/login_view.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'application/authentication/authentication_bloc.dart';
 import 'firebase_options.dart';
@@ -19,23 +21,28 @@ import 'presentation/authentication/onboarding_view.dart';
 import 'presentation/home/home_view.dart';
 import 'router.dart';
 
-void main() async {
+void main(dynamic DefaultFirebaseOptions) async {
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await dotenv.load(fileName: ".env");
   } catch (e) {
-    debugPrint('Failed to load .env file: $e');
+    debugPrint('Failed to load .env file: \$e');
   }
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
 
-  // runApp(MyApp());
+  final storage = await HydratedStorage.build(
+    storageDirectory: await getApplicationDocumentsDirectory(),
+  );
 
-  runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(),
+  HydratedBlocOverrides.runZoned(
+    () => runApp(
+      DevicePreview(
+        enabled: !kReleaseMode,
+        builder: (context) => MyApp(),
+      ),
     ),
+    storage: storage,
   );
 }
 
@@ -56,7 +63,6 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     Size designSize;
     if (kIsWeb) {
-      // if width is less than 530, it means the user resized the window to a smaller size
       if (MediaQuery.of(context).size.width < 530) {
         designSize = const Size(390, 844);
       } else {
@@ -66,7 +72,6 @@ class MyApp extends StatelessWidget {
       if (Platform.isIOS || Platform.isAndroid) {
         designSize = const Size(390, 844);
       } else if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
-        // if width is less than 530, it means the user resized the window to a smaller size
         if (MediaQuery.of(context).size.width < 530) {
           designSize = const Size(390, 844);
         } else {
@@ -78,7 +83,6 @@ class MyApp extends StatelessWidget {
     }
 
     return MaterialApp.router(
-      // ignore: deprecated_member_use
       useInheritedMediaQuery: true,
       locale: DevicePreview.locale(context),
       routerConfig: router,
