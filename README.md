@@ -107,6 +107,25 @@ This script allows you to populate your Firestore database with predefined monum
 - Click "Generate new private key" to download `serviceAccountKey.json`.
 - Save `serviceAccountKey.json` in app root directory inside scripts folder.
 
+
+
+## **Step 4) Configure Google Sign-In (Web-Based Flutter App)**
+
+To enable Google Sign-In, follow these steps:
+
+1. **Enable Google People API**:
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/).
+   - Enable the **Google People API** under the APIs & Services section.
+   - Ensure you’ve signed up for the necessary services under your project.
+
+2. **Set CORS Rules for Firebase Storage**:
+   - If you encounter a `403 Forbidden` error when attempting to load images from Firebase Storage, configure your Firebase Storage bucket to allow CORS. Refer to this guide for more details: [Handling Firebase Storage 403 Error](https://stackoverflow.com/questions/41943860/getting-403-forbidden-error-when-trying-to-load-image-from-firebase-storage).
+
+3. **Allow Access-Control-Allow-Origin**:
+   - For viewing images on the web, ensure that the Firebase Storage bucket has the appropriate `Access-Control-Allow-Origin` settings. You can follow the steps here: [Configuring Access-Control-Allow-Origin](https://stackoverflow.com/questions/37760695/firebase-storage-and-access-control-allow-origin).
+
+---
+
 4. **Install Dependencies**:
 
 - Install the Firebase Admin SDK:
