@@ -76,7 +76,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                   SnackBar(
                                     content: Center(
                                       child: Text(
-                                        "Invalid email or password, please try again.",
+                                        state.message,
                                         style: AppTextStyles.s14(
                                           color: AppColor.appWhite,
                                           fontType: FontType.MEDIUM,
