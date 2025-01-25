@@ -14,6 +14,7 @@ import 'package:monumento/presentation/popular_monuments/mobile/monument_model_v
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -67,21 +68,18 @@ class _ScanMonumentsScreenState extends State<ScanMonumentsScreen> {
               );
             }
             return Scaffold(
-              appBar: AppBar(
-                  backgroundColor: AppColor.appBackground,
-                  leading: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    icon: const Icon(
-                      Icons.arrow_back,
-                      color: AppColor.appBlack,
-                    ),
+              appBar: CustomMobileAppBar(
+                leading: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: AppColor.appBlack,
                   ),
-                  title: Assets.mobile.logoProfile.svg(
-                    height: 25,
-                    width: 161,
-                  )),
+                ),
+                logoPath: Assets.mobile.logoProfile.path,
+              ),
               body: Center(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
