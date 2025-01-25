@@ -6,6 +6,7 @@ import 'package:monumento/domain/entities/notification_entity.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 import 'package:monumento/utils/enums.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -29,8 +30,7 @@ class _NotificationViewDesktopState extends State<NotificationViewDesktop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColor.appBackground,
+      appBar: CustomMobileAppBar(
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
