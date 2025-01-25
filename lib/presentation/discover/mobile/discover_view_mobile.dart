@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/application/discover/search/search_bloc.dart';
@@ -17,6 +18,7 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 import 'package:monumento/utils/debouncer.dart';
 
 class DiscoverViewMobile extends StatefulWidget {
@@ -205,28 +207,24 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: AppColor.appBackground,
-          title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Assets.mobile.logoDiscover.svg(
-              height: 25,
-              width: 161,
+      appBar: CustomMobileAppBar(
+        icon: Icons.notifications_outlined,
+        logo: SvgPicture.asset(
+          Assets.mobile.logoDiscover.path,
+          height: 25,
+          width: 161,
+        ),
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (ctx) {
+                return const NotificationViewDesktop();
+              },
             ),
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (ctx) {
-                        return const NotificationViewDesktop();
-                      },
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.notifications_outlined,
-                    color: AppColor.appBlack)),
-          ])),
+          );
+        },
+      ),
       body: CompositedTransformTarget(
         link: layerLink,
         child: BlocBuilder<DiscoverPostsBloc, DiscoverPostsState>(
