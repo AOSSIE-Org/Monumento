@@ -7,17 +7,19 @@ class CustomMobileAppBar extends StatelessWidget
   final double height;
   final double elevation;
   // Accept a list of action widgets
-  final List<Widget> actions;
+  final List<Widget>? actions;
 
   /// Accept logo as a string
   final String logoPath;
+  final Widget? leading;
 
   const CustomMobileAppBar({
     Key? key,
     this.height = kToolbarHeight,
     this.elevation = 4,
-    required this.actions,
+    this.actions,
     required this.logoPath,
+    this.leading,
   }) : super(key: key);
 
   @override
@@ -26,6 +28,7 @@ class CustomMobileAppBar extends StatelessWidget
       backgroundColor: AppColor.appBackground,
       foregroundColor: AppColor.appBlack,
       elevation: elevation,
+      leading: leading,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -34,7 +37,7 @@ class CustomMobileAppBar extends StatelessWidget
             height: 25,
             width: 161,
           ),
-          ...actions,
+          ...?actions, //*This means if actions is null, it won't add anything to the widget tree
         ],
       ),
     );
