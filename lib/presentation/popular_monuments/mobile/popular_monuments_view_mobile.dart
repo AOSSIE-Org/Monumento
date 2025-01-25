@@ -30,21 +30,24 @@ class _PopularMonumentsViewMobileState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomMobileAppBar(
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (ctx) {
-                return const NotificationViewDesktop();
-              },
+        logoPath: Assets.desktop.logoDesktop.path,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_outlined,
             ),
-          );
-        },
-        icon: Icons.notifications_outlined,
-        logo: Assets.desktop.logoDesktop.svg(
-          width: 161,
-          height: 25,
-        ),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) {
+                    return const NotificationViewDesktop();
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: PopularMonumentsViewMobileBodyBlocBuilder(),
       floatingActionButton: FloatingActionButton.extended(

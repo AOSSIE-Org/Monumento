@@ -14,6 +14,7 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class ProfileScreenMobile extends StatefulWidget {
   const ProfileScreenMobile({super.key});
@@ -37,41 +38,36 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
     bool isAccountOwner = true;
 
     return Scaffold(
-        appBar: AppBar(
-            foregroundColor: AppColor.appBlack,
-            backgroundColor: AppColor.appBackground,
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Assets.mobile.logoProfile.svg(
-                  height: 25,
-                  width: 161,
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (ctx) {
-                                return const NotificationViewDesktop();
-                              },
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.notifications_outlined,
-                            color: AppColor.appBlack)),
-                    IconButton(
-                        onPressed: () {
-                          SettingsBottomSheet().settingsBottomSheet(context);
-                        },
-                        icon: const Icon(Icons.settings_outlined,
-                            color: AppColor.appBlack)),
-                  ],
-                )
-              ],
-            )),
+        appBar: CustomMobileAppBar(
+          logoPath: Assets.mobile.logoProfile.path,
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) {
+                      return const NotificationViewDesktop();
+                    },
+                  ),
+                );
+              },
+              icon: const Icon(
+                Icons.notifications_outlined,
+                color: AppColor.appBlack,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
+                SettingsBottomSheet().settingsBottomSheet(context);
+              },
+              icon: const Icon(
+                Icons.settings_outlined,
+                color: AppColor.appBlack,
+              ),
+            ),
+          ],
+        ),
         body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
             bloc: locator<AuthenticationBloc>(),
             builder: (context, state) {

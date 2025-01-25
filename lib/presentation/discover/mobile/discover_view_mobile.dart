@@ -4,7 +4,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
 import 'package:monumento/application/discover/search/search_bloc.dart';
@@ -208,22 +207,24 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomMobileAppBar(
-        icon: Icons.notifications_outlined,
-        logo: SvgPicture.asset(
-          Assets.mobile.logoDiscover.path,
-          height: 25,
-          width: 161,
-        ),
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (ctx) {
-                return const NotificationViewDesktop();
-              },
+        logoPath: Assets.mobile.logoDiscover.path,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_outlined,
             ),
-          );
-        },
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) {
+                    return const NotificationViewDesktop();
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: CompositedTransformTarget(
         link: layerLink,

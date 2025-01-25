@@ -1,38 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:monumento/utils/app_colors.dart';
 
-class GenericAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomMobileAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   final double height;
   final double elevation;
-  final Widget logo; // Accept logo as a widget
-  final IconData icon; // Accept the icon
-  final VoidCallback onPressed; // Accept the onPressed callback
+  // Accept a list of action widgets
+  final List<Widget> actions;
 
-  const GenericAppBar({
+  /// Accept logo as a string
+  final String logoPath;
+
+  const CustomMobileAppBar({
     Key? key,
     this.height = kToolbarHeight,
     this.elevation = 4,
-    required this.logo,
-    required this.icon,
-    required this.onPressed,
+    required this.actions,
+    required this.logoPath,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColor.appBackground,
+      foregroundColor: AppColor.appBlack,
       elevation: elevation,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Logo passed from the parent widget
-          logo,
-          IconButton(
-            onPressed: onPressed, // Trigger the provided onPressed callback
-            icon: Icon(
-              icon, // Use the provided icon
-              color: Colors.black,
-            ),
+          SvgPicture.asset(
+            logoPath,
+            height: 25,
+            width: 161,
           ),
+          ...actions,
         ],
       ),
     );
