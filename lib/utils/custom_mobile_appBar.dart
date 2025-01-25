@@ -38,9 +38,11 @@ class CustomMobileAppBar extends StatelessWidget
               height: 25,
               width: 161,
             ),
-          ...?actions,
-
-          ///This means if actions is null, it won't add anything to the widget tree
+          Row(
+            children: [
+              if (actions != null) ...actions! else const SizedBox.shrink(),
+            ],
+          ),
         ],
       ),
     );
