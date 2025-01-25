@@ -10,7 +10,7 @@ class CustomMobileAppBar extends StatelessWidget
   final List<Widget>? actions;
 
   /// Accept logo as a string
-  final String logoPath;
+  final String? logoPath;
   final Widget? leading;
 
   const CustomMobileAppBar({
@@ -18,7 +18,7 @@ class CustomMobileAppBar extends StatelessWidget
     this.height = kToolbarHeight,
     this.elevation = 4,
     this.actions,
-    required this.logoPath,
+    this.logoPath,
     this.leading,
   }) : super(key: key);
 
@@ -32,12 +32,15 @@ class CustomMobileAppBar extends StatelessWidget
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SvgPicture.asset(
-            logoPath,
-            height: 25,
-            width: 161,
-          ),
-          ...?actions, //*This means if actions is null, it won't add anything to the widget tree
+          if (logoPath != null)
+            SvgPicture.asset(
+              logoPath!,
+              height: 25,
+              width: 161,
+            ),
+          ...?actions,
+
+          ///This means if actions is null, it won't add anything to the widget tree
         ],
       ),
     );
