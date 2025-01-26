@@ -50,12 +50,12 @@
 - **Solution:** 
   1. you need to install xcode from apple app store 
   2. you may need to register to apple developer account if you dont already have one
-  3. follow the video guide 
- <div align="center">
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/1wYvW7UauEg?si=Zn-d4dlcbSmOkhka" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-</div>
-- I would like to thank [Andrea Bizzotto](https://github.com/bizz84/simple_auth_flutter_firebase_ui) for his amazing blog on [Flutter & Firebase Auth on macOS: Resolving Common Issues](https://codewithandrea.com/articles/flutter-firebase-auth-macos/) which helped me solve my own issue with the project
+  3. follow the video guide
   
+https://github.com/user-attachments/assets/c3b408cf-aabd-4bf3-9866-32b4982c463c
+
+- I would like to thank [Andrea Bizzotto](https://github.com/bizz84/simple_auth_flutter_firebase_ui) for his amazing blog on [Flutter & Firebase Auth on macOS: Resolving Common Issues](https://codewithandrea.com/articles/flutter-firebase-auth-macos/) which helped me solve my own issue with the project
+
 
 ## How to Contribute to the FAQ
 
