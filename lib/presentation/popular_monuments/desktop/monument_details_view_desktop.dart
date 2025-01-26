@@ -214,7 +214,7 @@ class _MonumentDetailsViewDesktopState
                             textAlign: TextAlign.center,
                           ),
                           content: SizedBox(
-                            height: 320,
+                            height: 400,
                             width: 500,
                             child: Column(
                               children: [
