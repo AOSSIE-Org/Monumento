@@ -51,10 +51,9 @@
   1. you need to install xcode from apple app store 
   2. you may need to register to apple developer account if you dont already have one
   3. follow the video guide 
-  <div align="center">
  <div align="center">
   <video width="800" controls>
-    <source src="assets/macos/Timeline 2.mp4" type="video/mp4">
+    <source src="assets/macos/Timeline_2.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 </div>
