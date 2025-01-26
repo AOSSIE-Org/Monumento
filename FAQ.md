@@ -53,7 +53,7 @@
   3. follow the video guide 
  <div align="center">
   <video width="800" controls>
-    <source src="assets/macos/Timeline_2.mp4" type="video/mp4">
+    <source src="https://raw.githubusercontent.com/HelloSniperMonkey/Monumento/doc/faq/assets/macos/Timeline%202.mp4" type="video/mp4">
   </video>
 </div>
 - I would like to thank [Andrea Bizzotto](https://github.com/bizz84/simple_auth_flutter_firebase_ui) for his amazing blog on [Flutter & Firebase Auth on macOS: Resolving Common Issues](https://codewithandrea.com/articles/flutter-firebase-auth-macos/) which helped me solve my own issue with the project
