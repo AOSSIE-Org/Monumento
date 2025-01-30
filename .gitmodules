@@ -1,0 +1,3 @@
+[submodule "migration-tooklit/firebase-to-supabase"]
+	path = migration-tooklit/firebase-to-supabase
+	url = https://github.com/HelloSniperMonkey/firebase-to-supabase
