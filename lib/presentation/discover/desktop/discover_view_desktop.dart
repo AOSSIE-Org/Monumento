@@ -271,11 +271,7 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
               posts.insertAll(posts.length, state.posts);
             }
             return posts.isEmpty
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColor.appPrimary,
-                    ),
-                  )
+                ? NoPostsYet()
                 : SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(18.0),
@@ -317,6 +313,18 @@ class _DiscoverViewDesktopState extends State<DiscoverViewDesktop> {
                     ),
                   );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget NoPostsYet() {
+    return Center(
+      child: Text(
+        "You Have No Posts Yet",
+        style: AppTextStyles.s18(
+          color: AppColor.appSecondary,
+          fontType: FontType.MEDIUM,
         ),
       ),
     );
