@@ -240,9 +240,7 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
               posts.insertAll(posts.length, state.posts);
             }
             return posts.isEmpty
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
+                ? NoPostsYet()
                 : SingleChildScrollView(
                     child: Column(
                       children: [
@@ -305,6 +303,18 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
                     ),
                   );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget NoPostsYet() {
+    return Center(
+      child: Text(
+        "You have no posts yet",
+        style: AppTextStyles.s14(
+          color: AppColor.appLightGrey,
+          fontType: FontType.REGULAR,
         ),
       ),
     );
