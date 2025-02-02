@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:go_router/go_router.dart';
@@ -105,14 +106,30 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                 children: [
                                   SizedBox(
                                     width: double.infinity,
-                                    child: SignInButton(
-                                      padding: const EdgeInsets.all(4),
-                                      Buttons.Google,
+                                    child: CustomElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: AppColor.appBlack,
+                                        backgroundColor: AppColor
+                                            .appWhite, // Text and icon color
+                                        elevation: 2, // Shadow
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 12), // Padding
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              4), // Border radius
+                                        ),
+                                      ),
+                                      leading: SizedBox(
+                                        height: 28.h,
+                                        child: Assets.googleLogo.image(),
+                                      ),
+                                      isDesktop: true,
                                       onPressed: () {
-                                        locator<LoginRegisterBloc>().add(
-                                          LoginWithGooglePressed(),
-                                        );
+                                        locator<LoginRegisterBloc>()
+                                            .add(LoginWithGooglePressed());
                                       },
+                                      text: 'Sign In With Google',
                                     ),
                                   ),
                                   const SizedBox(

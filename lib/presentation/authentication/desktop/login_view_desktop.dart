@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
@@ -102,17 +103,41 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                         return Column(
                           children: [
                             SizedBox(
-                              width: double.infinity,
-                              child: SignInButton(
-                                padding: const EdgeInsets.all(4),
-                                Buttons.GoogleDark,
-                                onPressed: () {
-                                  locator<LoginRegisterBloc>().add(
-                                    LoginWithGooglePressed(),
-                                  );
-                                },
-                              ),
-                            ),
+                                width: double.infinity,
+                                // child: SignInButton(
+                                //   padding: const EdgeInsets.all(4),
+                                //   Buttons.GoogleDark,
+                                //   onPressed: () {
+                                //     locator<LoginRegisterBloc>().add(
+                                //       LoginWithGooglePressed(),
+                                //     );
+                                //   },
+                                // ),
+                                child: CustomElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: AppColor.appBlack,
+                                    backgroundColor: AppColor
+                                        .appWhite, // Text and icon color
+                                    elevation: 2, // Shadow
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 12), // Padding
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          4), // Border radius
+                                    ),
+                                  ),
+                                  leading: SizedBox(
+                                    height: 28.h,
+                                    child: Assets.googleLogo.image(),
+                                  ),
+                                  isDesktop: true,
+                                  onPressed: () {
+                                    locator<LoginRegisterBloc>()
+                                        .add(LoginWithGooglePressed());
+                                  },
+                                  text: 'Sign In With Google',
+                                )),
                             const SizedBox(
                               height: 22,
                             ),
