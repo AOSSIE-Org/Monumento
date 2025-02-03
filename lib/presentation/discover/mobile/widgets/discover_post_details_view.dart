@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/feed_post_card_mobile.dart';
 import 'package:monumento/utils/app_colors.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class DiscoverPostDetailsView extends StatelessWidget {
   final PostEntity post;
@@ -12,21 +12,16 @@ class DiscoverPostDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColor.appBackground,
+        appBar: CustomMobileAppBar(
+          logoPath: Assets.mobile.logoDiscover.path,
           leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
             icon: const Icon(
               Icons.arrow_back,
               color: AppColor.appBlack,
             ),
-          ),
-          title: SvgPicture.asset(
-            Assets.mobile.logoDiscover.path,
-            height: 25,
-            width: 161,
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
         body: PageView(

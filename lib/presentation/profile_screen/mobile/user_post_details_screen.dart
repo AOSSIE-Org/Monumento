@@ -4,6 +4,7 @@ import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/feed_post_card_mobile.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class UserPostDetailsScreen extends StatefulWidget {
   final List<PostEntity> post;
@@ -19,22 +20,25 @@ class _UserPostDetailsScreenState extends State<UserPostDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColor.appWhite,
+        appBar: CustomMobileAppBar(
           leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
             icon: const Icon(
               Icons.arrow_back,
               color: AppColor.appBlack,
             ),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
-          title: Text(
-            "Post",
-            style: AppTextStyles.s18(
-                color: AppColor.appBlack, fontType: FontType.BOLD),
-          ),
+          actions: [
+            Text(
+              "Post",
+              style: AppTextStyles.s18(
+                color: AppColor.appBlack,
+                fontType: FontType.BOLD,
+              ),
+            )
+          ],
         ),
         body: Column(
           children: [

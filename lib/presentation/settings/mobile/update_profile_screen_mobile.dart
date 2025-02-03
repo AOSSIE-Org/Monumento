@@ -12,6 +12,7 @@ import 'package:monumento/presentation/settings/mobile/settings_view_mobile.dart
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class UpdateProfileScreenMobile extends StatefulWidget {
   const UpdateProfileScreenMobile({super.key});
@@ -54,32 +55,29 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-            backgroundColor: AppColor.appBackground,
-            leading: IconButton(
+        appBar: CustomMobileAppBar(
+          logoPath: Assets.mobile.logoUpdateProfile.path,
+          actions: [
+            IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                SettingsBottomSheet().settingsBottomSheet(context);
               },
               icon: const Icon(
-                Icons.arrow_back,
+                Icons.settings_outlined,
                 color: AppColor.appBlack,
               ),
             ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Assets.mobile.logoUpdateProfile.svg(
-                  width: 161,
-                  height: 25,
-                ),
-                IconButton(
-                    onPressed: () {
-                      SettingsBottomSheet().settingsBottomSheet(context);
-                    },
-                    icon: const Icon(Icons.settings_outlined,
-                        color: AppColor.appBlack)),
-              ],
-            )),
+          ],
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColor.appBlack,
+            ),
+          ),
+        ),
         body: BlocListener<UpdateProfileBloc, UpdateProfileState>(
             bloc: locator<UpdateProfileBloc>(),
             listener: (context, state) {
