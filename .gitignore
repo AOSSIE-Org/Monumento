@@ -51,10 +51,10 @@ app.*.map.json
 lib/scripts/serviceAccountKey.json
 
 # Node.js dependencies
-scripts/node_modules/
+lib/scripts/node_modules
 
 # Lockfile
-scripts/package-lock.json
+lib/scripts/package-lock.json
 
 # Other potential generated files
-scripts/package.json
+lib/scripts/package.json
