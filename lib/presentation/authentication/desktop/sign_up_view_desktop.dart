@@ -63,258 +63,260 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
       backgroundColor: AppColor.appBackground,
       body: Form(
         key: formKey,
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(
-                height: 64,
-              ),
-              Assets.desktop.logoDesktop.svg(),
-              const Spacer(),
-              Card(
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
-                  width: 380,
-                  child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
-                    bloc: locator<LoginRegisterBloc>(),
-                    listener: (context, state) {
-                      if (state is SignUpFailed) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(state.message),
-                          ),
-                        );
-                      }
-                      if (state is SigninWithGoogleFailed) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(state.message),
-                          ),
-                        );
-                      }
-                    },
-                    child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
-                      bloc: locator<LoginRegisterBloc>(),
-                      builder: (context, state) {
-                        if (state is LoginRegisterLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColor.appPrimary,
-                              ),
-                            ),
-                          );
-                        }
-                        if (state is SignUpSuccess) {
-                          SchedulerBinding.instance.addPostFrameCallback((_) {
-                            context.go('/');
-                          });
-                        }
-                        return ExpandablePageView(
-                          pageSnapping: false,
-                          physics: const NeverScrollableScrollPhysics(),
-                          controller: controller,
-                          children: [
-                            SignUpDeciderWidget(
-                              onSignUpWithEmailPressed: () {
-                                controller.nextPage(
-                                  duration: const Duration(milliseconds: 200),
-                                  curve: Curves.easeIn,
-                                );
-                              },
-                              onSignUpWithGooglePressed: () {
-                                locator<LoginRegisterBloc>().add(
-                                  LoginWithGooglePressed(),
-                                );
-                              },
-                            ),
-                            Column(
-                              children: [
-                                InkWell(
-                                  onTap: () async {
-                                    final ImagePicker picker = ImagePicker();
-                                    final img = await picker.pickImage(
-                                      source: ImageSource.gallery,
-                                    );
-                                    setState(() {
-                                      image = img;
-                                    });
-                                  },
-                                  child: image != null
-                                      ? CircleAvatar(
-                                          radius: 40,
-                                          backgroundImage:
-                                              FileImage(File(image!.path)))
-                                      : CircleAvatar(
-                                          radius: 40,
-                                          backgroundColor:
-                                              AppColor.appGreyAccent,
-                                          child: Assets.icons.icUser.svg(),
-                                        ),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Container(
+              constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Assets.desktop.logoDesktop.svg(),
+                  Flexible(
+                    fit: FlexFit.loose,
+                    child: Card(
+                      child: Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
+                        width: 380,
+                        child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
+                          bloc: locator<LoginRegisterBloc>(),
+                          listener: (context, state) {
+                            if (state is SignUpFailed) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.message),
                                 ),
-                                const SizedBox(
-                                  height: 22,
+                              );
+                            }
+                            if (state is SigninWithGoogleFailed) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(state.message),
                                 ),
-                                CustomTextField(
-                                  controller: nameController,
-                                  isDesktop: true,
-                                  text: 'Name',
-                                  validateFunction: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Name cannot be empty';
-                                    }
-                                    return null;
-                                  },
-                                  autoValid: AutovalidateMode.onUserInteraction,
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                CustomTextField(
-                                    controller: usernameController,
-                                    isDesktop: true,
-                                    text: 'Username',
-                                    validateFunction: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Username cannot be empty';
-                                      }
-                                      return null;
-                                    }),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                CustomTextField(
-                                  controller: statusController,
-                                  isDesktop: true,
-                                  text: 'Status',
-                                  validateFunction: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Status cannot be empty';
-                                    }
-                                    return null;
-                                  },
-                                  autoValid: AutovalidateMode.onUserInteraction,
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                CustomTextField(
-                                  controller: emailController,
-                                  isDesktop: true,
-                                  text: 'Email',
-                                  validateFunction: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'Email cannot be empty';
-                                    } else if (!value.contains('@')) {
-                                      return 'Invalid email';
-                                    }
-                                    return null;
-                                  },
-                                  autoValid: AutovalidateMode.onUserInteraction,
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                CustomTextField(
-                                    controller: passwordController,
-                                    text: 'Password',
-                                    isDesktop: true,
-                                    isSeen: isSeen,
-                                    suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          isSeen = !isSeen;
-                                        });
-                                      },
-                                      icon: Icon(!isSeen
-                                          ? Icons.visibility_off
-                                          : Icons.visibility),
+                              );
+                            }
+                          },
+                          child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+                            bloc: locator<LoginRegisterBloc>(),
+                            builder: (context, state) {
+                              if (state is LoginRegisterLoading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColor.appPrimary,
                                     ),
-                                    validateFunction: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Password cannot be empty';
-                                      } else if (value.length < 6) {
-                                        return 'Password must be at least 6 characters';
-                                      }
-                                      return null;
+                                  ),
+                                );
+                              }
+                              if (state is SignUpSuccess) {
+                                SchedulerBinding.instance.addPostFrameCallback((_) {
+                                  context.go('/');
+                                });
+                              }
+                              return ExpandablePageView(
+                                pageSnapping: false,
+                                physics: const NeverScrollableScrollPhysics(),
+                                controller: controller,
+                                children: [
+                                  SignUpDeciderWidget(
+                                    onSignUpWithEmailPressed: () {
+                                      controller.nextPage(
+                                        duration: const Duration(milliseconds: 200),
+                                        curve: Curves.easeIn,
+                                      );
                                     },
-                                    autoValid:
-                                        AutovalidateMode.onUserInteraction),
-                                const SizedBox(
-                                  height: 48,
-                                ),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: CustomElevatedButton(
-                                      isDesktop: true,
-                                      onPressed: () {
-                                        if (formKey.currentState!.validate()) {
-                                          locator<LoginRegisterBloc>().add(
-                                            SignUpWithEmailPressed(
-                                              email: emailController.text,
-                                              password: passwordController.text,
-                                              name: nameController.text,
-                                              username: usernameController.text,
-                                              status: statusController.text,
-                                              profilePictureFile: image != null
-                                                  ? File(image!.path)
-                                                  : null,
-                                            ),
+                                    onSignUpWithGooglePressed: () {
+                                      locator<LoginRegisterBloc>().add(
+                                        LoginWithGooglePressed(),
+                                      );
+                                    },
+                                  ),
+                                  Column(
+                                    children: [
+                                      InkWell(
+                                        onTap: () async {
+                                          final ImagePicker picker = ImagePicker();
+                                          final img = await picker.pickImage(
+                                            source: ImageSource.gallery,
                                           );
-                                        }
-                                      },
-                                      text: 'Sign Up'),
-                                ),
-                                const SizedBox(
-                                  height: 26,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'Already have an account?',
-                                      style: AppTextStyles.s14(
-                                        color: AppColor.appSecondaryBlack,
-                                        fontType: FontType.REGULAR,
+                                          setState(() {
+                                            image = img;
+                                          });
+                                        },
+                                        child: image != null
+                                            ? CircleAvatar(
+                                                radius: 40,
+                                                backgroundImage:
+                                                    FileImage(File(image!.path)))
+                                            : CircleAvatar(
+                                                radius: 40,
+                                                backgroundColor:
+                                                    AppColor.appGreyAccent,
+                                                child: Assets.icons.icUser.svg(),
+                                              ),
+                                      ),
+                                      const SizedBox(
+                                        height: 22,
+                                      ),
+                                      CustomTextField(
+                                        controller: nameController,
                                         isDesktop: true,
+                                        text: 'Name',
+                                        validateFunction: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Name cannot be empty';
+                                          }
+                                          return null;
+                                        },
+                                        autoValid: AutovalidateMode.onUserInteraction,
                                       ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        context.pop();
-                                      },
-                                      style: ButtonStyle(
-                                        overlayColor: WidgetStateProperty.all(
-                                          Colors.transparent,
-                                        ),
+                                      const SizedBox(
+                                        height: 16,
                                       ),
-                                      child: Text(
-                                        'Login',
-                                        style: AppTextStyles.s14(
-                                          color: AppColor.appPrimary,
-                                          fontType: FontType.MEDIUM,
+                                      CustomTextField(
+                                          controller: usernameController,
                                           isDesktop: true,
-                                        ),
+                                          text: 'Username',
+                                          validateFunction: (value) {
+                                            if (value!.isEmpty) {
+                                              return 'Username cannot be empty';
+                                            }
+                                            return null;
+                                          }),
+                                      const SizedBox(
+                                        height: 16,
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
+                                      CustomTextField(
+                                        controller: statusController,
+                                        isDesktop: true,
+                                        text: 'Status',
+                                        validateFunction: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Status cannot be empty';
+                                          }
+                                          return null;
+                                        },
+                                        autoValid: AutovalidateMode.onUserInteraction,
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      CustomTextField(
+                                        controller: emailController,
+                                        isDesktop: true,
+                                        text: 'Email',
+                                        validateFunction: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Email cannot be empty';
+                                          } else if (!value.contains('@')) {
+                                            return 'Invalid email';
+                                          }
+                                          return null;
+                                        },
+                                        autoValid: AutovalidateMode.onUserInteraction,
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      CustomTextField(
+                                          controller: passwordController,
+                                          text: 'Password',
+                                          isDesktop: true,
+                                          isSeen: isSeen,
+                                          suffixIcon: IconButton(
+                                            onPressed: () {
+                                              setState(() {
+                                                isSeen = !isSeen;
+                                              });
+                                            },
+                                            icon: Icon(!isSeen
+                                                ? Icons.visibility_off
+                                                : Icons.visibility),
+                                          ),
+                                          validateFunction: (value) {
+                                            if (value!.isEmpty) {
+                                              return 'Password cannot be empty';
+                                            } else if (value.length < 6) {
+                                              return 'Password must be at least 6 characters';
+                                            }
+                                            return null;
+                                          },
+                                          autoValid:
+                                              AutovalidateMode.onUserInteraction),
+                                      const SizedBox(
+                                        height: 48,
+                                      ),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: CustomElevatedButton(
+                                            isDesktop: true,
+                                            onPressed: () {
+                                              if (formKey.currentState!.validate()) {
+                                                locator<LoginRegisterBloc>().add(
+                                                  SignUpWithEmailPressed(
+                                                    email: emailController.text,
+                                                    password: passwordController.text,
+                                                    name: nameController.text,
+                                                    username: usernameController.text,
+                                                    status: statusController.text,
+                                                    profilePictureFile: image != null
+                                                        ? File(image!.path)
+                                                        : null,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                            text: 'Sign Up'),
+                                      ),
+                                      const SizedBox(
+                                        height: 26,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            'Already have an account?',
+                                            style: AppTextStyles.s14(
+                                              color: AppColor.appSecondaryBlack,
+                                              fontType: FontType.REGULAR,
+                                              isDesktop: true,
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              context.pop();
+                                            },
+                                            style: ButtonStyle(
+                                              overlayColor: WidgetStateProperty.all(
+                                                Colors.transparent,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              'Login',
+                                              style: AppTextStyles.s14(
+                                                color: AppColor.appPrimary,
+                                                fontType: FontType.MEDIUM,
+                                                isDesktop: true,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-              const Spacer(),
-            ],
+            ),
           ),
         ),
       ),
