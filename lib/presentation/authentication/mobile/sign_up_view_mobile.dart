@@ -27,6 +27,11 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
   late TextEditingController usernameController;
   late TextEditingController statusController;
   late PageController controller;
+  late FocusNode nameFocusNode;
+  late FocusNode usernameFocusNode;
+  late FocusNode statusFocusNode;
+  late FocusNode emailFocusNode;
+  late FocusNode passwordFocusNode;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   XFile? image;
   bool render = false;
@@ -40,6 +45,11 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
     usernameController = TextEditingController();
     statusController = TextEditingController();
     controller = PageController();
+    nameFocusNode = FocusNode();
+    usernameFocusNode = FocusNode();
+    statusFocusNode = FocusNode();
+    emailFocusNode = FocusNode();
+    passwordFocusNode = FocusNode();
     super.initState();
   }
 
@@ -51,6 +61,11 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
     usernameController.dispose();
     statusController.dispose();
     controller.dispose();
+    nameFocusNode.dispose();
+    usernameFocusNode.dispose();
+    statusFocusNode.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -160,7 +175,11 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                 ),
                                 CustomTextField(
                                   controller: nameController,
+                                  focusNode: nameFocusNode,
                                   text: 'Name',
+                                  onFieldSubmitted: (_) {
+                                    FocusScope.of(context).requestFocus(usernameFocusNode);
+                                  },
                                   validateFunction: (value) {
                                     if (value!.isEmpty) {
                                       return 'Name cannot be empty';
@@ -174,7 +193,11 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                 ),
                                 CustomTextField(
                                     controller: usernameController,
+                                    focusNode: usernameFocusNode,
                                     text: 'Username',
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(statusFocusNode);
+                                    },
                                     validateFunction: (value) {
                                       if (value!.isEmpty) {
                                         return 'Username cannot be empty';
@@ -186,7 +209,11 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                 ),
                                 CustomTextField(
                                   controller: statusController,
+                                  focusNode: statusFocusNode,
                                   text: 'Status',
+                                  onFieldSubmitted: (_) {
+                                    FocusScope.of(context).requestFocus(emailFocusNode);
+                                  },
                                   validateFunction: (value) {
                                     if (value!.isEmpty) {
                                       return 'Status cannot be empty';
@@ -200,7 +227,11 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                 ),
                                 CustomTextField(
                                   controller: emailController,
+                                  focusNode: emailFocusNode,
                                   text: 'Email',
+                                  onFieldSubmitted: (_) {
+                                    FocusScope.of(context).requestFocus(passwordFocusNode);
+                                  },
                                   validateFunction: (value) {
                                     if (value!.isEmpty) {
                                       return 'Email cannot be empty';
@@ -216,6 +247,7 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                 ),
                                 CustomTextField(
                                   controller: passwordController,
+                                  focusNode: passwordFocusNode,
                                   text: 'Password',
                                   isSeen: isSeen,
                                   suffixIcon: IconButton(
