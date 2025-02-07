@@ -5,7 +5,7 @@
 ### General
 
 1. **What is this project about?**  
-   This project aims to [insert project goal/summary here].
+   This project aims to transforms how you connect with the world’s most iconic landmarks.
 
 2. **How do I get started with this project?**  
    Refer to the [README.md](./README.md) file for step-by-step instructions to set up the project.
