@@ -44,7 +44,7 @@ class SignUpWithEmailPressed extends LoginRegisterEvent {
   final String name;
   final String status;
   final String username;
-  final File? profilePictureFile;
+  final Uint8List? profilePictureFile;
 
   const SignUpWithEmailPressed({
     required this.email,
@@ -80,7 +80,7 @@ class SaveOnboardingDetails extends LoginRegisterEvent {
   final String name;
   final String username;
   final String status;
-  final File? profilePictureFile;
+  final Uint8List? profilePictureFile;
 
   const SaveOnboardingDetails({
     required this.name,

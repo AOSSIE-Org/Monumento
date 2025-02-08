@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
   late TextEditingController nameController;
   late TextEditingController usernameController;
   late TextEditingController statusController;
-  XFile? image;
+  Uint8List? image;
 
   @override
   void initState() {
@@ -82,24 +82,20 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    child: image != null
-                        ? Image.file(File(image!.path))
-                        : CachedNetworkImage(
-                            imageUrl: widget.user.profilePictureUrl ??
-                                defaultProfilePicture,
-                            placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.error),
-                          ),
+                    foregroundImage: image != null
+                        ? MemoryImage(image!) as ImageProvider
+                        : CachedNetworkImageProvider(widget.user.profilePictureUrl ??
+                            defaultProfilePicture),
                   ),
                   const SizedBox(width: 50),
                   OutlinedButton(
                     onPressed: () async {
                       final ImagePicker picker = ImagePicker();
-                      final img = await picker.pickImage(
-                        source: ImageSource.gallery,
-                      );
+                      final img = await picker
+                          .pickImage(
+                            source: ImageSource.gallery,
+                          )
+                          .then((value) => value!.readAsBytes());
                       setState(() {
                         image = img;
                       });
@@ -152,7 +148,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                         'name': nameController.text,
                         'username': usernameController.text,
                         'status': statusController.text,
-                        'image': image != null ? File(image!.path) : null,
+                        'image': image != null ? image : null,
                         'shouldUpdateUsername':
                             usernameController.text != widget.user.username,
                       },

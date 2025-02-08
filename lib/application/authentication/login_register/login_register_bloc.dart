@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +40,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
 
         if (event.profilePictureFile != null) {
           url = await _socialRepository.uploadProfilePicForUrl(
-              file: event.profilePictureFile!);
+              fileBytes: event.profilePictureFile!);
         } else {
           url = defaultProfilePicture;
         }
@@ -128,7 +128,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
 
         if (event.profilePictureFile != null) {
           url = await _socialRepository.uploadProfilePicForUrl(
-              file: event.profilePictureFile!);
+              fileBytes: event.profilePictureFile!);
         } else {
           url = defaultProfilePicture;
         }

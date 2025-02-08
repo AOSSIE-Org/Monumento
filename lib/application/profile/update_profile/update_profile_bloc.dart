@@ -27,7 +27,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
 
         if (event.userInfo.values.first != null) {
           url = await _socialRepository.uploadProfilePicForUrl(
-              file: event.userInfo.values.first);
+            fileBytes: event.userInfo.values.first);
         } else {
           url = defaultProfilePicture;
         }
@@ -66,7 +66,7 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
       if (event.userInfo.keys.contains('image') &&
           event.userInfo['image'] != null) {
         String url = await _socialRepository.uploadProfilePicForUrl(
-            file: event.userInfo['image']);
+            fileBytes: event.userInfo['image']);
         event.userInfo['profilePictureUrl'] = url;
         event.userInfo.remove('image');
       }

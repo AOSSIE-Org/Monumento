@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:monumento/data/models/comment_model.dart';
 import 'package:monumento/data/models/notification_model.dart';
@@ -10,7 +11,7 @@ abstract interface class SocialRepository {
   Future<String> uploadImageForUrl(
       {required File file, required String address});
 
-  Future<String> uploadProfilePicForUrl({required File file});
+  Future<String> uploadProfilePicForUrl({required Uint8List fileBytes});
 
   Future<UserModel> getUserByUid({required String uid});
 
