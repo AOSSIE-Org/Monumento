@@ -315,9 +315,11 @@ class _FeedPostCardState extends State<FeedPostCard>
                 SizedBox(
                   width: 430,
                   child: TextFormField(
+                    cursorColor: AppColor.appPrimary,
                     focusNode: commentFocusNode,
                     controller: commentController,
                     decoration: InputDecoration(
+                      focusColor: AppColor.appPrimary,
                       suffixIcon: GestureDetector(
                         onTap: () {
                           locator<CommentsBloc>().add(
@@ -326,6 +328,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                               comment: commentController.text,
                             ),
                           );
+                          commentController.clear();
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),

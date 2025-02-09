@@ -25,7 +25,7 @@ class _SettingsViewMobileState extends State<SettingsViewMobile> {
         bloc: locator<LoginRegisterBloc>(),
         listener: (context, state) {
           if (state is LogOutSuccess) {
-            context.push('/login');
+            context.go('/login');
           }
         },
         child: Container(

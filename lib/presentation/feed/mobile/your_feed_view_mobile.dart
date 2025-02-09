@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/domain/entities/post_entity.dart';
 import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/feed_post_card_mobile.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
 import 'package:monumento/service_locator.dart';
-import 'package:monumento/utils/app_colors.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class YourFeedViewMobile extends StatefulWidget {
   const YourFeedViewMobile({super.key});
@@ -39,29 +38,26 @@ class _YourFeedViewMobileState extends State<YourFeedViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: AppColor.appBackground,
-          title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            SvgPicture.asset(
-              Assets.mobile.logoFeed.path,
-              height: 25,
-              width: 161,
+      appBar: CustomMobileAppBar(
+        logoPath: Assets.mobile.logoFeed.path,
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.notifications_outlined,
             ),
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (ctx) {
-                        return const NotificationViewDesktop();
-                      },
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.notifications_outlined,
-                    color: AppColor.appBlack)),
-          ])),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) {
+                    return const NotificationViewDesktop();
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: BlocBuilder<FeedBloc, FeedState>(
         bloc: locator<FeedBloc>(),
         builder: (context, state) {

@@ -48,7 +48,7 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
             GoogleSignIn(clientId: dotenv.env['GOOGLE_SIGNIN_APPLE_CLIENT_ID']);
       } else if (Platform.isAndroid) {
         googleSignIn = GoogleSignIn(
-            clientId: dotenv.env['GOOGLE_SIGNIN_ANDROID_CLIENT_ID']);
+            serverClientId: dotenv.env['SERVER_CLIENT_ID']);
       } else {
         googleSignIn = GoogleSignIn();
       }

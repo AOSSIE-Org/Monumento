@@ -13,6 +13,7 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class DiscoverProfileViewMobile extends StatefulWidget {
   final UserEntity user;
@@ -41,26 +42,18 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
   Widget build(BuildContext context) {
     List<PostEntity> posts = [];
     return Scaffold(
-        appBar: AppBar(
-            backgroundColor: AppColor.appBackground,
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-                color: AppColor.appBlack,
-              ),
+        appBar: CustomMobileAppBar(
+          logoPath: Assets.mobile.logoProfile.path,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColor.appBlack,
             ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Assets.mobile.logoProfile.svg(
-                  height: 25,
-                  width: 161,
-                ),
-              ],
-            )),
+          ),
+        ),
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
