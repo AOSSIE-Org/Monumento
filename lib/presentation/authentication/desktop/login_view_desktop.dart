@@ -19,6 +19,8 @@ class LoginViewDesktop extends StatefulWidget {
 class _LoginViewDesktopState extends State<LoginViewDesktop> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
+  late FocusNode emailFocusNode;
+  late FocusNode passwordFocusNode;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool isObscure = true;
 
@@ -26,6 +28,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
   void initState() {
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    emailFocusNode = FocusNode();
+    passwordFocusNode = FocusNode();
     super.initState();
   }
 
@@ -33,6 +37,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    emailFocusNode.dispose();
+    passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -85,7 +91,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       ),
                                     ),
                                     backgroundColor: AppColor.appWarningRed,
-                                    behavior: SnackBarBehavior.floating, 
+                                    behavior: SnackBarBehavior.floating,
                                   ),
                                 );
                               }
@@ -144,6 +150,11 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                         controller: emailController,
                                         text: 'Email',
                                         isDesktop: true,
+                                        focusNode: emailFocusNode,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(passwordFocusNode);
+                                        },
                                         validateFunction: (value) {
                                           if (value == null || value.isEmpty) {
                                             return 'Please enter email.';
@@ -159,9 +170,36 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                     ),
                                     CustomTextField(
                                       controller: passwordController,
+                                      focusNode: passwordFocusNode,
                                       text: 'Password',
                                       isDesktop: true,
                                       isSeen: isObscure,
+                                      onFieldSubmitted: (_) {
+                                        if (formKey.currentState!.validate()) {
+                                          locator<LoginRegisterBloc>().add(
+                                            LoginWithEmailPressed(
+                                              email: emailController.text,
+                                              password: passwordController.text,
+                                            ),
+                                          );
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'Please enter valid email and password',
+                                                style: AppTextStyles.s14(
+                                                  color: AppColor.appWhite,
+                                                  fontType: FontType.MEDIUM,
+                                                  isDesktop: true,
+                                                ),
+                                              ),
+                                              backgroundColor:
+                                                  AppColor.appSecondary,
+                                            ),
+                                          );
+                                        }
+                                      },
                                       validateFunction: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'Please enter password.';

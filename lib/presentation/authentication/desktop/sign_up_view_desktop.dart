@@ -30,6 +30,11 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
   late TextEditingController usernameController;
   late TextEditingController statusController;
   late PageController controller;
+  late FocusNode nameFocusNode;
+  late FocusNode usernameFocusNode;
+  late FocusNode statusFocusNode;
+  late FocusNode emailFocusNode;
+  late FocusNode passwordFocusNode;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   XFile? image;
   bool isSeen = false;
@@ -42,18 +47,27 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
     usernameController = TextEditingController();
     statusController = TextEditingController();
     controller = PageController();
+    nameFocusNode = FocusNode();
+    usernameFocusNode = FocusNode();
+    statusFocusNode = FocusNode();
+    emailFocusNode = FocusNode();
+    passwordFocusNode = FocusNode();
     super.initState();
   }
 
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    nameController.dispose();
-    usernameController.dispose();
-    statusController.dispose();
-    controller.dispose();
-    super.dispose();
+  void _handleSubmit() {
+    if (formKey.currentState!.validate()) {
+      locator<LoginRegisterBloc>().add(
+        SignUpWithEmailPressed(
+          email: emailController.text,
+          password: passwordController.text,
+          name: nameController.text,
+          username: usernameController.text,
+          status: statusController.text,
+          profilePictureFile: image != null ? File(image!.path) : null,
+        ),
+      );
+    }
   }
 
   @override
@@ -66,7 +80,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
         child: SingleChildScrollView(
           child: Center(
             child: Container(
-              constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+              constraints:
+                  BoxConstraints(minHeight: MediaQuery.of(context).size.height),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,10 +92,11 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                     fit: FlexFit.loose,
                     child: Card(
                       child: Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 50),
                         width: 380,
-                        child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
+                        child:
+                            BlocListener<LoginRegisterBloc, LoginRegisterState>(
                           bloc: locator<LoginRegisterBloc>(),
                           listener: (context, state) {
                             if (state is SignUpFailed) {
@@ -98,7 +114,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                               );
                             }
                           },
-                          child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+                          child: BlocBuilder<LoginRegisterBloc,
+                              LoginRegisterState>(
                             bloc: locator<LoginRegisterBloc>(),
                             builder: (context, state) {
                               if (state is LoginRegisterLoading) {
@@ -111,7 +128,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                 );
                               }
                               if (state is SignUpSuccess) {
-                                SchedulerBinding.instance.addPostFrameCallback((_) {
+                                SchedulerBinding.instance
+                                    .addPostFrameCallback((_) {
                                   context.go('/');
                                 });
                               }
@@ -123,7 +141,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                   SignUpDeciderWidget(
                                     onSignUpWithEmailPressed: () {
                                       controller.nextPage(
-                                        duration: const Duration(milliseconds: 200),
+                                        duration:
+                                            const Duration(milliseconds: 200),
                                         curve: Curves.easeIn,
                                       );
                                     },
@@ -137,7 +156,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                     children: [
                                       InkWell(
                                         onTap: () async {
-                                          final ImagePicker picker = ImagePicker();
+                                          final ImagePicker picker =
+                                              ImagePicker();
                                           final img = await picker.pickImage(
                                             source: ImageSource.gallery,
                                           );
@@ -148,13 +168,14 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         child: image != null
                                             ? CircleAvatar(
                                                 radius: 40,
-                                                backgroundImage:
-                                                    FileImage(File(image!.path)))
+                                                backgroundImage: FileImage(
+                                                    File(image!.path)))
                                             : CircleAvatar(
                                                 radius: 40,
                                                 backgroundColor:
                                                     AppColor.appGreyAccent,
-                                                child: Assets.icons.icUser.svg(),
+                                                child:
+                                                    Assets.icons.icUser.svg(),
                                               ),
                                       ),
                                       const SizedBox(
@@ -164,27 +185,39 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: nameController,
                                         isDesktop: true,
                                         text: 'Name',
+                                        focusNode: nameFocusNode,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(usernameFocusNode);
+                                        },
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Name cannot be empty';
                                           }
                                           return null;
                                         },
-                                        autoValid: AutovalidateMode.onUserInteraction,
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
                                       ),
                                       const SizedBox(
                                         height: 16,
                                       ),
                                       CustomTextField(
-                                          controller: usernameController,
-                                          isDesktop: true,
-                                          text: 'Username',
-                                          validateFunction: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Username cannot be empty';
-                                            }
-                                            return null;
-                                          }),
+                                        controller: usernameController,
+                                        isDesktop: true,
+                                        text: 'Username',
+                                        focusNode: usernameFocusNode,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(statusFocusNode);
+                                        },
+                                        validateFunction: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Username cannot be empty';
+                                          }
+                                          return null;
+                                        },
+                                      ),
                                       const SizedBox(
                                         height: 16,
                                       ),
@@ -192,13 +225,19 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: statusController,
                                         isDesktop: true,
                                         text: 'Status',
+                                        focusNode: statusFocusNode,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(emailFocusNode);
+                                        },
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Status cannot be empty';
                                           }
                                           return null;
                                         },
-                                        autoValid: AutovalidateMode.onUserInteraction,
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
                                       ),
                                       const SizedBox(
                                         height: 16,
@@ -207,6 +246,11 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: emailController,
                                         isDesktop: true,
                                         text: 'Email',
+                                        focusNode: emailFocusNode,
+                                        onFieldSubmitted: (_) {
+                                          FocusScope.of(context)
+                                              .requestFocus(passwordFocusNode);
+                                        },
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Email cannot be empty';
@@ -215,66 +259,59 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                           }
                                           return null;
                                         },
-                                        autoValid: AutovalidateMode.onUserInteraction,
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
                                       ),
                                       const SizedBox(
                                         height: 16,
                                       ),
                                       CustomTextField(
-                                          controller: passwordController,
-                                          text: 'Password',
-                                          isDesktop: true,
-                                          isSeen: isSeen,
-                                          suffixIcon: IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                isSeen = !isSeen;
-                                              });
-                                            },
-                                            icon: Icon(!isSeen
-                                                ? Icons.visibility_off
-                                                : Icons.visibility),
-                                          ),
-                                          validateFunction: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Password cannot be empty';
-                                            } else if (value.length < 6) {
-                                              return 'Password must be at least 6 characters';
-                                            }
-                                            return null;
+                                        controller: passwordController,
+                                        text: 'Password',
+                                        isDesktop: true,
+                                        focusNode: passwordFocusNode,
+                                        onFieldSubmitted: (_) {
+                                          _handleSubmit();
+                                        },
+                                        isSeen: !isSeen,
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isSeen = !isSeen;
+                                            });
                                           },
-                                          autoValid:
-                                              AutovalidateMode.onUserInteraction),
+                                          icon: Icon(!isSeen
+                                              ? Icons.visibility_off
+                                              : Icons.visibility),
+                                        ),
+                                        validateFunction: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Password cannot be empty';
+                                          } else if (value.length < 6) {
+                                            return 'Password must be at least 6 characters';
+                                          }
+                                          return null;
+                                        },
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
+                                      ),
                                       const SizedBox(
                                         height: 48,
                                       ),
                                       SizedBox(
                                         width: double.infinity,
                                         child: CustomElevatedButton(
-                                            isDesktop: true,
-                                            onPressed: () {
-                                              if (formKey.currentState!.validate()) {
-                                                locator<LoginRegisterBloc>().add(
-                                                  SignUpWithEmailPressed(
-                                                    email: emailController.text,
-                                                    password: passwordController.text,
-                                                    name: nameController.text,
-                                                    username: usernameController.text,
-                                                    status: statusController.text,
-                                                    profilePictureFile: image != null
-                                                        ? File(image!.path)
-                                                        : null,
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            text: 'Sign Up'),
+                                          isDesktop: true,
+                                          onPressed: _handleSubmit,
+                                          text: 'Sign Up',
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 26,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             'Already have an account?',
@@ -289,7 +326,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                               context.pop();
                                             },
                                             style: ButtonStyle(
-                                              overlayColor: WidgetStateProperty.all(
+                                              overlayColor:
+                                                  WidgetStateProperty.all(
                                                 Colors.transparent,
                                               ),
                                             ),
