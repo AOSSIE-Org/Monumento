@@ -77,6 +77,39 @@ class NotificationListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (notifications.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.notifications_none_outlined,
+              size: 64,
+              color: AppColor.appPrimary.withOpacity(0.5),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "No Notifications Yet",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: AppColor.appSecondary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "We'll notify you when something interesting happens",
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColor.appSecondary.withOpacity(0.7),
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.builder(
       itemCount: notifications.length,
       itemBuilder: (context, index) {
