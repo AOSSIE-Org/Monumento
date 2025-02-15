@@ -13,21 +13,15 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validateFunction;
   final AutovalidateMode? autoValid;
   final bool isDesktop;
-  final FocusNode? focusNode;
-  final Function(String)? onFieldSubmitted;
-
-  const CustomTextField({
-    super.key,
-    required this.controller,
-    required this.text,
-    this.suffixIcon,
-    this.validateFunction,
-    this.autoValid,
-    this.isSeen,
-    this.isDesktop = false,
-    this.focusNode,
-    this.onFieldSubmitted,
-  });
+  const CustomTextField(
+      {super.key,
+      required this.controller,
+      required this.text,
+      this.suffixIcon,
+      this.validateFunction,
+      this.autoValid,
+      this.isSeen,
+      this.isDesktop = false});
 
   @override
   Widget build(BuildContext context) {
@@ -36,8 +30,6 @@ class CustomTextField extends StatelessWidget {
       obscureText: isSeen ?? false,
       validator: validateFunction,
       autovalidateMode: autoValid,
-      focusNode: focusNode,
-      onFieldSubmitted: onFieldSubmitted,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         contentPadding:
