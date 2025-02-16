@@ -81,6 +81,14 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                 ),
                               );
                             }
+
+                            if (state is SigninWithGoogleSuccess ||
+                                state is LoginSuccess) {
+                              while (context.canPop()) {
+                                context.pop();
+                              }
+                              context.push('/');
+                            }
                           },
                           child: BlocBuilder<LoginRegisterBloc,
                               LoginRegisterState>(
@@ -94,12 +102,6 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
                                     ),
                                   ),
                                 );
-                              }
-                              if (state is SigninWithGoogleSuccess) {
-                                while (context.canPop() == true) {
-                                  context.pop();
-                                }
-                                context.push('/');
                               }
                               return Column(
                                 children: [
