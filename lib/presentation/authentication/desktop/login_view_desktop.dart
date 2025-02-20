@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
 import 'package:monumento/gen/assets.gen.dart';
@@ -39,6 +39,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.appBackground,
       body: SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(
@@ -58,17 +59,14 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                   children: [
                     const SizedBox(height: 24),
                     Assets.desktop.logoDesktop.svg(width: 220),
-                    const SizedBox(
-                      height: 24,
-                    ),
+                    const SizedBox(height: 24),
                     Center(
                       child: Card(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 32, vertical: 50),
                           width: 380,
-                          child: BlocListener<LoginRegisterBloc,
-                              LoginRegisterState>(
+                          child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
                             bloc: locator<LoginRegisterBloc>(),
                             listener: (context, state) {
                               if (state is LoginFailed) {
@@ -85,13 +83,12 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       ),
                                     ),
                                     backgroundColor: AppColor.appWarningRed,
-                                    behavior: SnackBarBehavior.floating, 
+                                    behavior: SnackBarBehavior.floating,
                                   ),
                                 );
                               }
                             },
-                            child: BlocBuilder<LoginRegisterBloc,
-                                LoginRegisterState>(
+                            child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
                               bloc: locator<LoginRegisterBloc>(),
                               builder: (context, state) {
                                 if (state is LoginRegisterLoading) {
@@ -112,23 +109,35 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                     context.pushReplacement('/');
                                   }
                                 }
+
                                 return Column(
                                   children: [
                                     SizedBox(
                                       width: double.infinity,
-                                      child: SignInButton(
-                                        padding: const EdgeInsets.all(4),
-                                        Buttons.GoogleDark,
+                                      child: CustomElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          foregroundColor: AppColor.appBlack,
+                                          backgroundColor: AppColor.appWhite,
+                                          elevation: 2,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 16, vertical: 12),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                        ),
+                                        leading: SizedBox(
+                                          height: 28.h,
+                                          child: Assets.googleLogo.image(),
+                                        ),
+                                        isDesktop: true,
                                         onPressed: () {
-                                          locator<LoginRegisterBloc>().add(
-                                            LoginWithGooglePressed(),
-                                          );
+                                          locator<LoginRegisterBloc>()
+                                              .add(LoginWithGooglePressed());
                                         },
+                                        text: 'Sign In With Google',
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 22,
-                                    ),
+                                    const SizedBox(height: 22),
                                     const Text(
                                       'Or',
                                       style: TextStyle(
@@ -137,26 +146,22 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                         fontWeight: FontWeight.w400,
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 22,
-                                    ),
+                                    const SizedBox(height: 22),
                                     CustomTextField(
-                                        controller: emailController,
-                                        text: 'Email',
-                                        isDesktop: true,
-                                        validateFunction: (value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'Please enter email.';
-                                          } else if (!value.contains('@')) {
-                                            return 'Please enter a valid email.';
-                                          }
-                                          return null;
-                                        },
-                                        autoValid:
-                                            AutovalidateMode.onUserInteraction),
-                                    const SizedBox(
-                                      height: 16,
+                                      controller: emailController,
+                                      text: 'Email',
+                                      isDesktop: true,
+                                      validateFunction: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter email.';
+                                        } else if (!value.contains('@')) {
+                                          return 'Please enter a valid email.';
+                                        }
+                                        return null;
+                                      },
+                                      autoValid: AutovalidateMode.onUserInteraction,
                                     ),
+                                    const SizedBox(height: 16),
                                     CustomTextField(
                                       controller: passwordController,
                                       text: 'Password',
@@ -180,12 +185,9 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                             ? Icons.visibility_off
                                             : Icons.visibility),
                                       ),
-                                      autoValid:
-                                          AutovalidateMode.onUserInteraction,
+                                      autoValid: AutovalidateMode.onUserInteraction,
                                     ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
+                                    const SizedBox(height: 16),
                                     Align(
                                       alignment: Alignment.bottomRight,
                                       child: TextButton(
@@ -193,9 +195,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                           context.push('/reset-password');
                                         },
                                         style: ButtonStyle(
-                                          overlayColor: WidgetStateProperty.all(
-                                            Colors.transparent,
-                                          ),
+                                          overlayColor:
+                                              WidgetStateProperty.all(Colors.transparent),
                                         ),
                                         child: Text(
                                           'Forgot Password?',
@@ -207,37 +208,17 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 48,
-                                    ),
+                                    const SizedBox(height: 48),
                                     SizedBox(
                                       width: double.infinity,
                                       child: CustomElevatedButton(
                                         isDesktop: true,
                                         onPressed: () {
-                                          if (formKey.currentState!
-                                              .validate()) {
+                                          if (formKey.currentState!.validate()) {
                                             locator<LoginRegisterBloc>().add(
                                               LoginWithEmailPressed(
                                                 email: emailController.text,
-                                                password:
-                                                    passwordController.text,
-                                              ),
-                                            );
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  'Please enter valid email and password',
-                                                  style: AppTextStyles.s14(
-                                                    color: AppColor.appWhite,
-                                                    fontType: FontType.MEDIUM,
-                                                    isDesktop: true,
-                                                  ),
-                                                ),
-                                                backgroundColor:
-                                                    AppColor.appSecondary,
+                                                password: passwordController.text,
                                               ),
                                             );
                                           }
@@ -245,12 +226,9 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                         text: 'Login',
                                       ),
                                     ),
-                                    const SizedBox(
-                                      height: 26,
-                                    ),
+                                    const SizedBox(height: 26),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Don\'t have an account?',
@@ -264,12 +242,6 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                           onPressed: () {
                                             context.push('/register');
                                           },
-                                          style: ButtonStyle(
-                                            overlayColor:
-                                                WidgetStateProperty.all(
-                                              Colors.transparent,
-                                            ),
-                                          ),
                                           child: Text(
                                             'Sign Up',
                                             style: AppTextStyles.s14(
@@ -288,7 +260,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                           ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

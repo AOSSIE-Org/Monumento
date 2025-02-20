@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
@@ -60,12 +61,14 @@ class CustomElevatedButton extends StatelessWidget {
   final String text;
   final ButtonStyle? style;
   final bool isDesktop;
+  final Widget? leading;
   const CustomElevatedButton(
       {super.key,
       required this.onPressed,
       required this.text,
       this.style,
-      this.isDesktop = false});
+      this.isDesktop = false,
+      this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -79,14 +82,32 @@ class CustomElevatedButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 15),
           ),
       onPressed: onPressed,
-      child: Text(
-        text,
-        style: AppTextStyles.s14(
-          color: AppColor.appSecondary,
-          fontType: FontType.MEDIUM,
-          isDesktop: isDesktop,
-        ),
-      ),
+      child: leading == null
+          ? Text(
+              text,
+              style: AppTextStyles.s14(
+                color: AppColor.appSecondary,
+                fontType: FontType.MEDIUM,
+                isDesktop: isDesktop,
+              ),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                leading!,
+                SizedBox(
+                  width: 10.w,
+                ),
+                Text(
+                  text,
+                  style: AppTextStyles.s14(
+                    color: AppColor.appSecondary,
+                    fontType: FontType.MEDIUM,
+                    isDesktop: isDesktop,
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }

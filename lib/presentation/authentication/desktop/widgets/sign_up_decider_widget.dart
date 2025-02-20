@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
@@ -25,11 +26,24 @@ class _SignUpDeciderWidgetState extends State<SignUpDeciderWidget> {
       children: [
         SizedBox(
           width: double.infinity,
-          child: SignInButton(
-            padding: const EdgeInsets.all(4),
-            Buttons.Google,
-            text: 'Sign up with Google',
-            onPressed: widget.onSignUpWithGooglePressed,
+          child: SizedBox(
+            width: double.infinity,
+            child: CustomElevatedButton(
+              isDesktop: true,
+              onPressed: widget.onSignUpWithGooglePressed,
+              style: ElevatedButton.styleFrom(
+                foregroundColor: AppColor.appBlack,
+                backgroundColor: AppColor.appWhite, // Text and icon color
+                elevation: 2, // Shadow
+                padding: EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12), // Padding
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4), // Border radius
+                ),
+              ),
+              leading: SizedBox(height: 28.h, child: Assets.googleLogo.image()),
+              text: 'Sign up with Google',
+            ),
           ),
         ),
         const SizedBox(
