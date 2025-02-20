@@ -95,6 +95,9 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                           ),
                         );
                       }
+                      if (state is SignUpSuccess) {
+                        context.go('/');
+                      }
                     },
                     child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
                       bloc: locator<LoginRegisterBloc>(),
@@ -108,9 +111,7 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                             ),
                           );
                         }
-                        if (state is SignUpSuccess) {
-                          context.go('/');
-                        }
+
                         return ExpandablePageView(
                           pageSnapping: false,
                           physics: const NeverScrollableScrollPhysics(),
