@@ -1,0 +1,79 @@
+name: Greet Contributors
+
+on: 
+  issues:
+    types: [opened, closed]
+  pull_request:
+    types: [opened, closed]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  greet:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Handle Opened Issues
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            👋 **Hello @${{ github.actor }}!**  
+            Thank you for opening this issue. Our team will review it soon. 🚀  
+            - If you can, please provide more details like steps to reproduce, expected vs. actual behavior, and screenshots (if applicable). 📌  
+            
+            We appreciate your contribution! 💡
+          reactions: heart
+
+      - name: Handle Closed Issues
+        if: github.event_name == 'issues' && github.event.action == 'closed'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            🔒 **Issue Closed - Thank You, @${{ github.actor }}!**  
+            This issue has been resolved or is no longer relevant.  
+            - If you have further questions, feel free to open a new issue. 💡  
+
+            Thanks for helping improve the project! 🚀 
+          reactions: |
+            heart
+            hurray
+
+      - name: Handle Opened PRs
+        if: github.event_name == 'pull_request' && github.event.action == 'opened'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            🎉 **Welcome @${{ github.actor }}!**  
+            Thank you for your pull request! Our team will review it soon. 🔍  
+            - Please ensure your PR follows the contribution guidelines. ✅  
+            - All automated tests should pass before merging. 🔄  
+            - If this PR fixes an issue, link it in the description. 🔗  
+            
+            We appreciate your contribution! 🚀  
+          reactions: |
+            heart
+
+      - name: Handle Closed PRs
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ✅ **PR Closed - Thank You, @${{ github.actor }}!**  
+            - If this PR was merged: **Congratulations! Your contribution is now part of the project.** 🚀  
+            - If this PR was closed without merging: **Don’t worry! You can always improve it and submit again.** 💪  
+
+            We appreciate your effort and look forward to more contributions from you! 🤝 
+          reactions: |
+            heart
+            hurray 
