@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -38,14 +39,14 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<String> uploadProfilePicForUrl({required File file}) async {
+  Future<String> uploadProfilePicForUrl({required Uint8List fileBytes}) async {
     String fileName = const Uuid().v4();
 
     UploadTask task = _storage
         .ref()
         .child("profilePictures")
         .child("$fileName.jpg")
-        .putFile(file);
+        .putData(fileBytes);
 
     TaskSnapshot snapshot = await task.whenComplete(() => null);
 

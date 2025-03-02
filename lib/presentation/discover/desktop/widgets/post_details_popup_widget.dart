@@ -82,22 +82,9 @@ class _PostDetailsPopupWidgetState extends State<PostDetailsPopupWidget> {
                       ),
                       CircleAvatar(
                         radius: 20,
-                        child: CachedNetworkImage(
-                          imageUrl: widget.post.author.profilePictureUrl ??
+                        backgroundImage: CachedNetworkImageProvider(
+                          widget.post.author.profilePictureUrl ??
                               defaultProfilePicture,
-                          placeholder: (context, url) =>
-                              const CircularProgressIndicator(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                          imageBuilder: (context, imageProvider) => Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: imageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
                         ),
                       ),
                       const SizedBox(
