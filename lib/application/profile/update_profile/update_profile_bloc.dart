@@ -62,7 +62,15 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
   FutureOr<void> _mapUpdateUserDetailsDesktop(
       UpdateUserDetailsDesktop event, Emitter<UpdateProfileState> emit) async {
     try {
-      emit(UpdateProfileLoading());
+      emit(
+        UpdateProfileLoading(),
+      );
+
+      bool hasChanges = await _checkIfThereAreNewUserUpdates(event);
+      if (!hasChanges) {
+        emit(const UpdateProfileFailure(message: "No changes detected"));
+        return;
+      }
       if (event.userInfo.keys.contains('image') &&
           event.userInfo['image'] != null) {
         String url = await _socialRepository.uploadProfilePicForUrl(
@@ -86,5 +94,24 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
     } catch (e) {
       emit(UpdateProfileFailure(message: e.toString()));
     }
+  }
+
+  Future<bool> _checkIfThereAreNewUserUpdates(
+      UpdateUserDetailsDesktop event) async {
+    final (success, currentUser) = await _authenticationRepository.getUser();
+
+    if (!success || currentUser == null) {
+      return false;
+    }
+
+    bool hasChanges = (event.userInfo.containsKey('name') &&
+            event.userInfo['name'] != currentUser.name) ||
+        (event.userInfo.containsKey('status') &&
+            event.userInfo['status'] != currentUser.status) ||
+        (event.userInfo.containsKey('username') &&
+            event.userInfo['username'] != currentUser.username) ||
+        event.userInfo.containsKey('image');
+
+    return hasChanges;
   }
 }
