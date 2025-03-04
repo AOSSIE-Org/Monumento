@@ -56,6 +56,23 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
     super.dispose();
   }
 
+  void _attemptSignUp() {
+    if (formKey.currentState!.validate()) {
+      locator<LoginRegisterBloc>().add(
+        SignUpWithEmailPressed(
+          email: emailController.text,
+          password: passwordController.text,
+          name: nameController.text,
+          username: usernameController.text,
+          status: statusController.text,
+          profilePictureFile: imageBytes != null
+              ? imageBytes!
+              : null,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -164,6 +181,7 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: nameController,
                                         isDesktop: true,
                                         text: 'Name',
+                                        textInputAction: TextInputAction.next,
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Name cannot be empty';
@@ -176,15 +194,18 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         height: 16,
                                       ),
                                       CustomTextField(
-                                          controller: usernameController,
-                                          isDesktop: true,
-                                          text: 'Username',
-                                          validateFunction: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Username cannot be empty';
-                                            }
-                                            return null;
-                                          }),
+                                        controller: usernameController,
+                                        isDesktop: true,
+                                        text: 'Username',
+                                        textInputAction: TextInputAction.next,
+                                        validateFunction: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Username cannot be empty';
+                                          }
+                                          return null;
+                                        },
+                                        autoValid: AutovalidateMode.onUserInteraction,
+                                      ),
                                       const SizedBox(
                                         height: 16,
                                       ),
@@ -192,6 +213,7 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: statusController,
                                         isDesktop: true,
                                         text: 'Status',
+                                        textInputAction: TextInputAction.next,
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Status cannot be empty';
@@ -207,6 +229,7 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: emailController,
                                         isDesktop: true,
                                         text: 'Email',
+                                        textInputAction: TextInputAction.next,
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Email cannot be empty';
@@ -221,54 +244,43 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         height: 16,
                                       ),
                                       CustomTextField(
-                                          controller: passwordController,
-                                          text: 'Password',
-                                          isDesktop: true,
-                                          isSeen: isSeen,
-                                          suffixIcon: IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                isSeen = !isSeen;
-                                              });
-                                            },
-                                            icon: Icon(!isSeen
-                                                ? Icons.visibility_off
-                                                : Icons.visibility),
-                                          ),
-                                          validateFunction: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Password cannot be empty';
-                                            } else if (value.length < 6) {
-                                              return 'Password must be at least 6 characters';
-                                            }
-                                            return null;
+                                        controller: passwordController,
+                                        text: 'Password',
+                                        isDesktop: true,
+                                        isSeen: !isSeen,
+                                        textInputAction: TextInputAction.done,
+                                        onEditingComplete: _attemptSignUp,
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isSeen = !isSeen;
+                                            });
                                           },
-                                          autoValid:
-                                              AutovalidateMode.onUserInteraction),
+                                          icon: Icon(!isSeen
+                                              ? Icons.visibility_off
+                                              : Icons.visibility),
+                                        ),
+                                        validateFunction: (value) {
+                                          if (value!.isEmpty) {
+                                            return 'Password cannot be empty';
+                                          } else if (value.length < 6) {
+                                            return 'Password must be at least 6 characters';
+                                          }
+                                          return null;
+                                        },
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
+                                      ),
                                       const SizedBox(
                                         height: 48,
                                       ),
                                       SizedBox(
                                         width: double.infinity,
                                         child: CustomElevatedButton(
-                                            isDesktop: true,
-                                            onPressed: () {
-                                              if (formKey.currentState!.validate()) {
-                                                locator<LoginRegisterBloc>().add(
-                                                  SignUpWithEmailPressed(
-                                                    email: emailController.text,
-                                                    password: passwordController.text,
-                                                    name: nameController.text,
-                                                    username: usernameController.text,
-                                                    status: statusController.text,
-                                                    profilePictureFile: imageBytes != null
-                                                        ? imageBytes!
-                                                        : null,
-                                                  ),
-                                                );
-                                              }
-                                            },
-                                            text: 'Sign Up'),
+                                          isDesktop: true,
+                                          onPressed: _attemptSignUp,
+                                          text: 'Sign Up',
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 26,
