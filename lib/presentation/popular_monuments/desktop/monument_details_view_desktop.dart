@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
+import 'package:monumento/application/popular_monuments/monument_checkout/monument_checkout_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/nearby_places/nearby_places_bloc.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
@@ -47,6 +48,8 @@ class _MonumentDetailsViewDesktopState
         longitude: widget.monument.coordinates[1],
       ),
     );
+    locator<MonumentCheckoutBloc>()
+        .add(CheckIfMonumentIsCheckedOut(monument: widget.monument));
     super.initState();
   }
 
@@ -189,122 +192,219 @@ class _MonumentDetailsViewDesktopState
                 );
               }
             },
-            builder: (context, state) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColor.appPrimary,
-                  ),
-                  onPressed: () {
-                    if (state is MonumentCheckedIn) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Already Checked In"),
-                        ),
-                      );
-                      return;
-                    }
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: const Text(
-                            "Mark this monument as visited?",
-                            textAlign: TextAlign.center,
-                          ),
-                          content: SizedBox(
-                            height: 400,
-                            width: 500,
-                            child: Column(
-                              children: [
-                                Assets.desktop.checkedin.image(),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                const Text(
-                                  "Your current location will be used to figure out whether you are near to the Monument or not",
-                                  textAlign: TextAlign.center,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                Row(
+            builder: (context, checkinState) {
+              return BlocConsumer<MonumentCheckoutBloc, MonumentCheckoutState>(
+                bloc: locator<MonumentCheckoutBloc>(),
+                listener: (context, checkoutState) {
+                  if (checkoutState is MonumentCheckedOut) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Checked Out Successfully"),
+                      ),
+                    );
+                  } else if (checkoutState is MonumentCheckoutFailure) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(checkoutState.message),
+                      ),
+                    );
+                  }
+                },
+                builder: (context, checkoutState) {
+                  // final isCheckedOut = checkoutState is MonumentCheckedOut ||
+                  //    checkoutState is MonumentAlreadyCheckedOut;
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColor.appPrimary,
+                      ),
+                      onPressed: () {
+                        if (checkinState is MonumentCheckedIn) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text(
+                                "Confirm Monument Checkout",
+                                textAlign: TextAlign.center,
+                              ),
+                              content: SizedBox(
+                                height: 200,
+                                width: 500,
+                                child: Column(
                                   children: [
-                                    const Spacer(
-                                      flex: 2,
+                                    const SizedBox(
+                                      height: 20,
                                     ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: Text(
-                                        "Cancel",
-                                        style: AppTextStyles.s16(
-                                          color: AppColor.appSecondary,
-                                          fontType: FontType.MEDIUM,
-                                          isDesktop: true,
+                                    const Text(
+                                      "You are about to check out from this monument. Your visit duration will be recorded and added to your travel history.",
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(
+                                      height: 40,
+                                    ),
+                                    Row(
+                                      children: [
+                                        const Spacer(
+                                          flex: 2,
                                         ),
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        locator<MonumentCheckinBloc>().add(
-                                          CheckinMonument(
-                                            monument: widget.monument,
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Text(
+                                            "Cancel",
+                                            style: AppTextStyles.s16(
+                                              color: AppColor.appSecondary,
+                                              fontType: FontType.MEDIUM,
+                                              isDesktop: true,
+                                            ),
                                           ),
-                                        );
-                                        Navigator.pop(context);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColor.appPrimary,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 24,
-                                          vertical: 12,
                                         ),
-                                      ),
-                                      child: Text(
-                                        "Check In",
-                                        style: AppTextStyles.s14(
-                                          color: AppColor.appSecondary,
-                                          fontType: FontType.MEDIUM,
-                                          isDesktop: true,
+                                        const Spacer(),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            locator<MonumentCheckoutBloc>().add(
+                                                ConfirmMonumentCheckout(
+                                                    monument: widget.monument));
+                                            Navigator.pop(context);
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                AppColor.appPrimary,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 24,
+                                              vertical: 12,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "Check Out",
+                                            style: AppTextStyles.s14(
+                                              color: AppColor.appSecondary,
+                                              fontType: FontType.MEDIUM,
+                                              isDesktop: true,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    const Spacer(
-                                      flex: 2,
+                                        const Spacer(
+                                          flex: 2,
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                              ],
+                              ),
+                            ),
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text(
+                                  "Mark this monument as visited?",
+                                  textAlign: TextAlign.center,
+                                ),
+                                content: SizedBox(
+                                  height: 400,
+                                  width: 500,
+                                  child: Column(
+                                    children: [
+                                      Assets.desktop.checkedin.image(),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      const Text(
+                                        "Your current location will be used to figure out whether you are near to the Monument or not",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Spacer(
+                                            flex: 2,
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: Text(
+                                              "Cancel",
+                                              style: AppTextStyles.s16(
+                                                color: AppColor.appSecondary,
+                                                fontType: FontType.MEDIUM,
+                                                isDesktop: true,
+                                              ),
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          ElevatedButton(
+                                            onPressed: () {
+                                              locator<MonumentCheckinBloc>()
+                                                  .add(
+                                                CheckinMonument(
+                                                  monument: widget.monument,
+                                                ),
+                                              );
+                                              Navigator.pop(context);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  AppColor.appPrimary,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 24,
+                                                vertical: 12,
+                                              ),
+                                            ),
+                                            child: Text(
+                                              "Check In",
+                                              style: AppTextStyles.s14(
+                                                color: AppColor.appSecondary,
+                                                fontType: FontType.MEDIUM,
+                                                isDesktop: true,
+                                              ),
+                                            ),
+                                          ),
+                                          const Spacer(
+                                            flex: 2,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: Row(
+                        children: [
+                          Assets.icons.icCheckin.svg(
+                            width: 24,
+                            height: 24,
+                          ),
+                          SizedBox(
+                            width: 8.w,
+                          ),
+                          Text(
+                            checkinState is MonumentCheckedIn
+                                ? "Check Out"
+                                : "Check In",
+                            style: AppTextStyles.s16(
+                              color: AppColor.appSecondary,
+                              fontType: FontType.MEDIUM,
+                              isDesktop: true,
                             ),
                           ),
-                        );
-                      },
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      Assets.icons.icCheckin.svg(
-                        width: 24,
-                        height: 24,
+                        ],
                       ),
-                      SizedBox(
-                        width: 8.w,
-                      ),
-                      Text(
-                        state is MonumentCheckedIn ? "Checked In" : "Check In",
-                        style: AppTextStyles.s16(
-                          color: AppColor.appSecondary,
-                          fontType: FontType.MEDIUM,
-                          isDesktop: true,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             },
           ),
