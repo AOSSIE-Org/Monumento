@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,7 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
   late TextEditingController usernameController;
   late TextEditingController statusController;
   bool isSeen = false;
-  XFile? image;
+  Uint8List? image;
 
   @override
   void initState() {
@@ -116,9 +116,11 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
                         GestureDetector(
                           onTap: () async {
                             final ImagePicker picker = ImagePicker();
-                            final img = await picker.pickImage(
-                              source: ImageSource.gallery,
-                            );
+                            final img = await picker
+                                .pickImage(
+                                  source: ImageSource.gallery,
+                                )
+                                .then((value) => value!.readAsBytes());
                             setState(() {
                               image = img;
                             });
@@ -131,7 +133,7 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
                                         ? CircleAvatar(
                                             radius: 100,
                                             backgroundImage:
-                                                FileImage(File(image!.path)))
+                                                MemoryImage(image!))
                                         : CircleAvatar(
                                             radius: 100,
                                             backgroundImage:
@@ -141,7 +143,9 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
                                                   defaultProfilePicture,
                                             ),
                                           ),
-                                    File(image!.path))
+                                    image!,
+                                  )
+                                // File(image!.path))
                                 : null;
                           },
                           child: Stack(children: [
@@ -323,8 +327,8 @@ Future<void> showDialogAlert(
       });
 }
 
-Future<void> showDialogAlertProfileImage(
-    BuildContext context, String heading, Widget profileImage, File image) {
+Future<void> showDialogAlertProfileImage(BuildContext context, String heading,
+    Widget profileImage, Uint8List image) {
   return showDialog(
       context: context,
       builder: (context) {

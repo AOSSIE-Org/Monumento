@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
   late TextEditingController statusController;
   late PageController controller;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  XFile? image;
+  Uint8List? imageBytes;
   bool render = false;
   bool isSeen = false;
 
@@ -139,16 +139,16 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                     final ImagePicker picker = ImagePicker();
                                     final img = await picker.pickImage(
                                       source: ImageSource.gallery,
-                                    );
+                                    ).then((value) => value!.readAsBytes(),);
                                     setState(() {
-                                      image = img;
+                                      imageBytes = img;
                                     });
                                   },
-                                  child: image != null
+                                  child: imageBytes != null
                                       ? CircleAvatar(
                                           radius: 40,
                                           backgroundImage:
-                                              FileImage(File(image!.path)))
+                                              MemoryImage(imageBytes!))
                                       : CircleAvatar(
                                           radius: 40,
                                           backgroundColor:
@@ -254,8 +254,8 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                               name: nameController.text,
                                               username: usernameController.text,
                                               status: statusController.text,
-                                              profilePictureFile: image != null
-                                                  ? File(image!.path)
+                                              profilePictureFile: imageBytes != null
+                                                  ? imageBytes
                                                   : null,
                                             ),
                                           );

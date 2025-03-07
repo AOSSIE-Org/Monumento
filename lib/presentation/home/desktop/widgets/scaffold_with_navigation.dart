@@ -401,14 +401,14 @@ class _NavigationRailState extends State<_NavigationRail> {
                           CircleAvatar(
                               radius: 32,
                               backgroundColor: AppColor.appGreyAccent,
-                              child: state.user.profilePictureUrl == null
+                              foregroundImage: state.user.profilePictureUrl == null
                                   ? SvgPicture.asset(
                                       Assets.icons.icUser.path,
-                                    )
-                                  : CachedNetworkImage(
-                                      imageUrl: state.user.profilePictureUrl!,
-                                      width: 64,
-                                      height: 64,
+                                    ) as ImageProvider
+                                  : CachedNetworkImageProvider(
+                                      state.user.profilePictureUrl!,
+                                      maxWidth: 64,
+                                      maxHeight: 64,
                                     )),
                           const SizedBox(
                             height: 10,
