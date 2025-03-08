@@ -31,7 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   responsive_framework: ^1.4.0
-
+  # Appwrite
+  appwrite: ^14.0.0
   # Firebase
   firebase_core: ^3.3.0
   firebase_auth: ^5.1.4
