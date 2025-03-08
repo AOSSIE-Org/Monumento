@@ -20,8 +20,8 @@ import 'package:monumento/application/popular_monuments/monument_details/monumen
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/application/profile/update_profile/update_profile_bloc.dart';
-import 'package:monumento/data/repositories/firebase_monument_repository.dart';
-import 'package:monumento/data/repositories/appwrite_social_repository.dart';
+import 'package:monumento/data/repositories/appwrite_monument_repository.dart';
+import 'package:monumento/data/repositories/firebase_social_repository.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/monument_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
@@ -32,24 +32,24 @@ import 'data/repositories/firebase_authentication_repository.dart';
 final GetIt locator = GetIt.instance;
 
 void setupLocator() {
+  // Register repositories
+  locator.registerLazySingleton(() => Client()
+    ..setEndpoint(
+        dotenv.env['APPWRITE_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
+    ..setProject(dotenv.env['APPWRITE_PROJECT_ID']));
+  locator.registerLazySingleton(
+    () => Databases(locator<Client>()),
+  );
+  locator.registerLazySingleton<MonumentRepository>(
+      () => AppwriteMonumentRepository(
+            authenticationRepository: locator<AuthenticationRepository>(),
+            database: locator<Databases>(),
+          ));
   locator.registerLazySingleton<AuthenticationRepository>(
       () => FirebaseAuthenticationRepository());
-  locator
-  ..registerLazySingleton(() => Client()
-      ..setEndpoint(
-          dotenv.env['APPWRITE_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
-      ..setProject(dotenv.env['APPWRITE_PROJECT_ID']))
-    ..registerLazySingleton(() => Databases(locator<Client>()))
-    ..registerLazySingleton(() => Storage(locator<Client>()))
-    ..registerLazySingleton<SocialRepository>(() =>AppwriteSocialRepository(
-          authenticationRepository: locator<AuthenticationRepository>(),
-          database: locator<Databases>(),
-          storage: locator<Storage>()));
-//   locator.registerLazySingleton<SocialRepository>(() =>
-//       FirebaseSocialRepository(
-//           authenticationRepository: locator<AuthenticationRepository>()));
-  locator.registerLazySingleton<MonumentRepository>(
-      () => FirebaseMonumentRepository(locator<AuthenticationRepository>()));
+  locator.registerLazySingleton<SocialRepository>(() =>
+      FirebaseSocialRepository(
+          authenticationRepository: locator<AuthenticationRepository>()));
 
   // Register blocs
   locator.registerLazySingleton(() =>
@@ -84,7 +84,8 @@ void setupLocator() {
       () => BookmarkMonumentsBloc(locator<MonumentRepository>()));
   locator.registerLazySingleton(() => UpdateProfileBloc(
       locator<SocialRepository>(), locator<AuthenticationRepository>()));
-  locator.registerLazySingleton(() => Monument3dModelBloc(locator<MonumentRepository>()));
+  locator.registerLazySingleton(
+      () => Monument3dModelBloc(locator<MonumentRepository>()));
   locator.registerLazySingleton(
       () => NotificationsBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(
