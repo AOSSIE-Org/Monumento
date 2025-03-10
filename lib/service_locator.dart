@@ -1,3 +1,6 @@
+import 'package:appwrite/appwrite.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import 'package:get_it/get_it.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
@@ -32,8 +35,14 @@ void setupLocator() {
   // Register repositories
   locator.registerLazySingleton<AuthenticationRepository>(
       () => FirebaseAuthenticationRepository());
-  locator.registerLazySingleton<SocialRepository>(() =>
-      FirebaseSocialRepository(
+  locator
+  ..registerLazySingleton(() => Client()
+      ..setEndpoint(
+          dotenv.env['APPWRITE_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
+      ..setProject(dotenv.env['APPWRITE_PROJECT_ID']))
+    ..registerLazySingleton(() => Databases(locator<Client>()))
+    ..registerLazySingleton(() => Storage(locator<Client>()))
+    ..registerLazySingleton<SocialRepository>(() =>FirebaseSocialRepository(
           authenticationRepository: locator<AuthenticationRepository>()));
   locator.registerLazySingleton<MonumentRepository>(
       () => FirebaseMonumentRepository(locator<AuthenticationRepository>()));
