@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart';
 import 'package:monumento/data/models/comment_model.dart';
 import 'package:monumento/data/models/notification_model.dart';
 import 'package:monumento/data/models/post_model.dart';
@@ -39,7 +40,6 @@ class FirebaseSocialRepository implements SocialRepository {
     String fileName = const Uuid().v4();
     String extension = file.path.split('.').last;
     String newFilename = "$fileName.$extension";
-
     try {
       final result = await _storage.createFile(
         bucketId: _imagesBucketId,
@@ -105,7 +105,7 @@ class FirebaseSocialRepository implements SocialRepository {
   @override
   Future<List<UserModel>> searchPeople({required String searchQuery}) async {
     String query = searchQuery.toLowerCase().replaceAll(' ', '');
-
+    print(query);
     try {
       // Using Appwrite's query syntax
       final documents = await _database.listDocuments(
@@ -115,9 +115,14 @@ class FirebaseSocialRepository implements SocialRepository {
       );
 
       // Convert documents to UserModel objects
-      List<UserModel> users = documents.documents
-          .map((doc) => UserModel.fromJson(doc.data))
-          .toList();
+      List<UserModel> users = documents.documents.map((doc) {
+        // Copy the document data and ensure uid is not null
+        Map<String, dynamic> userData = Map<String, dynamic>.from(doc.data);
+        // Use document ID as uid if uid is null
+        userData['uid'] = userData['uid'] ?? doc.$id;
+
+        return UserModel.fromJson(userData);
+      }).toList();
 
       return users;
     } catch (e) {
@@ -154,9 +159,15 @@ class FirebaseSocialRepository implements SocialRepository {
         ],
       );
 
-      List<UserModel> users = documents.documents
-          .map((doc) => UserModel.fromJson(doc.data))
-          .toList();
+      // Convert documents to UserModel objects
+      List<UserModel> users = documents.documents.map((doc) {
+        // Copy the document data and ensure uid is not null
+        Map<String, dynamic> userData = Map<String, dynamic>.from(doc.data);
+        // Use document ID as uid if uid is null
+        userData['uid'] = userData['uid'] ?? doc.$id;
+
+        return UserModel.fromJson(userData);
+      }).toList();
 
       return users;
     } catch (e) {
@@ -170,9 +181,14 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<UserModel> getUserByUid({required String uid}) async {
     try {
       final document = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "users", documentId: "67cf30cd0021b2a2c14a");
+          databaseId: _databaseId, collectionId: "users", documentId: uid);
 
-      UserModel user = UserModel.fromJson(document.data);
+      // Copy the document data and ensure uid is not null
+      Map<String, dynamic> userData = Map<String, dynamic>.from(document.data);
+      // Use document ID as uid if uid is null
+      userData['uid'] = userData['uid'] ?? document.$id;
+
+      UserModel user = UserModel.fromJson(userData);
       return user;
     } catch (e) {
       log('Error getting user by uid: $e', stackTrace: StackTrace.current);
@@ -197,6 +213,625 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
+  Future<PostModel> uploadNewPost(
+      {required String title,
+      String? location,
+      String? imageUrl,
+      required int postType}) async {
+    try {
+      var (userLoggedIn, user) = await authenticationRepository.getUser();
+      if (!userLoggedIn) {
+        throw Exception("User not logged in");
+      }
+
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+
+      print("Creating post with imageUrl: $imageUrl");
+      print(title);
+      print(timeStamp);
+      print(user?.uid);
+
+      final result = await _database.createDocument(
+          databaseId: _databaseId,
+          collectionId: "posts",
+          documentId: ID.unique(),
+          data: {
+            "title": title,
+            "location": location ?? "",
+            "imageUrl": imageUrl ?? null,
+            "author": "67cf30cd0021b2a2c14a",
+            "timeStamp": timeStamp,
+            "postType": postType,
+            "postByUid": "67cf30cd0021b2a2c14a" ?? "",
+            "likesCount": 0,
+            "commentsCount": 0,
+          });
+
+      print("Post created successfully with ID: ${result.$id}");
+
+      return PostModel(
+        author: user!,
+        postByUid: user.uid,
+        title: title,
+        location: location,
+        imageUrl: imageUrl,
+        timeStamp: timeStamp,
+        postId: result.$id,
+        postType: postType,
+        likesCount: 0,
+        commentsCount: 0,
+      );
+    } catch (e) {
+      print(e);
+      log("Error creating post: $e", stackTrace: StackTrace.current);
+      throw Exception("Failed to create post: $e");
+    }
+  }
+
+  @override
+  Future<List<PostModel>> getInitialDiscoverPosts() async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      final documents = await _database.listDocuments(
+          databaseId: _databaseId,
+          collectionId: "posts",
+          queries: [
+            Query.equal("postType", 0),
+            Query.orderDesc("timeStamp"),
+            Query.limit(8)
+          ]);
+
+      List<PostModel> posts = [];
+
+      for (var doc in documents.documents) {
+        try {
+          // Create a mutable copy of the data
+          final data = Map<String, dynamic>.from(doc.data);
+
+          // Ensure postId is set
+          data['postId'] = doc.$id;
+
+          // Check if we need to add isPostLiked
+          if (!data.containsKey('isPostLiked')) {
+            data['isPostLiked'] = false;
+          }
+
+          // Clean and prepare the author data
+          if (data.containsKey('author') &&
+              data['author'] is Map<String, dynamic>) {
+            final authorData = Map<String, dynamic>.from(data['author']);
+
+            // Ensure required fields exist and are not null
+            if (authorData['uid'] == null) {
+              authorData['uid'] = authorData['\$id'] ?? '';
+            }
+
+            if (authorData['email'] == null) {
+              authorData['email'] = '';
+            }
+
+            if (authorData['name'] == null) {
+              authorData['name'] = 'Unknown User';
+            }
+
+            if (authorData['status'] == null) {
+              authorData['status'] = '';
+            }
+
+            // Convert followers, following, posts to List<String> if they exist
+            if (authorData.containsKey('followers')) {
+              if (authorData['followers'] == null) {
+                authorData['followers'] = <String>[];
+              } else if (authorData['followers'] is! List) {
+                authorData['followers'] = <String>[];
+              }
+            } else {
+              authorData['followers'] = <String>[];
+            }
+
+            if (authorData.containsKey('following')) {
+              if (authorData['following'] == null) {
+                authorData['following'] = <String>[];
+              } else if (authorData['following'] is! List) {
+                authorData['following'] = <String>[];
+              }
+            } else {
+              authorData['following'] = <String>[];
+            }
+
+            if (authorData.containsKey('posts')) {
+              if (authorData['posts'] == null) {
+                authorData['posts'] = <String>[];
+              } else if (authorData['posts'] is! List) {
+                authorData['posts'] = <String>[];
+              }
+            } else {
+              authorData['posts'] = <String>[];
+            }
+
+            // Create UserModel manually instead of using fromJson
+            final author = UserModel(
+              uid: authorData['uid'] ?? authorData['\$id'] ?? '',
+              email: authorData['email'] ?? '',
+              name: authorData['name'] ?? 'Unknown User',
+              profilePictureUrl: authorData['profilePictureUrl'],
+              status: authorData['status'] ?? '',
+              username: authorData['username'],
+              followers: List<String>.from(authorData['followers'] ?? []),
+              following: List<String>.from(authorData['following'] ?? []),
+              posts: List<String>.from(authorData['posts'] ?? []),
+            );
+
+            // Replace the author data with our manually created object
+            final postModel = PostModel(
+              postId: data['postId'],
+              imageUrl: data['imageUrl'],
+              title: data['title'] ?? '',
+              location: data['location'],
+              timeStamp: data['timeStamp'] ?? 0,
+              author: author,
+              postByUid: data['postByUid'] ?? '',
+              likesCount: data['likesCount'] ?? 0,
+              postType: data['postType'] ?? 0,
+              commentsCount: data['commentsCount'] ?? 0,
+              isPostLiked: data['isPostLiked'] ?? false,
+            );
+
+            posts.add(postModel);
+          }
+        } catch (e) {
+          print("Error creating PostModel: $e");
+        }
+      }
+
+      print("Total posts found: ${posts.length}");
+      return posts;
+    } catch (e) {
+      print(e);
+      throw Exception(e);
+    }
+  }
+
+//little buggy
+  @override
+  Future<void> followUser({required UserEntity targetUser}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    if (user!.uid == targetUser.uid) {
+      throw Exception("Can't follow yourself!");
+    }
+
+    try {
+      // Add to target user's followers
+      final targetUserDoc = await _database.getDocument(
+          databaseId: _databaseId,
+          collectionId: "users",
+          documentId: targetUser.uid);
+
+      List<String> followers =
+          List<String>.from(targetUserDoc.data['followers'] ?? []);
+      if (!followers.contains(user.uid)) {
+        followers.add(user.uid);
+        await _database.updateDocument(
+            databaseId: _databaseId,
+            collectionId: "users",
+            documentId: targetUser.uid,
+            data: {'followers': followers});
+      }
+
+      // Add to current user's following
+      final currentUserDoc = await _database.getDocument(
+          databaseId: _databaseId, collectionId: "users", documentId: user.uid);
+
+      List<String> following =
+          List<String>.from(currentUserDoc.data['following'] ?? []);
+      if (!following.contains(targetUser.uid)) {
+        following.add(targetUser.uid);
+        await _database.updateDocument(
+            databaseId: _databaseId,
+            collectionId: "users",
+            documentId: user.uid,
+            data: {'following': following});
+      }
+
+      // Create notification
+      var notification = NotificationModel(
+        notificationType: NotificationType.followedYou,
+        timeStamp: DateTime.now().millisecondsSinceEpoch,
+        userInvolved: user,
+      );
+
+      await addNewNotification(
+        targetUser: UserModel.fromEntity(targetUser),
+        notification: notification,
+      );
+    } catch (e) {
+      log("Error following user: $e", stackTrace: StackTrace.current);
+      throw Exception("Failed to follow user: $e");
+    }
+  }
+
+  @override
+  Future<bool> getFollowStatus({required UserEntity targetUser}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      // Get target user document
+      final targetDoc = await _database.getDocument(
+          databaseId: _databaseId,
+          collectionId: "users",
+          documentId: targetUser.uid);
+
+      // Get current user document
+      final currentDoc = await _database.getDocument(
+          databaseId: _databaseId,
+          collectionId: "users",
+          documentId: user!.uid);
+
+      List<String> targetFollowers =
+          List<String>.from(targetDoc.data['followers'] ?? []);
+      List<String> currentFollowing =
+          List<String>.from(currentDoc.data['following'] ?? []);
+
+      return targetFollowers.contains(user.uid) &&
+          currentFollowing.contains(targetUser.uid);
+    } catch (e) {
+      log("Error checking follow status: $e", stackTrace: StackTrace.current);
+      throw Exception("Failed to check follow status: $e");
+    }
+  }
+
+//little buggy
+  @override
+  Future<void> unfollowUser({required UserEntity targetUser}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      // Remove from target user's followers
+      final targetUserDoc = await _database.getDocument(
+          databaseId: _databaseId,
+          collectionId: "users",
+          documentId: targetUser.uid);
+
+      List<String> followers =
+          List<String>.from(targetUserDoc.data['followers'] ?? []);
+      followers.remove(user!.uid);
+
+      await _database.updateDocument(
+          databaseId: _databaseId,
+          collectionId: "users",
+          documentId: targetUser.uid,
+          data: {'followers': followers});
+
+      // Remove from current user's following
+      final currentUserDoc = await _database.getDocument(
+          databaseId: _databaseId, collectionId: "users", documentId: user.uid);
+
+      List<String> following =
+          List<String>.from(currentUserDoc.data['following'] ?? []);
+      following.remove(targetUser.uid);
+
+      await _database.updateDocument(
+          databaseId: _databaseId,
+          collectionId: "users",
+          documentId: user.uid,
+          data: {'following': following});
+    } catch (e) {
+      log("Error unfollowing user: $e", stackTrace: StackTrace.current);
+      throw Exception("Failed to unfollow user: $e");
+    }
+  }
+
+  @override
+  Future<bool> monumentCheckIn(
+      {required String monumentId, String? title}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      // Get monument details
+      final monument = await _database.getDocument(
+          databaseId: _databaseId,
+          collectionId: "monuments",
+          documentId: monumentId);
+
+      // Check if user already checked in
+      final existingCheckIns = await _database.listDocuments(
+          databaseId: _databaseId,
+          collectionId: "checkIn",
+          queries: [
+            Query.equal("monumentId", monumentId),
+            Query.equal("userId", user!.uid)
+          ]);
+
+      if (existingCheckIns.documents.isNotEmpty) {
+        return false; // Already checked in
+      }
+
+      // Create a check-in
+      final checkInId = ID.unique();
+      final timeStamp = DateTime.now().millisecondsSinceEpoch;
+
+      await _database.createDocument(
+          databaseId: _databaseId,
+          collectionId: "checkIn",
+          documentId: checkInId,
+          data: {
+            "monumentId": monumentId,
+            "userId": user?.uid,
+            "title": title ?? "",
+            "timeStamp": timeStamp
+          });
+
+      // Create a post for the check-in
+      final location =
+          "${monument.data['city'] ?? ""}, ${monument.data['country'] ?? ""}";
+
+      await _database.createDocument(
+          databaseId: _databaseId,
+          collectionId: "posts",
+          documentId: ID.unique(),
+          data: {
+            "title": title ?? "",
+            "location": location,
+            "imageUrl": null,
+            "author": user?.uid,
+            "timeStamp": timeStamp,
+            "postType": 2, // Check-in post type
+            "postByUid": user?.uid,
+            "likesCount": 0,
+            "commentsCount": 0,
+          });
+
+      return true;
+    } catch (e) {
+      print(e);
+      log('Error checking in to monument: $e', stackTrace: StackTrace.current);
+      throw Exception('Failed to check in to monument: $e');
+    }
+  }
+
+  @override
+  Future<bool> checkInStatus({required String monumentId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      final documents = await _database.listDocuments(
+          databaseId: _databaseId,
+          collectionId: "checkIn",
+          queries: [
+            Query.equal("monumentId", monumentId),
+            Query.equal("userId", user!.uid)
+          ]);
+
+      return documents.documents.isNotEmpty;
+    } catch (e) {
+      log('Error checking check-in status: $e', stackTrace: StackTrace.current);
+      throw Exception('Failed to check check-in status: $e');
+    }
+  }
+
+  @override
+  Future<List<UserModel>> loadUser(List<String> userConnections) async {
+    List<UserModel> users = [];
+
+    for (String connection in userConnections) {
+      try {
+        final document = await _database.getDocument(
+            databaseId: _databaseId,
+            collectionId: "users",
+            documentId: connection);
+
+        users.add(UserModel.fromJson(document.data));
+      } catch (e) {
+        log('Error loading user $connection: $e',
+            stackTrace: StackTrace.current);
+        // Continue loading other users even if one fails
+      }
+    }
+
+    return users;
+  }
+///////////////////////////////////////////////////////////////////////////////////////////
+  @override
+  Future<List<PostModel>> getInitialUserPosts({required String uid}) async {
+    try {
+      final documents = await _database.listDocuments(
+          databaseId: _databaseId,
+          collectionId: "posts",
+          queries: [
+            Query.equal("postByUid", uid),
+            Query.orderDesc("timeStamp"),
+            Query.limit(10)
+          ]);
+
+      var (userLoggedIn, currentUser) =
+          await authenticationRepository.getUser();
+      String currentUid = userLoggedIn ? currentUser!.uid : "";
+
+      List<PostModel> posts = [];
+
+      for (var doc in documents.documents) {
+        try {
+          final data = doc.data;
+          if (data['postId'] == null) {
+            data['postId'] = doc.$id;
+          }
+
+          // Check if post is liked
+          if (userLoggedIn &&
+              data['likesCount'] != null &&
+              data['likesCount'] != 0) {
+            try {
+              final likeDoc = await _database.getDocument(
+                  databaseId: _databaseId,
+                  collectionId: "post_likes",
+                  documentId: "${doc.$id}_$currentUid");
+
+              if (likeDoc.data['likedPost'] == true) {
+                data['isPostLiked'] = true;
+              } else {
+                data['isPostLiked'] = false;
+              }
+            } catch (e) {
+              data['isPostLiked'] = false;
+            }
+          }
+
+          posts.add(PostModel.fromJson(data));
+        } catch (e) {
+          log('Error processing post: $e');
+        }
+      }
+
+      return posts;
+    } catch (e) {
+      log('Error getting user posts: $e', stackTrace: StackTrace.current);
+      throw Exception('Failed to get user posts: $e');
+    }
+  }
+  @override
+  Future<NotificationModel> addNewNotification(
+      {required UserModel targetUser,
+      required NotificationModel notification}) async {
+    try {
+      final result = await _database.createDocument(
+          databaseId: _databaseId,
+          collectionId: "notifications",
+          documentId: ID.unique(),
+          data: {
+            'targetUserId': targetUser.uid,
+            'notificationType': notification.notificationType.index,
+            'timeStamp': notification.timeStamp,
+            'userInvolved': {
+              'uid': notification.userInvolved.uid,
+              'name': notification.userInvolved.name,
+              'username': notification.userInvolved.username,
+              'profilePictureUrl': notification.userInvolved.profilePictureUrl,
+              'email': notification.userInvolved.email,
+            },
+          });
+
+      // Return the created notification
+      return NotificationModel(
+          notificationType: notification.notificationType,
+          timeStamp: notification.timeStamp,
+          userInvolved: notification.userInvolved,
+          postInvolved: notification.postInvolved);
+    } catch (e) {
+      log('Error adding notification: $e', stackTrace: StackTrace.current);
+      throw Exception('Failed to add notification: $e');
+    }
+  }
+
+  @override
+  Future<List<NotificationModel>> getInitialNotifications() async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      final documents = await _database.listDocuments(
+          databaseId: _databaseId,
+          collectionId: "notifications",
+          queries: [
+            Query.equal("targetUserId", user!.uid),
+            Query.orderDesc("timeStamp"),
+            Query.limit(10)
+          ]);
+
+      List<NotificationModel> notifications = [];
+
+      for (var doc in documents.documents) {
+        try {
+          final data = doc.data;
+          // Ensure notificationId is set
+          if (!data.containsKey('notificationId')) {
+            data['notificationId'] = doc.$id;
+          }
+          notifications.add(NotificationModel.fromJson(data));
+        } catch (e) {
+          log('Error processing notification: $e');
+        }
+      }
+
+      return notifications;
+    } catch (e) {
+      log('Error getting notifications: $e', stackTrace: StackTrace.current);
+      throw Exception('Failed to get notifications: $e');
+    }
+  }
+
+  @override
+  Future<List<NotificationModel>> getMoreNotifications(
+      {required String startAfterDocId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      // Get the timestamp of the last notification
+      final startAfterDoc = await _database.getDocument(
+          databaseId: _databaseId,
+          collectionId: "notifications",
+          documentId: startAfterDocId);
+
+      final timeStamp = startAfterDoc.data['timeStamp'] ?? 0;
+
+      final documents = await _database.listDocuments(
+          databaseId: _databaseId,
+          collectionId: "notifications",
+          queries: [
+            Query.equal("targetUserId", user!.uid),
+            Query.lessThan("timeStamp", timeStamp),
+            Query.orderDesc("timeStamp"),
+            Query.limit(10)
+          ]);
+
+      List<NotificationModel> notifications = [];
+
+      for (var doc in documents.documents) {
+        try {
+          final data = doc.data;
+          // Ensure notificationId is set
+          if (!data.containsKey('notificationId')) {
+            data['notificationId'] = doc.$id;
+          }
+          notifications.add(NotificationModel.fromJson(data));
+        } catch (e) {
+          log('Error processing notification: $e');
+        }
+      }
+
+      return notifications;
+    } catch (e) {
+      log('Error getting more notifications: $e',
+          stackTrace: StackTrace.current);
+      throw Exception('Failed to get more notifications: $e');
+    }
+  }
+  //pain
+    @override
   Future<List<PostModel>> getInitialFeedPosts() async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
@@ -236,7 +871,7 @@ class FirebaseSocialRepository implements SocialRepository {
               try {
                 final likeDoc = await _database.getDocument(
                     databaseId: _databaseId,
-                    collectionId: "post_likes",//fix
+                    collectionId: "post_likes", //fix
                     documentId: "${doc.$id}_${user.uid}");
 
                 if (likeDoc.data['likedPost'] == true) {
@@ -315,7 +950,7 @@ class FirebaseSocialRepository implements SocialRepository {
               try {
                 final likeDoc = await _database.getDocument(
                     databaseId: _databaseId,
-                    collectionId: "post_likes",//fix
+                    collectionId: "post_likes", //fix
                     documentId: "${doc.$id}_${user.uid}");
 
                 if (likeDoc.data['likedPost'] == true) {
@@ -380,7 +1015,7 @@ class FirebaseSocialRepository implements SocialRepository {
             try {
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: "post_likes",//fix
+                  collectionId: "post_likes", //fix
                   documentId: "${doc.$id}_${user.uid}");
 
               if (likeDoc.data['likedPost'] == true) {
@@ -456,7 +1091,7 @@ class FirebaseSocialRepository implements SocialRepository {
             try {
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: "post_likes",//fix
+                  collectionId: "post_likes", //fix
                   documentId: "${doc.$id}_${user.uid}");
 
               if (likeDoc.data['likedPost'] == true) {
@@ -494,7 +1129,7 @@ class FirebaseSocialRepository implements SocialRepository {
       // Create like document
       await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: "post_likes",//fix
+          collectionId: "post_likes", //fix
           documentId: "${postId}_${user!.uid}",
           data: {
             'author': {
@@ -538,7 +1173,7 @@ class FirebaseSocialRepository implements SocialRepository {
       // Update like document to false
       await _database.updateDocument(
           databaseId: _databaseId,
-          collectionId: "post_likes",//fix
+          collectionId: "post_likes", //fix
           documentId: "${postId}_${user!.uid}",
           data: {
             'likedPost': false,
@@ -576,7 +1211,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
       await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: "comments",//fix
+          collectionId: "comments", //fix
           documentId: commentId,
           data: {
             "comment": comment,
@@ -760,550 +1395,4 @@ class FirebaseSocialRepository implements SocialRepository {
     }
   }
 
-  @override
-  Future<PostModel> uploadNewPost(
-      {required String title,
-      String? location,
-      String? imageUrl,
-      required int postType}) async {
-    try {
-      var (userLoggedIn, user) = await authenticationRepository.getUser();
-      if (!userLoggedIn) {
-        throw Exception("User not logged in");
-      }
-
-      int timeStamp = DateTime.now().millisecondsSinceEpoch;
-
-      print("Creating post with imageUrl: $imageUrl");
-      print(title);
-      print(timeStamp);
-      print(user?.uid);
-
-      final result = await _database.createDocument(
-          databaseId: _databaseId,
-          collectionId: "posts",
-          documentId: ID.unique(),
-          data: {
-            "title": title,
-            "location": location ?? "",
-            "imageUrl": imageUrl ?? null,
-            "author": "67cf30cd0021b2a2c14a",
-            "timeStamp": timeStamp,
-            "postType": postType,
-            "postByUid": "67cf30cd0021b2a2c14a" ?? "",
-            "likesCount": 0,
-            "commentsCount": 0,
-          });
-
-      print("Post created successfully with ID: ${result.$id}");
-
-      return PostModel(
-        author: user!,
-        postByUid: user.uid,
-        title: title,
-        location: location,
-        imageUrl: imageUrl,
-        timeStamp: timeStamp,
-        postId: result.$id,
-        postType: postType,
-        likesCount: 0,
-        commentsCount: 0,
-      );
-    } catch (e) {
-      print(e);
-      log("Error creating post: $e", stackTrace: StackTrace.current);
-      throw Exception("Failed to create post: $e");
-    }
-  }
-
-  @override
-  Future<List<PostModel>> getInitialDiscoverPosts() async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      final documents = await _database.listDocuments(
-          databaseId: _databaseId,
-          collectionId: "posts",
-          queries: [
-            Query.equal("postType", 0),
-            Query.notEqual("author.uid", user!.uid),
-            Query.orderDesc("timeStamp"),
-            Query.limit(8)
-          ]);
-
-      List<PostModel> posts = [];
-
-      for (var doc in documents.documents) {
-        try {
-          final data = doc.data;
-          if (data['postId'] == null) {
-            data['postId'] = doc.$id;
-          }
-
-          // Check if post is liked
-          if (data['likesCount'] != null && data['likesCount'] != 0) {
-            try {
-              final likeDoc = await _database.getDocument(
-                  databaseId: _databaseId,
-                  collectionId: "post_likes",
-                  documentId: "${doc.$id}_${user.uid}");
-
-              if (likeDoc.data['likedPost'] == true) {
-                data['isPostLiked'] = true;
-              } else {
-                data['isPostLiked'] = false;
-              }
-            } catch (e) {
-              data['isPostLiked'] = false;
-            }
-          }
-
-          posts.add(PostModel.fromJson(data));
-        } catch (e) {
-          log('Error processing post: $e');
-        }
-      }
-
-      return posts;
-    } catch (e) {
-      log('Error getting discover posts: $e', stackTrace: StackTrace.current);
-      throw Exception('Failed to get discover posts: $e');
-    }
-  }
-
-  @override
-  Future<void> followUser({required UserEntity targetUser}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    if (user!.uid == targetUser.uid) {
-      throw Exception("Can't follow yourself!");
-    }
-
-    try {
-      // Add to target user's followers
-      final targetUserDoc = await _database.getDocument(
-          databaseId: _databaseId,
-          collectionId: "users",
-          documentId: targetUser.uid);
-
-      List<String> followers =
-          List<String>.from(targetUserDoc.data['followers'] ?? []);
-      if (!followers.contains(user.uid)) {
-        followers.add(user.uid);
-        await _database.updateDocument(
-            databaseId: _databaseId,
-            collectionId: "users",
-            documentId: targetUser.uid,
-            data: {'followers': followers});
-      }
-
-      // Add to current user's following
-      final currentUserDoc = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "users", documentId: user.uid);
-
-      List<String> following =
-          List<String>.from(currentUserDoc.data['following'] ?? []);
-      if (!following.contains(targetUser.uid)) {
-        following.add(targetUser.uid);
-        await _database.updateDocument(
-            databaseId: _databaseId,
-            collectionId: "users",
-            documentId: user.uid,
-            data: {'following': following});
-      }
-
-      // Create notification
-      var notification = NotificationModel(
-        notificationType: NotificationType.followedYou,
-        timeStamp: DateTime.now().millisecondsSinceEpoch,
-        userInvolved: user,
-      );
-
-      await addNewNotification(
-        targetUser: UserModel.fromEntity(targetUser),
-        notification: notification,
-      );
-    } catch (e) {
-      log("Error following user: $e", stackTrace: StackTrace.current);
-      throw Exception("Failed to follow user: $e");
-    }
-  }
-
-  @override
-  Future<bool> getFollowStatus({required UserEntity targetUser}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      // Get target user document
-      final targetDoc = await _database.getDocument(
-          databaseId: _databaseId,
-          collectionId: "users",
-          documentId: targetUser.uid);
-
-      // Get current user document
-      final currentDoc = await _database.getDocument(
-          databaseId: _databaseId,
-          collectionId: "users",
-          documentId: user!.uid);
-
-      List<String> targetFollowers =
-          List<String>.from(targetDoc.data['followers'] ?? []);
-      List<String> currentFollowing =
-          List<String>.from(currentDoc.data['following'] ?? []);
-
-      return targetFollowers.contains(user.uid) &&
-          currentFollowing.contains(targetUser.uid);
-    } catch (e) {
-      log("Error checking follow status: $e", stackTrace: StackTrace.current);
-      throw Exception("Failed to check follow status: $e");
-    }
-  }
-
-  @override
-  Future<void> unfollowUser({required UserEntity targetUser}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      // Remove from target user's followers
-      final targetUserDoc = await _database.getDocument(
-          databaseId: _databaseId,
-          collectionId: "users",
-          documentId: targetUser.uid);
-
-      List<String> followers =
-          List<String>.from(targetUserDoc.data['followers'] ?? []);
-      followers.remove(user!.uid);
-
-      await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: "users",
-          documentId: targetUser.uid,
-          data: {'followers': followers});
-
-      // Remove from current user's following
-      final currentUserDoc = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "users", documentId: user.uid);
-
-      List<String> following =
-          List<String>.from(currentUserDoc.data['following'] ?? []);
-      following.remove(targetUser.uid);
-
-      await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: "users",
-          documentId: user.uid,
-          data: {'following': following});
-    } catch (e) {
-      log("Error unfollowing user: $e", stackTrace: StackTrace.current);
-      throw Exception("Failed to unfollow user: $e");
-    }
-  }
-
-  @override
-  Future<List<PostModel>> getInitialUserPosts({required String uid}) async {
-    try {
-      final documents = await _database.listDocuments(
-          databaseId: _databaseId,
-          collectionId: "posts",
-          queries: [
-            Query.equal("postByUid", uid),
-            Query.orderDesc("timeStamp"),
-            Query.limit(10)
-          ]);
-
-      var (userLoggedIn, currentUser) =
-          await authenticationRepository.getUser();
-      String currentUid = userLoggedIn ? currentUser!.uid : "";
-
-      List<PostModel> posts = [];
-
-      for (var doc in documents.documents) {
-        try {
-          final data = doc.data;
-          if (data['postId'] == null) {
-            data['postId'] = doc.$id;
-          }
-
-          // Check if post is liked
-          if (userLoggedIn &&
-              data['likesCount'] != null &&
-              data['likesCount'] != 0) {
-            try {
-              final likeDoc = await _database.getDocument(
-                  databaseId: _databaseId,
-                  collectionId: "post_likes",
-                  documentId: "${doc.$id}_$currentUid");
-
-              if (likeDoc.data['likedPost'] == true) {
-                data['isPostLiked'] = true;
-              } else {
-                data['isPostLiked'] = false;
-              }
-            } catch (e) {
-              data['isPostLiked'] = false;
-            }
-          }
-
-          posts.add(PostModel.fromJson(data));
-        } catch (e) {
-          log('Error processing post: $e');
-        }
-      }
-
-      return posts;
-    } catch (e) {
-      log('Error getting user posts: $e', stackTrace: StackTrace.current);
-      throw Exception('Failed to get user posts: $e');
-    }
-  }
-
-  @override
-  Future<NotificationModel> addNewNotification(
-      {required UserModel targetUser,
-      required NotificationModel notification}) async {
-    try {
-      final result = await _database.createDocument(
-          databaseId: _databaseId,
-          collectionId: "notifications",
-          documentId: ID.unique(),
-          data: {
-            'targetUserId': targetUser.uid,
-            'notificationType': notification.notificationType.index,
-            'timeStamp': notification.timeStamp,
-            'userInvolved': {
-              'uid': notification.userInvolved.uid,
-              'name': notification.userInvolved.name,
-              'username': notification.userInvolved.username,
-              'profilePictureUrl': notification.userInvolved.profilePictureUrl,
-              'email': notification.userInvolved.email,
-            },
-          });
-
-      // Return the created notification
-      return NotificationModel(
-          notificationType: notification.notificationType,
-          timeStamp: notification.timeStamp,
-          userInvolved: notification.userInvolved,
-          postInvolved: notification.postInvolved);
-    } catch (e) {
-      log('Error adding notification: $e', stackTrace: StackTrace.current);
-      throw Exception('Failed to add notification: $e');
-    }
-  }
-
-  @override
-  Future<List<NotificationModel>> getInitialNotifications() async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      final documents = await _database.listDocuments(
-          databaseId: _databaseId,
-          collectionId: "notifications",
-          queries: [
-            Query.equal("targetUserId", user!.uid),
-            Query.orderDesc("timeStamp"),
-            Query.limit(10)
-          ]);
-
-      List<NotificationModel> notifications = [];
-
-      for (var doc in documents.documents) {
-        try {
-          final data = doc.data;
-          // Ensure notificationId is set
-          if (!data.containsKey('notificationId')) {
-            data['notificationId'] = doc.$id;
-          }
-          notifications.add(NotificationModel.fromJson(data));
-        } catch (e) {
-          log('Error processing notification: $e');
-        }
-      }
-
-      return notifications;
-    } catch (e) {
-      log('Error getting notifications: $e', stackTrace: StackTrace.current);
-      throw Exception('Failed to get notifications: $e');
-    }
-  }
-
-  @override
-  Future<List<NotificationModel>> getMoreNotifications(
-      {required String startAfterDocId}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      // Get the timestamp of the last notification
-      final startAfterDoc = await _database.getDocument(
-          databaseId: _databaseId,
-          collectionId: "notifications",
-          documentId: startAfterDocId);
-
-      final timeStamp = startAfterDoc.data['timeStamp'] ?? 0;
-
-      final documents = await _database.listDocuments(
-          databaseId: _databaseId,
-          collectionId: "notifications",
-          queries: [
-            Query.equal("targetUserId", user!.uid),
-            Query.lessThan("timeStamp", timeStamp),
-            Query.orderDesc("timeStamp"),
-            Query.limit(10)
-          ]);
-
-      List<NotificationModel> notifications = [];
-
-      for (var doc in documents.documents) {
-        try {
-          final data = doc.data;
-          // Ensure notificationId is set
-          if (!data.containsKey('notificationId')) {
-            data['notificationId'] = doc.$id;
-          }
-          notifications.add(NotificationModel.fromJson(data));
-        } catch (e) {
-          log('Error processing notification: $e');
-        }
-      }
-
-      return notifications;
-    } catch (e) {
-      log('Error getting more notifications: $e',
-          stackTrace: StackTrace.current);
-      throw Exception('Failed to get more notifications: $e');
-    }
-  }
-
-  @override
-  Future<bool> monumentCheckIn(
-      {required String monumentId, String? title}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      // Get monument details
-      // final monument = await _database.getDocument(
-      //     databaseId: _databaseId,
-      //     collectionId: "monuments",
-      //     documentId: monumentId);
-
-      // Check if user already checked in
-      final existingCheckIns = await _database.listDocuments(
-          databaseId: _databaseId,
-          collectionId: "checkIn",
-          queries: [
-            Query.equal("monumentId", monumentId),
-            Query.equal("userId", user!.uid)
-          ]);
-
-      if (existingCheckIns.documents.isNotEmpty) {
-        return false; // Already checked in
-      }
-
-      // Create a check-in
-      final checkInId = ID.unique();
-      final timeStamp = DateTime.now().millisecondsSinceEpoch;
-      print("hello");
-      await _database.createDocument(
-          databaseId: _databaseId,
-          collectionId: "checkIn",
-          documentId: checkInId,
-          data: {
-            "monumentId": monumentId,
-            "userId": user?.uid,
-            "title": title ?? "",
-            "timeStamp": timeStamp
-          });
-
-      // Create a post for the check-in
-      final location =
-          "//todo";
-
-      await _database.createDocument(
-          databaseId: _databaseId,
-          collectionId: "posts",
-          documentId: ID.unique(),
-          data: {
-            "title": title ?? "",
-            "location": location,
-            "imageUrl": null,
-            "author": user?.uid,
-            "timeStamp": timeStamp,
-            "postType": 2, // Check-in post type
-            "postByUid": user?.uid,
-            "likesCount": 0,
-            "commentsCount": 0,
-          });
-
-      return true;
-    } catch (e) {
-      log('Error checking in to monument: $e', stackTrace: StackTrace.current);
-      throw Exception('Failed to check in to monument: $e');
-    }
-  }
-
-  @override
-  Future<bool> checkInStatus({required String monumentId}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      final documents = await _database.listDocuments(
-          databaseId: _databaseId,
-          collectionId: "checkIn",
-          queries: [
-            Query.equal("monumentId", monumentId),
-            Query.equal("userId", user!.uid)
-          ]);
-
-      return documents.documents.isNotEmpty;
-    } catch (e) {
-      log('Error checking check-in status: $e', stackTrace: StackTrace.current);
-      throw Exception('Failed to check check-in status: $e');
-    }
-  }
-
-  @override
-  Future<List<UserModel>> loadUser(List<String> userConnections) async {
-    List<UserModel> users = [];
-
-    for (String connection in userConnections) {
-      try {
-        final document = await _database.getDocument(
-            databaseId: _databaseId,
-            collectionId: "users",
-            documentId: connection);
-
-        users.add(UserModel.fromJson(document.data));
-      } catch (e) {
-        log('Error loading user $connection: $e',
-            stackTrace: StackTrace.current);
-        // Continue loading other users even if one fails
-      }
-    }
-
-    return users;
-  }
 }
