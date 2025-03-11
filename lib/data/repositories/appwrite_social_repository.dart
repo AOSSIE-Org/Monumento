@@ -103,6 +103,7 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
+  @override
   Future<List<UserModel>> searchPeople({required String searchQuery}) async {
     String query = searchQuery.toLowerCase().replaceAll(' ', '');
     print(query);
@@ -114,18 +115,37 @@ class FirebaseSocialRepository implements SocialRepository {
         queries: [Query.search('searchParams', query), Query.limit(10)],
       );
 
-      // Convert documents to UserModel objects
-      List<UserModel> users = documents.documents.map((doc) {
-        // Copy the document data and ensure uid is not null
-        Map<String, dynamic> userData = Map<String, dynamic>.from(doc.data);
-        // Use document ID as uid if uid is null
-        userData['uid'] = userData['uid'] ?? doc.$id;
+      List<UserModel> users = [];
 
-        return UserModel.fromJson(userData);
-      }).toList();
+      for (var doc in documents.documents) {
+        try {
+          // Create a mutable copy of the data
+          Map<String, dynamic> userData = Map<String, dynamic>.from(doc.data);
+
+          // Handle uid field - use document ID if uid is null
+          userData['uid'] = userData['uid'] ?? doc.$id;
+
+          // Handle posts field
+          if (userData['posts'] == null) {
+            userData['posts'] = <String>[];
+          } else if (userData['posts'] is Map) {
+            userData['posts'] = <String>[];
+          } else if (userData['posts'] is List) {
+            // Ensure all elements are strings
+            userData['posts'] = List<String>.from(
+                userData['posts'].map((item) => item.toString()));
+          }
+
+          users.add(UserModel.fromJson(userData));
+        } catch (e) {
+          print("Error processing user document: $e");
+          // Continue to next document even if one fails
+        }
+      }
 
       return users;
     } catch (e) {
+      print(e);
       log('Error searching people: $e', stackTrace: StackTrace.current);
       throw Exception('Failed to search people: $e');
     }
@@ -161,10 +181,20 @@ class FirebaseSocialRepository implements SocialRepository {
 
       // Convert documents to UserModel objects
       List<UserModel> users = documents.documents.map((doc) {
-        // Copy the document data and ensure uid is not null
         Map<String, dynamic> userData = Map<String, dynamic>.from(doc.data);
         // Use document ID as uid if uid is null
         userData['uid'] = userData['uid'] ?? doc.$id;
+
+        // Handle posts field
+        if (userData['posts'] == null) {
+          userData['posts'] = <String>[];
+        } else if (userData['posts'] is Map) {
+          userData['posts'] = <String>[];
+        } else if (userData['posts'] is List) {
+          // Ensure all elements are strings
+          userData['posts'] = List<String>.from(
+              userData['posts'].map((item) => item.toString()));
+        }
 
         return UserModel.fromJson(userData);
       }).toList();
@@ -187,6 +217,17 @@ class FirebaseSocialRepository implements SocialRepository {
       Map<String, dynamic> userData = Map<String, dynamic>.from(document.data);
       // Use document ID as uid if uid is null
       userData['uid'] = userData['uid'] ?? document.$id;
+
+      // Handle posts field
+      if (userData['posts'] == null) {
+        userData['posts'] = <String>[];
+      } else if (userData['posts'] is Map) {
+        userData['posts'] = <String>[];
+      } else if (userData['posts'] is List) {
+        // Ensure all elements are strings
+        userData['posts'] =
+            List<String>.from(userData['posts'].map((item) => item.toString()));
+      }
 
       UserModel user = UserModel.fromJson(userData);
       return user;
@@ -396,7 +437,6 @@ class FirebaseSocialRepository implements SocialRepository {
     }
   }
 
-//little buggy
   @override
   Future<void> followUser({required UserEntity targetUser}) async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
@@ -428,7 +468,9 @@ class FirebaseSocialRepository implements SocialRepository {
 
       // Add to current user's following
       final currentUserDoc = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "users", documentId: user.uid);
+          databaseId: _databaseId,
+          collectionId: "users",
+          documentId: "67cf30cc001b068d3fb8");
 
       List<String> following =
           List<String>.from(currentUserDoc.data['following'] ?? []);
@@ -437,7 +479,7 @@ class FirebaseSocialRepository implements SocialRepository {
         await _database.updateDocument(
             databaseId: _databaseId,
             collectionId: "users",
-            documentId: user.uid,
+            documentId: "67cf30cc001b068d3fb8",
             data: {'following': following});
       }
 
@@ -491,7 +533,6 @@ class FirebaseSocialRepository implements SocialRepository {
     }
   }
 
-//little buggy
   @override
   Future<void> unfollowUser({required UserEntity targetUser}) async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
@@ -518,7 +559,9 @@ class FirebaseSocialRepository implements SocialRepository {
 
       // Remove from current user's following
       final currentUserDoc = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "users", documentId: user.uid);
+          databaseId: _databaseId,
+          collectionId: "users",
+          documentId: "67cf30cc001b068d3fb8");
 
       List<String> following =
           List<String>.from(currentUserDoc.data['following'] ?? []);
@@ -527,7 +570,7 @@ class FirebaseSocialRepository implements SocialRepository {
       await _database.updateDocument(
           databaseId: _databaseId,
           collectionId: "users",
-          documentId: user.uid,
+          documentId: "67cf30cc001b068d3fb8",
           data: {'following': following});
     } catch (e) {
       log("Error unfollowing user: $e", stackTrace: StackTrace.current);
@@ -640,7 +683,22 @@ class FirebaseSocialRepository implements SocialRepository {
             collectionId: "users",
             documentId: connection);
 
-        users.add(UserModel.fromJson(document.data));
+        Map<String, dynamic> userData =
+            Map<String, dynamic>.from(document.data);
+        // Use document ID as uid if uid is null
+        userData['uid'] = userData['uid'] ?? document.$id;
+        // Handle posts field
+        if (userData['posts'] == null) {
+          userData['posts'] = <String>[];
+        } else if (userData['posts'] is Map) {
+          userData['posts'] = <String>[];
+        } else if (userData['posts'] is List) {
+          // Ensure all elements are strings
+          userData['posts'] = List<String>.from(
+              userData['posts'].map((item) => item.toString()));
+        }
+
+        users.add(UserModel.fromJson(userData));
       } catch (e) {
         log('Error loading user $connection: $e',
             stackTrace: StackTrace.current);
@@ -650,10 +708,11 @@ class FirebaseSocialRepository implements SocialRepository {
 
     return users;
   }
-///////////////////////////////////////////////////////////////////////////////////////////
+
   @override
   Future<List<PostModel>> getInitialUserPosts({required String uid}) async {
     try {
+      print("enter");
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
           collectionId: "posts",
@@ -666,77 +725,152 @@ class FirebaseSocialRepository implements SocialRepository {
       var (userLoggedIn, currentUser) =
           await authenticationRepository.getUser();
       String currentUid = userLoggedIn ? currentUser!.uid : "";
+      print(documents.documents);
 
       List<PostModel> posts = [];
 
       for (var doc in documents.documents) {
         try {
-          final data = doc.data;
-          if (data['postId'] == null) {
-            data['postId'] = doc.$id;
+          // Create a mutable copy of the data
+          final data = Map<String, dynamic>.from(doc.data);
+
+          // Ensure postId is set
+          data['postId'] = doc.$id;
+
+          // Check if we need to add isPostLiked
+          if (!data.containsKey('isPostLiked')) {
+            data['isPostLiked'] = false;
           }
 
-          // Check if post is liked
-          if (userLoggedIn &&
-              data['likesCount'] != null &&
-              data['likesCount'] != 0) {
-            try {
-              final likeDoc = await _database.getDocument(
-                  databaseId: _databaseId,
-                  collectionId: "post_likes",
-                  documentId: "${doc.$id}_$currentUid");
+          // Clean and prepare the author data
+          if (data.containsKey('author') &&
+              data['author'] is Map<String, dynamic>) {
+            final authorData = Map<String, dynamic>.from(data['author']);
 
-              if (likeDoc.data['likedPost'] == true) {
-                data['isPostLiked'] = true;
-              } else {
-                data['isPostLiked'] = false;
-              }
-            } catch (e) {
-              data['isPostLiked'] = false;
+            // Ensure required fields exist and are not null
+            if (authorData['uid'] == null) {
+              authorData['uid'] = authorData['\$id'] ?? '';
             }
-          }
 
-          posts.add(PostModel.fromJson(data));
+            if (authorData['email'] == null) {
+              authorData['email'] = '';
+            }
+
+            if (authorData['name'] == null) {
+              authorData['name'] = 'Unknown User';
+            }
+
+            if (authorData['status'] == null) {
+              authorData['status'] = '';
+            }
+
+            // Convert followers, following, posts to List<String> if they exist
+            if (authorData.containsKey('followers')) {
+              if (authorData['followers'] == null) {
+                authorData['followers'] = <String>[];
+              } else if (authorData['followers'] is! List) {
+                authorData['followers'] = <String>[];
+              }
+            } else {
+              authorData['followers'] = <String>[];
+            }
+
+            if (authorData.containsKey('following')) {
+              if (authorData['following'] == null) {
+                authorData['following'] = <String>[];
+              } else if (authorData['following'] is! List) {
+                authorData['following'] = <String>[];
+              }
+            } else {
+              authorData['following'] = <String>[];
+            }
+
+            if (authorData.containsKey('posts')) {
+              if (authorData['posts'] == null) {
+                authorData['posts'] = <String>[];
+              } else if (authorData['posts'] is! List) {
+                authorData['posts'] = <String>[];
+              }
+            } else {
+              authorData['posts'] = <String>[];
+            }
+
+            // Create UserModel manually instead of using fromJson
+            final author = UserModel(
+              uid: authorData['uid'] ?? authorData['\$id'] ?? '',
+              email: authorData['email'] ?? '',
+              name: authorData['name'] ?? 'Unknown User',
+              profilePictureUrl: authorData['profilePictureUrl'],
+              status: authorData['status'] ?? '',
+              username: authorData['username'],
+              followers: List<String>.from(authorData['followers'] ?? []),
+              following: List<String>.from(authorData['following'] ?? []),
+              posts: List<String>.from(authorData['posts'] ?? []),
+            );
+
+            // Replace the author data with our manually created object
+            final postModel = PostModel(
+              postId: data['postId'],
+              imageUrl: data['imageUrl'],
+              title: data['title'] ?? '',
+              location: data['location'],
+              timeStamp: data['timeStamp'] ?? 0,
+              author: author,
+              postByUid: data['postByUid'] ?? '',
+              likesCount: data['likesCount'] ?? 0,
+              postType: data['postType'] ?? 0,
+              commentsCount: data['commentsCount'] ?? 0,
+              isPostLiked: data['isPostLiked'] ?? false,
+            );
+
+            posts.add(postModel);
+          }
         } catch (e) {
-          log('Error processing post: $e');
+          print("Error creating PostModel: $e");
         }
       }
 
+      print("Total posts found: ${posts.length}");
       return posts;
     } catch (e) {
-      log('Error getting user posts: $e', stackTrace: StackTrace.current);
-      throw Exception('Failed to get user posts: $e');
+      print(e);
+      throw Exception(e);
     }
   }
+//postsModel error see from above 
   @override
   Future<NotificationModel> addNewNotification(
       {required UserModel targetUser,
       required NotificationModel notification}) async {
     try {
+      // Convert NotificationType enum to string value
+      String notificationTypeString =
+          notification.notificationType.toString().split('.').last;
+
+      // Prepare the data object for Appwrite
+      Map<String, dynamic> notificationData = {
+        'targetUserId': targetUser.uid,
+        'notificationType': notificationTypeString,
+        'timeStamp': notification.timeStamp,
+        'userInvolved': notification
+            .userInvolved.uid, // Store just the user ID for relationship
+      };
+
+      // Add post relationship if there's a post involved
+      if (notification.postInvolved != null) {
+        notificationData['postInvolved'] = notification.postInvolved!.postId;
+      }
+
       final result = await _database.createDocument(
           databaseId: _databaseId,
           collectionId: "notifications",
           documentId: ID.unique(),
-          data: {
-            'targetUserId': targetUser.uid,
-            'notificationType': notification.notificationType.index,
-            'timeStamp': notification.timeStamp,
-            'userInvolved': {
-              'uid': notification.userInvolved.uid,
-              'name': notification.userInvolved.name,
-              'username': notification.userInvolved.username,
-              'profilePictureUrl': notification.userInvolved.profilePictureUrl,
-              'email': notification.userInvolved.email,
-            },
-          });
+          data: notificationData);
 
       // Return the created notification
-      return NotificationModel(
-          notificationType: notification.notificationType,
-          timeStamp: notification.timeStamp,
-          userInvolved: notification.userInvolved,
-          postInvolved: notification.postInvolved);
+      return notification;
     } catch (e) {
+      print(e);
       log('Error adding notification: $e', stackTrace: StackTrace.current);
       throw Exception('Failed to add notification: $e');
     }
@@ -754,7 +888,7 @@ class FirebaseSocialRepository implements SocialRepository {
           databaseId: _databaseId,
           collectionId: "notifications",
           queries: [
-            Query.equal("targetUserId", user!.uid),
+            Query.equal("targetUserId", "67cf30cc001b068d3fb8"),
             Query.orderDesc("timeStamp"),
             Query.limit(10)
           ]);
@@ -764,18 +898,79 @@ class FirebaseSocialRepository implements SocialRepository {
       for (var doc in documents.documents) {
         try {
           final data = doc.data;
-          // Ensure notificationId is set
-          if (!data.containsKey('notificationId')) {
-            data['notificationId'] = doc.$id;
+          // 1. Convert notification type string to enum
+          NotificationType notificationType;
+          if (data['notificationType'] is String) {
+            notificationType = NotificationType.values.firstWhere(
+                (e) =>
+                    e.toString() ==
+                    'NotificationType.${data['notificationType']}',
+                orElse: () => NotificationType.followedYou // Default value
+                );
+          } else {
+            notificationType = NotificationType.followedYou; // Default
           }
-          notifications.add(NotificationModel.fromJson(data));
+
+          // 2. Get the full user object for userInvolved
+          UserModel userInvolved;
+          if (data['userInvolved'] is String) {
+            // Fetch the user document
+            final userDoc = await _database.getDocument(
+                databaseId: _databaseId,
+                collectionId: "users",
+                documentId: data['userInvolved']);
+            Map<String, dynamic> userData =
+                Map<String, dynamic>.from(userDoc.data);
+            // Use document ID as uid if uid is null
+            userData['uid'] = userData['uid'] ?? userDoc.$id;
+            // Handle posts field
+            if (userData['posts'] == null) {
+              userData['posts'] = <String>[];
+            } else if (userData['posts'] is Map) {
+              userData['posts'] = <String>[];
+            } else if (userData['posts'] is List) {
+              // Ensure all elements are strings
+              userData['posts'] = List<String>.from(
+                  userData['posts'].map((item) => item.toString()));
+            }
+
+            userInvolved = UserModel.fromJson(userData);
+          } else {
+            userInvolved = UserModel.fromJson(data['userInvolved']);
+          }
+
+          // 3. Get the post if it exists
+          PostModel? postInvolved;
+          if (data['postInvolved'] != null) {
+            try {
+              final postDoc = await _database.getDocument(
+                  databaseId: _databaseId,
+                  collectionId: "posts",
+                  documentId: data['postInvolved']);
+                  
+              postInvolved = PostModel.fromJson(postDoc.data);
+            } catch (e) {
+              print(e);
+              log('Error fetching post for notification: $e');
+              // Continue without the post
+            }
+          }
+
+          // 4. Create the notification model
+          notifications.add(NotificationModel(
+            notificationType: notificationType,
+            userInvolved: userInvolved,
+            postInvolved: postInvolved,
+            timeStamp: data['timeStamp'] ?? 0,
+          ));
         } catch (e) {
           log('Error processing notification: $e');
         }
       }
-
+      print(notifications);
       return notifications;
     } catch (e) {
+      print(e);
       log('Error getting notifications: $e', stackTrace: StackTrace.current);
       throw Exception('Failed to get notifications: $e');
     }
@@ -813,11 +1008,72 @@ class FirebaseSocialRepository implements SocialRepository {
       for (var doc in documents.documents) {
         try {
           final data = doc.data;
-          // Ensure notificationId is set
-          if (!data.containsKey('notificationId')) {
-            data['notificationId'] = doc.$id;
+          print(data);
+          // 1. Convert notification type string to enum
+          NotificationType notificationType;
+          if (data['notificationType'] is String) {
+            notificationType = NotificationType.values.firstWhere(
+                (e) =>
+                    e.toString() ==
+                    'NotificationType.${data['notificationType']}',
+                orElse: () => NotificationType.followedYou // Default value
+                );
+          } else {
+            notificationType = NotificationType.followedYou; // Default
           }
-          notifications.add(NotificationModel.fromJson(data));
+
+          // 2. Get the full user object for userInvolved
+          UserModel userInvolved;
+          if (data['userInvolved'] is String) {
+            // Fetch the user document
+            final userDoc = await _database.getDocument(
+                databaseId: _databaseId,
+                collectionId: "users",
+                documentId: data['userInvolved']);
+            Map<String, dynamic> userData =
+                Map<String, dynamic>.from(userDoc.data);
+            // Use document ID as uid if uid is null
+            userData['uid'] = userData['uid'] ?? userDoc.$id;
+            // Handle posts field
+            if (userData['posts'] == null) {
+              userData['posts'] = <String>[];
+            } else if (userData['posts'] is Map) {
+              userData['posts'] = <String>[];
+            } else if (userData['posts'] is List) {
+              // Ensure all elements are strings
+              userData['posts'] = List<String>.from(
+                  userData['posts'].map((item) => item.toString()));
+            }
+
+            userInvolved = UserModel.fromJson(userData);
+          } else {
+            userInvolved = UserModel.fromJson(data['userInvolved']);
+          }
+
+          // 3. Get the post if it exists
+          PostModel? postInvolved;
+          if (data['postInvolved'] != null) {
+            try {
+              final postDoc = await _database.getDocument(
+                  databaseId: _databaseId,
+                  collectionId: "posts",
+                  documentId: data['postInvolved']);
+                  
+              postInvolved = PostModel.fromJson(postDoc.data);
+            } catch (e) {
+              print(e);
+              log('Error fetching post for notification: $e');
+              // Continue without the post
+            }
+          }
+
+          // 4. Create the notification model
+          notifications.add(NotificationModel(
+            notificationType: notificationType,
+            userInvolved: userInvolved,
+            postInvolved: postInvolved,
+            timeStamp: data['timeStamp'] ?? 0,
+          ));
         } catch (e) {
           log('Error processing notification: $e');
         }
@@ -830,8 +1086,198 @@ class FirebaseSocialRepository implements SocialRepository {
       throw Exception('Failed to get more notifications: $e');
     }
   }
-  //pain
-    @override
+  
+  @override
+  Future<List<UserModel>> getRecommendedUsers() async {
+    var (userLoggedIn, currentUser) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      List<String> followingUids = ["67cf30cc001b068d3fb8"];
+      List<UserModel> recommendedUsers = [];
+      
+      // Get users followed by users the current user follows
+      for (String followingUid in followingUids) {
+        final followingUserDoc = await _database.getDocument(
+            databaseId: _databaseId,
+            collectionId: "users",
+            documentId: followingUid);
+        
+        List<String> secondaryFollowingUids =
+            List<String>.from(followingUserDoc.data['following'] ?? []);
+        print(secondaryFollowingUids);
+        for (String secondaryUid in secondaryFollowingUids) {
+          // Skip if this is the current user
+          if (secondaryUid == currentUser!.uid) continue;
+
+          // Skip if the current user already follows this user
+          if (followingUids.contains(secondaryUid)) continue;
+
+          // Skip if we already added this user to recommendations
+          if (recommendedUsers.any((user) => user.uid == secondaryUid))
+            continue;
+
+          final userDoc = await _database.getDocument(
+              databaseId: _databaseId,
+              collectionId: "users",
+              documentId: secondaryUid);
+
+          Map<String, dynamic> userData =
+                Map<String, dynamic>.from(userDoc.data);
+            // Use document ID as uid if uid is null
+            userData['uid'] = userData['uid'] ?? userDoc.$id;
+            // Handle posts field
+            if (userData['posts'] == null) {
+              userData['posts'] = <String>[];
+            } else if (userData['posts'] is Map) {
+              userData['posts'] = <String>[];
+            } else if (userData['posts'] is List) {
+              // Ensure all elements are strings
+              userData['posts'] = List<String>.from(
+                  userData['posts'].map((item) => item.toString()));
+            }
+
+          recommendedUsers.add(UserModel.fromJson(userData));
+
+          // Stop once we have 5 recommendations
+          if (recommendedUsers.length == 5) break;
+        }
+
+        if (recommendedUsers.length == 5) break;
+      }
+      // If we didn't get enough recommendations, add random users
+
+      if (recommendedUsers.length < 5) {
+        final documents = await _database.listDocuments(
+            databaseId: _databaseId,
+            collectionId: "users",
+            queries: [
+              Query.notEqual("\$id", currentUser!.uid),
+              Query.limit(10) // Get more to filter out already followed users
+            ]);
+
+        for (var doc in documents.documents) {
+          final uid = doc.data['uid'];
+
+          // Skip users the current user already follows
+          if (followingUids.contains(uid)) continue;
+
+          // Skip users already in our recommendations
+          if (recommendedUsers.any((user) => user.uid == uid)) continue;
+
+          Map<String, dynamic> userData =
+                Map<String, dynamic>.from(doc.data);
+            // Use document ID as uid if uid is null
+            userData['uid'] = userData['uid'] ?? doc.$id;
+            // Handle posts field
+            if (userData['posts'] == null) {
+              userData['posts'] = <String>[];
+            } else if (userData['posts'] is Map) {
+              userData['posts'] = <String>[];
+            } else if (userData['posts'] is List) {
+              // Ensure all elements are strings
+              userData['posts'] = List<String>.from(
+                  userData['posts'].map((item) => item.toString()));
+            }
+
+          recommendedUsers.add(UserModel.fromJson(userData));
+
+          if (recommendedUsers.length == 5) break;
+        }
+      }
+
+      return recommendedUsers;
+    } catch (e) {
+      print(e);
+      log('Error getting recommended users: $e',
+          stackTrace: StackTrace.current);
+      throw Exception('Failed to get recommended users: $e');
+    }
+  }
+//////////////////////////////////////////////////////////////////////////
+  @override
+  Future<void> likePost({required String postId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      // Create like document
+      await _database.createDocument(
+          databaseId: _databaseId,
+          collectionId: "post_likes", //fix
+          documentId: "${postId}_${user!.uid}",
+          data: {
+            'author': {
+              'uid': user.uid,
+              'name': user.name,
+              'profilePictureUrl': user.profilePictureUrl,
+              'email': user.email,
+              'username': user.username,
+            },
+            'timeStamp': DateTime.now().millisecondsSinceEpoch,
+            'postInvoledId': postId,
+            'likedPost': true,
+          });
+
+      // Increment likes count
+      final postDoc = await _database.getDocument(
+          databaseId: _databaseId, collectionId: "posts", documentId: postId);
+
+      int currentLikes = postDoc.data['likesCount'] ?? 0;
+      await _database.updateDocument(
+          databaseId: _databaseId,
+          collectionId: "posts",
+          documentId: postId,
+          data: {
+            'likesCount': currentLikes + 1,
+          });
+    } catch (e) {
+      log("Error liking post: $e", stackTrace: StackTrace.current);
+      throw Exception("Failed to like post: $e");
+    }
+  }
+
+  @override
+  Future<void> unlikePost({required String postId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      // Update like document to false
+      await _database.updateDocument(
+          databaseId: _databaseId,
+          collectionId: "post_likes", //fix
+          documentId: "${postId}_${user!.uid}",
+          data: {
+            'likedPost': false,
+          });
+
+      // Decrement likes count
+      final postDoc = await _database.getDocument(
+          databaseId: _databaseId, collectionId: "posts", documentId: postId);
+
+      int currentLikes = postDoc.data['likesCount'] ?? 0;
+      await _database.updateDocument(
+          databaseId: _databaseId,
+          collectionId: "posts",
+          documentId: postId,
+          data: {
+            'likesCount': currentLikes - 1 > 0 ? (currentLikes - 1) : 0,
+          });
+    } catch (e) {
+      log("Error unliking post: $e", stackTrace: StackTrace.current);
+      throw Exception("Failed to unlike post: $e");
+    }
+  }
+
+  //pain///////////////////////////////////////////////////////////////////////
+  @override
   Future<List<PostModel>> getInitialFeedPosts() async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
@@ -1119,85 +1565,6 @@ class FirebaseSocialRepository implements SocialRepository {
   }
 
   @override
-  Future<void> likePost({required String postId}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      // Create like document
-      await _database.createDocument(
-          databaseId: _databaseId,
-          collectionId: "post_likes", //fix
-          documentId: "${postId}_${user!.uid}",
-          data: {
-            'author': {
-              'uid': user.uid,
-              'name': user.name,
-              'profilePictureUrl': user.profilePictureUrl,
-              'email': user.email,
-              'username': user.username,
-            },
-            'timeStamp': DateTime.now().millisecondsSinceEpoch,
-            'postInvoledId': postId,
-            'likedPost': true,
-          });
-
-      // Increment likes count
-      final postDoc = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "posts", documentId: postId);
-
-      int currentLikes = postDoc.data['likesCount'] ?? 0;
-      await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: "posts",
-          documentId: postId,
-          data: {
-            'likesCount': currentLikes + 1,
-          });
-    } catch (e) {
-      log("Error liking post: $e", stackTrace: StackTrace.current);
-      throw Exception("Failed to like post: $e");
-    }
-  }
-
-  @override
-  Future<void> unlikePost({required String postId}) async {
-    var (userLoggedIn, user) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      // Update like document to false
-      await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: "post_likes", //fix
-          documentId: "${postId}_${user!.uid}",
-          data: {
-            'likedPost': false,
-          });
-
-      // Decrement likes count
-      final postDoc = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "posts", documentId: postId);
-
-      int currentLikes = postDoc.data['likesCount'] ?? 0;
-      await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: "posts",
-          documentId: postId,
-          data: {
-            'likesCount': currentLikes - 1 > 0 ? (currentLikes - 1) : 0,
-          });
-    } catch (e) {
-      log("Error unliking post: $e", stackTrace: StackTrace.current);
-      throw Exception("Failed to unlike post: $e");
-    }
-  }
-
-  @override
   Future<CommentModel> addNewComment(
       {required String postDocId, required String comment}) async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
@@ -1316,83 +1683,4 @@ class FirebaseSocialRepository implements SocialRepository {
       throw Exception('Failed to get more comments: $e');
     }
   }
-
-  @override
-  Future<List<UserModel>> getRecommendedUsers() async {
-    var (userLoggedIn, currentUser) = await authenticationRepository.getUser();
-    if (!userLoggedIn) {
-      throw Exception("User not logged in");
-    }
-
-    try {
-      List<String> followingUids = currentUser!.following;
-      List<UserModel> recommendedUsers = [];
-
-      // Get users followed by users the current user follows
-      for (String followingUid in followingUids) {
-        final followingUserDoc = await _database.getDocument(
-            databaseId: _databaseId,
-            collectionId: "users",
-            documentId: followingUid);
-
-        List<String> secondaryFollowingUids =
-            List<String>.from(followingUserDoc.data['following'] ?? []);
-
-        for (String secondaryUid in secondaryFollowingUids) {
-          // Skip if this is the current user
-          if (secondaryUid == currentUser.uid) continue;
-
-          // Skip if the current user already follows this user
-          if (followingUids.contains(secondaryUid)) continue;
-
-          // Skip if we already added this user to recommendations
-          if (recommendedUsers.any((user) => user.uid == secondaryUid))
-            continue;
-
-          final userDoc = await _database.getDocument(
-              databaseId: _databaseId,
-              collectionId: "users",
-              documentId: secondaryUid);
-
-          recommendedUsers.add(UserModel.fromJson(userDoc.data));
-
-          // Stop once we have 5 recommendations
-          if (recommendedUsers.length == 5) break;
-        }
-
-        if (recommendedUsers.length == 5) break;
-      }
-      // If we didn't get enough recommendations, add random users
-      if (recommendedUsers.length < 5) {
-        final documents = await _database.listDocuments(
-            databaseId: _databaseId,
-            collectionId: "users",
-            queries: [
-              Query.notEqual("uid", currentUser.uid),
-              Query.limit(10) // Get more to filter out already followed users
-            ]);
-
-        for (var doc in documents.documents) {
-          final uid = doc.data['uid'];
-
-          // Skip users the current user already follows
-          if (followingUids.contains(uid)) continue;
-
-          // Skip users already in our recommendations
-          if (recommendedUsers.any((user) => user.uid == uid)) continue;
-
-          recommendedUsers.add(UserModel.fromJson(doc.data));
-
-          if (recommendedUsers.length == 5) break;
-        }
-      }
-
-      return recommendedUsers;
-    } catch (e) {
-      log('Error getting recommended users: $e',
-          stackTrace: StackTrace.current);
-      throw Exception('Failed to get recommended users: $e');
-    }
-  }
-
 }
