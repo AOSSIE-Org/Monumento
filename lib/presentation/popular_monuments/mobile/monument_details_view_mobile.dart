@@ -7,6 +7,7 @@ import 'package:monumento/application/popular_monuments/bookmark_monuments/bookm
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/nearby_places/nearby_places_bloc.dart';
+import 'package:monumento/domain/entities/local_expert_entity.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_model_view_mobile.dart';
@@ -14,6 +15,7 @@ import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_ti
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/constants.dart';
 import 'package:monumento/utils/enums.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -484,37 +486,12 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                                   trailing: IconButton(
                                     icon: const Icon(Icons.phone),
                                     onPressed: () async {
-                                      if (await canLaunchUrl(
-                                        Uri.parse(
-                                            'tel:${widget.monument.localExperts[index].phoneNumber}'),
-                                      )) {
-                                        launchUrl(
-                                          Uri.parse(
-                                              'tel:${widget.monument.localExperts[index].phoneNumber}'),
-                                        );
-                                      } else {
-                                        if (mounted) {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: Text(
-                                                    "Contact ${widget.monument.localExperts[index].name}"),
-                                                content: Text(
-                                                    "You can contact ${widget.monument.localExperts[index].name} at ${widget.monument.localExperts[index].phoneNumber}"),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Text("Close"),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        }
-                                      }
+                                      final expertDetails =
+                                          widget.monument.localExperts[index];
+                                      await makeExpertCall(
+                                        expertDetails,
+                                        context,
+                                      );
                                     },
                                   ),
                                 );
@@ -692,5 +669,20 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
             ],
           ),
         ));
+  }
+}
+
+Future<void> makeExpertCall(
+    LocalExpertEntity expertDetails, BuildContext context) async {
+  final Uri phoneUri = Uri(scheme: 'tel', path: expertDetails.phoneNumber);
+
+  if (!await canLaunchUrl(phoneUri)) {
+    await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
+  } else {
+    showAlertDialog(
+      context,
+      "Contact ${expertDetails.name}",
+      "You can contact ${expertDetails.name} at ${expertDetails.phoneNumber}",
+    );
   }
 }
