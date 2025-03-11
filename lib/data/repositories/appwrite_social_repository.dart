@@ -786,7 +786,7 @@ class FirebaseSocialRepository implements SocialRepository {
           data: {
             "title": title,
             "location": location ?? "",
-            "imageUrl": imageUrl ?? "",
+            "imageUrl": imageUrl ?? null,
             "author": "67cf30cd0021b2a2c14a",
             "timeStamp": timeStamp,
             "postType": postType,
@@ -1202,15 +1202,15 @@ class FirebaseSocialRepository implements SocialRepository {
 
     try {
       // Get monument details
-      final monument = await _database.getDocument(
-          databaseId: _databaseId,
-          collectionId: "monuments",
-          documentId: monumentId);
+      // final monument = await _database.getDocument(
+      //     databaseId: _databaseId,
+      //     collectionId: "monuments",
+      //     documentId: monumentId);
 
       // Check if user already checked in
       final existingCheckIns = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "check_ins",
+          collectionId: "checkIn",
           queries: [
             Query.equal("monumentId", monumentId),
             Query.equal("userId", user!.uid)
@@ -1223,21 +1223,21 @@ class FirebaseSocialRepository implements SocialRepository {
       // Create a check-in
       final checkInId = ID.unique();
       final timeStamp = DateTime.now().millisecondsSinceEpoch;
-
+      print("hello");
       await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: "check_ins",
+          collectionId: "checkIn",
           documentId: checkInId,
           data: {
             "monumentId": monumentId,
-            "userId": user.uid,
+            "userId": user?.uid,
             "title": title ?? "",
             "timeStamp": timeStamp
           });
 
       // Create a post for the check-in
       final location =
-          "${monument.data['city'] ?? ''}, ${monument.data['country'] ?? ''}";
+          "//todo";
 
       await _database.createDocument(
           databaseId: _databaseId,
@@ -1246,17 +1246,11 @@ class FirebaseSocialRepository implements SocialRepository {
           data: {
             "title": title ?? "",
             "location": location,
-            "imageUrl": "",
-            "author": {
-              "name": user.name,
-              "username": user.username,
-              "uid": user.uid,
-              "profilePictureUrl": user.profilePictureUrl,
-              "email": user.email,
-            },
+            "imageUrl": null,
+            "author": user?.uid,
             "timeStamp": timeStamp,
             "postType": 2, // Check-in post type
-            "postByUid": user.uid,
+            "postByUid": user?.uid,
             "likesCount": 0,
             "commentsCount": 0,
           });
@@ -1278,7 +1272,7 @@ class FirebaseSocialRepository implements SocialRepository {
     try {
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "check_ins",
+          collectionId: "checkIn",
           queries: [
             Query.equal("monumentId", monumentId),
             Query.equal("userId", user!.uid)
