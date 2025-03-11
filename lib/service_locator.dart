@@ -32,6 +32,13 @@ import 'data/repositories/firebase_authentication_repository.dart';
 final GetIt locator = GetIt.instance;
 
 void setupLocator() {
+//   locator.registerLazySingleton(
+//     () => Client()
+//         .setEndpoint(
+//           dotenv.env['APPWRITE_API_ENDPOINT'] ?? "https://cloud.appwrite.io/v1",
+//         )
+//         .setProject(dotenv.env['APPWRITE_PROJECT_ID']),
+//   );
   // Register repositories
   locator.registerLazySingleton<AuthenticationRepository>(
       () => FirebaseAuthenticationRepository());
@@ -43,7 +50,12 @@ void setupLocator() {
     ..registerLazySingleton(() => Databases(locator<Client>()))
     ..registerLazySingleton(() => Storage(locator<Client>()))
     ..registerLazySingleton<SocialRepository>(() =>FirebaseSocialRepository(
-          authenticationRepository: locator<AuthenticationRepository>()));
+          authenticationRepository: locator<AuthenticationRepository>(),
+          database: locator<Databases>(),
+          storage: locator<Storage>()));
+//   locator.registerLazySingleton<SocialRepository>(() =>
+//       FirebaseSocialRepository(
+//           authenticationRepository: locator<AuthenticationRepository>()));
   locator.registerLazySingleton<MonumentRepository>(
       () => FirebaseMonumentRepository(locator<AuthenticationRepository>()));
 
