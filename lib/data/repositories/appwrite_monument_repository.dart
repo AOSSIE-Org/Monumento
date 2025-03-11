@@ -9,7 +9,6 @@ import 'package:wikipedia/wikipedia.dart' as wiki;
 import '../../domain/repositories/authentication_repository.dart';
 import '../../domain/repositories/monument_repository.dart';
 import '../../service_locator.dart';
-import '../../utils/constants.dart';
 import '../../utils/enums.dart';
 import '../models/monument_model.dart';
 import '../models/nearby_place_model.dart';
@@ -27,11 +26,17 @@ class AppwriteMonumentRepository implements MonumentRepository {
         _authRepository =
             authenticationRepository ?? locator<AuthenticationRepository>();
 
+  final databaseId = dotenv.env['APPWRITE_DATABSE_ID'] ?? 'dbmonumento';
+  final userCollectionId = dotenv.env['APPWRITE_USER_COLLECTION_ID'] ?? 'users';
+  final monumentsCollectionId = dotenv.env['APPWRITE_MONUMENTS_COLLECTION_ID'] ?? 'monuments';
+  final postsCollectionId = dotenv.env['APPWRITE_POSTS_COLLECTION_ID'] ?? 'posts';
+  final localExpertsCollectionId = dotenv.env['APPWRITE_LOCALEXPERTS_COLLECTION_ID'] ?? 'localExperts';
+
   @override
   Future<List<MonumentModel>> getPopularMonuments() async {
     final response = await _database.listDocuments(
-      databaseId: AppConstants.databaseId,
-      collectionId: AppConstants.monumentsCollectionId,
+      databaseId: databaseId,
+      collectionId: monumentsCollectionId,
     );
 
     return response.documents
@@ -48,8 +53,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
       }
 
       final document = await _database.getDocument(
-        databaseId: AppConstants.databaseId,
-        collectionId: AppConstants.userCollectionId,
+        databaseId: databaseId,
+        collectionId: userCollectionId,
         documentId: user.uid,
       );
 
@@ -67,8 +72,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
   @override
   Future<UserModel?> getProfileData(String userId) async {
     final response = await _database.listDocuments(
-      databaseId: AppConstants.databaseId,
-      collectionId: AppConstants.userCollectionId,
+      databaseId: databaseId,
+      collectionId: userCollectionId,
       queries: [Query.equal('\$id', userId)],
     );
 
@@ -104,8 +109,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
       }
 
       final userDoc = await _database.getDocument(
-        databaseId: AppConstants.databaseId,
-        collectionId: AppConstants.userCollectionId,
+        databaseId: databaseId,
+        collectionId: userCollectionId,
         documentId: user.uid,
       );
 
@@ -117,8 +122,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
       }
 
       await _database.updateDocument(
-        databaseId: AppConstants.databaseId,
-        collectionId: AppConstants.userCollectionId,
+        databaseId: databaseId,
+        collectionId: userCollectionId,
         documentId: user.uid,
         data: {
           'savedMonuments': currentSavedMonuments,
@@ -141,8 +146,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
       }
 
       final userDoc = await _database.getDocument(
-        databaseId: AppConstants.databaseId,
-        collectionId: AppConstants.userCollectionId,
+        databaseId: databaseId,
+        collectionId: userCollectionId,
         documentId: user.uid,
       );
 
@@ -152,8 +157,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
       currentSavedMonuments.remove(monumentId);
 
       await _database.updateDocument(
-        databaseId: AppConstants.databaseId,
-        collectionId: AppConstants.userCollectionId,
+        databaseId: databaseId,
+        collectionId: userCollectionId,
         documentId: user.uid,
         data: {
           'savedMonuments': currentSavedMonuments,
@@ -176,8 +181,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
       }
 
       final userDoc = await _database.getDocument(
-        databaseId: AppConstants.databaseId,
-        collectionId: AppConstants.userCollectionId,
+        databaseId: databaseId,
+        collectionId: userCollectionId,
         documentId: user.uid,
       );
 
@@ -196,8 +201,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
       {required String monumentName}) async {
     try {
       final response = await _database.listDocuments(
-        databaseId: AppConstants.databaseId,
-        collectionId: AppConstants.monumentsCollectionId,
+        databaseId: databaseId,
+        collectionId: monumentsCollectionId,
         queries: [Query.contains('name', monumentName)],
       );
 
@@ -216,8 +221,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
   Future<MonumentModel> getMonumentDetails(String monumentId) async {
     try {
       final document = await _database.getDocument(
-        databaseId: AppConstants.databaseId,
-        collectionId: AppConstants.monumentsCollectionId,
+        databaseId: databaseId,
+        collectionId: monumentsCollectionId,
         documentId: monumentId,
       );
 
