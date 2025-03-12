@@ -34,20 +34,20 @@ final GetIt locator = GetIt.instance;
 void setupLocator() {
   locator.registerLazySingleton<AuthenticationRepository>(
       () => FirebaseAuthenticationRepository());
-//   locator
-//   ..registerLazySingleton(() => Client()
-//       ..setEndpoint(
-//           dotenv.env['APPWRITE_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
-//       ..setProject(dotenv.env['APPWRITE_PROJECT_ID']))
-//     ..registerLazySingleton(() => Databases(locator<Client>()))
-//     ..registerLazySingleton(() => Storage(locator<Client>()))
-//     ..registerLazySingleton<SocialRepository>(() =>FirebaseSocialRepository(
-//           authenticationRepository: locator<AuthenticationRepository>(),
-//           database: locator<Databases>(),
-//           storage: locator<Storage>()));
-  locator.registerLazySingleton<SocialRepository>(() =>
-      FirebaseSocialRepository(
-          authenticationRepository: locator<AuthenticationRepository>()));
+  locator
+  ..registerLazySingleton(() => Client()
+      ..setEndpoint(
+          dotenv.env['APPWRITE_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
+      ..setProject(dotenv.env['APPWRITE_PROJECT_ID']))
+    ..registerLazySingleton(() => Databases(locator<Client>()))
+    ..registerLazySingleton(() => Storage(locator<Client>()))
+    ..registerLazySingleton<SocialRepository>(() =>FirebaseSocialRepository(
+          authenticationRepository: locator<AuthenticationRepository>(),
+          database: locator<Databases>(),
+          storage: locator<Storage>()));
+//   locator.registerLazySingleton<SocialRepository>(() =>
+//       FirebaseSocialRepository(
+//           authenticationRepository: locator<AuthenticationRepository>()));
   locator.registerLazySingleton<MonumentRepository>(
       () => FirebaseMonumentRepository(locator<AuthenticationRepository>()));
 
