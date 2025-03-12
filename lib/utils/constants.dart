@@ -14,6 +14,8 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validateFunction;
   final AutovalidateMode? autoValid;
   final bool isDesktop;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
   const CustomTextField(
       {super.key,
       required this.controller,
@@ -22,7 +24,10 @@ class CustomTextField extends StatelessWidget {
       this.validateFunction,
       this.autoValid,
       this.isSeen,
-      this.isDesktop = false});
+      this.isDesktop = false,
+      this.textInputAction,
+      this.onEditingComplete,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +36,8 @@ class CustomTextField extends StatelessWidget {
       obscureText: isSeen ?? false,
       validator: validateFunction,
       autovalidateMode: autoValid,
+      textInputAction: textInputAction,
+      onEditingComplete: onEditingComplete,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         contentPadding:

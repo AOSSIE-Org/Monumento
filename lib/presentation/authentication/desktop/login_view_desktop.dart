@@ -36,6 +36,17 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
     super.dispose();
   }
 
+  void _attemptLogin() {
+    if (formKey.currentState!.validate()) {
+      locator<LoginRegisterBloc>().add(
+        LoginWithEmailPressed(
+          email: emailController.text,
+          password: passwordController.text,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,6 +162,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       controller: emailController,
                                       text: 'Email',
                                       isDesktop: true,
+                                      textInputAction: TextInputAction.next,
                                       validateFunction: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'Please enter email.';
@@ -167,6 +179,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       text: 'Password',
                                       isDesktop: true,
                                       isSeen: isObscure,
+                                      textInputAction: TextInputAction.done,
+                                      onEditingComplete: _attemptLogin,
                                       validateFunction: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'Please enter password.';
@@ -213,16 +227,7 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       width: double.infinity,
                                       child: CustomElevatedButton(
                                         isDesktop: true,
-                                        onPressed: () {
-                                          if (formKey.currentState!.validate()) {
-                                            locator<LoginRegisterBloc>().add(
-                                              LoginWithEmailPressed(
-                                                email: emailController.text,
-                                                password: passwordController.text,
-                                              ),
-                                            );
-                                          }
-                                        },
+                                        onPressed: _attemptLogin,
                                         text: 'Login',
                                       ),
                                     ),
