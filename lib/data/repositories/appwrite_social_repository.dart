@@ -336,8 +336,25 @@ class FirebaseSocialRepository implements SocialRepository {
           // Ensure postId is set
           data['postId'] = doc.$id;
 
-          // Check if we need to add isPostLiked
-          if (!data.containsKey('isPostLiked')) {
+          if (data['likesCount'] != null && data['likesCount'] > 0) {
+            try {
+              final postIdPart =
+                  doc.$id.substring(0, 18); // First 18 chars of post ID
+              final userIdPart =
+                  user!.uid.substring(0, 17); // First 17 chars of user ID
+              final likeDocId =
+                  "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+              final likeDoc = await _database.getDocument(
+                  databaseId: _databaseId,
+                  collectionId: "postLikes",
+                  documentId: likeDocId);
+
+              data['isPostLiked'] = (likeDoc.data['likedPost'] == true);
+            } catch (e) {
+              print(e);
+              data['isPostLiked'] = false;
+            }
+          } else {
             data['isPostLiked'] = false;
           }
 
@@ -349,39 +366,6 @@ class FirebaseSocialRepository implements SocialRepository {
             // Ensure required fields exist and are not null
             if (authorData['uid'] == null) {
               authorData['uid'] = authorData['\$id'] ?? '';
-            }
-
-            if (authorData['email'] == null) {
-              authorData['email'] = '';
-            }
-
-            if (authorData['name'] == null) {
-              authorData['name'] = 'Unknown User';
-            }
-
-            if (authorData['status'] == null) {
-              authorData['status'] = '';
-            }
-
-            // Convert followers, following, posts to List<String> if they exist
-            if (authorData.containsKey('followers')) {
-              if (authorData['followers'] == null) {
-                authorData['followers'] = <String>[];
-              } else if (authorData['followers'] is! List) {
-                authorData['followers'] = <String>[];
-              }
-            } else {
-              authorData['followers'] = <String>[];
-            }
-
-            if (authorData.containsKey('following')) {
-              if (authorData['following'] == null) {
-                authorData['following'] = <String>[];
-              } else if (authorData['following'] is! List) {
-                authorData['following'] = <String>[];
-              }
-            } else {
-              authorData['following'] = <String>[];
             }
 
             if (authorData.containsKey('posts')) {
@@ -752,39 +736,6 @@ class FirebaseSocialRepository implements SocialRepository {
               authorData['uid'] = authorData['\$id'] ?? '';
             }
 
-            if (authorData['email'] == null) {
-              authorData['email'] = '';
-            }
-
-            if (authorData['name'] == null) {
-              authorData['name'] = 'Unknown User';
-            }
-
-            if (authorData['status'] == null) {
-              authorData['status'] = '';
-            }
-
-            // Convert followers, following, posts to List<String> if they exist
-            if (authorData.containsKey('followers')) {
-              if (authorData['followers'] == null) {
-                authorData['followers'] = <String>[];
-              } else if (authorData['followers'] is! List) {
-                authorData['followers'] = <String>[];
-              }
-            } else {
-              authorData['followers'] = <String>[];
-            }
-
-            if (authorData.containsKey('following')) {
-              if (authorData['following'] == null) {
-                authorData['following'] = <String>[];
-              } else if (authorData['following'] is! List) {
-                authorData['following'] = <String>[];
-              }
-            } else {
-              authorData['following'] = <String>[];
-            }
-
             if (authorData.containsKey('posts')) {
               if (authorData['posts'] == null) {
                 authorData['posts'] = <String>[];
@@ -838,7 +789,6 @@ class FirebaseSocialRepository implements SocialRepository {
     }
   }
 
-//postsModel error see from above
   @override
   Future<NotificationModel> addNewNotification(
       {required UserModel targetUser,
@@ -1096,7 +1046,9 @@ class FirebaseSocialRepository implements SocialRepository {
     }
 
     try {
-      List<String> followingUids = [currentUser!.uid];
+      List<String> followingUids = [
+        "67cf30cc001b068d3fb8"
+      ]; //currentUser!.following , user!.following
       List<UserModel> recommendedUsers = [];
 
       // Get users followed by users the current user follows
@@ -1207,7 +1159,9 @@ class FirebaseSocialRepository implements SocialRepository {
 
     try {
       // Create the unique document ID for this like
-      String likeDocId = "${postId}_${user!.uid}".substring(0, 36);
+      final postIdPart = postId.substring(0, 18);
+      final userIdPart = user!.uid.substring(0, 17);
+      final likeDocId = "${postIdPart}_${userIdPart}";
       bool shouldIncrementCount = false;
 
       try {
@@ -1217,64 +1171,59 @@ class FirebaseSocialRepository implements SocialRepository {
           collectionId: "postLikes",
           documentId: likeDocId,
         );
-
+        print(existingLikeDoc.data);
         // Document exists - check if we need to update it
         if (existingLikeDoc.data['likedPost'] != true) {
           // Only update if it's not already liked
           await _database.updateDocument(
-            databaseId: _databaseId,
-            collectionId: "postLikes",
-            documentId: likeDocId,
-            data: {
-              'likedPost': true,
-              'timeStamp': DateTime.now().millisecondsSinceEpoch,
-            }
-          );
+              databaseId: _databaseId,
+              collectionId: "postLikes",
+              documentId: likeDocId,
+              data: {
+                'likedPost': true,
+                'timeStamp': DateTime.now().millisecondsSinceEpoch,
+              });
           shouldIncrementCount = true;
         }
       } catch (e) {
         // Document doesn't exist - create a new like document
         await _database.createDocument(
-          databaseId: _databaseId,
-          collectionId: "postLikes",
-          documentId: likeDocId,
-          data: {
-            'author': user.uid,
-            'timeStamp': DateTime.now().millisecondsSinceEpoch,
-            'postInvolvedId': postId,  // Fixed typo from 'postInvoledId'
-            'likedPost': true,
-          }
-        );
+            databaseId: _databaseId,
+            collectionId: "postLikes",
+            documentId: likeDocId,
+            data: {
+              'author': user.uid,
+              'timeStamp': DateTime.now().millisecondsSinceEpoch,
+              'postInvolvedId': postId, // Fixed typo from 'postInvoledId'
+              'likedPost': true,
+            });
         shouldIncrementCount = true;
       }
 
       // Only increment count if we actually added a new like
       if (shouldIncrementCount) {
         final postDoc = await _database.getDocument(
-          databaseId: _databaseId, 
-          collectionId: "posts", 
-          documentId: postId
-        );
+            databaseId: _databaseId, collectionId: "posts", documentId: postId);
 
         int currentLikes = postDoc.data['likesCount'] ?? 0;
         await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: "posts",
-          documentId: postId,
-          data: {
-            'likesCount': currentLikes + 1,
-          }
-        );
+            databaseId: _databaseId,
+            collectionId: "posts",
+            documentId: postId,
+            data: {
+              'likesCount': currentLikes + 1,
+            });
       }
-      
+
       // Add notification logic here if needed
-      
     } catch (e) {
+      print(e);
       log("Error liking post: $e", stackTrace: StackTrace.current);
       throw Exception("Failed to like post: $e");
     }
   }
-//check here later 
+
+//check here later
   @override
   Future<void> unlikePost({required String postId}) async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
@@ -1284,10 +1233,13 @@ class FirebaseSocialRepository implements SocialRepository {
 
     try {
       // Update like document to false
+      final postIdPart = postId.substring(0, 18);
+      final userIdPart = user!.uid.substring(0, 17);
+      final likeDocId = "${postIdPart}_${userIdPart}";
       await _database.updateDocument(
           databaseId: _databaseId,
           collectionId: "postLikes", // Original collection name
-          documentId: "${postId}_${user!.uid}".substring(0, 36),
+          documentId: likeDocId,
           data: {
             'likedPost': false,
           });
@@ -1302,7 +1254,7 @@ class FirebaseSocialRepository implements SocialRepository {
           collectionId: "posts",
           documentId: postId,
           data: {
-            'likesCount': currentLikes - 1 > 0 ? (currentLikes - 1) : 0,
+            'likesCount': (currentLikes - 1) > 0 ? (currentLikes - 1) : 0,
           });
     } catch (e) {
       log("Error unliking post: $e", stackTrace: StackTrace.current);
@@ -1310,7 +1262,7 @@ class FirebaseSocialRepository implements SocialRepository {
     }
   }
 
-  //pain///////////////////////////////////////////////////////////////////////
+/////// look into liking a single post will change like indicator for all of those and negative likes
   @override
   Future<List<PostModel>> getInitialFeedPosts() async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
@@ -1318,11 +1270,14 @@ class FirebaseSocialRepository implements SocialRepository {
       throw Exception("User not logged in");
     }
 
-    List<String> followingUids = user!.following;
+    List<String> followingUids = [
+      "67cf30cc001b068d3fb8",
+      "67cf30cd0021b2a2c14a"
+    ];
     if (followingUids.isEmpty) {
       return [];
     }
-
+    print(followingUids);
     try {
       List<PostModel> allPosts = [];
 
@@ -1336,7 +1291,9 @@ class FirebaseSocialRepository implements SocialRepository {
               Query.orderDesc('timeStamp'),
               Query.limit(5)
             ]);
-
+        // for (var doc in documents.documents){
+        //   print(doc.data);
+        // }
         for (var doc in documents.documents) {
           try {
             // Create a mutable copy of the data
@@ -1345,16 +1302,27 @@ class FirebaseSocialRepository implements SocialRepository {
             // Ensure postId is set
             data['postId'] = doc.$id;
             print(data['postId']);
+            print(data['likesCount']);
             // Check if post is liked
             if (data['likesCount'] != null && data['likesCount'] > 0) {
               try {
+                // Create a more unique identifier by using parts of both IDs
+                // This avoids collisions when truncating to 36 chars
+                final postIdPart =
+                    doc.$id.substring(0, 18); // First 18 chars of post ID
+                final userIdPart =
+                    user!.uid.substring(0, 17); // First 17 chars of user ID
+                final likeDocId =
+                    "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+
                 final likeDoc = await _database.getDocument(
                     databaseId: _databaseId,
                     collectionId: "postLikes",
-                    documentId: "${doc.$id}_${user.uid}".substring(0, 36));
+                    documentId: likeDocId);
 
-                data['isPostLiked'] = likeDoc.data['likedPost'] == true;
+                data['isPostLiked'] = (likeDoc.data['likedPost'] == true);
               } catch (e) {
+                print("Like check failed for post ${doc.$id}: $e");
                 data['isPostLiked'] = false;
               }
             } else {
@@ -1374,25 +1342,6 @@ class FirebaseSocialRepository implements SocialRepository {
                 Map<String, dynamic> authorData =
                     Map<String, dynamic>.from(authorDoc.data);
                 authorData['uid'] = authorData['uid'] ?? authorDoc.$id;
-
-                // Handle followers, following, posts fields
-                if (authorData['followers'] == null) {
-                  authorData['followers'] = <String>[];
-                } else if (authorData['followers'] is Map) {
-                  authorData['followers'] = <String>[];
-                } else if (authorData['followers'] is List) {
-                  authorData['followers'] = List<String>.from(
-                      authorData['followers'].map((item) => item.toString()));
-                }
-
-                if (authorData['following'] == null) {
-                  authorData['following'] = <String>[];
-                } else if (authorData['following'] is Map) {
-                  authorData['following'] = <String>[];
-                } else if (authorData['following'] is List) {
-                  authorData['following'] = List<String>.from(
-                      authorData['following'].map((item) => item.toString()));
-                }
 
                 if (authorData['posts'] == null) {
                   authorData['posts'] = <String>[];
@@ -1425,25 +1374,6 @@ class FirebaseSocialRepository implements SocialRepository {
               authorData['email'] = authorData['email'] ?? '';
               authorData['name'] = authorData['name'] ?? 'Unknown User';
               authorData['status'] = authorData['status'] ?? '';
-
-              // Handle lists
-              if (authorData['followers'] == null) {
-                authorData['followers'] = <String>[];
-              } else if (authorData['followers'] is Map) {
-                authorData['followers'] = <String>[];
-              } else if (authorData['followers'] is List) {
-                authorData['followers'] = List<String>.from(
-                    authorData['followers'].map((item) => item.toString()));
-              }
-
-              if (authorData['following'] == null) {
-                authorData['following'] = <String>[];
-              } else if (authorData['following'] is Map) {
-                authorData['following'] = <String>[];
-              } else if (authorData['following'] is List) {
-                authorData['following'] = List<String>.from(
-                    authorData['following'].map((item) => item.toString()));
-              }
 
               if (authorData['posts'] == null) {
                 authorData['posts'] = <String>[];
@@ -1498,7 +1428,7 @@ class FirebaseSocialRepository implements SocialRepository {
           }
         }
       }
-
+      print(allPosts);
       // Sort by timestamp
       allPosts.sort((a, b) => b.timeStamp.compareTo(a.timeStamp));
 
@@ -1558,10 +1488,16 @@ class FirebaseSocialRepository implements SocialRepository {
             // Check if post is liked
             if (data['likesCount'] != null && data['likesCount'] > 0) {
               try {
+                final postIdPart =
+                    doc.$id.substring(0, 18); // First 18 chars of post ID
+                final userIdPart =
+                    user!.uid.substring(0, 17); // First 17 chars of user ID
+                final likeDocId =
+                    "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
                 final likeDoc = await _database.getDocument(
                     databaseId: _databaseId,
                     collectionId: "postLikes",
-                    documentId: "${doc.$id}_${user.uid}".substring(0, 36));
+                    documentId: likeDocId);
 
                 data['isPostLiked'] = likeDoc.data['likedPost'] == true;
               } catch (e) {
@@ -1584,25 +1520,6 @@ class FirebaseSocialRepository implements SocialRepository {
                 Map<String, dynamic> authorData =
                     Map<String, dynamic>.from(authorDoc.data);
                 authorData['uid'] = authorData['uid'] ?? authorDoc.$id;
-
-                // Handle followers, following, posts fields
-                if (authorData['followers'] == null) {
-                  authorData['followers'] = <String>[];
-                } else if (authorData['followers'] is Map) {
-                  authorData['followers'] = <String>[];
-                } else if (authorData['followers'] is List) {
-                  authorData['followers'] = List<String>.from(
-                      authorData['followers'].map((item) => item.toString()));
-                }
-
-                if (authorData['following'] == null) {
-                  authorData['following'] = <String>[];
-                } else if (authorData['following'] is Map) {
-                  authorData['following'] = <String>[];
-                } else if (authorData['following'] is List) {
-                  authorData['following'] = List<String>.from(
-                      authorData['following'].map((item) => item.toString()));
-                }
 
                 if (authorData['posts'] == null) {
                   authorData['posts'] = <String>[];
@@ -1636,25 +1553,6 @@ class FirebaseSocialRepository implements SocialRepository {
               authorData['email'] = authorData['email'] ?? '';
               authorData['name'] = authorData['name'] ?? 'Unknown User';
               authorData['status'] = authorData['status'] ?? '';
-
-              // Handle lists
-              if (authorData['followers'] == null) {
-                authorData['followers'] = <String>[];
-              } else if (authorData['followers'] is Map) {
-                authorData['followers'] = <String>[];
-              } else if (authorData['followers'] is List) {
-                authorData['followers'] = List<String>.from(
-                    authorData['followers'].map((item) => item.toString()));
-              }
-
-              if (authorData['following'] == null) {
-                authorData['following'] = <String>[];
-              } else if (authorData['following'] is Map) {
-                authorData['following'] = <String>[];
-              } else if (authorData['following'] is List) {
-                authorData['following'] = List<String>.from(
-                    authorData['following'].map((item) => item.toString()));
-              }
 
               if (authorData['posts'] == null) {
                 authorData['posts'] = <String>[];
@@ -1733,7 +1631,7 @@ class FirebaseSocialRepository implements SocialRepository {
         databaseId: _databaseId,
         collectionId: "posts",
         queries: [
-          Query.equal("postByUid", user!.uid),
+          Query.equal("postByUid", "67cf30cd0021b2a2c14a"),
           Query.orderDesc("timeStamp"),
           Query.limit(10)
         ],
@@ -1754,10 +1652,16 @@ class FirebaseSocialRepository implements SocialRepository {
           // Check if post is liked
           if (data['likesCount'] != null && data['likesCount'] != 0) {
             try {
+              final postIdPart =
+                  doc.$id.substring(0, 18); // First 18 chars of post ID
+              final userIdPart =
+                  user!.uid.substring(0, 17); // First 17 chars of user ID
+              final likeDocId =
+                  "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
                   collectionId: "postLikes", //fix
-                  documentId: "${doc.$id}_${user.uid}");
+                  documentId: likeDocId);
 
               if (likeDoc.data['likedPost'] == true) {
                 data['isPostLiked'] = true;
@@ -1765,12 +1669,62 @@ class FirebaseSocialRepository implements SocialRepository {
                 data['isPostLiked'] = false;
               }
             } catch (e) {
+              print(e);
               log("Like doc not found");
               data['isPostLiked'] = false;
             }
           }
 
-          posts.add(PostModel.fromJson(data));
+          // Clean and prepare the author data
+          if (data.containsKey('author') &&
+              data['author'] is Map<String, dynamic>) {
+            final authorData = Map<String, dynamic>.from(data['author']);
+
+            // Ensure required fields exist and are not null
+            if (authorData['uid'] == null) {
+              authorData['uid'] = authorData['\$id'] ?? '';
+            }
+
+            if (authorData.containsKey('posts')) {
+              if (authorData['posts'] == null) {
+                authorData['posts'] = <String>[];
+              } else if (authorData['posts'] is! List) {
+                authorData['posts'] = <String>[];
+              }
+            } else {
+              authorData['posts'] = <String>[];
+            }
+
+            // Create UserModel manually instead of using fromJson
+            final author = UserModel(
+              uid: authorData['uid'] ?? authorData['\$id'] ?? '',
+              email: authorData['email'] ?? '',
+              name: authorData['name'] ?? 'Unknown User',
+              profilePictureUrl: authorData['profilePictureUrl'],
+              status: authorData['status'] ?? '',
+              username: authorData['username'],
+              followers: List<String>.from(authorData['followers'] ?? []),
+              following: List<String>.from(authorData['following'] ?? []),
+              posts: List<String>.from(authorData['posts'] ?? []),
+            );
+
+            // Replace the author data with our manually created object
+            final postModel = PostModel(
+              postId: data['postId'],
+              imageUrl: data['imageUrl'],
+              title: data['title'] ?? '',
+              location: data['location'],
+              timeStamp: data['timeStamp'] ?? 0,
+              author: author,
+              postByUid: data['postByUid'] ?? '',
+              likesCount: data['likesCount'] ?? 0,
+              postType: data['postType'] ?? 0,
+              commentsCount: data['commentsCount'] ?? 0,
+              isPostLiked: data['isPostLiked'] ?? false,
+            );
+
+            posts.add(postModel);
+          }
         } catch (e) {
           log('Error processing post: $e');
         }
@@ -1780,7 +1734,7 @@ class FirebaseSocialRepository implements SocialRepository {
       await _database.updateDocument(
           databaseId: _databaseId,
           collectionId: "users",
-          documentId: user.uid,
+          documentId: "67cf30cd0021b2a2c14a",
           data: {"posts": postIds});
 
       return posts;
@@ -1830,10 +1784,16 @@ class FirebaseSocialRepository implements SocialRepository {
           // Check if post is liked
           if (data['likesCount'] != null && data['likesCount'] != 0) {
             try {
+              final postIdPart =
+                  doc.$id.substring(0, 18); // First 18 chars of post ID
+              final userIdPart =
+                  user!.uid.substring(0, 17); // First 17 chars of user ID
+              final likeDocId =
+                  "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
                   collectionId: "postLikes", //fix
-                  documentId: "${doc.$id}_${user.uid}");
+                  documentId: likeDocId);
 
               if (likeDoc.data['likedPost'] == true) {
                 data['isPostLiked'] = true;
@@ -1845,7 +1805,56 @@ class FirebaseSocialRepository implements SocialRepository {
             }
           }
 
-          posts.add(PostModel.fromJson(data));
+          // Clean and prepare the author data
+          if (data.containsKey('author') &&
+              data['author'] is Map<String, dynamic>) {
+            final authorData = Map<String, dynamic>.from(data['author']);
+
+            // Ensure required fields exist and are not null
+            if (authorData['uid'] == null) {
+              authorData['uid'] = authorData['\$id'] ?? '';
+            }
+
+            if (authorData.containsKey('posts')) {
+              if (authorData['posts'] == null) {
+                authorData['posts'] = <String>[];
+              } else if (authorData['posts'] is! List) {
+                authorData['posts'] = <String>[];
+              }
+            } else {
+              authorData['posts'] = <String>[];
+            }
+
+            // Create UserModel manually instead of using fromJson
+            final author = UserModel(
+              uid: authorData['uid'] ?? authorData['\$id'] ?? '',
+              email: authorData['email'] ?? '',
+              name: authorData['name'] ?? 'Unknown User',
+              profilePictureUrl: authorData['profilePictureUrl'],
+              status: authorData['status'] ?? '',
+              username: authorData['username'],
+              followers: List<String>.from(authorData['followers'] ?? []),
+              following: List<String>.from(authorData['following'] ?? []),
+              posts: List<String>.from(authorData['posts'] ?? []),
+            );
+
+            // Replace the author data with our manually created object
+            final postModel = PostModel(
+              postId: data['postId'],
+              imageUrl: data['imageUrl'],
+              title: data['title'] ?? '',
+              location: data['location'],
+              timeStamp: data['timeStamp'] ?? 0,
+              author: author,
+              postByUid: data['postByUid'] ?? '',
+              likesCount: data['likesCount'] ?? 0,
+              postType: data['postType'] ?? 0,
+              commentsCount: data['commentsCount'] ?? 0,
+              isPostLiked: data['isPostLiked'] ?? false,
+            );
+
+            posts.add(postModel);
+          }
         } catch (e) {
           log('Error processing post: $e');
         }
@@ -1858,7 +1867,7 @@ class FirebaseSocialRepository implements SocialRepository {
       throw Exception('Failed to get more profile posts: $e');
     }
   }
-/////////////////////////this part needs to be worked on//////////////////
+
   @override
   Future<CommentModel> addNewComment(
       {required String postDocId, required String comment}) async {
@@ -1980,7 +1989,7 @@ class FirebaseSocialRepository implements SocialRepository {
             Query.limit(10)
           ]);
 
-        List<CommentModel> comments = documents.documents.map((e) {
+      List<CommentModel> comments = documents.documents.map((e) {
         Map<String, dynamic> data = e.data;
         data['commentDocId'] = e.$id;
         print(data['author']['\$id']);
