@@ -4,7 +4,6 @@ import 'dart:typed_data';
 
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart';
 import 'package:monumento/data/models/comment_model.dart';
 import 'package:monumento/data/models/notification_model.dart';
 import 'package:monumento/data/models/post_model.dart';
@@ -13,11 +12,10 @@ import 'package:monumento/domain/entities/user_entity.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 import 'package:monumento/service_locator.dart';
-import 'package:monumento/utils/constants.dart';
 import 'package:monumento/utils/enums.dart';
 import 'package:uuid/uuid.dart';
 
-class FirebaseSocialRepository implements SocialRepository {
+class AppwriteSocialRepository implements SocialRepository {
   final Databases _database;
   final Storage _storage;
   final AuthenticationRepository authenticationRepository;
@@ -25,9 +23,9 @@ class FirebaseSocialRepository implements SocialRepository {
   // Bucket ID for Appwrite storage
   final String _imagesBucketId = dotenv.env['APPWRITE_BUCKET_ID'] ?? 'default';
   final String _projectId = dotenv.env['APPWRITE_PROJECT_ID'] ?? 'defalut';
-  final String _databaseId = "dbmonumento";
+  final String _databaseId = dotenv.env['APPWRITE_DATABASE_ID'] ?? 'dbmonumento';
 
-  FirebaseSocialRepository(
+  AppwriteSocialRepository(
       {required this.authenticationRepository,
       Databases? database,
       Storage? storage})
@@ -96,8 +94,8 @@ class FirebaseSocialRepository implements SocialRepository {
     print(userInfo);
     await _database.updateDocument(
       databaseId: _databaseId,
-      collectionId: "users",
-      documentId: "67cf30cd0021b2a2c14a",
+      collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
+      documentId: user!.uid,
       data: userInfo,
     );
   }
@@ -111,7 +109,7 @@ class FirebaseSocialRepository implements SocialRepository {
       // Using Appwrite's query syntax
       final documents = await _database.listDocuments(
         databaseId: _databaseId,
-        collectionId: "users",
+        collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
         queries: [Query.search('searchParams', query), Query.limit(10)],
       );
 
@@ -160,7 +158,7 @@ class FirebaseSocialRepository implements SocialRepository {
       // First get the document that serves as our cursor
       final startAfterDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "users",
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
           documentId: startAfterDocId);
 
       // Then get documents after it
@@ -170,7 +168,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
       final documents = await _database.listDocuments(
         databaseId: _databaseId,
-        collectionId: "users",
+        collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
         queries: [
           Query.search('searchParams', query),
           Query.greaterThan('dateJoined', dateJoined),
@@ -211,7 +209,7 @@ class FirebaseSocialRepository implements SocialRepository {
   Future<UserModel> getUserByUid({required String uid}) async {
     try {
       final document = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "users", documentId: uid);
+          databaseId: _databaseId, collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users', documentId: uid);
 
       // Copy the document data and ensure uid is not null
       Map<String, dynamic> userData = Map<String, dynamic>.from(document.data);
@@ -242,7 +240,7 @@ class FirebaseSocialRepository implements SocialRepository {
     try {
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "users",
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
           queries: [Query.equal('username', username)]);
 
       return documents.documents.isEmpty;
@@ -274,16 +272,16 @@ class FirebaseSocialRepository implements SocialRepository {
 
       final result = await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: "posts",
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
           documentId: ID.unique(),
           data: {
             "title": title,
             "location": location ?? "",
             "imageUrl": imageUrl ?? null,
-            "author": "67cf30cd0021b2a2c14a",
+            "author": user!.uid,
             "timeStamp": timeStamp,
             "postType": postType,
-            "postByUid": "67cf30cd0021b2a2c14a" ?? "",
+            "postByUid": user!.uid ?? "",
             "likesCount": 0,
             "commentsCount": 0,
           });
@@ -319,7 +317,7 @@ class FirebaseSocialRepository implements SocialRepository {
     try {
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "posts",
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
           queries: [
             Query.equal("postType", 0),
             Query.orderDesc("timeStamp"),
@@ -346,7 +344,7 @@ class FirebaseSocialRepository implements SocialRepository {
                   "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: "postLikes",
+                  collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
                   documentId: likeDocId);
 
               data['isPostLiked'] = (likeDoc.data['likedPost'] == true);
@@ -436,7 +434,7 @@ class FirebaseSocialRepository implements SocialRepository {
       // Add to target user's followers
       final targetUserDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "users",
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
           documentId: targetUser.uid);
 
       List<String> followers =
@@ -445,7 +443,7 @@ class FirebaseSocialRepository implements SocialRepository {
         followers.add(user.uid);
         await _database.updateDocument(
             databaseId: _databaseId,
-            collectionId: "users",
+            collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
             documentId: targetUser.uid,
             data: {'followers': followers});
       }
@@ -453,8 +451,8 @@ class FirebaseSocialRepository implements SocialRepository {
       // Add to current user's following
       final currentUserDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "users",
-          documentId: "67cf30cc001b068d3fb8");
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
+          documentId: user!.uid);
 
       List<String> following =
           List<String>.from(currentUserDoc.data['following'] ?? []);
@@ -462,8 +460,8 @@ class FirebaseSocialRepository implements SocialRepository {
         following.add(targetUser.uid);
         await _database.updateDocument(
             databaseId: _databaseId,
-            collectionId: "users",
-            documentId: "67cf30cc001b068d3fb8",
+            collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
+            documentId: user!.uid,
             data: {'following': following});
       }
 
@@ -495,13 +493,13 @@ class FirebaseSocialRepository implements SocialRepository {
       // Get target user document
       final targetDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "users",
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
           documentId: targetUser.uid);
 
       // Get current user document
       final currentDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "users",
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
           documentId: user!.uid);
 
       List<String> targetFollowers =
@@ -528,7 +526,7 @@ class FirebaseSocialRepository implements SocialRepository {
       // Remove from target user's followers
       final targetUserDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "users",
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
           documentId: targetUser.uid);
 
       List<String> followers =
@@ -537,15 +535,15 @@ class FirebaseSocialRepository implements SocialRepository {
 
       await _database.updateDocument(
           databaseId: _databaseId,
-          collectionId: "users",
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
           documentId: targetUser.uid,
           data: {'followers': followers});
 
       // Remove from current user's following
       final currentUserDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "users",
-          documentId: "67cf30cc001b068d3fb8");
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
+          documentId: user!.uid);
 
       List<String> following =
           List<String>.from(currentUserDoc.data['following'] ?? []);
@@ -553,8 +551,8 @@ class FirebaseSocialRepository implements SocialRepository {
 
       await _database.updateDocument(
           databaseId: _databaseId,
-          collectionId: "users",
-          documentId: "67cf30cc001b068d3fb8",
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
+          documentId: user!.uid,
           data: {'following': following});
     } catch (e) {
       log("Error unfollowing user: $e", stackTrace: StackTrace.current);
@@ -569,18 +567,18 @@ class FirebaseSocialRepository implements SocialRepository {
     if (!userLoggedIn) {
       throw Exception("User not logged in");
     }
-    // monumentId = "67d0920700165b44a10d";
+
     try {
       // Get monument details
       final monument = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "monuments",
+          collectionId: dotenv.env['APPWRITE_MONUMENTS_ID'] ?? "monuments",
           documentId: monumentId);
 
       // Check if user already checked in
       final existingCheckIns = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "checkIn",
+          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIn",
           queries: [
             Query.equal("monumentId", monumentId),
             Query.equal("userId", user!.uid)
@@ -596,7 +594,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
       await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: "checkIn",
+          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIn",
           documentId: checkInId,
           data: {
             "monumentId": monumentId,
@@ -611,7 +609,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
       await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: "posts",
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
           documentId: ID.unique(),
           data: {
             "title": title ?? "",
@@ -643,7 +641,7 @@ class FirebaseSocialRepository implements SocialRepository {
     try {
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "checkIn",
+          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIn",
           queries: [
             Query.equal("monumentId", monumentId),
             Query.equal("userId", user!.uid)
@@ -664,7 +662,7 @@ class FirebaseSocialRepository implements SocialRepository {
       try {
         final document = await _database.getDocument(
             databaseId: _databaseId,
-            collectionId: "users",
+            collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
             documentId: connection);
 
         Map<String, dynamic> userData =
@@ -699,7 +697,7 @@ class FirebaseSocialRepository implements SocialRepository {
       print("enter");
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "posts",
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
           queries: [
             Query.equal("postByUid", uid),
             Query.orderDesc("timeStamp"),
@@ -803,8 +801,7 @@ class FirebaseSocialRepository implements SocialRepository {
         'targetUserId': targetUser.uid,
         'notificationType': notificationTypeString,
         'timeStamp': notification.timeStamp,
-        'userInvolved': notification
-            .userInvolved.uid, // Store just the user ID for relationship
+        'userInvolved': notification.userInvolved.uid, // Store just the user ID for relationship
       };
 
       // Add post relationship if there's a post involved
@@ -839,7 +836,7 @@ class FirebaseSocialRepository implements SocialRepository {
           databaseId: _databaseId,
           collectionId: "notifications",
           queries: [
-            Query.equal("targetUserId", "67cf30cc001b068d3fb8"),
+            Query.equal("targetUserId", user!.uid),
             Query.orderDesc("timeStamp"),
             Query.limit(10)
           ]);
@@ -868,7 +865,7 @@ class FirebaseSocialRepository implements SocialRepository {
             // Fetch the user document
             final userDoc = await _database.getDocument(
                 databaseId: _databaseId,
-                collectionId: "users",
+                collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
                 documentId: data['userInvolved']);
             Map<String, dynamic> userData =
                 Map<String, dynamic>.from(userDoc.data);
@@ -896,7 +893,7 @@ class FirebaseSocialRepository implements SocialRepository {
             try {
               final postDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: "posts",
+                  collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
                   documentId: data['postInvolved']);
 
               postInvolved = PostModel.fromJson(postDoc.data);
@@ -979,7 +976,7 @@ class FirebaseSocialRepository implements SocialRepository {
             // Fetch the user document
             final userDoc = await _database.getDocument(
                 databaseId: _databaseId,
-                collectionId: "users",
+                collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
                 documentId: data['userInvolved']);
             Map<String, dynamic> userData =
                 Map<String, dynamic>.from(userDoc.data);
@@ -1007,7 +1004,7 @@ class FirebaseSocialRepository implements SocialRepository {
             try {
               final postDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: "posts",
+                  collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
                   documentId: data['postInvolved']);
 
               postInvolved = PostModel.fromJson(postDoc.data);
@@ -1046,20 +1043,17 @@ class FirebaseSocialRepository implements SocialRepository {
     }
 
     try {
-      List<String> followingUids = [
-        "67cf30cc001b068d3fb8"
-      ]; //currentUser!.following , user!.following
+      List<String> followingUids = currentUser!.following;
       List<UserModel> recommendedUsers = [];
 
       // Get users followed by users the current user follows
       for (String followingUid in followingUids) {
         final followingUserDoc = await _database.getDocument(
             databaseId: _databaseId,
-            collectionId: "users",
+            collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
             documentId: followingUid);
 
-        List<String> secondaryFollowingUids =
-            List<String>.from(followingUserDoc.data['following'] ?? []);
+        List<String> secondaryFollowingUids = List<String>.from(followingUserDoc.data['following'] ?? []);
         print(secondaryFollowingUids);
         for (String secondaryUid in secondaryFollowingUids) {
           // Skip if this is the current user
@@ -1074,11 +1068,10 @@ class FirebaseSocialRepository implements SocialRepository {
 
           final userDoc = await _database.getDocument(
               databaseId: _databaseId,
-              collectionId: "users",
+              collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
               documentId: secondaryUid);
 
-          Map<String, dynamic> userData =
-              Map<String, dynamic>.from(userDoc.data);
+          Map<String, dynamic> userData = Map<String, dynamic>.from(userDoc.data);
           // Use document ID as uid if uid is null
           userData['uid'] = userData['uid'] ?? userDoc.$id;
           // Handle posts field
@@ -1105,7 +1098,7 @@ class FirebaseSocialRepository implements SocialRepository {
       if (recommendedUsers.length < 5) {
         final documents = await _database.listDocuments(
             databaseId: _databaseId,
-            collectionId: "users",
+            collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
             queries: [
               Query.notEqual("\$id", currentUser!.uid),
               Query.limit(10) // Get more to filter out already followed users
@@ -1149,9 +1142,8 @@ class FirebaseSocialRepository implements SocialRepository {
     }
   }
 
-////////////////////////////////////////notification and like///////////////////////
   @override
-  Future<void> likePost({required String postId}) async {
+  Future<String> likePost({required String postId}) async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
       throw Exception("User not logged in");
@@ -1168,16 +1160,15 @@ class FirebaseSocialRepository implements SocialRepository {
         // Check if document already exists
         final existingLikeDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "postLikes",
+          collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
           documentId: likeDocId,
         );
-        print(existingLikeDoc.data);
+        
         // Document exists - check if we need to update it
         if (existingLikeDoc.data['likedPost'] != true) {
-          // Only update if it's not already liked
           await _database.updateDocument(
               databaseId: _databaseId,
-              collectionId: "postLikes",
+              collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
               documentId: likeDocId,
               data: {
                 'likedPost': true,
@@ -1189,12 +1180,12 @@ class FirebaseSocialRepository implements SocialRepository {
         // Document doesn't exist - create a new like document
         await _database.createDocument(
             databaseId: _databaseId,
-            collectionId: "postLikes",
+            collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
             documentId: likeDocId,
             data: {
               'author': user.uid,
               'timeStamp': DateTime.now().millisecondsSinceEpoch,
-              'postInvolvedId': postId, // Fixed typo from 'postInvoledId'
+              'postInvolvedId': postId,
               'likedPost': true,
             });
         shouldIncrementCount = true;
@@ -1203,19 +1194,20 @@ class FirebaseSocialRepository implements SocialRepository {
       // Only increment count if we actually added a new like
       if (shouldIncrementCount) {
         final postDoc = await _database.getDocument(
-            databaseId: _databaseId, collectionId: "posts", documentId: postId);
+            databaseId: _databaseId, collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts", documentId: postId);
 
         int currentLikes = postDoc.data['likesCount'] ?? 0;
         await _database.updateDocument(
             databaseId: _databaseId,
-            collectionId: "posts",
+            collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
             documentId: postId,
             data: {
               'likesCount': currentLikes + 1,
             });
       }
 
-      // Add notification logic here if needed
+      // Return the post ID that was updated
+      return postId;
     } catch (e) {
       print(e);
       log("Error liking post: $e", stackTrace: StackTrace.current);
@@ -1223,9 +1215,8 @@ class FirebaseSocialRepository implements SocialRepository {
     }
   }
 
-//check here later
   @override
-  Future<void> unlikePost({required String postId}) async {
+  Future<String> unlikePost({required String postId}) async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
     if (!userLoggedIn) {
       throw Exception("User not logged in");
@@ -1238,7 +1229,7 @@ class FirebaseSocialRepository implements SocialRepository {
       final likeDocId = "${postIdPart}_${userIdPart}";
       await _database.updateDocument(
           databaseId: _databaseId,
-          collectionId: "postLikes", // Original collection name
+          collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes", // Original collection name
           documentId: likeDocId,
           data: {
             'likedPost': false,
@@ -1246,23 +1237,25 @@ class FirebaseSocialRepository implements SocialRepository {
 
       // Decrement likes count
       final postDoc = await _database.getDocument(
-          databaseId: _databaseId, collectionId: "posts", documentId: postId);
+          databaseId: _databaseId, collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts", documentId: postId);
 
       int currentLikes = postDoc.data['likesCount'] ?? 0;
       await _database.updateDocument(
           databaseId: _databaseId,
-          collectionId: "posts",
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
           documentId: postId,
           data: {
             'likesCount': (currentLikes - 1) > 0 ? (currentLikes - 1) : 0,
           });
+
+      // Return the post ID that was updated
+      return postId;
     } catch (e) {
       log("Error unliking post: $e", stackTrace: StackTrace.current);
       throw Exception("Failed to unlike post: $e");
     }
   }
 
-/////// look into liking a single post will change like indicator for all of those and negative likes
   @override
   Future<List<PostModel>> getInitialFeedPosts() async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();
@@ -1270,10 +1263,7 @@ class FirebaseSocialRepository implements SocialRepository {
       throw Exception("User not logged in");
     }
 
-    List<String> followingUids = [
-      "67cf30cc001b068d3fb8",
-      "67cf30cd0021b2a2c14a"
-    ];
+    List<String> followingUids = user!.following;
     if (followingUids.isEmpty) {
       return [];
     }
@@ -1285,7 +1275,7 @@ class FirebaseSocialRepository implements SocialRepository {
       for (String followingUid in followingUids) {
         final documents = await _database.listDocuments(
             databaseId: _databaseId,
-            collectionId: "posts",
+            collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
             queries: [
               Query.equal('postByUid', followingUid),
               Query.orderDesc('timeStamp'),
@@ -1308,16 +1298,13 @@ class FirebaseSocialRepository implements SocialRepository {
               try {
                 // Create a more unique identifier by using parts of both IDs
                 // This avoids collisions when truncating to 36 chars
-                final postIdPart =
-                    doc.$id.substring(0, 18); // First 18 chars of post ID
-                final userIdPart =
-                    user!.uid.substring(0, 17); // First 17 chars of user ID
-                final likeDocId =
-                    "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+                final postIdPart = doc.$id.substring(0, 18); // First 18 chars of post ID
+                final userIdPart = user!.uid.substring(0, 17); // First 17 chars of user ID
+                final likeDocId = "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
 
                 final likeDoc = await _database.getDocument(
                     databaseId: _databaseId,
-                    collectionId: "postLikes",
+                    collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
                     documentId: likeDocId);
 
                 data['isPostLiked'] = (likeDoc.data['likedPost'] == true);
@@ -1336,11 +1323,10 @@ class FirebaseSocialRepository implements SocialRepository {
               try {
                 final authorDoc = await _database.getDocument(
                     databaseId: _databaseId,
-                    collectionId: "users",
+                    collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
                     documentId: data['author']);
 
-                Map<String, dynamic> authorData =
-                    Map<String, dynamic>.from(authorDoc.data);
+                Map<String, dynamic> authorData = Map<String, dynamic>.from(authorDoc.data);
                 authorData['uid'] = authorData['uid'] ?? authorDoc.$id;
 
                 if (authorData['posts'] == null) {
@@ -1458,7 +1444,7 @@ class FirebaseSocialRepository implements SocialRepository {
       // First, we need to get the timestamp of the starting post to use it as a cursor
       final startDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "posts",
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
           documentId: startAfterDocId);
       final startTimestamp = startDoc.data['timeStamp'];
 
@@ -1468,7 +1454,7 @@ class FirebaseSocialRepository implements SocialRepository {
       for (String followingUid in followingUids) {
         final documents = await _database.listDocuments(
             databaseId: _databaseId,
-            collectionId: "posts",
+            collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
             queries: [
               Query.equal('postByUid', followingUid),
               Query.lessThan('timeStamp',
@@ -1488,15 +1474,12 @@ class FirebaseSocialRepository implements SocialRepository {
             // Check if post is liked
             if (data['likesCount'] != null && data['likesCount'] > 0) {
               try {
-                final postIdPart =
-                    doc.$id.substring(0, 18); // First 18 chars of post ID
-                final userIdPart =
-                    user!.uid.substring(0, 17); // First 17 chars of user ID
-                final likeDocId =
-                    "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+                final postIdPart = doc.$id.substring(0, 18); // First 18 chars of post ID
+                final userIdPart = user!.uid.substring(0, 17); // First 17 chars of user ID
+                final likeDocId = "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
                 final likeDoc = await _database.getDocument(
                     databaseId: _databaseId,
-                    collectionId: "postLikes",
+                    collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
                     documentId: likeDocId);
 
                 data['isPostLiked'] = likeDoc.data['likedPost'] == true;
@@ -1514,7 +1497,7 @@ class FirebaseSocialRepository implements SocialRepository {
               try {
                 final authorDoc = await _database.getDocument(
                     databaseId: _databaseId,
-                    collectionId: "users",
+                    collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
                     documentId: data['author']);
 
                 Map<String, dynamic> authorData =
@@ -1629,9 +1612,9 @@ class FirebaseSocialRepository implements SocialRepository {
     try {
       final documents = await _database.listDocuments(
         databaseId: _databaseId,
-        collectionId: "posts",
+        collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
         queries: [
-          Query.equal("postByUid", "67cf30cd0021b2a2c14a"),
+          Query.equal("postByUid", user!.uid),
           Query.orderDesc("timeStamp"),
           Query.limit(10)
         ],
@@ -1652,15 +1635,12 @@ class FirebaseSocialRepository implements SocialRepository {
           // Check if post is liked
           if (data['likesCount'] != null && data['likesCount'] != 0) {
             try {
-              final postIdPart =
-                  doc.$id.substring(0, 18); // First 18 chars of post ID
-              final userIdPart =
-                  user!.uid.substring(0, 17); // First 17 chars of user ID
-              final likeDocId =
-                  "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+              final postIdPart = doc.$id.substring(0, 18); // First 18 chars of post ID
+              final userIdPart = user!.uid.substring(0, 17); // First 17 chars of user ID
+              final likeDocId = "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: "postLikes", //fix
+                  collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes", //fix
                   documentId: likeDocId);
 
               if (likeDoc.data['likedPost'] == true) {
@@ -1733,9 +1713,9 @@ class FirebaseSocialRepository implements SocialRepository {
       // Update user's posts list
       await _database.updateDocument(
           databaseId: _databaseId,
-          collectionId: "users",
-          documentId: "67cf30cd0021b2a2c14a",
-          data: {"posts": postIds});
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
+          documentId: user!.uid,
+          data: {dotenv.env['APPWRITE_POSTS_ID'] ?? "posts": postIds});
 
       return posts;
     } catch (e) {
@@ -1756,14 +1736,14 @@ class FirebaseSocialRepository implements SocialRepository {
       // Get timestamp from the last post for pagination
       final startAfterDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "posts",
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
           documentId: startAfterDocId);
 
       final timeStamp = startAfterDoc.data['timeStamp'] ?? 0;
 
       final documents = await _database.listDocuments(
         databaseId: _databaseId,
-        collectionId: "posts",
+        collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
         queries: [
           Query.equal("postByUid", user!.uid),
           Query.lessThan("timeStamp", timeStamp),
@@ -1792,7 +1772,7 @@ class FirebaseSocialRepository implements SocialRepository {
                   "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: "postLikes", //fix
+                  collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes", //fix
                   documentId: likeDocId);
 
               if (likeDoc.data['likedPost'] == true) {
@@ -1884,19 +1864,19 @@ class FirebaseSocialRepository implements SocialRepository {
       print(postDocId);
       await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: "comments", //fix
+          collectionId: dotenv.env['APPWRITE_COMMENTS_ID'] ?? "comments", 
           documentId: commentId,
           data: {
             "comment": comment ?? "",
             "timeStamp": timeStamp ?? 0,
             "postInvolvedId": postDocId,
-            "author": "67cf30cd0021b2a2c14a" ?? "",
+            "author": user!.uid ?? "",
           });
 
       // Get post author for notification
       final postDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "posts",
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
           documentId: postDocId);
 
       Map<String, dynamic> authorData = postDoc.data['author'];
@@ -1935,7 +1915,7 @@ class FirebaseSocialRepository implements SocialRepository {
     try {
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "comments",
+          collectionId: dotenv.env['APPWRITE_COMMENTS_ID'] ?? "comments",
           queries: [
             Query.equal("postInvolvedId", postDocId),
             Query.orderDesc("timeStamp"),
@@ -1974,14 +1954,14 @@ class FirebaseSocialRepository implements SocialRepository {
       // Get timestamp from the last comment for pagination
       final startAfterDoc = await _database.getDocument(
           databaseId: _databaseId,
-          collectionId: "comments",
+          collectionId: dotenv.env['APPWRITE_COMMENTS_ID'] ?? "comments",
           documentId: startAfterDocId);
 
       final timeStamp = startAfterDoc.data['timeStamp'] ?? 0;
 
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: "comments",
+          collectionId: dotenv.env['APPWRITE_COMMENTS_ID'] ?? "comments",
           queries: [
             Query.equal("postInvolvedId", postDocId),
             Query.lessThan("timeStamp", timeStamp),
