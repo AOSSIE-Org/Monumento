@@ -160,3 +160,26 @@ class CustomListTile extends StatelessWidget {
     );
   }
 }
+
+/// Shows an alert dialog with a given title and content
+void showAlertDialog(BuildContext context, String title, String content) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Close",
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
