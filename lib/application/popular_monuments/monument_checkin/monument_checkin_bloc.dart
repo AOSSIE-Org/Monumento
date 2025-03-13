@@ -18,52 +18,53 @@ class MonumentCheckinBloc
     on<CheckIfMonumentIsCheckedIn>(_mapCheckIfMonumentIsCheckedInToState);
   }
 
-  Future<void> _mapCheckinMonumentToState(
-      CheckinMonument event, Emitter<MonumentCheckinState> emit) async {
-    try {
-      emit(MonumentCheckinLoading());
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        emit(const MonumentCheckinFailure(
-            message: "Location services are disabled"));
-        return;
-      }
-      var permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.deniedForever) {
-          emit(const MonumentCheckinFailure(
-              message:
-                  "Location permissions are permanently denied, we cannot request permissions."));
-          return;
-        }
-        if (permission == LocationPermission.denied) {
-          emit(const MonumentCheckinFailure(
-              message: "Location permissions are denied"));
-          return;
-        }
-      }
-      var position = await Geolocator.getCurrentPosition();
-
-      double distance = calculateDistance(position.latitude, position.longitude,
-          event.monument.coordinates[0], event.monument.coordinates[1]);
-      if (distance < 200) {
-        emit(const MonumentCheckinFailure(
-            message: "You are not close enough to check in"));
-        return;
-      }
-
-      if (await _socialRepository.checkInStatus(
-          monumentId: event.monument.id)) {
-        emit(const MonumentCheckinFailure(message: "Already checked in"));
-        return;
-      }
-      await _socialRepository.monumentCheckIn(monumentId: event.monument.id);
-      emit(MonumentCheckinSuccess());
-    } catch (e) {
-      emit(MonumentCheckinFailure(message: e.toString()));
+Future<void> _mapCheckinMonumentToState(
+    CheckinMonument event, Emitter<MonumentCheckinState> emit) async {
+  try {
+    emit(MonumentCheckinLoading());
+    if (await _socialRepository.checkInStatus(monumentId: event.monument.id)) {
+      emit(const MonumentCheckinFailure(message: "Already checked in"));
+      return;
     }
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      emit(const MonumentCheckinFailure(
+          message: "Location services are disabled"));
+      return;
+    }
+    
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        emit(const MonumentCheckinFailure(
+            message:
+                "Location permissions are permanently denied, we cannot request permissions."));
+        return;
+      }
+      if (permission == LocationPermission.denied) {
+        emit(const MonumentCheckinFailure(
+            message: "Location permissions are denied"));
+        return;
+      }
+    }
+    
+    var position = await Geolocator.getCurrentPosition();
+
+    double distance = calculateDistance(position.latitude, position.longitude,
+        event.monument.coordinates[0], event.monument.coordinates[1]);
+    if (distance > 200) {
+      emit(const MonumentCheckinFailure(
+          message: "You are not close enough to check in"));
+      return;
+    }
+    await _socialRepository.monumentCheckIn(monumentId: event.monument.id);
+    emit(MonumentCheckinSuccess());
+  } catch (e) {
+    emit(MonumentCheckinFailure(message: e.toString()));
   }
+}
+
 
   Future<void> _mapCheckIfMonumentIsCheckedInToState(
       CheckIfMonumentIsCheckedIn event,
