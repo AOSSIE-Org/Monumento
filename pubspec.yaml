@@ -31,7 +31,8 @@ dependencies:
   flutter:
     sdk: flutter
   responsive_framework: ^1.4.0
-
+  # Appwrite
+  appwrite: ^14.0.0
   # Firebase
   firebase_core: ^3.3.0
   firebase_auth: ^5.1.4
@@ -99,7 +100,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
-  appwrite: ^14.0.0
+dependency_overrides:
+  flutter_web_auth_2: 4.1.0 # <<< this should work.
 
 
 flutter_native_splash:
