@@ -88,7 +88,8 @@ class UpdateProfileBloc extends Bloc<UpdateProfileEvent, UpdateProfileState> {
           }
         }
       }
-
+      if(event.userInfo['image'] == null)
+        event.userInfo.remove('image');
       await _socialRepository.updateUserProfile(userInfo: event.userInfo);
       emit(UpdateProfileSuccess(userInfo: event.userInfo));
     } catch (e) {
