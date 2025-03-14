@@ -17,39 +17,62 @@ class BookmarkMonumentsBloc
     on<GetBookmarkedMonuments>(_mapGetBookmarkedMonumentsToState);
   }
 
-  Future _mapBookmarkMonumentToState(
+  Future<void> _mapBookmarkMonumentToState(
       BookmarkMonument event, Emitter<BookmarkMonumentsState> emit) async {
-    await _monumentRepository.bookmarkMonument(event.monument.id);
-    emit(MonumentBookmarked(event.monument.id));
-  }
-
-  Future _mapUnbookmarkMonumentToState(
-      UnbookmarkMonument event, Emitter<BookmarkMonumentsState> emit) async {
-    await _monumentRepository.unbookmarkMonument(event.monument.id);
-    emit(MonumentUnbookmarked(event.monument.id));
-  }
-
-  Future _mapCheckIfMonumentIsBookmarkedToState(
-      CheckIfMonumentIsBookmarked event,
-      Emitter<BookmarkMonumentsState> emit) async {
-    final isBookmarked =
-        await _monumentRepository.isMonumentBookmarked(event.monumentId);
-    if (isBookmarked) {
-      emit(MonumentAlreadyBookmarked(event.monumentId));
-    } else {
-      emit(MonumentNotBookmarked(event.monumentId));
+    try {
+      await _monumentRepository.bookmarkMonument(event.monument.id);
+      final bookmarkedMonuments =
+          await _monumentRepository.getBookmarkedMonuments();
+      final bookmarkedMonumentsEntities =
+          bookmarkedMonuments.map((e) => e.toEntity()).toList();
+      emit(BookmarkedMonumentsLoaded(bookmarkedMonumentsEntities));
+    } catch (e) {
+      emit(BookmarkedMonumentsErrorState('Failed to bookmark monument'));
     }
   }
 
-  Future _mapGetBookmarkedMonumentsToState(GetBookmarkedMonuments event,
+  Future<void> _mapUnbookmarkMonumentToState(
+      UnbookmarkMonument event, Emitter<BookmarkMonumentsState> emit) async {
+    try {
+      await _monumentRepository.unbookmarkMonument(event.monument.id);
+      final bookmarkedMonuments =
+          await _monumentRepository.getBookmarkedMonuments();
+      final bookmarkedMonumentsEntities =
+          bookmarkedMonuments.map((e) => e.toEntity()).toList();
+      emit(BookmarkedMonumentsLoaded(bookmarkedMonumentsEntities));
+    } catch (e) {
+      emit(BookmarkedMonumentsErrorState('Failed to unbookmark monument'));
+    }
+  }
+
+  Future<void> _mapCheckIfMonumentIsBookmarkedToState(
+      CheckIfMonumentIsBookmarked event,
+      Emitter<BookmarkMonumentsState> emit) async {
+    try {
+      final isBookmarked =
+          await _monumentRepository.isMonumentBookmarked(event.monumentId);
+      if (isBookmarked) {
+        emit(MonumentAlreadyBookmarked(event.monumentId));
+      } else {
+        emit(MonumentNotBookmarked(event.monumentId));
+      }
+    } catch (e) {
+      emit(BookmarkedMonumentsErrorState('Error checking bookmark status'));
+    }
+  }
+
+  Future<void> _mapGetBookmarkedMonumentsToState(GetBookmarkedMonuments event,
       Emitter<BookmarkMonumentsState> emit) async {
     emit(BookmarkedMonumentsLoading());
-    final bookmarkedMonuments =
-        await _monumentRepository.getBookmarkedMonuments();
-
-    final bookmarkedMonumentsEntities =
-        bookmarkedMonuments.map((e) => e.toEntity()).toList();
-
-    emit(BookmarkedMonumentsLoaded(bookmarkedMonumentsEntities));
+    try {
+      final bookmarkedMonuments =
+          await _monumentRepository.getBookmarkedMonuments();
+      final bookmarkedMonumentsEntities =
+          bookmarkedMonuments.map((e) => e.toEntity()).toList();
+      emit(BookmarkedMonumentsLoaded(bookmarkedMonumentsEntities));
+    } catch (e) {
+      emit(BookmarkedMonumentsErrorState('Failed to load bookmarked monuments'));
+    }
   }
 }
+
