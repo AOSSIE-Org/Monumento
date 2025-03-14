@@ -155,6 +155,7 @@ flutter:
     - assets/mobile/
     - assets/ml/
     - assets/aossie.png
+    - assets/google_logo.png
     - assets/monumento_logo.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see

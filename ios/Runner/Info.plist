@@ -54,5 +54,10 @@
 		<false/>
 		<key>io.flutter.embedded_views_preview</key>
   		<true/>
+		<key>LSApplicationQueriesSchemes</key>
+		<array>
+  			<string>sms</string>
+  			<string>tel</string>
+		</array>
 	</dict>
 </plist>
