@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ import 'package:monumento/presentation/settings/mobile/settings_view_mobile.dart
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class UpdateProfileScreenMobile extends StatefulWidget {
   const UpdateProfileScreenMobile({super.key});
@@ -28,7 +29,7 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
   late TextEditingController usernameController;
   late TextEditingController statusController;
   bool isSeen = false;
-  XFile? image;
+  Uint8List? image;
 
   @override
   void initState() {
@@ -54,32 +55,29 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-            backgroundColor: AppColor.appBackground,
-            leading: IconButton(
+        appBar: CustomMobileAppBar(
+          logoPath: Assets.mobile.logoUpdateProfile.path,
+          actions: [
+            IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                SettingsBottomSheet().settingsBottomSheet(context);
               },
               icon: const Icon(
-                Icons.arrow_back,
+                Icons.settings_outlined,
                 color: AppColor.appBlack,
               ),
             ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Assets.mobile.logoUpdateProfile.svg(
-                  width: 161,
-                  height: 25,
-                ),
-                IconButton(
-                    onPressed: () {
-                      SettingsBottomSheet().settingsBottomSheet(context);
-                    },
-                    icon: const Icon(Icons.settings_outlined,
-                        color: AppColor.appBlack)),
-              ],
-            )),
+          ],
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: const Icon(
+              Icons.arrow_back,
+              color: AppColor.appBlack,
+            ),
+          ),
+        ),
         body: BlocListener<UpdateProfileBloc, UpdateProfileState>(
             bloc: locator<UpdateProfileBloc>(),
             listener: (context, state) {
@@ -118,9 +116,11 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
                         GestureDetector(
                           onTap: () async {
                             final ImagePicker picker = ImagePicker();
-                            final img = await picker.pickImage(
-                              source: ImageSource.gallery,
-                            );
+                            final img = await picker
+                                .pickImage(
+                                  source: ImageSource.gallery,
+                                )
+                                .then((value) => value!.readAsBytes());
                             setState(() {
                               image = img;
                             });
@@ -133,7 +133,7 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
                                         ? CircleAvatar(
                                             radius: 100,
                                             backgroundImage:
-                                                FileImage(File(image!.path)))
+                                                MemoryImage(image!))
                                         : CircleAvatar(
                                             radius: 100,
                                             backgroundImage:
@@ -143,7 +143,9 @@ class _UpdateProfileScreenMobileState extends State<UpdateProfileScreenMobile> {
                                                   defaultProfilePicture,
                                             ),
                                           ),
-                                    File(image!.path))
+                                    image!,
+                                  )
+                                // File(image!.path))
                                 : null;
                           },
                           child: Stack(children: [
@@ -325,8 +327,8 @@ Future<void> showDialogAlert(
       });
 }
 
-Future<void> showDialogAlertProfileImage(
-    BuildContext context, String heading, Widget profileImage, File image) {
+Future<void> showDialogAlertProfileImage(BuildContext context, String heading,
+    Widget profileImage, Uint8List image) {
   return showDialog(
       context: context,
       builder: (context) {

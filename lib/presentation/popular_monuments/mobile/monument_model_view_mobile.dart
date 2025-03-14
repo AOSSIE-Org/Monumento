@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class MonumentModelViewMobile extends StatefulWidget {
   final MonumentEntity monument;
@@ -15,8 +16,15 @@ class _MonumentModelViewMobileState extends State<MonumentModelViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.monument.name),
+      // appBar: AppBar(
+      //   title: Text(widget.monument.name),
+      // ),
+      appBar: CustomMobileAppBar(
+        actions: [
+          Text(
+            widget.monument.name,
+          ),
+        ],
       ),
       body: Center(
         child: ModelViewer(
@@ -32,6 +40,3 @@ class _MonumentModelViewMobileState extends State<MonumentModelViewMobile> {
     );
   }
 }
-
-
-

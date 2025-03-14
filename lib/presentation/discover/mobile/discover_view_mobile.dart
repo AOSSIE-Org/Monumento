@@ -17,6 +17,7 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 import 'package:monumento/utils/debouncer.dart';
 
 class DiscoverViewMobile extends StatefulWidget {
@@ -205,28 +206,26 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: AppColor.appBackground,
-          title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Assets.mobile.logoDiscover.svg(
-              height: 25,
-              width: 161,
+      appBar: CustomMobileAppBar(
+        logoPath: Assets.mobile.logoDiscover.path,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_outlined,
             ),
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (ctx) {
-                        return const NotificationViewDesktop();
-                      },
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.notifications_outlined,
-                    color: AppColor.appBlack)),
-          ])),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (ctx) {
+                    return const NotificationViewDesktop();
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: CompositedTransformTarget(
         link: layerLink,
         child: BlocBuilder<DiscoverPostsBloc, DiscoverPostsState>(
@@ -240,9 +239,7 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
               posts.insertAll(posts.length, state.posts);
             }
             return posts.isEmpty
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
+                ? NoPostsYet()
                 : SingleChildScrollView(
                     child: Column(
                       children: [
@@ -305,6 +302,18 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
                     ),
                   );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget NoPostsYet() {
+    return Center(
+      child: Text(
+        "You have no posts yet",
+        style: AppTextStyles.s14(
+          color: AppColor.appLightGrey,
+          fontType: FontType.REGULAR,
         ),
       ),
     );

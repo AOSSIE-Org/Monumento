@@ -213,9 +213,17 @@ class _CommentScreenState extends State<CommentScreen> {
                 SizedBox(
                   width: MediaQuery.sizeOf(context).width * 2.2 / 3,
                   child: TextFormField(
+                    cursorColor: AppColor.appPrimary,
                     focusNode: commentFocusNode,
                     controller: commentController,
                     decoration: InputDecoration(
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: AppColor.appPrimary, width: 2),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
                       suffixIcon: GestureDetector(
                         onTap: () {
                           locator<CommentsBloc>().add(
@@ -224,6 +232,8 @@ class _CommentScreenState extends State<CommentScreen> {
                               comment: commentController.text,
                             ),
                           );
+                          // clear the text field
+                          commentController.clear();
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),

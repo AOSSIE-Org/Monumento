@@ -66,13 +66,8 @@ class _CreatePostCardState extends State<CreatePostCard>
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    child: CachedNetworkImage(
-                      imageUrl:
+                    backgroundImage: CachedNetworkImageProvider(
                           state.user.profilePictureUrl ?? defaultProfilePicture,
-                      placeholder: (context, url) =>
-                          const CircularProgressIndicator(),
-                      errorWidget: (context, url, error) =>
-                          const Icon(Icons.error),
                     ),
                   ),
                   const SizedBox(

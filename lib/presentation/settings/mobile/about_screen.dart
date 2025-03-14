@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutScreen extends StatelessWidget {
@@ -11,24 +12,26 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: AppColor.appBackground,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: const Icon(
-              Icons.arrow_back,
-              color: AppColor.appBlack,
-            ),
+      appBar: CustomMobileAppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+            color: AppColor.appBlack,
           ),
-          title: Text(
+        ),
+        actions: [
+          Text(
             "About",
             style: AppTextStyles.s16(
               color: AppColor.appSecondary,
               fontType: FontType.MEDIUM,
             ),
-          )),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(

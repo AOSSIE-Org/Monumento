@@ -200,6 +200,8 @@ class Assets {
 
   static const String aEnv = '.env';
   static const AssetGenImage aossie = AssetGenImage('assets/aossie.png');
+  static const AssetGenImage googleLogo =
+      AssetGenImage('assets/google_logo.png');
   static const $AssetsDesktopGen desktop = $AssetsDesktopGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const AssetGenImage logoAuth = AssetGenImage('assets/logo_auth.png');

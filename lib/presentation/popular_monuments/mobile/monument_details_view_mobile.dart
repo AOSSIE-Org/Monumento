@@ -7,13 +7,16 @@ import 'package:monumento/application/popular_monuments/bookmark_monuments/bookm
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/nearby_places/nearby_places_bloc.dart';
+import 'package:monumento/domain/entities/local_expert_entity.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_model_view_mobile.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/monument_more_details_view.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_tile_mobile.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/utils/constants.dart';
 import 'package:monumento/utils/enums.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -48,6 +51,21 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
       ),
     );
     super.initState();
+  }
+
+  String _getTruncatedText(String text, int maxLength) {
+    if (text.length <= maxLength) return text;
+
+    // Try to cut at a sentence end
+    final String truncated = text.substring(0, maxLength);
+    final int lastPeriod = truncated.lastIndexOf('.');
+
+    if (lastPeriod > maxLength / 2) {
+      return truncated.substring(0, lastPeriod + 1);
+    }
+
+    // If no good sentence break, just cut and add ellipsis
+    return "${truncated.substring(0, truncated.lastIndexOf(' '))}...";
   }
 
   @override
@@ -429,8 +447,87 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                               collapsedBackgroundColor: AppColor.appWhite,
                               title: const Text("More Details"),
                               children: [
-                                ListTile(
-                                  title: Text(state.wikiData.extract),
+                                Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _getTruncatedText(
+                                            state.wikiData.extract, 200),
+                                        style: AppTextStyles.s14(
+                                          color: AppColor.appBlack,
+                                          fontType: FontType.REGULAR,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MonumentDetailedPage(
+                                                    wikiData: state.wikiData,
+                                                    monumentName:
+                                                        widget.monument.name,
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                            child: Text(
+                                              "Read More",
+                                              style: AppTextStyles.s14(
+                                                color: AppColor.appPrimary,
+                                                fontType: FontType.MEDIUM,
+                                              ),
+                                            ),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              final url =
+                                                  'https://en.wikipedia.org/wiki?curid=${state.wikiData.pageId}';
+                                              if (await canLaunchUrl(
+                                                  Uri.parse(url))) {
+                                                await launchUrl(Uri.parse(url));
+                                              } else {
+                                                if (context.mounted) {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          "Could not open Wikipedia page"),
+                                                    ),
+                                                  );
+                                                }
+                                              }
+                                            },
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "View on Wikipedia",
+                                                  style: AppTextStyles.s14(
+                                                    color: AppColor.appPrimary,
+                                                    fontType: FontType.MEDIUM,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 4),
+                                                const Icon(
+                                                  Icons.open_in_new,
+                                                  size: 16,
+                                                  color: AppColor.appPrimary,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -484,37 +581,12 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                                   trailing: IconButton(
                                     icon: const Icon(Icons.phone),
                                     onPressed: () async {
-                                      if (await canLaunchUrl(
-                                        Uri.parse(
-                                            'tel:${widget.monument.localExperts[index].phoneNumber}'),
-                                      )) {
-                                        launchUrl(
-                                          Uri.parse(
-                                              'tel:${widget.monument.localExperts[index].phoneNumber}'),
-                                        );
-                                      } else {
-                                        if (mounted) {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return AlertDialog(
-                                                title: Text(
-                                                    "Contact ${widget.monument.localExperts[index].name}"),
-                                                content: Text(
-                                                    "You can contact ${widget.monument.localExperts[index].name} at ${widget.monument.localExperts[index].phoneNumber}"),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: const Text("Close"),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
-                                        }
-                                      }
+                                      final expertDetails =
+                                          widget.monument.localExperts[index];
+                                      await makeExpertCall(
+                                        expertDetails,
+                                        context,
+                                      );
                                     },
                                   ),
                                 );
@@ -692,5 +764,20 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
             ],
           ),
         ));
+  }
+}
+
+Future<void> makeExpertCall(
+    LocalExpertEntity expertDetails, BuildContext context) async {
+  final Uri phoneUri = Uri(scheme: 'tel', path: expertDetails.phoneNumber);
+
+  if (!await canLaunchUrl(phoneUri)) {
+    await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
+  } else {
+    showAlertDialog(
+      context,
+      "Contact ${expertDetails.name}",
+      "You can contact ${expertDetails.name} at ${expertDetails.phoneNumber}",
+    );
   }
 }

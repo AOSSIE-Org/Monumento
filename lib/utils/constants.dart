@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 
@@ -13,6 +14,8 @@ class CustomTextField extends StatelessWidget {
   final String? Function(String?)? validateFunction;
   final AutovalidateMode? autoValid;
   final bool isDesktop;
+  final TextInputAction? textInputAction;
+  final VoidCallback? onEditingComplete;
   const CustomTextField(
       {super.key,
       required this.controller,
@@ -21,7 +24,10 @@ class CustomTextField extends StatelessWidget {
       this.validateFunction,
       this.autoValid,
       this.isSeen,
-      this.isDesktop = false});
+      this.isDesktop = false,
+      this.textInputAction,
+      this.onEditingComplete,
+      });
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +36,8 @@ class CustomTextField extends StatelessWidget {
       obscureText: isSeen ?? false,
       validator: validateFunction,
       autovalidateMode: autoValid,
+      textInputAction: textInputAction,
+      onEditingComplete: onEditingComplete,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         contentPadding:
@@ -60,12 +68,14 @@ class CustomElevatedButton extends StatelessWidget {
   final String text;
   final ButtonStyle? style;
   final bool isDesktop;
+  final Widget? leading;
   const CustomElevatedButton(
       {super.key,
       required this.onPressed,
       required this.text,
       this.style,
-      this.isDesktop = false});
+      this.isDesktop = false,
+      this.leading});
 
   @override
   Widget build(BuildContext context) {
@@ -79,14 +89,32 @@ class CustomElevatedButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 15),
           ),
       onPressed: onPressed,
-      child: Text(
-        text,
-        style: AppTextStyles.s14(
-          color: AppColor.appSecondary,
-          fontType: FontType.MEDIUM,
-          isDesktop: isDesktop,
-        ),
-      ),
+      child: leading == null
+          ? Text(
+              text,
+              style: AppTextStyles.s14(
+                color: AppColor.appSecondary,
+                fontType: FontType.MEDIUM,
+                isDesktop: isDesktop,
+              ),
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                leading!,
+                SizedBox(
+                  width: 10.w,
+                ),
+                Text(
+                  text,
+                  style: AppTextStyles.s14(
+                    color: AppColor.appSecondary,
+                    fontType: FontType.MEDIUM,
+                    isDesktop: isDesktop,
+                  ),
+                ),
+              ],
+            ),
     );
   }
 }
@@ -131,4 +159,27 @@ class CustomListTile extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Shows an alert dialog with a given title and content
+void showAlertDialog(BuildContext context, String title, String content) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+              "Close",
+            ),
+          ),
+        ],
+      );
+    },
+  );
 }

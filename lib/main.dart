@@ -11,6 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/presentation/authentication/login_view.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
+import 'package:monumento/utils/bloc_observer_logger.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,6 +31,7 @@ void main(dynamic DefaultFirebaseOptions) async {
   }
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
+  Bloc.observer = BlocObserverLogger();
 
   final storage = await HydratedStorage.build(
     storageDirectory: await getApplicationDocumentsDirectory(),
@@ -89,8 +91,10 @@ class MyApp extends StatelessWidget {
       scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
       title: 'Monumento',
       theme: ThemeData(
-        useMaterial3: false,
-      ),
+          useMaterial3: false,
+          tabBarTheme: TabBarTheme(
+            indicatorColor: AppColor.appPrimary,
+          )),
       builder: (context, child) {
         return DevicePreview.appBuilder(
           context,

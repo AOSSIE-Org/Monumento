@@ -67,24 +67,8 @@ class _FeedPostCardState extends State<FeedPostCard>
               children: [
                 CircleAvatar(
                   radius: 20,
-                  child: CachedNetworkImage(
-                    imageUrl: widget.post.author.profilePictureUrl ??
-                        defaultProfilePicture,
-                    placeholder: (context, url) =>
-                        const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) =>
-                        const Icon(Icons.error),
-                    imageBuilder: (context, imageProvider) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: imageProvider,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      );
-                    },
+                  foregroundImage: CachedNetworkImageProvider(
+                    widget.post.author.profilePictureUrl ?? defaultProfilePicture,
                   ),
                 ),
                 const SizedBox(
@@ -298,13 +282,9 @@ class _FeedPostCardState extends State<FeedPostCard>
                     state = state as Authenticated;
                     return CircleAvatar(
                       radius: 20,
-                      child: CachedNetworkImage(
-                        imageUrl: state.user.profilePictureUrl ??
-                            defaultProfilePicture,
-                        placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                        errorWidget: (context, url, error) =>
-                            const Icon(Icons.error),
+                      foregroundImage: CachedNetworkImageProvider(
+                        state.user.profilePictureUrl ??
+                            defaultProfilePicture
                       ),
                     );
                   },
@@ -315,9 +295,11 @@ class _FeedPostCardState extends State<FeedPostCard>
                 SizedBox(
                   width: 430,
                   child: TextFormField(
+                    cursorColor: AppColor.appPrimary,
                     focusNode: commentFocusNode,
                     controller: commentController,
                     decoration: InputDecoration(
+                      focusColor: AppColor.appPrimary,
                       suffixIcon: GestureDetector(
                         onTap: () {
                           locator<CommentsBloc>().add(
@@ -326,6 +308,7 @@ class _FeedPostCardState extends State<FeedPostCard>
                               comment: commentController.text,
                             ),
                           );
+                          commentController.clear();
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),

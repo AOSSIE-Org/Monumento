@@ -8,6 +8,7 @@ import 'package:monumento/presentation/profile_screen/desktop/widgets/user_detai
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class DiscoverProfileViewDesktop extends StatefulWidget {
   final UserEntity user;
@@ -34,8 +35,7 @@ class _DiscoverProfileViewDesktopState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColor.appBackground,
+      appBar: CustomMobileAppBar(
         elevation: 0,
         leading: IconButton(
           icon: const Icon(
