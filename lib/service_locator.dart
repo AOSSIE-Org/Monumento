@@ -1,6 +1,5 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'package:get_it/get_it.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/application/authentication/login_register/login_register_bloc.dart';
@@ -21,8 +20,8 @@ import 'package:monumento/application/profile/follow/follow_bloc.dart';
 import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/application/profile/update_profile/update_profile_bloc.dart';
 import 'package:monumento/data/repositories/appwrite_authentication_repository.dart';
+import 'package:monumento/data/repositories/appwrite_social_repository.dart';
 import 'package:monumento/data/repositories/firebase_monument_repository.dart';
-import 'package:monumento/data/repositories/firebase_social_repository.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/monument_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
@@ -40,8 +39,12 @@ void setupLocator() {
       ..setEndpoint(
           dotenv.env['APPWRITE_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
       ..setProject(dotenv.env['APPWRITE_PROJECT_ID']))
-    ..registerLazySingleton(
-      () => Databases(locator<Client>()),
+    ..registerLazySingleton(() => Databases(locator<Client>()))
+    ..registerLazySingleton(() => Storage(locator<Client>()))
+    ..registerLazySingleton<Account>(
+      () => Account(
+        locator<Client>(),
+      ),
     )
     ..registerLazySingleton<AuthenticationRepository>(
       () => AppwriteAuthenticationRepository(
@@ -55,16 +58,15 @@ void setupLocator() {
               authenticationRepository: locator<AuthenticationRepository>(),
               database: locator<Databases>(),
             ))
+    ..registerLazySingleton<SocialRepository>(() => AppwriteSocialRepository(
+        authenticationRepository: locator<AuthenticationRepository>(),
+        database: locator<Databases>(),
+        storage: locator<Storage>()))
     // Firebase related
 
     // Register repositories
     ..registerLazySingleton<MonumentRepository>(
       () => FirebaseMonumentRepository(locator<AuthenticationRepository>()),
-    )
-    ..registerLazySingleton<SocialRepository>(
-      () => FirebaseSocialRepository(
-        authenticationRepository: locator<AuthenticationRepository>(),
-      ),
     )
 
     // Register blocs
