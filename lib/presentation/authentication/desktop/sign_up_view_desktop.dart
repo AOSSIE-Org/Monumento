@@ -32,7 +32,6 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
   late PageController controller;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   Uint8List? imageBytes;
-  bool isSeen = false;
 
   @override
   void initState() {
@@ -244,6 +243,7 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         height: 16,
                                       ),
                                       CustomTextField(
+<<<<<<< HEAD
                                         controller: passwordController,
                                         text: 'Password',
                                         isDesktop: true,
@@ -255,6 +255,19 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                             setState(() {
                                               isSeen = !isSeen;
                                             });
+=======
+                                          controller: passwordController,
+                                          text: 'Password',
+                                          isDesktop: true,
+                                          isPassword: true,
+                                          validateFunction: (value) {
+                                            if (value!.isEmpty) {
+                                              return 'Password cannot be empty';
+                                            } else if (value.length < 6) {
+                                              return 'Password must be at least 6 characters';
+                                            }
+                                            return null;
+>>>>>>> a577bd6 (Refactored Password Visibility Logic in `CustomTextField` Widget)
                                           },
                                           icon: Icon(!isSeen
                                               ? Icons.visibility_off
