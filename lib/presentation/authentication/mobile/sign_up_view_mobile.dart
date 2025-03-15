@@ -30,7 +30,6 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   Uint8List? imageBytes;
   bool render = false;
-  bool isSeen = false;
 
   @override
   void initState() {
@@ -137,9 +136,13 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                 InkWell(
                                   onTap: () async {
                                     final ImagePicker picker = ImagePicker();
-                                    final img = await picker.pickImage(
-                                      source: ImageSource.gallery,
-                                    ).then((value) => value!.readAsBytes(),);
+                                    final img = await picker
+                                        .pickImage(
+                                          source: ImageSource.gallery,
+                                        )
+                                        .then(
+                                          (value) => value!.readAsBytes(),
+                                        );
                                     setState(() {
                                       imageBytes = img;
                                     });
@@ -218,17 +221,7 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                 CustomTextField(
                                   controller: passwordController,
                                   text: 'Password',
-                                  isSeen: isSeen,
-                                  suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        isSeen = !isSeen;
-                                      });
-                                    },
-                                    icon: Icon(!isSeen
-                                        ? Icons.visibility_off
-                                        : Icons.visibility),
-                                  ),
+                                  isPassword: true,
                                   validateFunction: (value) {
                                     if (value!.isEmpty) {
                                       return 'Password cannot be empty';
@@ -254,9 +247,10 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                               name: nameController.text,
                                               username: usernameController.text,
                                               status: statusController.text,
-                                              profilePictureFile: imageBytes != null
-                                                  ? imageBytes
-                                                  : null,
+                                              profilePictureFile:
+                                                  imageBytes != null
+                                                      ? imageBytes
+                                                      : null,
                                             ),
                                           );
                                         }

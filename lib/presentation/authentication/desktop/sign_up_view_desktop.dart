@@ -64,9 +64,7 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
           name: nameController.text,
           username: usernameController.text,
           status: statusController.text,
-          profilePictureFile: imageBytes != null
-              ? imageBytes!
-              : null,
+          profilePictureFile: imageBytes != null ? imageBytes! : null,
         ),
       );
     }
@@ -82,7 +80,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
         child: SingleChildScrollView(
           child: Center(
             child: Container(
-              constraints: BoxConstraints(minHeight: MediaQuery.of(context).size.height),
+              constraints:
+                  BoxConstraints(minHeight: MediaQuery.of(context).size.height),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -93,10 +92,11 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                     fit: FlexFit.loose,
                     child: Card(
                       child: Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 32, vertical: 50),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 50),
                         width: 380,
-                        child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
+                        child:
+                            BlocListener<LoginRegisterBloc, LoginRegisterState>(
                           bloc: locator<LoginRegisterBloc>(),
                           listener: (context, state) {
                             if (state is SignUpFailed) {
@@ -114,7 +114,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                               );
                             }
                           },
-                          child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+                          child: BlocBuilder<LoginRegisterBloc,
+                              LoginRegisterState>(
                             bloc: locator<LoginRegisterBloc>(),
                             builder: (context, state) {
                               if (state is LoginRegisterLoading) {
@@ -127,7 +128,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                 );
                               }
                               if (state is SignUpSuccess) {
-                                SchedulerBinding.instance.addPostFrameCallback((_) {
+                                SchedulerBinding.instance
+                                    .addPostFrameCallback((_) {
                                   context.go('/');
                                 });
                               }
@@ -139,7 +141,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                   SignUpDeciderWidget(
                                     onSignUpWithEmailPressed: () {
                                       controller.nextPage(
-                                        duration: const Duration(milliseconds: 200),
+                                        duration:
+                                            const Duration(milliseconds: 200),
                                         curve: Curves.easeIn,
                                       );
                                     },
@@ -153,10 +156,14 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                     children: [
                                       InkWell(
                                         onTap: () async {
-                                          final ImagePicker picker = ImagePicker();
-                                          final img = await picker.pickImage(
-                                            source: ImageSource.gallery,
-                                          ).then((value) => value!.readAsBytes());
+                                          final ImagePicker picker =
+                                              ImagePicker();
+                                          final img = await picker
+                                              .pickImage(
+                                                source: ImageSource.gallery,
+                                              )
+                                              .then((value) =>
+                                                  value!.readAsBytes());
                                           setState(() {
                                             imageBytes = img;
                                           });
@@ -165,12 +172,14 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                             ? CircleAvatar(
                                                 radius: 40,
                                                 backgroundImage:
-                                                    MemoryImage(imageBytes!),)
+                                                    MemoryImage(imageBytes!),
+                                              )
                                             : CircleAvatar(
                                                 radius: 40,
                                                 backgroundColor:
                                                     AppColor.appGreyAccent,
-                                                child: Assets.icons.icUser.svg(),
+                                                child:
+                                                    Assets.icons.icUser.svg(),
                                               ),
                                       ),
                                       const SizedBox(
@@ -180,14 +189,14 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: nameController,
                                         isDesktop: true,
                                         text: 'Name',
-                                        textInputAction: TextInputAction.next,
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Name cannot be empty';
                                           }
                                           return null;
                                         },
-                                        autoValid: AutovalidateMode.onUserInteraction,
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
                                       ),
                                       const SizedBox(
                                         height: 16,
@@ -196,14 +205,14 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: usernameController,
                                         isDesktop: true,
                                         text: 'Username',
-                                        textInputAction: TextInputAction.next,
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Username cannot be empty';
                                           }
                                           return null;
                                         },
-                                        autoValid: AutovalidateMode.onUserInteraction,
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
                                       ),
                                       const SizedBox(
                                         height: 16,
@@ -212,14 +221,14 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: statusController,
                                         isDesktop: true,
                                         text: 'Status',
-                                        textInputAction: TextInputAction.next,
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Status cannot be empty';
                                           }
                                           return null;
                                         },
-                                        autoValid: AutovalidateMode.onUserInteraction,
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
                                       ),
                                       const SizedBox(
                                         height: 16,
@@ -228,7 +237,6 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         controller: emailController,
                                         isDesktop: true,
                                         text: 'Email',
-                                        textInputAction: TextInputAction.next,
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Email cannot be empty';
@@ -237,42 +245,17 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                           }
                                           return null;
                                         },
-                                        autoValid: AutovalidateMode.onUserInteraction,
+                                        autoValid:
+                                            AutovalidateMode.onUserInteraction,
                                       ),
                                       const SizedBox(
                                         height: 16,
                                       ),
                                       CustomTextField(
-<<<<<<< HEAD
                                         controller: passwordController,
                                         text: 'Password',
                                         isDesktop: true,
-                                        isSeen: !isSeen,
-                                        textInputAction: TextInputAction.done,
-                                        onEditingComplete: _attemptSignUp,
-                                        suffixIcon: IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              isSeen = !isSeen;
-                                            });
-=======
-                                          controller: passwordController,
-                                          text: 'Password',
-                                          isDesktop: true,
-                                          isPassword: true,
-                                          validateFunction: (value) {
-                                            if (value!.isEmpty) {
-                                              return 'Password cannot be empty';
-                                            } else if (value.length < 6) {
-                                              return 'Password must be at least 6 characters';
-                                            }
-                                            return null;
->>>>>>> a577bd6 (Refactored Password Visibility Logic in `CustomTextField` Widget)
-                                          },
-                                          icon: Icon(!isSeen
-                                              ? Icons.visibility_off
-                                              : Icons.visibility),
-                                        ),
+                                        isPassword: true,
                                         validateFunction: (value) {
                                           if (value!.isEmpty) {
                                             return 'Password cannot be empty';
@@ -299,7 +282,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                         height: 26,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Text(
                                             'Already have an account?',
@@ -314,7 +298,8 @@ class _SignUpViewDesktopState extends State<SignUpViewDesktop>
                                               context.pop();
                                             },
                                             style: ButtonStyle(
-                                              overlayColor: WidgetStateProperty.all(
+                                              overlayColor:
+                                                  WidgetStateProperty.all(
                                                 Colors.transparent,
                                               ),
                                             ),

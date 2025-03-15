@@ -76,7 +76,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 32, vertical: 50),
                           width: 380,
-                          child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
+                          child: BlocListener<LoginRegisterBloc,
+                              LoginRegisterState>(
                             bloc: locator<LoginRegisterBloc>(),
                             listener: (context, state) {
                               if (state is LoginFailed) {
@@ -98,7 +99,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                 );
                               }
                             },
-                            child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
+                            child: BlocBuilder<LoginRegisterBloc,
+                                LoginRegisterState>(
                               bloc: locator<LoginRegisterBloc>(),
                               builder: (context, state) {
                                 if (state is LoginRegisterLoading) {
@@ -132,7 +134,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 16, vertical: 12),
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(4),
+                                            borderRadius:
+                                                BorderRadius.circular(4),
                                           ),
                                         ),
                                         leading: SizedBox(
@@ -161,7 +164,6 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       controller: emailController,
                                       text: 'Email',
                                       isDesktop: true,
-                                      textInputAction: TextInputAction.next,
                                       validateFunction: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'Please enter email.';
@@ -170,20 +172,15 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                         }
                                         return null;
                                       },
-                                      autoValid: AutovalidateMode.onUserInteraction,
+                                      autoValid:
+                                          AutovalidateMode.onUserInteraction,
                                     ),
                                     const SizedBox(height: 16),
                                     CustomTextField(
                                       controller: passwordController,
                                       text: 'Password',
                                       isDesktop: true,
-<<<<<<< HEAD
-                                      isSeen: isObscure,
-                                      textInputAction: TextInputAction.done,
-                                      onEditingComplete: _attemptLogin,
-=======
                                       isPassword: true,
->>>>>>> a577bd6 (Refactored Password Visibility Logic in `CustomTextField` Widget)
                                       validateFunction: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'Please enter password.';
@@ -192,7 +189,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                         }
                                         return null;
                                       },
-                                      autoValid: AutovalidateMode.onUserInteraction,
+                                      autoValid:
+                                          AutovalidateMode.onUserInteraction,
                                     ),
                                     const SizedBox(height: 16),
                                     Align(
@@ -202,8 +200,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                           context.push('/reset-password');
                                         },
                                         style: ButtonStyle(
-                                          overlayColor:
-                                              WidgetStateProperty.all(Colors.transparent),
+                                          overlayColor: WidgetStateProperty.all(
+                                              Colors.transparent),
                                         ),
                                         child: Text(
                                           'Forgot Password?',
@@ -226,7 +224,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                     ),
                                     const SizedBox(height: 26),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'Don\'t have an account?',
