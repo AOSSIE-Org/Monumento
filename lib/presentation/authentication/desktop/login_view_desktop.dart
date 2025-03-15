@@ -20,7 +20,6 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  bool isObscure = true;
 
   @override
   void initState() {
@@ -178,9 +177,13 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       controller: passwordController,
                                       text: 'Password',
                                       isDesktop: true,
+<<<<<<< HEAD
                                       isSeen: isObscure,
                                       textInputAction: TextInputAction.done,
                                       onEditingComplete: _attemptLogin,
+=======
+                                      isPassword: true,
+>>>>>>> a577bd6 (Refactored Password Visibility Logic in `CustomTextField` Widget)
                                       validateFunction: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'Please enter password.';
@@ -189,16 +192,6 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                         }
                                         return null;
                                       },
-                                      suffixIcon: IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            isObscure = !isObscure;
-                                          });
-                                        },
-                                        icon: Icon(isObscure
-                                            ? Icons.visibility_off
-                                            : Icons.visibility),
-                                      ),
                                       autoValid: AutovalidateMode.onUserInteraction,
                                     ),
                                     const SizedBox(height: 16),
