@@ -38,7 +38,7 @@
         <action android:name="android.intent.action.VIEW" />
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-        <data android:scheme="appwrite-callback-67ccc6c50024091386a8" />
+        <data android:scheme="appwrite-callback-${appwriteProjectId}" /> <!-- Use placeholder here -->
       </intent-filter>
     </activity>
 
