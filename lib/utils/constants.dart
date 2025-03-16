@@ -6,43 +6,64 @@ import 'package:monumento/utils/app_text_styles.dart';
 const defaultProfilePicture =
     "https://firebasestorage.googleapis.com/v0/b/monumento-277103.appspot.com/o/profilePictures%2Faccount_avatar_profile_user_icon%20.png?alt=media&token=672ef7b9-7f53-415f-8040-0c93c61e01b8";
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String text;
-  final bool? isSeen;
-  final Widget? suffixIcon;
   final String? Function(String?)? validateFunction;
   final AutovalidateMode? autoValid;
   final bool isDesktop;
-  final TextInputAction? textInputAction;
-  final VoidCallback? onEditingComplete;
-  const CustomTextField(
-      {super.key,
-      required this.controller,
-      required this.text,
-      this.suffixIcon,
-      this.validateFunction,
-      this.autoValid,
-      this.isSeen,
-      this.isDesktop = false,
-      this.textInputAction,
-      this.onEditingComplete,
-      });
+  final bool isPassword; // Determines if this field is a password field
+
+  const CustomTextField({
+    super.key,
+    required this.controller,
+    required this.text,
+    this.validateFunction,
+    this.autoValid,
+    this.isDesktop = false,
+    this.isPassword = false, // Default is not a password field
+  });
+
+  @override
+  State<CustomTextField> createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  bool isSeen = false; // Local state for password visibility
+
+  @override
+  void initState() {
+    super.initState();
+    isSeen = widget.isPassword; // If it's a password field, default to obscured
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller: controller,
-      obscureText: isSeen ?? false,
-      validator: validateFunction,
-      autovalidateMode: autoValid,
-      textInputAction: textInputAction,
-      onEditingComplete: onEditingComplete,
+      controller: widget.controller,
+      obscureText: widget.isPassword
+          ? !isSeen
+          : false, // Only obscure if it's a password field
+      validator: widget.validateFunction,
+      autovalidateMode: widget.autoValid,
       decoration: InputDecoration(
-        suffixIcon: suffixIcon,
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                onPressed: () {
+                  setState(
+                    () {
+                      isSeen = !isSeen; // Toggle visibility
+                    },
+                  );
+                },
+                icon: Icon(
+                  isSeen ? Icons.visibility : Icons.visibility_off,
+                ),
+              )
+            : null, // No suffix icon for non-password fields
         contentPadding:
             const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-        labelText: text,
+        labelText: widget.text,
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(
             color: AppColor.appSecondary,
@@ -51,7 +72,7 @@ class CustomTextField extends StatelessWidget {
         floatingLabelStyle: AppTextStyles.s14(
           color: AppColor.appSecondary,
           fontType: FontType.MEDIUM,
-          isDesktop: isDesktop,
+          isDesktop: widget.isDesktop,
         ),
         border: const OutlineInputBorder(
           borderSide: BorderSide(
