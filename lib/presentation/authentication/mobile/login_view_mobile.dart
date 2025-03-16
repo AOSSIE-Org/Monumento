@@ -20,7 +20,6 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  bool isSeen = false;
 
   @override
   void initState() {
@@ -39,244 +38,239 @@ class _LoginViewMobileState extends State<LoginViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColor.appBackground,
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.only(
-          top: MediaQuery.of(context).size.height * 0.2,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Assets.logoAuth.image(
-              height: 105,
-              width: 136,
-            ),
-            const SizedBox(
-              width: 390,
-              height: 40,
-            ),
-            Form(
-              key: formKey,
-              child: Center(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  width: 380,
-                  child: BlocListener<LoginRegisterBloc, LoginRegisterState>(
-                    bloc: locator<LoginRegisterBloc>(),
-                    listener: (context, state) {
-                      if (state is LoginFailed) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              "Invalid email or password, please try again.",
-                              style: AppTextStyles.s14(
-                                color: AppColor.appWhite,
-                                fontType: FontType.MEDIUM,
-                              ),
-                            ),
-                            backgroundColor: AppColor.appWarningRed,
-                          ),
-                        );
-                      }
-
-                      if (state is SigninWithGoogleSuccess ||
-                          state is LoginSuccess) {
-                        while (context.canPop()) {
-                          context.pop();
-                        }
-                        context.push('/');
-                      }
-                    },
-                    child: BlocBuilder<LoginRegisterBloc, LoginRegisterState>(
-                      bloc: locator<LoginRegisterBloc>(),
-                      builder: (context, state) {
-                        if (state is LoginRegisterLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                AppColor.appPrimary,
-                              ),
-                            ),
-                          );
-                        }
-                        return Column(
-                          children: [
-                            SizedBox(
-                              width: double.infinity,
-                              child: CustomElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: AppColor.appBlack,
-                                  backgroundColor:
-                                      AppColor.appWhite, // Text and icon color
-                                  elevation: 2, // Shadow
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 12), // Padding
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        4), // Border radius
-                                  ),
-                                ),
-                                leading: SizedBox(
-                                  height: 28.h,
-                                  child: Assets.googleLogo.image(),
-                                ),
-                                isDesktop: true,
-                                onPressed: () {
-                                  locator<LoginRegisterBloc>()
-                                      .add(LoginWithGooglePressed());
-                                },
-                                text: 'Sign In With Google',
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            const Text(
-                              'Or',
-                              style: TextStyle(
-                                color: AppColor.appSecondaryBlack,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            ),
-                            CustomTextField(
-                                controller: emailController,
-                                text: 'Email',
-                                validateFunction: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter email.';
-                                  } else if (!value.contains('@')) {
-                                    return 'Please enter a valid email.';
-                                  }
-                                  return null;
-                                },
-                                autoValid: AutovalidateMode.onUserInteraction),
-                            const SizedBox(
-                              height: 16,
-                            ),
-                            CustomTextField(
-                                controller: passwordController,
-                                text: 'Password',
-                                isSeen: isSeen,
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      isSeen = !isSeen;
-                                    });
-                                  },
-                                  icon: Icon(!isSeen
-                                      ? Icons.visibility_off
-                                      : Icons.visibility),
-                                ),
-                                validateFunction: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter password.';
-                                  } else if (value.length < 6) {
-                                    return 'Password must be at least 6 characters.';
-                                  }
-                                  return null;
-                                },
-                                autoValid: AutovalidateMode.onUserInteraction),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  context.push('/reset-password');
-                                },
-                                style: ButtonStyle(
-                                  overlayColor: WidgetStateProperty.all(
-                                    Colors.transparent,
-                                  ),
-                                ),
-                                child: Text(
-                                  'Forgot Password?',
-                                  style: AppTextStyles.s14(
-                                    color: AppColor.appSecondary,
-                                    fontType: FontType.MEDIUM,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            SizedBox(
-                                width: double.infinity,
-                                child: CustomElevatedButton(
-                                    onPressed: () {
-                                      if (formKey.currentState!.validate()) {
-                                        locator<LoginRegisterBloc>().add(
-                                          LoginWithEmailPressed(
-                                            email: emailController.text,
-                                            password: passwordController.text,
-                                          ),
-                                        );
-                                      } else {
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(
-                                          SnackBar(
-                                            content: Text(
-                                              'Please enter valid email and password',
-                                              style: AppTextStyles.s14(
-                                                color: AppColor.appWhite,
-                                                fontType: FontType.MEDIUM,
-                                              ),
-                                            ),
-                                            backgroundColor:
-                                                AppColor.appSecondary,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    text: 'Login')),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Don\'t have an account?',
-                                  style: AppTextStyles.s14(
-                                    color: AppColor.appSecondaryBlack,
-                                    fontType: FontType.REGULAR,
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    context.push('/register');
-                                  },
-                                  style: ButtonStyle(
-                                    overlayColor: WidgetStateProperty.all(
-                                      Colors.transparent,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Sign Up',
+        resizeToAvoidBottomInset: false,
+        backgroundColor: AppColor.appBackground,
+        body: Center(
+          child: SizedBox(
+            width: 411,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Assets.logoAuth.image(
+                    height: 105,
+                    width: 136,
+                  ),
+                  const SizedBox(
+                    width: 390,
+                    height: 40,
+                  ),
+                  Form(
+                    key: formKey,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        width: 380,
+                        child:
+                            BlocListener<LoginRegisterBloc, LoginRegisterState>(
+                          bloc: locator<LoginRegisterBloc>(),
+                          listener: (context, state) {
+                            if (state is LoginFailed) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    "Invalid email or password, please try again.",
                                     style: AppTextStyles.s14(
-                                      color: AppColor.appPrimary,
+                                      color: AppColor.appWhite,
                                       fontType: FontType.MEDIUM,
                                     ),
                                   ),
+                                  backgroundColor: AppColor.appWarningRed,
                                 ),
-                              ],
-                            ),
-                          ],
-                        );
-                      },
+                              );
+                            }
+
+                            if (state is SigninWithGoogleSuccess ||
+                                state is LoginSuccess) {
+                              while (context.canPop()) {
+                                context.pop();
+                              }
+                              context.push('/');
+                            }
+                          },
+                          child: BlocBuilder<LoginRegisterBloc,
+                              LoginRegisterState>(
+                            bloc: locator<LoginRegisterBloc>(),
+                            builder: (context, state) {
+                              if (state is LoginRegisterLoading) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColor.appPrimary,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return Column(
+                                children: [
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: CustomElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        foregroundColor: AppColor.appBlack,
+                                        backgroundColor: AppColor
+                                            .appWhite, // Text and icon color
+                                        elevation: 2, // Shadow
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16,
+                                            vertical: 12), // Padding
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              4), // Border radius
+                                        ),
+                                      ),
+                                      leading: SizedBox(
+                                        height: 28.h,
+                                        child: Assets.googleLogo.image(),
+                                      ),
+                                      isDesktop: true,
+                                      onPressed: () {
+                                        locator<LoginRegisterBloc>()
+                                            .add(LoginWithGooglePressed());
+                                      },
+                                      text: 'Sign In With Google',
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  const Text(
+                                    'Or',
+                                    style: TextStyle(
+                                      color: AppColor.appSecondaryBlack,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 15,
+                                  ),
+                                  CustomTextField(
+                                      controller: emailController,
+                                      text: 'Email',
+                                      validateFunction: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter email.';
+                                        } else if (!value.contains('@')) {
+                                          return 'Please enter a valid email.';
+                                        }
+                                        return null;
+                                      },
+                                      autoValid:
+                                          AutovalidateMode.onUserInteraction),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  CustomTextField(
+                                      controller: passwordController,
+                                      text: 'Password',
+                                      isPassword: true,
+                                      validateFunction: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Please enter password.';
+                                        } else if (value.length < 6) {
+                                          return 'Password must be at least 6 characters.';
+                                        }
+                                        return null;
+                                      },
+                                      autoValid:
+                                          AutovalidateMode.onUserInteraction),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        context.push('/reset-password');
+                                      },
+                                      style: ButtonStyle(
+                                        overlayColor: WidgetStateProperty.all(
+                                          Colors.transparent,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Forgot Password?',
+                                        style: AppTextStyles.s14(
+                                          color: AppColor.appSecondary,
+                                          fontType: FontType.MEDIUM,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  SizedBox(
+                                      width: double.infinity,
+                                      child: CustomElevatedButton(
+                                          onPressed: () {
+                                            if (formKey.currentState!
+                                                .validate()) {
+                                              locator<LoginRegisterBloc>().add(
+                                                LoginWithEmailPressed(
+                                                  email: emailController.text,
+                                                  password:
+                                                      passwordController.text,
+                                                ),
+                                              );
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                    'Please enter valid email and password',
+                                                    style: AppTextStyles.s14(
+                                                      color: AppColor.appWhite,
+                                                      fontType: FontType.MEDIUM,
+                                                    ),
+                                                  ),
+                                                  backgroundColor:
+                                                      AppColor.appSecondary,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          text: 'Login')),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Don\'t have an account?',
+                                        style: AppTextStyles.s14(
+                                          color: AppColor.appSecondaryBlack,
+                                          fontType: FontType.REGULAR,
+                                        ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          context.push('/register');
+                                        },
+                                        style: ButtonStyle(
+                                          overlayColor: WidgetStateProperty.all(
+                                            Colors.transparent,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Sign Up',
+                                          style: AppTextStyles.s14(
+                                            color: AppColor.appPrimary,
+                                            fontType: FontType.MEDIUM,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+                  )
+                ]),
+          ),
+        ));
   }
 }
