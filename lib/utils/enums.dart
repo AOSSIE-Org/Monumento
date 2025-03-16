@@ -15,11 +15,18 @@ enum FeatureType {
   pharmacy,
 }
 
+FeatureType? tryGetFeatureType(String feature) {
+  try {
+    return FeatureType.values.firstWhere(
+      (e) => e.toString().split('.').last == feature.split('.').last,
+    );
+  } catch (_) {
+    return null;
+  }
+}
+
 FeatureType getFeatureType(String feature) {
-  return FeatureType.values.firstWhere(
-    (e) => e.toString().split('.').last == feature.split('.').last,
-    orElse: () => FeatureType.restaurant,
-  );
+  return tryGetFeatureType(feature) ?? FeatureType.restaurant;
 }
 
 enum NotificationType {
