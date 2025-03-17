@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monumento/data/models/user_model.dart';
@@ -167,9 +168,81 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     throw UnimplementedError();
   }
 
+  Future<bool> checkUserDoc(String uid) async {
+    final snap = await _database.getDocument(
+      databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
+      collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+      documentId: uid,
+    );
+    return snap.data.isEmpty;
+  }
+
   @override
-  Future<Map<String, dynamic>> signInWithGoogle() {
-    throw UnimplementedError();
+  Future<Map<String, dynamic>> signInWithGoogle() async {
+    try {
+      await _account.createOAuth2Session(
+        provider: OAuthProvider.google,
+      );
+      await Future.delayed(Duration(milliseconds: 500));
+      // Fetch user details after login
+      final user = await _account.get();
+
+      // Check if the user already exists in the database
+      bool isNewUser = false;
+      try {
+        final userDocument = await _database.getDocument(
+          databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
+          collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+          documentId: user.$id,
+        );
+
+        // If the user document does not exist, create a new one
+        if (userDocument.data.isEmpty) {
+          await createUserDocument(user);
+          isNewUser = true;
+        }
+      } catch (e) {
+        // If the document does not exist, create a new one
+        await createUserDocument(user);
+        isNewUser = true;
+      }
+
+      // Return the result as a map
+      return {
+        'isNewUser': isNewUser,
+        'user': UserModel.fromJson(
+          {
+            'name': user.name,
+            'email': user.email,
+            'uid': user.$id,
+          },
+        ),
+      };
+    } catch (e) {
+      print('Error logging in: $e');
+      throw Exception('Failed to log in with Google');
+    }
+  }
+
+  Future<void> createUserDocument(User user) async {
+    final searchParams = getSearchParams(userName: user.name, name: user.name);
+    try {
+      await _database.createDocument(
+        databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
+        collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+        documentId: user.$id,
+        data: {
+          'name': user.name,
+          'uid': user.$id,
+          'email': user.email,
+          'username': user.name,
+          'searchParams': searchParams,
+        },
+      );
+      print('New user document created for: ${user.email}');
+    } catch (e) {
+      print('Error creating user document: $e');
+    }
   }
 
   @override
