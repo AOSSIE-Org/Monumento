@@ -12,6 +12,7 @@ import 'package:monumento/application/notifications/notifications_bloc.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_3d_model/monument_3d_model_bloc.dart';
+import 'package:monumento/application/popular_monuments/monument_checkout/monument_checkout_bloc.dart';
 import 'package:monumento/application/profile/follow/follow_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
@@ -76,6 +77,9 @@ void setupLocator() {
       () => NotificationsBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(
       () => MonumentCheckinBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton<MonumentCheckoutBloc>(
+    () => MonumentCheckoutBloc(locator<SocialRepository>())
+  );
   locator.registerLazySingleton(
       () => NearbyPlacesBloc(locator<MonumentRepository>()));
 }

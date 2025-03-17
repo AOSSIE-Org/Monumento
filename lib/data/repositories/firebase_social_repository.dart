@@ -835,6 +835,32 @@ class FirebaseSocialRepository implements SocialRepository {
     return true;
   }
 
+@override
+Future<bool> monumentCheckOut({required String monumentId}) async {
+  var (userLoggedIn, user) = await authenticationRepository.getUser();
+  if (!userLoggedIn) {
+    throw Exception("User not logged in");
+  }
+
+  QuerySnapshot snap = await _database
+      .collection("users")
+      .doc(user?.uid)
+      .collection("checkIns")
+      .where("monumentId", isEqualTo: monumentId)
+      .get();
+
+  if (snap.docs.isEmpty) {
+    return false;
+  }
+
+  for (var doc in snap.docs) {
+    await doc.reference.delete();
+  }
+
+  return true;
+}
+
+
   @override
   Future<bool> checkInStatus({required String monumentId}) async {
     var (userLoggedIn, user) = await authenticationRepository.getUser();

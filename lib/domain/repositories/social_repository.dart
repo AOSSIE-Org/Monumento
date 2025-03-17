@@ -76,5 +76,7 @@ abstract interface class SocialRepository {
 
   Future<bool> checkInStatus({required String monumentId});
 
+  Future<bool> monumentCheckOut({required String monumentId});
+
   Future<List<UserModel>> loadUser(List<String> userConnections);
 }
