@@ -205,6 +205,7 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
 
   @override
   Widget build(BuildContext context) {
+    final _debouncer = Debouncer(delay: const Duration(milliseconds: 600));
     return Scaffold(
       appBar: CustomMobileAppBar(
         logoPath: Assets.mobile.logoDiscover.path,
@@ -244,44 +245,128 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
                     child: Column(
                       children: [
                         Container(
-                            height: 72,
-                            color: AppColor.appWhite,
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 30),
-                            child: GestureDetector(
-                              onTap: () {
-                                showOverlay(context);
-                              },
-                              child: Container(
-                                  height: 44,
-                                  width: 342,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: AppColor.appLightGrey),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(6))),
-                                  child: Row(
-                                    children: [
-                                      const SizedBox(
-                                        width: 24,
+                          color: AppColor.appWhite,
+                          margin: const EdgeInsets.symmetric(vertical: 8),
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+                          child: BlocBuilder<SearchBloc, SearchState>(
+                            bloc: locator<SearchBloc>(),
+                            builder: (context, searchState) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Search input field
+                                  Container(
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: AppColor.appLightGrey),
+                                      borderRadius: const BorderRadius.all(Radius.circular(6))
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextField(
+                                            controller: searchController,
+                                            decoration: const InputDecoration(
+                                              prefixIcon: Icon(
+                                                Icons.search,
+                                                color: AppColor.appLightGrey,
+                                              ),
+                                              hintText: 'Search for people to connect with',
+                                              border: InputBorder.none,
+                                              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                                            ),
+                                            onChanged: (query) {
+                                              _debouncer.run(() {
+                                                locator<SearchBloc>().add(
+                                                  SearchPeople(searchQuery: query),
+                                                );
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        // Loading indicator inside the search box
+                                        if (searchState is LoadingPeople)
+                                          const Padding(
+                                            padding: EdgeInsets.only(right: 12),
+                                            child: SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                color: AppColor.appPrimary,
+                                                strokeWidth: 2,
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  
+                                  // Search results list - appears BELOW the search box
+                                  if (searchState is SearchedPeople && searchState.searchedUsers.isNotEmpty)
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(0.1),
+                                            blurRadius: 8,
+                                            offset: Offset(0, 3),
+                                          )
+                                        ],
+                                        borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(6),
+                                          bottomRight: Radius.circular(6),
+                                        ),
                                       ),
-                                      const Icon(
-                                        Icons.search,
-                                        color: AppColor.appLightGrey,
+                                      constraints: const BoxConstraints(
+                                        maxHeight: 300,
                                       ),
-                                      const SizedBox(
-                                        width: 16,
+                                      child: ListView.separated(
+                                        shrinkWrap: true,
+                                        padding: EdgeInsets.zero,
+                                        separatorBuilder: (context, index) => Divider(height: 1),
+                                        itemCount: searchState.searchedUsers.length,
+                                        itemBuilder: (context, index) {
+                                          return BlocBuilder<AuthenticationBloc, AuthenticationState>(
+                                            bloc: locator<AuthenticationBloc>(),
+                                            builder: (context, authState) {
+                                              authState as Authenticated;
+                                              return ListTile(
+                                                leading: CircleAvatar(
+                                                  backgroundImage: CachedNetworkImageProvider(
+                                                    searchState.searchedUsers[index].profilePictureUrl ??
+                                                        defaultProfilePicture,
+                                                  ),
+                                                ),
+                                                title: Text(searchState.searchedUsers[index].name),
+                                                subtitle: Text(
+                                                  searchState.searchedUsers[index].username ?? '',
+                                                ),
+                                                onTap: () {
+                                                  Navigator.of(context).push(
+                                                    MaterialPageRoute(builder: (context) {
+                                                      return (authState.user.uid ==
+                                                              searchState.searchedUsers[index].uid)
+                                                          ? ProfileScreenMobile()
+                                                          : DiscoverProfileViewMobile(
+                                                              user: searchState.searchedUsers[index],
+                                                            );
+                                                    }),
+                                                  );
+                                                  // No need to hide overlay here since we're not using it
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
                                       ),
-                                      Text(
-                                        'Search for people to connect with',
-                                        style: AppTextStyles.s14(
-                                            color: AppColor.appLightGrey,
-                                            fontType: FontType.REGULAR),
-                                      ),
-                                    ],
-                                  )),
-                            )),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: StaggeredGrid.count(
