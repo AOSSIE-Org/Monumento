@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,11 +12,11 @@ import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_model_view_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_more_details_view.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_tile_mobile.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/widgets/nearby_places_widget.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
-import 'package:monumento/utils/enums.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MonumentDetailsViewMobile extends StatefulWidget {
@@ -32,7 +31,6 @@ class MonumentDetailsViewMobile extends StatefulWidget {
 }
 
 class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
-  int _selectedPlace = 0;
 
   @override
   void initState() {
@@ -606,151 +604,74 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
               BlocConsumer<NearbyPlacesBloc, NearbyPlacesState>(
                 bloc: locator<NearbyPlacesBloc>(),
                 listener: (context, state) {
-                  // TODO: implement listener
+                  // Listener implementation if needed
                 },
                 builder: (context, state) {
                   if (state is NearbyPlacesLoading) {
                     return SizedBox(
-                      width: 1024.w,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColor.appPrimary,
+                      width: 350.w,
+                      child: const Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: AppColor.appPrimary,
+                            ),
+                          ),
                         ),
                       ),
                     );
                   }
                   if (state is NearbyPlacesLoaded) {
-                    return Card(
-                      child: Container(
-                        width: 350.w,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 24.w,
-                          vertical: 12.h,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            Text(
-                              "Places Nearby",
-                              style: AppTextStyles.s18(
+                    return NearbyPlacesWidget(
+                      nearbyPlaces: state.nearbyPlaces,
+                      latitude: widget.monument.coordinates[0],
+                      longitude: widget.monument.coordinates[1],
+                    );
+                  }
+                  if (state is NearbyPlacesError) {
+                    return SizedBox(
+                      width: 350.w,
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Places Nearby",
+                                style: AppTextStyles.s18(
                                   color: AppColor.appSecondary,
-                                  fontType: FontType.MEDIUM),
-                            ),
-                            SizedBox(
-                              height: 12.h,
-                            ),
-                            const Divider(),
-                            ChipsChoice.single(
-                              value: _selectedPlace,
-                              onChanged: (v) {
-                                setState(() {
-                                  _selectedPlace = v;
-                                });
-                              },
-                              choiceItems: const [
-                                C2Choice(
-                                  value: 0,
-                                  label: 'Restaurants',
+                                  fontType: FontType.MEDIUM,
                                 ),
-                                C2Choice(
-                                  value: 1,
-                                  label: 'Toilets',
-                                ),
-                                C2Choice(
-                                  value: 2,
-                                  label: 'Hotels',
-                                ),
-                                C2Choice(
-                                  value: 3,
-                                  label: 'ATMs',
-                                ),
-                                C2Choice(
-                                  value: 4,
-                                  label: 'Supermarkets',
-                                ),
-                                C2Choice(
-                                  value: 5,
-                                  label: 'Pharmacies',
-                                ),
-                              ],
-                            ),
-                            state.nearbyPlaces
-                                    .where((element) =>
-                                        element.featureType ==
-                                        FeatureType.values[_selectedPlace])
-                                    .isEmpty
-                                ? const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Center(
-                                      child: Text("No nearby places found"),
+                              ),
+                              const SizedBox(height: 16),
+                              const Text(
+                                "Unable to load nearby places",
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: () {
+                                  locator<NearbyPlacesBloc>().add(
+                                    GetNearbyPlaces(
+                                      latitude: widget.monument.coordinates[0],
+                                      longitude: widget.monument.coordinates[1],
                                     ),
-                                  )
-                                : Wrap(
-                                    children: state.nearbyPlaces
-                                        .where((element) =>
-                                            element.featureType ==
-                                            FeatureType.values[_selectedPlace])
-                                        .map(
-                                          (e) => Card(
-                                            child: SizedBox(
-                                              width: 450,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: ListTile(
-                                                  title: Text(e.name),
-                                                  subtitle: Text(e.address),
-                                                  trailing: IconButton(
-                                                    icon: const Icon(
-                                                        Icons.directions),
-                                                    onPressed: () async {
-                                                      if (await canLaunchUrl(
-                                                        Uri.parse(
-                                                            'https://www.google.com/maps/search/?api=1&query=${e.latitude},${e.longitude}'),
-                                                      )) {
-                                                        launchUrl(
-                                                          Uri.parse(
-                                                              'https://www.google.com/maps/search/?api=1&query=${e.latitude},${e.longitude}'),
-                                                        );
-                                                      } else {
-                                                        if (mounted) {
-                                                          showDialog(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return AlertDialog(
-                                                                title: Text(
-                                                                    "Directions to ${e.name}"),
-                                                                content: Text(
-                                                                    "You can get directions to ${e.name} at ${e.address}"),
-                                                                actions: [
-                                                                  TextButton(
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    },
-                                                                    child: const Text(
-                                                                        "Close"),
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            },
-                                                          );
-                                                        }
-                                                      }
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        )
-                                        .toList(),
-                                  )
-                          ],
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColor.appPrimary,
+                                ),
+                                child: Text(
+                                  "Retry",
+                                  style: AppTextStyles.s14(
+                                    color: AppColor.appSecondary,
+                                    fontType: FontType.MEDIUM,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );
