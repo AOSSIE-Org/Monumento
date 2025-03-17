@@ -177,6 +177,25 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     return snap.data.isEmpty;
   }
 
+  Future<bool> _checkAndCreateUserDocument(User user) async {
+    try {
+      final userDocument = await _database.getDocument(
+        databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
+        collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+        documentId: user.$id,
+      );
+
+      if (userDocument.data.isEmpty) {
+        await createUserDocument(user);
+        return true; // New user
+      }
+      return false; // Existing user
+    } catch (e) {
+      await createUserDocument(user);
+      return true; // New user
+    }
+  }
+
   @override
   Future<Map<String, dynamic>> signInWithGoogle() async {
     try {
@@ -184,44 +203,28 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
         provider: OAuthProvider.google,
       );
       await Future.delayed(Duration(milliseconds: 500));
-      // Fetch user details after login
+
       final user = await _account.get();
-
-      // Check if the user already exists in the database
-      bool isNewUser = false;
-      try {
-        final userDocument = await _database.getDocument(
-          databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
-          collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
-          documentId: user.$id,
-        );
-
-        // If the user document does not exist, create a new one
-        if (userDocument.data.isEmpty) {
-          await createUserDocument(user);
-          isNewUser = true;
-        }
-      } catch (e) {
-        // If the document does not exist, create a new one
-        await createUserDocument(user);
-        isNewUser = true;
-      }
-
-      // Return the result as a map
+      // Fetch user details after login
+      final isNewUser = await _checkAndCreateUserDocument(user);
       return {
         'isNewUser': isNewUser,
-        'user': UserModel.fromJson(
-          {
-            'name': user.name,
-            'email': user.email,
-            'uid': user.$id,
-          },
-        ),
+        'user': await _fetchUserDetails(user),
       };
     } catch (e) {
       print('Error logging in: $e');
       throw Exception('Failed to log in with Google');
     }
+  }
+
+  Future<UserModel> _fetchUserDetails(User user) async {
+    return UserModel.fromJson(
+      {
+        'name': user.name,
+        'email': user.email,
+        'uid': user.$id,
+      },
+    );
   }
 
   Future<void> createUserDocument(User user) async {
