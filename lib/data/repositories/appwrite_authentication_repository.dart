@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monumento/data/models/user_model.dart';
@@ -167,9 +168,84 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     throw UnimplementedError();
   }
 
+  Future<bool> checkUserDoc(String uid) async {
+    final snap = await _database.getDocument(
+      databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
+      collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+      documentId: uid,
+    );
+    return snap.data.isEmpty;
+  }
+
+  Future<bool> _checkAndCreateUserDocument(User user) async {
+    try {
+      final userDocument = await _database.getDocument(
+        databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
+        collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+        documentId: user.$id,
+      );
+
+      if (userDocument.data.isEmpty) {
+        await createUserDocument(user);
+        return true; // New user
+      }
+      return false; // Existing user
+    } catch (e) {
+      await createUserDocument(user);
+      return true; // New user
+    }
+  }
+
   @override
-  Future<Map<String, dynamic>> signInWithGoogle() {
-    throw UnimplementedError();
+  Future<Map<String, dynamic>> signInWithGoogle() async {
+    try {
+      await _account.createOAuth2Session(
+        provider: OAuthProvider.google,
+      );
+      await Future.delayed(Duration(milliseconds: 500));
+
+      final user = await _account.get();
+      // Fetch user details after login
+      final isNewUser = await _checkAndCreateUserDocument(user);
+      return {
+        'isNewUser': isNewUser,
+        'user': await _fetchUserDetails(user),
+      };
+    } catch (e) {
+      print('Error logging in: $e');
+      throw Exception('Failed to log in with Google');
+    }
+  }
+
+  Future<UserModel> _fetchUserDetails(User user) async {
+    return UserModel.fromJson(
+      {
+        'name': user.name,
+        'email': user.email,
+        'uid': user.$id,
+      },
+    );
+  }
+
+  Future<void> createUserDocument(User user) async {
+    final searchParams = getSearchParams(userName: user.name, name: user.name);
+    try {
+      await _database.createDocument(
+        databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
+        collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+        documentId: user.$id,
+        data: {
+          'name': user.name,
+          'uid': user.$id,
+          'email': user.email,
+          'username': user.name,
+          'searchParams': searchParams,
+        },
+      );
+      print('New user document created for: ${user.email}');
+    } catch (e) {
+      print('Error creating user document: $e');
+    }
   }
 
   @override
