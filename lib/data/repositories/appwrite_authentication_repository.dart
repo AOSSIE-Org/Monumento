@@ -63,7 +63,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     final user = await _account.get();
     final userDoc = await _database.getDocument(
       databaseId: dotenv.env['APPWRITE_DATABASE_ID'] ?? "",
-      collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID'] ?? "",
+      collectionId: dotenv.env['APPWRITE_USER_ID'] ?? "",
       documentId: user.$id,
     );
 
@@ -87,7 +87,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     // Check if user already exists in the collection
     final existingUsers = await _database.listDocuments(
       databaseId: dotenv.env['APPWRITE_DATABASE_ID'] ?? "",
-      collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID'] ?? "",
+      collectionId: dotenv.env['APPWRITE_USER_ID'] ?? "",
       queries: [
         Query.equal("uid", uid),
       ],
@@ -102,7 +102,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     // Create a new user document
     final newUserDoc = await _database.createDocument(
       databaseId: dotenv.env['APPWRITE_DATABASE_ID'] ?? "",
-      collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID'] ?? "",
+      collectionId: dotenv.env['APPWRITE_USER_ID'] ?? "",
       documentId: uid,
       data: {
         'name': name,
@@ -139,7 +139,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
       // Retrieve user document from Appwrite database
       final userDoc = await _database.getDocument(
         databaseId: dotenv.env['APPWRITE_DATABASE_ID'] ?? "",
-        collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID'] ?? "",
+        collectionId: dotenv.env['APPWRITE_USER_ID'] ?? "",
         documentId: user.$id, // Using the user ID from Appwrite auth
       );
 
@@ -171,7 +171,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
   Future<bool> checkUserDoc(String uid) async {
     final snap = await _database.getDocument(
       databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
-      collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+      collectionId: dotenv.env['APPWRITE_USER_ID']!,
       documentId: uid,
     );
     return snap.data.isEmpty;
@@ -181,7 +181,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     try {
       final userDocument = await _database.getDocument(
         databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
-        collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+        collectionId: dotenv.env['APPWRITE_USER_ID']!,
         documentId: user.$id,
       );
 
@@ -232,7 +232,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     try {
       await _database.createDocument(
         databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
-        collectionId: dotenv.env['APPWRITE_USER_COLLECTION_ID']!,
+        collectionId: dotenv.env['APPWRITE_USER_ID']!,
         documentId: user.$id,
         data: {
           'name': user.name,
@@ -277,8 +277,8 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
 
         // Update email in Appwrite Database
         await _database.updateDocument(
-          databaseId: "monument_db",
-          collectionId: "users",
+          databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
+          collectionId: dotenv.env['APPWRITE_USER_ID']!,
           documentId: userId,
           data: {
             'email': newEmail,

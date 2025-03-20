@@ -36,7 +36,7 @@ void setupLocator() {
     // Appwrite related
     ..registerLazySingleton(() => Client()
       ..setEndpoint(
-          dotenv.env['APPWRITE_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
+          dotenv.env['APPWRITE_API_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
       ..setProject(dotenv.env['APPWRITE_PROJECT_ID']))
     ..registerLazySingleton(() => Databases(locator<Client>()))
     ..registerLazySingleton(() => Storage(locator<Client>()))
