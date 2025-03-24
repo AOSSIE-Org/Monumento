@@ -29,18 +29,21 @@
   1. Modify `SafeAreaView` or update the top margin in your app layout.
 
 #### Android
-- **Error:** Gradle build fails due to incompatible Java version.  
+- **Error:** Gradle build fails due to incompatible Java version.\
   **solution:**
-  --> use jdk-21 version with setting up<--
+  -->use jdk-21 version then<--
 
-1.android/gradle/gradle-wrapper.properties --> distributionUrl="https://services.gradle.org/distributions/gradle-8.5-all.zip"
+   1.android/gradle/gradle-wrapper.properties --> distributionUrl="https://services.gradle.org/distributions/gradle-8.5-all.zip"
 
-2.android/setting.gradle within plugins block scope--> id "com.android.application" version "8.2.1" apply false
+   2.android/setting.gradle within plugins block scope--> id "com.android.application" version "8.2.1" apply false
+ 
+   3.android/app/build.gradle --> minSdkVersion-23 and tagetSdkVersion 35
 
-3.android/app/build-gradle --> minSdkVersion-23
+**Error:** Android toolchain is not using java 21.\
+**Soulution:**
 
-**If still not working then use "flutter doctor --verbose" to check if Android toolchain is using java version 17, like this is using --> Java version OpenJDK Runtime Environment (build 17.0.10+017.0.10b1087.21-11609105)**
-**if not then use this to fix it-> "flutter config --jdk-dir="C:\Path\To\Your\JDK17"**
+If still not working then use "flutter doctor --verbose" to check if Android toolchain is using java version 21, like this is using --> Java version OpenJDK Runtime Environment (build 17.0.10+017.0.10b1087.21-11609105)
+,if not then use this to fix it-> "flutter config --jdk-dir="C:\Path\To\Your\JDK17"
 
 Hopefully your problem would get fixed.
 
