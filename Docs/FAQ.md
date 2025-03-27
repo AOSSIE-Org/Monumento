@@ -37,7 +37,7 @@
 
    2.android/setting.gradle within plugins block scope--> id "com.android.application" version "8.2.1" apply false
  
-   3.android/app/build.gradle --> minSdkVersion-23 and tagetSdkVersion 35
+   3.android/app/build.gradle --> minSdkVersion-23 ,tagetSdkVersion 35 and compileSdk 35
 
 **Error:** Android toolchain is not using java 21.\
 **Soulution:**
