@@ -52,7 +52,7 @@ void setupLocator() {
       ),
     )
     ..registerLazySingleton<MonumentRepository>(
-        instanceName: 'appwriteMonumentRepository',
+        // instanceName: 'appwriteMonumentRepository',
         () => AppwriteMonumentRepository(
               authenticationRepository: locator<AuthenticationRepository>(),
               database: locator<Databases>(),
@@ -64,9 +64,9 @@ void setupLocator() {
     // Firebase related
 
     // Register repositories
-    ..registerLazySingleton<MonumentRepository>(
-      () => FirebaseMonumentRepository(locator<AuthenticationRepository>()),
-    )
+    // ..registerLazySingleton<MonumentRepository>(
+    //   () => FirebaseMonumentRepository(locator<AuthenticationRepository>()),
+    // )
 
     // Register blocs
     ..registerLazySingleton(() =>

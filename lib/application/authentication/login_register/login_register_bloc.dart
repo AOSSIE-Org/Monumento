@@ -56,6 +56,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
         );
         emit(SignUpSuccess(user));
         _authenticationBloc.add(LoggedIn());
+        emit(LoginSuccess(user));
       } else {
         emit(const SignUpFailed(
             message: 'Username already taken, please try with another one.'));
@@ -75,6 +76,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
         password: event.password,
       );
       if (user != null) {
+        print(user.email);
         _authenticationBloc.add(LoggedIn());
         log('User: $user');
         emit(LoginSuccess(user));

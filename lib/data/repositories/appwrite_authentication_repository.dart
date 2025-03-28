@@ -66,8 +66,10 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
       collectionId: dotenv.env['APPWRITE_USER_ID'] ?? "",
       documentId: user.$id,
     );
-
-    return UserModel.fromJson(userDoc.data);
+    Map<String,dynamic> updatedUser = Map<String,dynamic>.from(userDoc.data);
+    updatedUser.remove('posts');
+    print(updatedUser);
+    return UserModel.fromJson(updatedUser);
   }
 
   @override
@@ -146,8 +148,11 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
       if (userDoc.data.isEmpty) {
         return (true, null);
       }
-
-      return (true, UserModel.fromJson(userDoc.data));
+      Map<String,dynamic> updatedUser = Map<String,dynamic>.from(userDoc.data);
+      updatedUser.remove('posts');
+      print(updatedUser);
+      
+      return (true, UserModel.fromJson(updatedUser));
     } catch (e) {
       return (false, null);
     }
