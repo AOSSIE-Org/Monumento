@@ -28,9 +28,12 @@ class AppwriteMonumentRepository implements MonumentRepository {
 
   final databaseId = dotenv.env['APPWRITE_DATABSE_ID'] ?? 'dbmonumento';
   final userCollectionId = dotenv.env['APPWRITE_USER_COLLECTION_ID'] ?? 'users';
-  final monumentsCollectionId = dotenv.env['APPWRITE_MONUMENTS_COLLECTION_ID'] ?? 'monuments';
-  final postsCollectionId = dotenv.env['APPWRITE_POSTS_COLLECTION_ID'] ?? 'posts';
-  final localExpertsCollectionId = dotenv.env['APPWRITE_LOCALEXPERTS_COLLECTION_ID'] ?? 'localExperts';
+  final monumentsCollectionId =
+      dotenv.env['APPWRITE_MONUMENTS_COLLECTION_ID'] ?? 'monuments';
+  final postsCollectionId =
+      dotenv.env['APPWRITE_POSTS_COLLECTION_ID'] ?? 'posts';
+  final localExpertsCollectionId =
+      dotenv.env['APPWRITE_LOCALEXPERTS_COLLECTION_ID'] ?? 'localExperts';
 
   @override
   Future<List<MonumentModel>> getPopularMonuments() async {
@@ -114,12 +117,19 @@ class AppwriteMonumentRepository implements MonumentRepository {
         documentId: user.uid,
       );
 
-      final currentSavedMonuments =
-          List<String>.from(userDoc.data['savedMonuments'] ?? []);
+      log('User Document: ${userDoc.data}');
 
-      if (!currentSavedMonuments.contains(monumentId)) {
-        currentSavedMonuments.add(monumentId);
+      List<String> currentSavedMonuments = [];
+      if (userDoc.data.containsKey('savedMonuments') &&
+          userDoc.data['savedMonuments'] != null) {
+        currentSavedMonuments =
+            List<String>.from(userDoc.data['savedMonuments']);
       }
+
+      if (currentSavedMonuments.contains(monumentId)) {
+        return true;       }
+
+      currentSavedMonuments.add(monumentId);
 
       await _database.updateDocument(
         databaseId: databaseId,
