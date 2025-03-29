@@ -4,8 +4,10 @@ def loadEnv() {
     if (envFile.exists()) {
         envFile.readLines().each { line ->
             if (!line.isEmpty() && !line.startsWith("#")) {
-                def (key, value) = line.split("=")
-                project.ext.set(key, value)
+                def parts = line.split("=", 2)
+                if (parts.length == 2) {
+                    project.ext.set(parts[0], parts[1])
+                }
             }
         }
     }

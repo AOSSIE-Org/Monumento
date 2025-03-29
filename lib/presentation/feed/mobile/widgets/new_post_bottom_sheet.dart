@@ -57,7 +57,7 @@ class _PostImageState extends State<PostImage> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                   content:
-                                      Text("Please add a title or an image"),
+                                      Text("Please add a title or an image "),
                                 ),
                               );
                               return;

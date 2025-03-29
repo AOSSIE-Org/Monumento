@@ -1,10 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:monumento/data/models/monument_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 
 part 'user_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class UserModel {
+  @JsonKey(name: '\$id')
   final String uid;
   final String email;
   final String name;
@@ -14,11 +16,15 @@ class UserModel {
   final List<String> following;
   final List<String> followers;
   final List<String> posts;
+  final List<MonumentModel> savedMonuments;
+  final List<MonumentModel> checkedInMonuments;
 
   const UserModel({
     this.following = const [],
     this.followers = const [],
     this.posts = const [],
+    this.savedMonuments = const [],
+    this.checkedInMonuments = const [],
     required this.email,
     required this.uid,
     this.name = "Monumento User",
@@ -73,7 +79,7 @@ class UserModel {
         : [];
 
     return UserModel(
-      uid: data['uid'] as String,
+      uid: data['\$id'] as String,
       name: data['name'] as String,
       email: data['email'] as String,
       profilePictureUrl: data['profilePictureUrl'] as String,
@@ -82,12 +88,22 @@ class UserModel {
       followers: mappedFollowers,
       following: mappedFollowing,
       posts: mappedPosts,
+      savedMonuments: data['savedMonuments'] != null
+          ? (data['savedMonuments'] as List)
+              .map<MonumentModel>((e) => MonumentModel.fromJson(e))
+              .toList()
+          : [],
+      checkedInMonuments: data['checkedInMonuments'] != null
+          ? (data['checkedInMonuments'] as List)
+              .map<MonumentModel>((e) => MonumentModel.fromJson(e))
+              .toList()
+          : [],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'uid': uid,
+      '\$id': uid,
       'name': name,
       'email': email,
       'profilePictureUrl': profilePictureUrl,
@@ -96,6 +112,8 @@ class UserModel {
       'followers': followers,
       'following': following,
       'posts': posts,
+      'savedMonuments': savedMonuments.map((e) => e.toJson()).toList(),
+      'checkedInMonuments': checkedInMonuments.map((e) => e.toJson()).toList(),
     };
   }
 }

@@ -7,6 +7,7 @@ part 'monument_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class MonumentModel {
+  @JsonKey(name: '\$id')
   final String id;
   final String name;
   final String city;

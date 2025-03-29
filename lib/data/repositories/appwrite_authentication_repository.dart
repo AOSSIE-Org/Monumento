@@ -89,7 +89,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
       databaseId: dotenv.env['APPWRITE_DATABASE_ID'] ?? "",
       collectionId: dotenv.env['APPWRITE_USER_ID'] ?? "",
       queries: [
-        Query.equal("uid", uid),
+        Query.equal("\$id", uid),
       ],
     );
 
@@ -106,7 +106,6 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
       documentId: uid,
       data: {
         'name': name,
-        'uid': uid,
         'profilePictureUrl': profilePictureUrl ?? "",
         'email': email,
         'status': status ?? "",
@@ -222,7 +221,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
       {
         'name': user.name,
         'email': user.email,
-        'uid': user.$id,
+        '\$id': user.$id,
       },
     );
   }
@@ -236,7 +235,6 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
         documentId: user.$id,
         data: {
           'name': user.name,
-          'uid': user.$id,
           'email': user.email,
           'username': user.name,
           'searchParams': searchParams,

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:appwrite/models.dart';
 import 'package:equatable/equatable.dart';
 
 class UserEntity extends Equatable {
@@ -54,8 +54,8 @@ class UserEntity extends Equatable {
         posts: mappedPosts);
   }
 
-  factory UserEntity.fromSnapshot(DocumentSnapshot snap) {
-    Map<String, dynamic> data = snap.data() as Map<String, dynamic>;
+  factory UserEntity.fromDocument(Document snap) {
+    Map<String, dynamic> data = snap.data;
     List<String> mappedFollowers = data['followers'] != null
         ? (data['followers'] as List).map<String>((e) => e).toList()
         : [];
@@ -67,7 +67,7 @@ class UserEntity extends Equatable {
         : [];
 
     return UserEntity(
-        uid: data['uid'],
+        uid: data['\$id'],
         name: data['name'],
         email: data['email'],
         profilePictureUrl: data['profilePictureUrl'],
@@ -83,7 +83,7 @@ class UserEntity extends Equatable {
 
   Map<String, Object> toMap() {
     return {
-      'uid': uid,
+      '\$id': uid,
       'name': name,
       'email': email,
       'profilePictureUrl': profilePictureUrl ?? "",
