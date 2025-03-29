@@ -62,10 +62,10 @@ void setupLocator() {
     // Firebase related
 
     // Register repositories
-    ..registerLazySingleton<MonumentRepository>(
-      instanceName: 'firebaseMonumentRepository',
-      () => FirebaseMonumentRepository(locator<AuthenticationRepository>()),
-    )
+    // ..registerLazySingleton<MonumentRepository>(
+    //   instanceName: 'firebaseMonumentRepository',
+    //   () => FirebaseMonumentRepository(locator<AuthenticationRepository>()),
+    // )
 
     // Register blocs
     ..registerLazySingleton(() =>
