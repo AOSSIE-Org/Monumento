@@ -1,9 +1,9 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:appwrite/appwrite.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:monumento/application/authentication/authentication_bloc.dart';
 import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
@@ -160,7 +160,7 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       emit(LoginRegisterLoading());
       await _authRepository.sendPasswordResetEmail(email: event.email);
       emit(ResetPasswordSuccess());
-    } on FirebaseAuthException catch (e) {
+    } on AppwriteException catch (e) {
       if (e.code == 'invalid-email') {
         emit(const ResetPasswordFailed(
             message:
