@@ -22,6 +22,10 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
       uid: json['uid'] as String,
       name: json['name'] as String? ?? "Monumento User",
       profilePictureUrl: json['profilePictureUrl'] as String?,
+      savedMonuments: (json['savedMonuments'] as List<dynamic>?)
+              ?.map((e) => MonumentModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const [],
       status: json['status'] as String? ?? " Status",
       username: json['username'] as String?,
     );
@@ -36,4 +40,5 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
       'following': instance.following,
       'followers': instance.followers,
       'posts': instance.posts,
+      'savedMonuments': instance.savedMonuments.map((e) => e.toJson()).toList(),
     };
