@@ -165,7 +165,17 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
 
   @override
   Future<void> sendPasswordResetEmail({required String email}) async {
-    throw UnimplementedError();
+    try {
+      ;
+      await _account.createRecovery(
+        email: email,
+        url: "http://localhost:3000/recovery", // Replace with your frontend URL
+      );
+      //TODO: Update with production URL
+    } catch (e) {
+      log("Error sending password reset email: $e");
+      throw Exception(e);
+    }
   }
 
   Future<bool> checkUserDoc(String uid) async {
