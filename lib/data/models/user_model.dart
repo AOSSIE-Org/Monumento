@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:monumento/data/models/monument_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 
 part 'user_model.g.dart';
@@ -14,6 +15,7 @@ class UserModel {
   final List<String> following;
   final List<String> followers;
   final List<String> posts;
+  final List<MonumentModel> savedMonuments;
 
   const UserModel({
     this.following = const [],
@@ -23,6 +25,7 @@ class UserModel {
     required this.uid,
     this.name = "Monumento User",
     this.profilePictureUrl,
+    this.savedMonuments = const [],
     this.status = " Status",
     this.username,
   });
@@ -44,6 +47,7 @@ class UserModel {
       followers: entity.followers,
       following: entity.following,
       posts: entity.posts,
+      savedMonuments: entity.savedMonuments
     );
   }
 
