@@ -60,6 +60,12 @@ void setupLocator() {
         authenticationRepository: locator<AuthenticationRepository>(),
         database: locator<Databases>(),
         storage: locator<Storage>()))
+    // Firebase related
+
+    // Register repositories
+    ..registerLazySingleton<MonumentRepository>(
+      () => AppwriteMonumentRepository(),
+    )
 
     // Register blocs
     ..registerLazySingleton(() =>
