@@ -21,7 +21,6 @@ import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.d
 import 'package:monumento/application/profile/update_profile/update_profile_bloc.dart';
 import 'package:monumento/data/repositories/appwrite_authentication_repository.dart';
 import 'package:monumento/data/repositories/appwrite_social_repository.dart';
-import 'package:monumento/data/repositories/firebase_monument_repository.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/monument_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
@@ -65,7 +64,7 @@ void setupLocator() {
 
     // Register repositories
     ..registerLazySingleton<MonumentRepository>(
-      () => FirebaseMonumentRepository(locator<AuthenticationRepository>()),
+      () => AppwriteMonumentRepository(),
     )
 
     // Register blocs
