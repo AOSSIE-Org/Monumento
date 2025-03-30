@@ -13,7 +13,7 @@ MonumentModel _$MonumentModelFromJson(Map<String, dynamic> json) =>
       coordinates: (json['coordinates'] as List<dynamic>)
           .map((e) => (e as num).toDouble())
           .toList(),
-      id: json['id'] as String,
+      id: json[r'$id'] as String,
       city: json['city'] as String,
       country: json['country'] as String,
       imageUrl: json['image'] as String,
@@ -34,7 +34,7 @@ MonumentModel _$MonumentModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$MonumentModelToJson(MonumentModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      r'$id': instance.id,
       'name': instance.name,
       'city': instance.city,
       'country': instance.country,

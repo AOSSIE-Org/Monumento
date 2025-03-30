@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:monumento/data/models/monument_model.dart';
 
 class UserEntity extends Equatable {
   final String uid;
@@ -13,11 +14,13 @@ class UserEntity extends Equatable {
   final List<String> following;
   final List<String> followers;
   final List<String> posts;
+  final List<MonumentModel> savedMonuments;
 
   const UserEntity({
     this.following = const [],
     this.followers = const [],
     this.posts = const [],
+    this.savedMonuments = const [],
     required this.email,
     required this.uid,
     this.name = "Monumento User",

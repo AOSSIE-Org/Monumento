@@ -114,13 +114,17 @@ class AppwriteMonumentRepository implements MonumentRepository {
         documentId: user.uid,
       );
 
-      final currentSavedMonuments =
-          List<String>.from(userDoc.data['savedMonuments'] ?? []);
-
-      if (!currentSavedMonuments.contains(monumentId)) {
-        currentSavedMonuments.add(monumentId);
+      List<String> currentSavedMonuments = [];
+      if (userDoc.data.containsKey('savedMonuments') &&
+          userDoc.data['savedMonuments'] != null) {
+        currentSavedMonuments =
+            List<String>.from(userDoc.data['savedMonuments']);
       }
 
+      if (currentSavedMonuments.contains(monumentId)) {
+        return true;       }
+
+      currentSavedMonuments.add(monumentId);
       await _database.updateDocument(
         databaseId: databaseId,
         collectionId: userCollectionId,
@@ -145,23 +149,16 @@ class AppwriteMonumentRepository implements MonumentRepository {
         return false;
       }
 
-      final userDoc = await _database.getDocument(
-        databaseId: databaseId,
-        collectionId: userCollectionId,
-        documentId: user.uid,
+      user.savedMonuments.removeWhere(
+        (monument) => monument.id == monumentId,
       );
-
-      final currentSavedMonuments =
-          List<String>.from(userDoc.data['savedMonuments'] ?? []);
-
-      currentSavedMonuments.remove(monumentId);
 
       await _database.updateDocument(
         databaseId: databaseId,
         collectionId: userCollectionId,
         documentId: user.uid,
         data: {
-          'savedMonuments': currentSavedMonuments,
+          'savedMonuments': user.savedMonuments,
         },
       );
 
@@ -180,16 +177,9 @@ class AppwriteMonumentRepository implements MonumentRepository {
         return false;
       }
 
-      final userDoc = await _database.getDocument(
-        databaseId: databaseId,
-        collectionId: userCollectionId,
-        documentId: user.uid,
+      return user.savedMonuments.any(
+        (monument) => monument.id == monumentId,
       );
-
-      final savedMonuments =
-          List<String>.from(userDoc.data['savedMonuments'] ?? []);
-
-      return savedMonuments.contains(monumentId);
     } catch (e) {
       log('Error checking if monument is bookmarked: ${e.toString()}');
       return false;
