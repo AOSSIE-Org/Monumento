@@ -399,7 +399,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -757,7 +757,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -1401,7 +1401,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -1581,7 +1581,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -1720,13 +1720,6 @@ class AppwriteSocialRepository implements SocialRepository {
         }
       }
 
-      // Update user's posts list
-      await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
-          documentId: user!.uid,
-          data: {dotenv.env['APPWRITE_POSTS_ID'] ?? "posts": postIds});
-
       return posts;
     } catch (e) {
       log('Error getting profile posts: $e', stackTrace: StackTrace.current);
@@ -1835,7 +1828,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
