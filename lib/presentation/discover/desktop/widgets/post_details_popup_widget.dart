@@ -14,7 +14,6 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class PostDetailsPopupWidget extends StatefulWidget {
@@ -177,7 +176,7 @@ class _PostDetailsPopupWidgetState extends State<PostDetailsPopupWidget> {
                       const Icon(Icons.more_horiz),
                       Text(
                         timeago.format(
-                          DateTime.fromMillisecondsSinceEpoch(widget.post.timeStamp)
+                         widget.post.timeStamp
                         ),
                         style: AppTextStyles.s12(
                           color: AppColor.appTextLightGrey,
@@ -185,6 +184,51 @@ class _PostDetailsPopupWidgetState extends State<PostDetailsPopupWidget> {
                           isDesktop: true,
                         ),
                       ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.post.author.name,
+                            style: AppTextStyles.s16(
+                              color: AppColor.appSecondary,
+                              fontType: FontType.MEDIUM,
+                              isDesktop: true,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 4,
+                          ),
+                          Text(
+                            widget.post.location ??
+                                "@${widget.post.author.username}",
+                            style: AppTextStyles.s14(
+                              color: AppColor.appSecondary,
+                              fontType: FontType.REGULAR,
+                              isDesktop: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Spacer(),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.more_horiz),
+                          Text(
+                            timeago.format(widget.post.timeStamp),
+                            style: AppTextStyles.s12(
+                              color: AppColor.appTextLightGrey,
+                              fontType: FontType.REGULAR,
+                              isDesktop: true,
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   )
                 ],

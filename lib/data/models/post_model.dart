@@ -7,11 +7,12 @@ part 'post_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class PostModel {
+  @JsonKey(name: '\$id')
   final String postId;
   final String? imageUrl;
   final String title;
   final String? location;
-  final int timeStamp;
+  final DateTime timeStamp;
   final UserModel author;
   final String postByUid;
   final int? likesCount;
@@ -39,14 +40,14 @@ class PostModel {
 
   Map<String, dynamic> toJson() => _$PostModelToJson(this);
 
-  factory PostModel.fromEntity(PostEntity entity) {
+  factory PostModel.fromEntity(PostEntity entity,{UserModel? author}) {
     return PostModel(
       postId: entity.postId,
       imageUrl: entity.imageUrl,
       title: entity.title,
       location: entity.location,
       timeStamp: entity.timeStamp,
-      author: UserModel.fromEntity(entity.author),
+      author: author ?? UserModel.fromEntity(entity.author),
       postByUid: entity.postByUid,
       likesCount: entity.likesCount,
       postType: entity.postType,
