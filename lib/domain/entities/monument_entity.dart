@@ -35,6 +35,34 @@ class MonumentEntity extends Equatable {
     this.localExperts = const [],
   });
 
+  /// Creates a [MonumentEntity] from an Appwrite document
+  factory MonumentEntity.fromDocument(Map<String, dynamic> document) {
+    // Handle empty or null values
+    final coordinates = document['coordinates'] as List<dynamic>?;
+    final images = document['images'] as List<dynamic>?;
+
+    return MonumentEntity(
+      id: document['\$id'] ?? '',
+      name: document['name'] ?? '',
+      city: document['city'] ?? '',
+      country: document['country'] ?? '',
+      imageUrl: document['image'] ?? '', 
+      image_1x1_: document['image_1x1_'] ?? '',
+      wiki: document['wikipediaLink'] ?? '',
+      rating: (document['rating'] ?? 0.0).toDouble(),
+      coordinates: coordinates != null
+          ? coordinates.map<double>((e) => (e ?? 0.0).toDouble()).toList()
+          : [],
+      wikiPageId: document['wikiPageId'] ?? '',
+      images: images != null
+          ? images.map<String>((e) => e.toString()).toList()
+          : [],
+      has3DModel: document['has3DModel'] ?? false,
+      modelLink: document['modelLink'],
+      localExperts: const [],
+    );
+  }
+
   @override
   List<Object?> get props => [
         rating,
