@@ -57,4 +57,7 @@ lib/scripts/node_modules
 lib/scripts/package-lock.json
 
 # Other potential generated files
-lib/scripts/package.json
+lib/scripts/package.jsonandroid/app/build.gradle
+android/gradle/wrapper/gradle-wrapper.properties
+android/settings.gradle
+pubspec.lock
