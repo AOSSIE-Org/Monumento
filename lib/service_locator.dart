@@ -31,101 +31,98 @@ import 'data/repositories/appwrite_monument_repository.dart';
 final GetIt locator = GetIt.instance;
 
 void setupLocator() {
+  // Services
+  setupAppServices();
+
+  // Repositories
+  setupAppRepos();
+
+  // Blocs
+  setupAppBlocs();
+}
+
+void setupAppServices() {
+  final client = Client()
+    ..setEndpoint(
+        dotenv.env['APPWRITE_API_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
+    ..setProject(dotenv.env['APPWRITE_PROJECT_ID']);
+
+  locator.registerLazySingleton(() => client);
+  locator.registerLazySingleton(() => Databases(locator<Client>()));
+  locator.registerLazySingleton(() => Storage(locator<Client>()));
+  locator.registerLazySingleton(() => Account(locator<Client>()));
+}
+
+void setupAppRepos() {
+  locator.registerLazySingleton<AuthenticationRepository>(
+    () => AppwriteAuthenticationRepository(
+      account: locator<Account>(),
+      database: locator<Databases>(),
+    ),
+  );
+
+  locator.registerLazySingleton<MonumentRepository>(
+    instanceName: 'appwriteMonumentRepository',
+    () => AppwriteMonumentRepository(
+      authenticationRepository: locator<AuthenticationRepository>(),
+      database: locator<Databases>(),
+    ),
+  );
+
   locator
-    // Appwrite related
-    ..registerLazySingleton(() => Client()
-      ..setEndpoint(
-          dotenv.env['APPWRITE_API_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1')
-      ..setProject(dotenv.env['APPWRITE_PROJECT_ID']))
-    ..registerLazySingleton(() => Databases(locator<Client>()))
-    ..registerLazySingleton(() => Storage(locator<Client>()))
-    ..registerLazySingleton<Account>(
-      () => Account(
-        locator<Client>(),
-      ),
-    )
-    ..registerLazySingleton<AuthenticationRepository>(
-      () => AppwriteAuthenticationRepository(
-        account: locator<Account>(),
-        database: locator<Databases>(),
-      ),
-    )
-    ..registerLazySingleton<MonumentRepository>(
-        instanceName: 'appwriteMonumentRepository',
-        () => AppwriteMonumentRepository(
-              authenticationRepository: locator<AuthenticationRepository>(),
-              database: locator<Databases>(),
-            ))
-    ..registerLazySingleton<SocialRepository>(() => AppwriteSocialRepository(
-        authenticationRepository: locator<AuthenticationRepository>(),
-        database: locator<Databases>(),
-        storage: locator<Storage>()))
-    // Firebase related
+      .registerLazySingleton<SocialRepository>(() => AppwriteSocialRepository(
+            authenticationRepository: locator<AuthenticationRepository>(),
+            database: locator<Databases>(),
+            storage: locator<Storage>(),
+          ));
 
-    // Register repositories
-    ..registerLazySingleton<MonumentRepository>(
-      () => AppwriteMonumentRepository(),
-    )
+  locator.registerLazySingleton<MonumentRepository>(
+    () => AppwriteMonumentRepository(),
+  );
+}
 
-    // Register blocs
-    ..registerLazySingleton(() =>
-        AuthenticationBloc(locator<AuthenticationRepository>())
-          ..add(AppStarted()))
-    ..registerLazySingleton(() => LoginRegisterBloc(
-          locator<AuthenticationRepository>(),
-          locator<SocialRepository>(),
-          locator<AuthenticationBloc>(),
-        ))
-    ..registerLazySingleton(
-      () => PopularMonumentsBloc(locator<MonumentRepository>()),
-    )
-    ..registerLazySingleton(
-      () => MonumentDetailsBloc(locator<MonumentRepository>()),
-    )
-    ..registerLazySingleton(
-      () => FeedBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => CommentsBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => RecommendedUsersBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => NewPostBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => FollowBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => ProfilePostsBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => DiscoverPostsBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => SearchBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => DiscoverProfileBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => BookmarkMonumentsBloc(locator<MonumentRepository>()),
-    )
-    ..registerLazySingleton(
-      () => UpdateProfileBloc(
-          locator<SocialRepository>(), locator<AuthenticationRepository>()),
-    )
-    ..registerLazySingleton(
-      () => Monument3dModelBloc(locator<MonumentRepository>()),
-    )
-    ..registerLazySingleton(
-      () => NotificationsBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => MonumentCheckinBloc(locator<SocialRepository>()),
-    )
-    ..registerLazySingleton(
-      () => NearbyPlacesBloc(locator<MonumentRepository>()),
-    );
+void setupAppBlocs() {
+  final authenticationBloc =
+      AuthenticationBloc(locator<AuthenticationRepository>());
+  authenticationBloc.add(AppStarted());
+
+  locator.registerLazySingleton(() => authenticationBloc);
+  locator.registerLazySingleton(() => LoginRegisterBloc(
+        locator<AuthenticationRepository>(),
+        locator<SocialRepository>(),
+        locator<AuthenticationBloc>(),
+      ));
+
+  locator.registerLazySingleton(
+      () => PopularMonumentsBloc(locator<MonumentRepository>()));
+  locator.registerLazySingleton(
+      () => MonumentDetailsBloc(locator<MonumentRepository>()));
+  locator.registerLazySingleton(() => FeedBloc(locator<SocialRepository>()));
+  locator
+      .registerLazySingleton(() => CommentsBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
+      () => RecommendedUsersBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(() => NewPostBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(() => FollowBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
+      () => ProfilePostsBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
+      () => DiscoverPostsBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(() => SearchBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
+      () => DiscoverProfileBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
+      () => BookmarkMonumentsBloc(locator<MonumentRepository>()));
+  locator.registerLazySingleton(() => UpdateProfileBloc(
+        locator<SocialRepository>(),
+        locator<AuthenticationRepository>(),
+      ));
+  locator.registerLazySingleton(
+      () => Monument3dModelBloc(locator<MonumentRepository>()));
+  locator.registerLazySingleton(
+      () => NotificationsBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
+      () => MonumentCheckinBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(
+      () => NearbyPlacesBloc(locator<MonumentRepository>()));
 }
