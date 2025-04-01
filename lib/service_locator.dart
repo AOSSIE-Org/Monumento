@@ -62,7 +62,6 @@ void setupAppRepos() {
   );
 
   locator.registerLazySingleton<MonumentRepository>(
-    instanceName: 'appwriteMonumentRepository',
     () => AppwriteMonumentRepository(
       authenticationRepository: locator<AuthenticationRepository>(),
       database: locator<Databases>(),
@@ -75,10 +74,6 @@ void setupAppRepos() {
             database: locator<Databases>(),
             storage: locator<Storage>(),
           ));
-
-  locator.registerLazySingleton<MonumentRepository>(
-    () => AppwriteMonumentRepository(),
-  );
 }
 
 void setupAppBlocs() {
