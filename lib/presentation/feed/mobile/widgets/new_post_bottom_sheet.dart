@@ -43,8 +43,27 @@ class _PostImageState extends State<PostImage> {
                           Navigator.pop(context);
                         },
                         icon: const Icon(Icons.close_rounded)),
-                    BlocBuilder<NewPostBloc, NewPostState>(
+                    BlocConsumer<NewPostBloc, NewPostState>(
                       bloc: locator<NewPostBloc>(),
+                      listener: (context, state) {
+                        if (state is NewPostAdded) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Post created successfully!"),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        } else if (state is NewPostFailed) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                  "Failed to create post: ${state.message}"),
+                              duration: const Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      },
                       builder: (context, state) {
                         if (state is AddingNewPost) {
                           return const CircularProgressIndicator(

@@ -7,7 +7,7 @@ part of 'post_model.dart';
 // **************************************************************************
 
 PostModel _$PostModelFromJson(Map<String, dynamic> json) => PostModel(
-      postId: json['postId'] as String,
+      postId: json[r'$id'] as String,
       postType: (json['postType'] as num?)?.toInt() ?? 0,
       likesCount: (json['likesCount'] as num?)?.toInt() ?? 0,
       commentsCount: (json['commentsCount'] as num?)?.toInt() ?? 0,
@@ -15,17 +15,17 @@ PostModel _$PostModelFromJson(Map<String, dynamic> json) => PostModel(
       imageUrl: json['imageUrl'] as String?,
       title: json['title'] as String,
       location: json['location'] as String?,
-      timeStamp: (json['timeStamp'] as num).toInt(),
+      timeStamp: DateTime.parse(json['timeStamp'] as String),
       author: UserModel.fromJson(json['author'] as Map<String, dynamic>),
       postByUid: json['postByUid'] as String,
     );
 
 Map<String, dynamic> _$PostModelToJson(PostModel instance) => <String, dynamic>{
-      'postId': instance.postId,
+      r'$id': instance.postId,
       'imageUrl': instance.imageUrl,
       'title': instance.title,
       'location': instance.location,
-      'timeStamp': instance.timeStamp,
+      'timeStamp': instance.timeStamp.toIso8601String(),
       'author': instance.author.toJson(),
       'postByUid': instance.postByUid,
       'likesCount': instance.likesCount,

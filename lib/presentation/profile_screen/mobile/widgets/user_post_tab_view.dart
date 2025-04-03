@@ -17,11 +17,17 @@ class UserPostTabView extends StatefulWidget {
 
 class _UserPostTabViewState extends State<UserPostTabView> {
   List<PostEntity> posts = [];
+  final _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     locator<ProfilePostsBloc>().add(const LoadInitialProfilePosts());
     super.initState();
+  }
+
+  Future<void> _refreshPosts() async {
+    locator<ProfilePostsBloc>().add(const LoadInitialProfilePosts());
+    return Future.delayed(const Duration(milliseconds: 500));
   }
 
   @override
@@ -36,44 +42,86 @@ class _UserPostTabViewState extends State<UserPostTabView> {
           if (state is MoreProfilePostsLoaded) {
             posts.insertAll(posts.length, state.posts as Iterable<PostEntity>);
           }
-          return posts.isEmpty
-              ? const Center(
-                  child: Text("No posts to display"),
-                )
-              : GridView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: posts.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      childAspectRatio: 1,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8),
-                  itemBuilder: (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => UserPostDetailsScreen(
-                              post: posts,
-                              index: index,
+
+          return RefreshIndicator(
+            key: _refreshIndicatorKey,
+            onRefresh: _refreshPosts,
+            child: posts.isEmpty
+                ? ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: const [
+                      SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: Text("No posts to display"),
+                        ),
+                      ),
+                    ],
+                  )
+                : GridView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: posts.length,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio: 1,
+                            mainAxisSpacing: 8,
+                            crossAxisSpacing: 8),
+                    itemBuilder: (BuildContext context, int index) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => UserPostDetailsScreen(
+                                post: posts,
+                                index: index,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: CachedNetworkImage(
+                          ).then((_) {
+                            // Refresh when returning from post details
+                            _refreshPosts();
+                          });
+                        },
+                        child: CachedNetworkImage(
                           imageUrl:
                               posts[index].imageUrl ?? defaultProfilePicture,
                           imageBuilder: (context, imageProvider) => Container(
-                                  decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12.sp),
-                                image: DecorationImage(
-                                  image: imageProvider,
-                                  fit: BoxFit.cover,
+                              decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.sp),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          )),
+                          placeholder: (context, url) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.sp),
+                              color: Colors.grey[200],
+                            ),
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).primaryColor,
                                 ),
-                              ))),
-                    );
-                  });
+                              ),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.sp),
+                              color: Colors.grey[200],
+                            ),
+                            child: const Center(
+                              child:
+                                  Icon(Icons.error_outline, color: Colors.red),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+          );
         });
   }
 }

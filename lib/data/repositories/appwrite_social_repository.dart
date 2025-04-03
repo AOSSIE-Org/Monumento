@@ -21,9 +21,12 @@ class AppwriteSocialRepository implements SocialRepository {
   final AuthenticationRepository authenticationRepository;
 
   // Bucket ID for Appwrite storage
+  final String _endpoint =
+      dotenv.env['APPWRITE_API_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1';
   final String _imagesBucketId = dotenv.env['APPWRITE_BUCKET_ID'] ?? 'default';
   final String _projectId = dotenv.env['APPWRITE_PROJECT_ID'] ?? 'defalut';
-  final String _databaseId = dotenv.env['APPWRITE_DATABASE_ID'] ?? 'dbmonumento';
+  final String _databaseId =
+      dotenv.env['APPWRITE_DATABASE_ID'] ?? 'dbmonumento';
 
   AppwriteSocialRepository(
       {required this.authenticationRepository,
@@ -39,21 +42,27 @@ class AppwriteSocialRepository implements SocialRepository {
     String extension = file.path.split('.').last;
     String newFilename = "$fileName.$extension";
     try {
+      // Set more specific file ID to improve traceability
+      final fileId = ID.unique();
+
       final result = await _storage.createFile(
         bucketId: _imagesBucketId,
-        fileId: ID.unique(),
+        fileId: fileId,
         file: InputFile.fromPath(
           path: file.path,
           filename: newFilename,
         ),
       );
 
-      // Get file view URL
-      String fileId = result.$id;
-
-      return "https://cloud.appwrite.io/v1/storage/buckets/$_imagesBucketId/files/$fileId/view?project=$_projectId";
+      // Get file view URL using direct path construction
+      return "$_endpoint/storage/buckets/$_imagesBucketId/files/${result.$id}/view?project=$_projectId&mode=admin";
+    } on AppwriteException catch (e) {
+      log('Error uploading image: ${e.message}',
+          stackTrace: StackTrace.current);
+      throw Exception('Failed to upload image: ${e.message}');
     } catch (e) {
-      log('Error uploading image: $e', stackTrace: StackTrace.current);
+      log('Unexpected error uploading image: $e',
+          stackTrace: StackTrace.current);
       throw Exception('Failed to upload image: $e');
     }
   }
@@ -209,7 +218,9 @@ class AppwriteSocialRepository implements SocialRepository {
   Future<UserModel> getUserByUid({required String uid}) async {
     try {
       final document = await _database.getDocument(
-          databaseId: _databaseId, collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users', documentId: uid);
+          databaseId: _databaseId,
+          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
+          documentId: uid);
 
       // Copy the document data and ensure uid is not null
       Map<String, dynamic> userData = Map<String, dynamic>.from(document.data);
@@ -258,38 +269,39 @@ class AppwriteSocialRepository implements SocialRepository {
       String? imageUrl,
       required int postType}) async {
     try {
+      // Check authentication and get user in one step
       var (userLoggedIn, user) = await authenticationRepository.getUser();
-      if (!userLoggedIn) {
+      if (!userLoggedIn || user == null) {
         throw Exception("User not logged in");
       }
 
-      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      // Get current timestamp
+      final timeStamp = DateTime.now();
+      final postId = ID.unique();
 
-      print("Creating post with imageUrl: $imageUrl");
-      print(title);
-      print(timeStamp);
-      print(user?.uid);
+      // Prepare post data using a direct map to avoid multiple transformations
+      final postData = {
+        "title": title,
+        "location": location ?? "",
+        "imageUrl": imageUrl,
+        "author": user.uid,
+        "timeStamp": timeStamp.toIso8601String(),
+        "postType": postType,
+        "postByUid": user.uid,
+        "likesCount": 0,
+        "commentsCount": 0,
+      };
 
+      // Create document with optimized parameters
       final result = await _database.createDocument(
           databaseId: _databaseId,
           collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
-          documentId: ID.unique(),
-          data: {
-            "title": title,
-            "location": location ?? "",
-            "imageUrl": imageUrl ?? null,
-            "author": user!.uid,
-            "timeStamp": timeStamp,
-            "postType": postType,
-            "postByUid": user!.uid ?? "",
-            "likesCount": 0,
-            "commentsCount": 0,
-          });
+          documentId: postId,
+          data: postData);
 
-      print("Post created successfully with ID: ${result.$id}");
-
+      // Return a properly constructed PostModel directly
       return PostModel(
-        author: user!,
+        author: user,
         postByUid: user.uid,
         title: title,
         location: location,
@@ -300,9 +312,11 @@ class AppwriteSocialRepository implements SocialRepository {
         likesCount: 0,
         commentsCount: 0,
       );
+    } on AppwriteException catch (e) {
+      log("Error creating post: ${e.message}", stackTrace: StackTrace.current);
+      throw Exception("Failed to create post: ${e.message}");
     } catch (e) {
-      print(e);
-      log("Error creating post: $e", stackTrace: StackTrace.current);
+      log("Unexpected error creating post: $e", stackTrace: StackTrace.current);
       throw Exception("Failed to create post: $e");
     }
   }
@@ -341,7 +355,7 @@ class AppwriteSocialRepository implements SocialRepository {
               final userIdPart =
                   user!.uid.substring(0, 17); // First 17 chars of user ID
               final likeDocId =
-                  "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+                  "${postIdPart}_$userIdPart"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
                   collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
@@ -366,16 +380,6 @@ class AppwriteSocialRepository implements SocialRepository {
               authorData['uid'] = authorData['\$id'] ?? '';
             }
 
-            if (authorData.containsKey('posts')) {
-              if (authorData['posts'] == null) {
-                authorData['posts'] = <String>[];
-              } else if (authorData['posts'] is! List) {
-                authorData['posts'] = <String>[];
-              }
-            } else {
-              authorData['posts'] = <String>[];
-            }
-
             // Create UserModel manually instead of using fromJson
             final author = UserModel(
               uid: authorData['uid'] ?? authorData['\$id'] ?? '',
@@ -395,7 +399,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -734,16 +738,6 @@ class AppwriteSocialRepository implements SocialRepository {
               authorData['uid'] = authorData['\$id'] ?? '';
             }
 
-            if (authorData.containsKey('posts')) {
-              if (authorData['posts'] == null) {
-                authorData['posts'] = <String>[];
-              } else if (authorData['posts'] is! List) {
-                authorData['posts'] = <String>[];
-              }
-            } else {
-              authorData['posts'] = <String>[];
-            }
-
             // Create UserModel manually instead of using fromJson
             final author = UserModel(
               uid: authorData['uid'] ?? authorData['\$id'] ?? '',
@@ -763,7 +757,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -801,7 +795,8 @@ class AppwriteSocialRepository implements SocialRepository {
         'targetUserId': targetUser.uid,
         'notificationType': notificationTypeString,
         'timeStamp': notification.timeStamp,
-        'userInvolved': notification.userInvolved.uid, // Store just the user ID for relationship
+        'userInvolved': notification
+            .userInvolved.uid, // Store just the user ID for relationship
       };
 
       // Add post relationship if there's a post involved
@@ -1053,7 +1048,8 @@ class AppwriteSocialRepository implements SocialRepository {
             collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
             documentId: followingUid);
 
-        List<String> secondaryFollowingUids = List<String>.from(followingUserDoc.data['following'] ?? []);
+        List<String> secondaryFollowingUids =
+            List<String>.from(followingUserDoc.data['following'] ?? []);
         print(secondaryFollowingUids);
         for (String secondaryUid in secondaryFollowingUids) {
           // Skip if this is the current user
@@ -1071,7 +1067,8 @@ class AppwriteSocialRepository implements SocialRepository {
               collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
               documentId: secondaryUid);
 
-          Map<String, dynamic> userData = Map<String, dynamic>.from(userDoc.data);
+          Map<String, dynamic> userData =
+              Map<String, dynamic>.from(userDoc.data);
           // Use document ID as uid if uid is null
           userData['uid'] = userData['uid'] ?? userDoc.$id;
           // Handle posts field
@@ -1163,7 +1160,7 @@ class AppwriteSocialRepository implements SocialRepository {
           collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
           documentId: likeDocId,
         );
-        
+
         // Document exists - check if we need to update it
         if (existingLikeDoc.data['likedPost'] != true) {
           await _database.updateDocument(
@@ -1194,7 +1191,9 @@ class AppwriteSocialRepository implements SocialRepository {
       // Only increment count if we actually added a new like
       if (shouldIncrementCount) {
         final postDoc = await _database.getDocument(
-            databaseId: _databaseId, collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts", documentId: postId);
+            databaseId: _databaseId,
+            collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
+            documentId: postId);
 
         int currentLikes = postDoc.data['likesCount'] ?? 0;
         await _database.updateDocument(
@@ -1229,7 +1228,8 @@ class AppwriteSocialRepository implements SocialRepository {
       final likeDocId = "${postIdPart}_${userIdPart}";
       await _database.updateDocument(
           databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes", // Original collection name
+          collectionId: dotenv.env['APPWRITE_LIKES_ID'] ??
+              "postLikes", // Original collection name
           documentId: likeDocId,
           data: {
             'likedPost': false,
@@ -1237,7 +1237,9 @@ class AppwriteSocialRepository implements SocialRepository {
 
       // Decrement likes count
       final postDoc = await _database.getDocument(
-          databaseId: _databaseId, collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts", documentId: postId);
+          databaseId: _databaseId,
+          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
+          documentId: postId);
 
       int currentLikes = postDoc.data['likesCount'] ?? 0;
       await _database.updateDocument(
@@ -1298,13 +1300,17 @@ class AppwriteSocialRepository implements SocialRepository {
               try {
                 // Create a more unique identifier by using parts of both IDs
                 // This avoids collisions when truncating to 36 chars
-                final postIdPart = doc.$id.substring(0, 18); // First 18 chars of post ID
-                final userIdPart = user!.uid.substring(0, 17); // First 17 chars of user ID
-                final likeDocId = "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+                final postIdPart =
+                    doc.$id.substring(0, 18); // First 18 chars of post ID
+                final userIdPart =
+                    user!.uid.substring(0, 17); // First 17 chars of user ID
+                final likeDocId =
+                    "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
 
                 final likeDoc = await _database.getDocument(
                     databaseId: _databaseId,
-                    collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
+                    collectionId:
+                        dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
                     documentId: likeDocId);
 
                 data['isPostLiked'] = (likeDoc.data['likedPost'] == true);
@@ -1326,7 +1332,8 @@ class AppwriteSocialRepository implements SocialRepository {
                     collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
                     documentId: data['author']);
 
-                Map<String, dynamic> authorData = Map<String, dynamic>.from(authorDoc.data);
+                Map<String, dynamic> authorData =
+                    Map<String, dynamic>.from(authorDoc.data);
                 authorData['uid'] = authorData['uid'] ?? authorDoc.$id;
 
                 if (authorData['posts'] == null) {
@@ -1361,14 +1368,9 @@ class AppwriteSocialRepository implements SocialRepository {
               authorData['name'] = authorData['name'] ?? 'Unknown User';
               authorData['status'] = authorData['status'] ?? '';
 
-              if (authorData['posts'] == null) {
-                authorData['posts'] = <String>[];
-              } else if (authorData['posts'] is Map) {
-                authorData['posts'] = <String>[];
-              } else if (authorData['posts'] is List) {
-                authorData['posts'] = List<String>.from(
-                    authorData['posts'].map((item) => item.toString()));
-              }
+              List<String> mappedPosts = authorData['posts'] != null
+                  ? (data['posts'] as List).map<String>((e) => e).toList()
+                  : [];
 
               author = UserModel(
                 uid: authorData['uid'],
@@ -1399,7 +1401,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -1474,12 +1476,16 @@ class AppwriteSocialRepository implements SocialRepository {
             // Check if post is liked
             if (data['likesCount'] != null && data['likesCount'] > 0) {
               try {
-                final postIdPart = doc.$id.substring(0, 18); // First 18 chars of post ID
-                final userIdPart = user!.uid.substring(0, 17); // First 17 chars of user ID
-                final likeDocId = "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+                final postIdPart =
+                    doc.$id.substring(0, 18); // First 18 chars of post ID
+                final userIdPart =
+                    user!.uid.substring(0, 17); // First 17 chars of user ID
+                final likeDocId =
+                    "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
                 final likeDoc = await _database.getDocument(
                     databaseId: _databaseId,
-                    collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
+                    collectionId:
+                        dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
                     documentId: likeDocId);
 
                 data['isPostLiked'] = likeDoc.data['likedPost'] == true;
@@ -1575,7 +1581,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -1635,12 +1641,16 @@ class AppwriteSocialRepository implements SocialRepository {
           // Check if post is liked
           if (data['likesCount'] != null && data['likesCount'] != 0) {
             try {
-              final postIdPart = doc.$id.substring(0, 18); // First 18 chars of post ID
-              final userIdPart = user!.uid.substring(0, 17); // First 17 chars of user ID
-              final likeDocId = "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
+              final postIdPart =
+                  doc.$id.substring(0, 18); // First 18 chars of post ID
+              final userIdPart =
+                  user!.uid.substring(0, 17); // First 17 chars of user ID
+              final likeDocId =
+                  "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes", //fix
+                  collectionId:
+                      dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes", //fix
                   documentId: likeDocId);
 
               if (likeDoc.data['likedPost'] == true) {
@@ -1694,7 +1704,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -1709,13 +1719,6 @@ class AppwriteSocialRepository implements SocialRepository {
           log('Error processing post: $e');
         }
       }
-
-      // Update user's posts list
-      await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
-          documentId: user!.uid,
-          data: {dotenv.env['APPWRITE_POSTS_ID'] ?? "posts": postIds});
 
       return posts;
     } catch (e) {
@@ -1772,7 +1775,8 @@ class AppwriteSocialRepository implements SocialRepository {
                   "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
                   databaseId: _databaseId,
-                  collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes", //fix
+                  collectionId:
+                      dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes", //fix
                   documentId: likeDocId);
 
               if (likeDoc.data['likedPost'] == true) {
@@ -1824,7 +1828,7 @@ class AppwriteSocialRepository implements SocialRepository {
               imageUrl: data['imageUrl'],
               title: data['title'] ?? '',
               location: data['location'],
-              timeStamp: data['timeStamp'] ?? 0,
+              timeStamp: DateTime.parse(data['timeStamp']),
               author: author,
               postByUid: data['postByUid'] ?? '',
               likesCount: data['likesCount'] ?? 0,
@@ -1864,7 +1868,7 @@ class AppwriteSocialRepository implements SocialRepository {
       print(postDocId);
       await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_COMMENTS_ID'] ?? "comments", 
+          collectionId: dotenv.env['APPWRITE_COMMENTS_ID'] ?? "comments",
           documentId: commentId,
           data: {
             "comment": comment ?? "",

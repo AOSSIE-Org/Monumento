@@ -123,8 +123,7 @@ class _PostDetailsPopupWidgetState extends State<PostDetailsPopupWidget> {
                         children: [
                           const Icon(Icons.more_horiz),
                           Text(
-                            timeago.format(DateTime.fromMillisecondsSinceEpoch(
-                                widget.post.timeStamp)),
+                            timeago.format(widget.post.timeStamp),
                             style: AppTextStyles.s12(
                               color: AppColor.appTextLightGrey,
                               fontType: FontType.REGULAR,
