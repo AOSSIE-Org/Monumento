@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:monumento/data/models/monument_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 
+import 'post_model.dart';
+
 part 'user_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -48,6 +50,8 @@ class UserModel {
       following: entity.following,
       posts: entity.posts,
       savedMonuments: entity.savedMonuments
+          .map((monument) => MonumentModel.fromEntity(monument))
+          .toList(),
     );
   }
 
