@@ -39,9 +39,11 @@ void setupLocator() {
       () => FirebaseMonumentRepository(locator<AuthenticationRepository>()));
 
   // Register blocs
-  locator.registerLazySingleton(() =>
-      AuthenticationBloc(locator<AuthenticationRepository>())
-        ..add(AppStarted()));
+  // Initialize AuthenticationBloc first
+  final authBloc = AuthenticationBloc(locator<AuthenticationRepository>());
+  authBloc.add(AppStarted());
+  locator.registerSingleton<AuthenticationBloc>(authBloc);
+
   locator.registerLazySingleton(() => LoginRegisterBloc(
       locator<AuthenticationRepository>(),
       locator<SocialRepository>(),
@@ -57,7 +59,11 @@ void setupLocator() {
       () => RecommendedUsersBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(() => NewPostBloc(locator<SocialRepository>()));
 
-  locator.registerLazySingleton(() => FollowBloc(locator<SocialRepository>()));
+  locator.registerLazySingleton(() => FollowBloc(
+        locator<SocialRepository>(),
+        locator<AuthenticationBloc>(),
+        locator<AuthenticationRepository>(),
+      ));
 
   locator.registerLazySingleton(() => ProfilePostsBloc(
         locator<SocialRepository>(),
