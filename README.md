@@ -47,8 +47,8 @@ Our detailed step-by-step guide will help you get up and running:
 
 ## ✌️ Maintainers
 
-- [Jaideep Prasad](https://github.com/jddeep)
-- [Chandan S Gowda](https://github.com/chandansgowda)
+- [Mohammed Mohsin](https://github.com/mdmohsin7)
+- [Aya Nady](https://github.com/AyaNady17)
 
 ## 🙌 Contributing
 
