@@ -53,7 +53,7 @@ The project includes a script to set up all required Appwrite resources:
 
 ```bash
 cd lib/scripts
-npm install
+npm install node-appwrite
 node setup_appwrite.js
 ```
 
