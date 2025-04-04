@@ -6,10 +6,16 @@ import 'package:monumento/presentation/profile_screen/mobile/following_screen.da
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
+import 'package:monumento/domain/entities/user_entity.dart';
 
 class UserConnectionsScreen extends StatefulWidget {
   final int index;
-  const UserConnectionsScreen({super.key, required this.index});
+  final UserEntity targetUser;
+  const UserConnectionsScreen({
+    super.key, 
+    required this.index,
+    required this.targetUser,
+  });
 
   @override
   State<UserConnectionsScreen> createState() => _UserConnectionsScreenState();
@@ -33,16 +39,10 @@ class _UserConnectionsScreenState extends State<UserConnectionsScreen> {
                   color: AppColor.appBlack,
                 ),
               ),
-              title: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                bloc: locator<AuthenticationBloc>(),
-                builder: (context, state) {
-                  state as Authenticated;
-                  return Text(
-                    "@${state.user.username}",
-                    style: AppTextStyles.s18(
-                        color: AppColor.appBlack, fontType: FontType.BOLD),
-                  );
-                },
+              title: Text(
+                "@${widget.targetUser.username}",
+                style: AppTextStyles.s18(
+                    color: AppColor.appBlack, fontType: FontType.BOLD),
               ),
               bottom: const TabBar(
                   labelColor: AppColor.appBlack,
@@ -56,19 +56,13 @@ class _UserConnectionsScreenState extends State<UserConnectionsScreen> {
                     )
                   ]),
             ),
-            body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              bloc: locator<AuthenticationBloc>(),
-              builder: (context, state) {
-                state as Authenticated;
-                return TabBarView(children: [
-                  FollowersScreen(
-                    followers: state.user.followers,
-                  ),
-                  FollowingScreen(
-                    following: state.user.following,
-                  )
-                ]);
-              },
-            )));
+            body: TabBarView(children: [
+              FollowersScreen(
+                followers: widget.targetUser.followers,
+              ),
+              FollowingScreen(
+                following: widget.targetUser.following,
+              )
+            ])));
   }
 }

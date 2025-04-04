@@ -147,6 +147,7 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                                         builder: (context) =>
                                             UserConnectionsScreen(
                                           index: 0,
+                                          targetUser: state.user,
                                         ),
                                       ),
                                     );
@@ -184,6 +185,7 @@ class _ProfileScreenMobileState extends State<ProfileScreenMobile>
                                         builder: (context) =>
                                             UserConnectionsScreen(
                                           index: 1,
+                                          targetUser: state.user,
                                         ),
                                       ),
                                     );
