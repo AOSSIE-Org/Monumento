@@ -107,8 +107,9 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const UserConnectionsScreen(
+                                              UserConnectionsScreen(
                                                 index: 0,
+                                                targetUser: widget.user,
                                               )),
                                     );
                                   },
@@ -139,8 +140,9 @@ class _DiscoverProfileViewMobileState extends State<DiscoverProfileViewMobile>
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const UserConnectionsScreen(
+                                              UserConnectionsScreen(
                                                 index: 1,
+                                                targetUser: widget.user,
                                               )),
                                     );
                                   },

@@ -44,13 +44,20 @@ class AuthenticationBloc
 
   _mapLoggedInToState(
       AuthenticationEvent event, Emitter<AuthenticationState> emit) async {
-    final (userLoggedIn, user) = await _authRepository.getUser();
-
-    if (userLoggedIn && user != null) {
-      emit(Authenticated(user.toEntity()));
-    } else if (userLoggedIn && user == null) {
-      emit(OnboardingIncomplete());
-    } else {
+    try {
+      await Future.delayed(const Duration(milliseconds: 500));
+      final (userLoggedIn, user) = await _authRepository.getUser();
+      log('User: $userLoggedIn, $user');
+      if (userLoggedIn && user != null) {
+        emit(Uninitialized());
+        emit(Authenticated(user.toEntity()));
+      } else if (userLoggedIn && user == null) {
+        emit(OnboardingIncomplete());
+      } else {
+        emit(Unauthenticated());
+      }
+    } catch (e) {
+      log('Error in _mapLoggedInToState: $e');
       emit(Unauthenticated());
     }
   }
