@@ -30,8 +30,8 @@ class _SettingsViewMobileState extends State<SettingsViewMobile> {
         },
         child: Container(
           padding: const EdgeInsets.all(16),
-          height: 260,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
