@@ -13,4 +13,5 @@ class AppColor {
   static const Color appTextGrey = Color(0xFF838B98);
   static const Color appTextLightGrey = Color(0xFF707988);
   static const Color appWarningRed = Color(0xFFE74C3C);
+  static const Color unselectedChip = const Color.fromARGB(255, 222, 226, 234);
 }

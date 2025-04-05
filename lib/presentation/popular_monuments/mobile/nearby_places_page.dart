@@ -123,7 +123,7 @@ class _NearbyPlacesPageState extends State<NearbyPlacesPage> {
                     ),
                     selected: _selectedCategory == type,
                     selectedColor: AppColor.appPrimary,
-                    backgroundColor: AppColor.appLightGrey,
+                    backgroundColor: AppColor.unselectedChip,
                     onSelected: (selected) {
                       if (selected) {
                         setState(() {

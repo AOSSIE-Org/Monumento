@@ -67,7 +67,7 @@ class NearbyPlacesWidget extends StatelessWidget {
                         fontType: FontType.MEDIUM,
                       ),
                     ),
-                    backgroundColor: AppColor.appLightGrey,
+                    backgroundColor: AppColor.unselectedChip,
                   );
                 }).toList(),
               ),
