@@ -456,7 +456,7 @@ class AppwriteSocialRepository implements SocialRepository {
       final currentUserDoc = await _database.getDocument(
           databaseId: _databaseId,
           collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
-          documentId: user!.uid);
+          documentId: user.uid);
 
       List<String> following =
           List<String>.from(currentUserDoc.data['following'] ?? []);
@@ -465,7 +465,7 @@ class AppwriteSocialRepository implements SocialRepository {
         await _database.updateDocument(
             databaseId: _databaseId,
             collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
-            documentId: user!.uid,
+            documentId: user.uid,
             data: {'following': following});
       }
 
@@ -547,7 +547,7 @@ class AppwriteSocialRepository implements SocialRepository {
       final currentUserDoc = await _database.getDocument(
           databaseId: _databaseId,
           collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
-          documentId: user!.uid);
+          documentId: user.uid);
 
       List<String> following =
           List<String>.from(currentUserDoc.data['following'] ?? []);
@@ -556,7 +556,7 @@ class AppwriteSocialRepository implements SocialRepository {
       await _database.updateDocument(
           databaseId: _databaseId,
           collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
-          documentId: user!.uid,
+          documentId: user.uid,
           data: {'following': following});
     } catch (e) {
       log("Error unfollowing user: $e", stackTrace: StackTrace.current);
@@ -594,7 +594,7 @@ class AppwriteSocialRepository implements SocialRepository {
 
       // Create a check-in
       final checkInId = ID.unique();
-      final timeStamp = DateTime.now().millisecondsSinceEpoch;
+      final timeStamp = DateTime.now().toIso8601String();
 
       await _database.createDocument(
           databaseId: _databaseId,
@@ -602,7 +602,7 @@ class AppwriteSocialRepository implements SocialRepository {
           documentId: checkInId,
           data: {
             "monumentId": monumentId,
-            "userId": user?.uid,
+            "userId": user.uid,
             "title": title ?? "",
             "timeStamp": timeStamp
           });
@@ -619,10 +619,10 @@ class AppwriteSocialRepository implements SocialRepository {
             "title": title ?? "",
             "location": location,
             "imageUrl": null,
-            "author": user?.uid,
+            "author": user.uid,
             "timeStamp": timeStamp,
             "postType": 2, // Check-in post type
-            "postByUid": user?.uid,
+            "postByUid": user.uid,
             "likesCount": 0,
             "commentsCount": 0,
           });
@@ -1053,7 +1053,7 @@ class AppwriteSocialRepository implements SocialRepository {
         print(secondaryFollowingUids);
         for (String secondaryUid in secondaryFollowingUids) {
           // Skip if this is the current user
-          if (secondaryUid == currentUser!.uid) continue;
+          if (secondaryUid == currentUser.uid) continue;
 
           // Skip if the current user already follows this user
           if (followingUids.contains(secondaryUid)) continue;
@@ -1097,7 +1097,7 @@ class AppwriteSocialRepository implements SocialRepository {
             databaseId: _databaseId,
             collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
             queries: [
-              Query.notEqual("\$id", currentUser!.uid),
+              Query.notEqual("\$id", currentUser.uid),
               Query.limit(10) // Get more to filter out already followed users
             ]);
 
@@ -1303,7 +1303,7 @@ class AppwriteSocialRepository implements SocialRepository {
                 final postIdPart =
                     doc.$id.substring(0, 18); // First 18 chars of post ID
                 final userIdPart =
-                    user!.uid.substring(0, 17); // First 17 chars of user ID
+                    user.uid.substring(0, 17); // First 17 chars of user ID
                 final likeDocId =
                     "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
 
@@ -1479,7 +1479,7 @@ class AppwriteSocialRepository implements SocialRepository {
                 final postIdPart =
                     doc.$id.substring(0, 18); // First 18 chars of post ID
                 final userIdPart =
-                    user!.uid.substring(0, 17); // First 17 chars of user ID
+                    user.uid.substring(0, 17); // First 17 chars of user ID
                 final likeDocId =
                     "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
                 final likeDoc = await _database.getDocument(
@@ -1644,7 +1644,7 @@ class AppwriteSocialRepository implements SocialRepository {
               final postIdPart =
                   doc.$id.substring(0, 18); // First 18 chars of post ID
               final userIdPart =
-                  user!.uid.substring(0, 17); // First 17 chars of user ID
+                  user.uid.substring(0, 17); // First 17 chars of user ID
               final likeDocId =
                   "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
@@ -1770,7 +1770,7 @@ class AppwriteSocialRepository implements SocialRepository {
               final postIdPart =
                   doc.$id.substring(0, 18); // First 18 chars of post ID
               final userIdPart =
-                  user!.uid.substring(0, 17); // First 17 chars of user ID
+                  user.uid.substring(0, 17); // First 17 chars of user ID
               final likeDocId =
                   "${postIdPart}_${userIdPart}"; // Total 36 chars (18+1+17)
               final likeDoc = await _database.getDocument(
@@ -1891,7 +1891,7 @@ class AppwriteSocialRepository implements SocialRepository {
       var notification = NotificationModel(
         notificationType: NotificationType.commentNotification,
         timeStamp: DateTime.now().millisecondsSinceEpoch,
-        userInvolved: user!,
+        userInvolved: user,
       );
 
       await addNewNotification(
