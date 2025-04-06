@@ -771,13 +771,15 @@ Future<void> makeExpertCall(
     LocalExpertEntity expertDetails, BuildContext context) async {
   final Uri phoneUri = Uri(scheme: 'tel', path: expertDetails.phoneNumber);
 
-  if (!await canLaunchUrl(phoneUri)) {
+  if (await canLaunchUrl(phoneUri)) {
     await launchUrl(phoneUri, mode: LaunchMode.externalApplication);
   } else {
-    showAlertDialog(
-      context,
-      "Contact ${expertDetails.name}",
-      "You can contact ${expertDetails.name} at ${expertDetails.phoneNumber}",
-    );
+    if (context.mounted) {
+      showAlertDialog(
+        context,
+        "Contact ${expertDetails.name}",
+        "You can contact ${expertDetails.name} at ${expertDetails.phoneNumber}",
+      );
+    }
   }
 }
