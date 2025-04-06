@@ -337,7 +337,8 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                               width: 8.w,
                             ),
                             Text(
-                              state is MonumentCheckedIn
+                              state is MonumentCheckedIn ||
+                                      state is MonumentCheckinSuccess
                                   ? "Checked In"
                                   : "Check In",
                               style: AppTextStyles.s16(
