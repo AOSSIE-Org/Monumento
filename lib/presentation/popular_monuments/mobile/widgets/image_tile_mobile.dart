@@ -8,17 +8,21 @@ class ImageTile extends StatelessWidget {
   final List<String> images;
   final double? width;
   final double? height;
-  const ImageTile(
-      {super.key,
-      required this.index,
-      required this.images,
-      this.width,
-      this.height});
+  final VoidCallback? onTap;
+  
+  const ImageTile({
+    super.key,
+    required this.index,
+    required this.images,
+    this.width,
+    this.height,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
+      onTap: onTap ?? () {
         Navigator.push(
           context,
           MaterialPageRoute(
