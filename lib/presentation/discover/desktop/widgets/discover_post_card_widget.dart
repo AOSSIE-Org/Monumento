@@ -55,7 +55,10 @@ class _DiscoverPostCardWidgetState extends State<DiscoverPostCardWidget> {
                     children: [
                       SvgPicture.asset(
                         Assets.icons.icHeart.path,
-                        color: Colors.white,
+                        colorFilter: ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
                         height: 18.sp,
                       ),
                       const SizedBox(
@@ -73,7 +76,10 @@ class _DiscoverPostCardWidgetState extends State<DiscoverPostCardWidget> {
                       ),
                       SvgPicture.asset(
                         Assets.icons.icComment.path,
-                        color: Colors.white,
+                        colorFilter: ColorFilter.mode(
+                          Colors.white,
+                          BlendMode.srcIn,
+                        ),
                         height: 18.sp,
                       ),
                       const SizedBox(
