@@ -81,194 +81,163 @@ class _ScanMonumentsScreenState extends State<ScanMonumentsScreen> {
                 logoPath: Assets.mobile.logoProfile.path,
               ),
               body: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    image != null
-                        ? Container(
-                            height: 224,
-                            width: 224,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                image: FileImage(image!),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          )
-                        : Container(
-                            height: 224,
-                            width: 224,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: const Color.fromARGB(255, 136, 197, 205),
-                                width: 2,
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Monument Image Here",
-                                style: AppTextStyles.textStyle(
-                                    fontType: FontType.MEDIUM,
-                                    size: 14,
-                                    isBody: true),
-                              ),
-                            ),
-                          ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.sp),
-                          boxShadow: [
-                            BoxShadow(
-                                color: AppColor.appSecondary.withOpacity(0.2),
-                                offset: const Offset(2, 1))
-                          ],
-                          color: AppColor.appPrimary),
-                      child: Center(
-                        child: DropdownButton<String>(
-                          style: AppTextStyles.s16(
-                            color: AppColor.appSecondary,
-                            fontType: FontType.MEDIUM,
-                          ),
-                          focusColor: AppColor.appPrimary,
-                          isDense: true,
-                          dropdownColor: AppColor.appPrimary,
-                          underline: Container(
-                            height: 1,
-                            color: AppColor.appPrimary,
-                          ),
-                          value: dropDownValue,
-                          items: const [
-                            DropdownMenuItem<String>(
-                              value: 'Asia',
-                              child: Text("Asia"),
-                            ),
-                            DropdownMenuItem<String>(
-                              value: 'Europe',
-                              child: Text("Europe"),
-                            )
-                          ],
-                          onChanged: (newValue) {
-                            setState(() {
-                              dropDownValue = newValue!;
-                            });
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        GestureDetector(
-                          onTap: () async {
-                            var img = await ImagePicker()
-                                .pickImage(source: ImageSource.gallery);
-                            if (img != null) {
-                              setState(() {
-                                image = File(img.path);
-                              });
-                              imageRecognition(image);
-                            }
-                          },
-                          child: Column(
-                            children: [
-                              const CircleAvatar(
-                                child: Icon(Icons.add_photo_alternate_outlined),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                "Media",
-                                style: AppTextStyles.s14(
-                                  color: AppColor.appSecondary,
-                                  fontType: FontType.MEDIUM,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                         const SizedBox(
-                          width: 20,
+                          height: 20,
                         ),
-                        GestureDetector(
-                          onTap: () async {
-                            var img = await ImagePicker()
-                                .pickImage(source: ImageSource.camera);
-                            if (img != null) {
-                              setState(() {
-                                image = File(img.path);
-                              });
-                              imageRecognition(image);
-                            }
-                          },
-                          child: Column(
-                            children: [
-                              const CircleAvatar(
-                                child: Icon(Icons.camera_alt_outlined),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                "Camera",
-                                style: AppTextStyles.s14(
-                                  color: AppColor.appSecondary,
-                                  fontType: FontType.MEDIUM,
+                        image != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(12.r),
+                                child: Image.file(
+                                  image!,
+                                  height: 250.w,
+                                  width: 250.w,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Container(
+                                height: 250.w,
+                                width: 250.w,
+                                decoration: BoxDecoration(
+                                  color: AppColor.appPrimary.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  border: Border.all(
+                                    color: AppColor.appPrimary,
+                                    width: 1.5,
+                                    style: BorderStyle.solid,
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.image_search,
+                                      size: 60.sp,
+                                      color: AppColor.appPrimary,
+                                    ),
+                                    SizedBox(height: 10.h),
+                                    Text(
+                                      "Select Monument Image",
+                                      style: AppTextStyles.s16(
+                                          color: AppColor.appSecondary,
+                                          fontType: FontType.MEDIUM),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                        const SizedBox(
+                          height: 30,
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      width: 150,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          locator<Monument3dModelBloc>().add(
-                              ViewMonument3DModel(
-                                  monumentName: monument == ""
-                                      ? "Mount Rushmore National Memorial"
-                                      : monument));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          backgroundColor: AppColor.appPrimary,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Assets.icons.ic3d.svg(),
-                            SizedBox(
-                              width: 8.w,
-                            ),
-                            Text(
-                              "View in 3D",
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 5.h),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8.r),
+                              color: AppColor.appPrimary.withOpacity(0.9),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColor.appBlack.withOpacity(0.1),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                )
+                              ]),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
                               style: AppTextStyles.s16(
                                 color: AppColor.appSecondary,
                                 fontType: FontType.MEDIUM,
                               ),
+                              icon: Icon(Icons.arrow_drop_down, color: AppColor.appSecondary),
+                              focusColor: Colors.transparent,
+                              isDense: true,
+                              dropdownColor: AppColor.appPrimary,
+                              value: dropDownValue,
+                              items: const [
+                                DropdownMenuItem<String>(
+                                  value: 'Asia',
+                                  child: Text("Asia"),
+                                ),
+                                DropdownMenuItem<String>(
+                                  value: 'Europe',
+                                  child: Text("Europe"),
+                                )
+                              ],
+                              onChanged: (newValue) {
+                                setState(() {
+                                  dropDownValue = newValue!;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildImageSourceButton(
+                              icon: Icons.photo_library_outlined,
+                              label: "Gallery",
+                              onTap: () async {
+                                var img = await ImagePicker()
+                                    .pickImage(source: ImageSource.gallery);
+                                if (img != null) {
+                                  setState(() {
+                                    image = File(img.path);
+                                  });
+                                  imageRecognition(image);
+                                }
+                              },
+                            ),
+                            _buildImageSourceButton(
+                              icon: Icons.camera_alt_outlined,
+                              label: "Camera",
+                              onTap: () async {
+                                var img = await ImagePicker()
+                                    .pickImage(source: ImageSource.camera);
+                                if (img != null) {
+                                  setState(() {
+                                    image = File(img.path);
+                                  });
+                                  imageRecognition(image);
+                                }
+                              },
                             ),
                           ],
                         ),
-                      ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        _build3dButton(
+                          text: "View in 3D",
+                          onPressed: image == null
+                              ? null
+                              : () {
+                                  locator<Monument3dModelBloc>().add(
+                                      ViewMonument3DModel(
+                                          monumentName: monument == ""
+                                              ? "Mount Rushmore National Memorial"
+                                              : monument));
+                                },
+                        ),
+                        SizedBox(height: 15.h),
+                        _build3dButton(
+                          text: "See 3D Demo",
+                          onPressed: () {
+                            locator<Monument3dModelBloc>().add(
+                                ViewMonument3DModel(
+                                    monumentName: "Mount Rushmore National Memorial"));
+                          },
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             );
@@ -303,6 +272,62 @@ class _ScanMonumentsScreenState extends State<ScanMonumentsScreen> {
     } catch (e) {
       dev.log("error during image processing $e");
     }
+  }
+
+  Widget _buildImageSourceButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircleAvatar(
+            radius: 30.r,
+            backgroundColor: AppColor.appPrimary.withOpacity(0.15),
+            child: Icon(icon, size: 30.sp, color: AppColor.appPrimary),
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            label,
+            style: AppTextStyles.s14(
+              color: AppColor.appSecondary,
+              fontType: FontType.MEDIUM,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _build3dButton({required String text, required VoidCallback? onPressed}) {
+    return SizedBox(
+      width: 200.w,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(vertical: 12.h),
+          backgroundColor: AppColor.appPrimary,
+          foregroundColor: AppColor.appSecondary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.r),
+          ),
+          elevation: 3,
+        ),
+        icon: Assets.icons.ic3d.svg(
+          colorFilter: ColorFilter.mode(AppColor.appSecondary, BlendMode.srcIn),
+        ),
+        label: Text(
+          text,
+          style: AppTextStyles.s16(
+            color: AppColor.appSecondary,
+            fontType: FontType.MEDIUM,
+          ),
+        ),
+      ),
+    );
   }
 
   Future<String> getModelPath(String asset) async {
