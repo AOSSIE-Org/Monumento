@@ -295,7 +295,10 @@ class _MonumentDetailsViewDesktopState
                         width: 8.w,
                       ),
                       Text(
-                        state is MonumentCheckedIn ? "Checked In" : "Check In",
+                        state is MonumentCheckedIn ||
+                                state is MonumentCheckinSuccess
+                            ? "Checked In"
+                            : "Check In",
                         style: AppTextStyles.s16(
                           color: AppColor.appSecondary,
                           fontType: FontType.MEDIUM,
