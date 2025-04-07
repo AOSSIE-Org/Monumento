@@ -127,7 +127,7 @@ class _ScanMonumentsScreenState extends State<ScanMonumentsScreen> {
                           borderRadius: BorderRadius.circular(5.sp),
                           boxShadow: [
                             BoxShadow(
-                                color: AppColor.appSecondary.withOpacity(0.2),
+                                color: AppColor.appSecondary.withAlpha((255 * 0.2).round()),
                                 offset: const Offset(2, 1))
                           ],
                           color: AppColor.appPrimary),

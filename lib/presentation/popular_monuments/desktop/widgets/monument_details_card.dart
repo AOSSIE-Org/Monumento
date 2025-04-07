@@ -30,7 +30,7 @@ class MonumentDetailsCard extends StatelessWidget {
                 image: imageProvider,
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.4),
+                  const Color.fromRGBO(0, 0, 0, 0.4),
                   BlendMode.srcOver,
                 ),
               ),

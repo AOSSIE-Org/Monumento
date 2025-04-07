@@ -69,7 +69,7 @@ class _ScaffoldWithNavigationRail extends StatelessWidget {
           VerticalDivider(
             thickness: 1,
             width: 1,
-            color: colorScheme.primary.withOpacity(0.2),
+            color: colorScheme.primary.withAlpha((255 * 0.02).round()),
           ),
           Expanded(
             child: body,

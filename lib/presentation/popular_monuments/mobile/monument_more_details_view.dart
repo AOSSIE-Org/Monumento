@@ -111,7 +111,7 @@ class _MonumentDetailedPageState extends State<MonumentDetailedPage> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: AppColor.appPrimary.withOpacity(0.1),
+                            color: AppColor.appPrimary.withAlpha((255 * 0.1).round()),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Text(

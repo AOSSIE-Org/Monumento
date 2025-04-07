@@ -42,7 +42,7 @@ class _DiscoverPostCardWidgetState extends State<DiscoverPostCardWidget> {
               fit: BoxFit.cover,
               colorFilter: isHovered
                   ? ColorFilter.mode(
-                      Colors.black.withOpacity(0.6),
+                      const Color.fromRGBO(0, 0, 0, 0.6),
                       BlendMode.darken,
                     )
                   : null,
