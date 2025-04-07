@@ -85,7 +85,7 @@ class NotificationListWidget extends StatelessWidget {
             Icon(
               Icons.notifications_none_outlined,
               size: 64,
-              color: AppColor.appPrimary.withOpacity(0.5),
+              color: AppColor.appPrimary.withAlpha((255 * 0.5).round()),
             ),
             const SizedBox(height: 16),
             Text(
@@ -101,7 +101,7 @@ class NotificationListWidget extends StatelessWidget {
               "We'll notify you when something interesting happens",
               style: TextStyle(
                 fontSize: 14,
-                color: AppColor.appSecondary.withOpacity(0.7),
+                color: AppColor.appSecondary.withAlpha((255 * 0.7).round()),
               ),
               textAlign: TextAlign.center,
             ),

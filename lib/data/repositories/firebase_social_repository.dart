@@ -814,7 +814,7 @@ class FirebaseSocialRepository implements SocialRepository {
 
     // add the check-in as a post
     int timeStamp = DateTime.now().millisecondsSinceEpoch;
-    DocumentReference doc = await _database.collection("posts").add({
+    await _database.collection("posts").add({
       "title": title ?? "",
       "location": monumentDoc['city'] + ", " + monumentDoc['country'],
       "imageUrl": "",
