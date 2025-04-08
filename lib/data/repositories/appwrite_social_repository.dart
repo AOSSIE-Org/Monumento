@@ -1147,65 +1147,64 @@ class AppwriteSocialRepository implements SocialRepository {
     }
 
     try {
-      // Create the unique document ID for this like
-      final postIdPart = postId.substring(0, 18);
-      final userIdPart = user!.uid.substring(0, 17);
-      final likeDocId = "${postIdPart}_${userIdPart}";
-      bool shouldIncrementCount = false;
+      // Check if like already exists
+      final existingLikes = await _database.listDocuments(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
+        queries: [
+          Query.equal('userId', user!.uid),
+          Query.equal('postId', postId),
+        ],
+      );
 
-      try {
-        // Check if document already exists
-        final existingLikeDoc = await _database.getDocument(
+      if (existingLikes.documents.isNotEmpty) {
+        // Update existing like
+        final existingLike = existingLikes.documents.first;
+        if (existingLike.data['liked'] == true) {
+          return postId; // Already liked
+        }
+
+        await _database.updateDocument(
           databaseId: _databaseId,
           collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
-          documentId: likeDocId,
+          documentId: existingLike.$id,
+          data: {
+            'liked': true,
+            'timestamp': DateTime.now().toIso8601String(),
+          },
         );
-
-        // Document exists - check if we need to update it
-        if (existingLikeDoc.data['likedPost'] != true) {
-          await _database.updateDocument(
-              databaseId: _databaseId,
-              collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
-              documentId: likeDocId,
-              data: {
-                'likedPost': true,
-                'timeStamp': DateTime.now().millisecondsSinceEpoch,
-              });
-          shouldIncrementCount = true;
-        }
-      } catch (e) {
-        // Document doesn't exist - create a new like document
+      } else {
+        // Create new like
         await _database.createDocument(
-            databaseId: _databaseId,
-            collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
-            documentId: likeDocId,
-            data: {
-              'author': user.uid,
-              'timeStamp': DateTime.now().millisecondsSinceEpoch,
-              'postInvolvedId': postId,
-              'likedPost': true,
-            });
-        shouldIncrementCount = true;
+          databaseId: _databaseId,
+          collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
+          documentId: ID.unique(),
+          data: {
+            'userId': user.uid,
+            'postId': postId,
+            'liked': true,
+            'timestamp': DateTime.now().toIso8601String(),
+          },
+        );
       }
 
-      // Only increment count if we actually added a new like
-      if (shouldIncrementCount) {
-        final postDoc = await _database.getDocument(
-            databaseId: _databaseId,
-            collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
-            documentId: postId);
+      // Increment likes count
+      final postDoc = await _database.getDocument(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
+        documentId: postId,
+      );
 
-        int currentLikes = postDoc.data['likesCount'] ?? 0;
-        await _database.updateDocument(
-            databaseId: _databaseId,
-            collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
-            documentId: postId,
-            data: {
-              'likesCount': currentLikes + 1,
-            });
-      }
+      int currentLikes = postDoc.data['likesCount'] ?? 0;
+      await _database.updateDocument(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
+        documentId: postId,
+        data: {
+          'likesCount': currentLikes + 1,
+        },
+      );
 
-      // Return the post ID that was updated
       return postId;
     } catch (e) {
       print(e);
@@ -1222,35 +1221,47 @@ class AppwriteSocialRepository implements SocialRepository {
     }
 
     try {
-      // Update like document to false
-      final postIdPart = postId.substring(0, 18);
-      final userIdPart = user!.uid.substring(0, 17);
-      final likeDocId = "${postIdPart}_${userIdPart}";
+      // Find the like document
+      final existingLikes = await _database.listDocuments(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
+        queries: [
+          Query.equal('userId', user!.uid),
+          Query.equal('postId', postId),
+        ],
+      );
+
+      if (existingLikes.documents.isEmpty) {
+        return postId; // No like to unlike
+      }
+
+      final existingLike = existingLikes.documents.first;
       await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_LIKES_ID'] ??
-              "postLikes", // Original collection name
-          documentId: likeDocId,
-          data: {
-            'likedPost': false,
-          });
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_LIKES_ID'] ?? "postLikes",
+        documentId: existingLike.$id,
+        data: {
+          'liked': false,
+        },
+      );
 
       // Decrement likes count
       final postDoc = await _database.getDocument(
-          databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
-          documentId: postId);
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
+        documentId: postId,
+      );
 
       int currentLikes = postDoc.data['likesCount'] ?? 0;
       await _database.updateDocument(
-          databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
-          documentId: postId,
-          data: {
-            'likesCount': (currentLikes - 1) > 0 ? (currentLikes - 1) : 0,
-          });
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_POSTS_ID'] ?? "posts",
+        documentId: postId,
+        data: {
+          'likesCount': (currentLikes - 1) > 0 ? (currentLikes - 1) : 0,
+        },
+      );
 
-      // Return the post ID that was updated
       return postId;
     } catch (e) {
       log("Error unliking post: $e", stackTrace: StackTrace.current);
