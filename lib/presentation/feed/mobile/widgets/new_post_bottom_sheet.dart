@@ -10,6 +10,7 @@ import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/app_text_styles.dart';
 import 'package:monumento/utils/constants.dart';
+import 'package:monumento/presentation/feed/mobile/new_post_screen.dart';
 
 class PostImage extends StatefulWidget {
   const PostImage({super.key});
@@ -228,7 +229,7 @@ class NewPostBottomSheet {
         useSafeArea: true,
         isScrollControlled: true,
         builder: (_) {
-          return const PostImage();
+          return const NewPostScreen();
         });
   }
 }
