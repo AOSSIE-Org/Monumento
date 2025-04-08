@@ -582,7 +582,7 @@ class AppwriteSocialRepository implements SocialRepository {
       // Check if user already checked in
       final existingCheckIns = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIn",
+          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIns",
           queries: [
             Query.equal("monumentId", monumentId),
             Query.equal("userId", user!.uid)
@@ -598,7 +598,7 @@ class AppwriteSocialRepository implements SocialRepository {
 
       await _database.createDocument(
           databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIn",
+          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIns",
           documentId: checkInId,
           data: {
             "monumentId": monumentId,
@@ -645,7 +645,7 @@ class AppwriteSocialRepository implements SocialRepository {
     try {
       final documents = await _database.listDocuments(
           databaseId: _databaseId,
-          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIn",
+          collectionId: dotenv.env['APPWRITE_CHECKIN_ID'] ?? "checkIns",
           queries: [
             Query.equal("monumentId", monumentId),
             Query.equal("userId", user!.uid)
