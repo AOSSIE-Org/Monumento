@@ -86,7 +86,7 @@ class AppwriteSocialRepository implements SocialRepository {
       // Get file view URL
       String fileId = result.$id;
 
-      return "https://cloud.appwrite.io/v1/storage/buckets/$_imagesBucketId/files/$fileId/view?project=$_projectId";
+      return "$_endpoint/storage/buckets/$_imagesBucketId/files/$fileId/view?project=$_projectId&mode=admin";
     } catch (e) {
       log('Error uploading profile picture: $e');
       throw Exception('Failed to upload profile picture: $e');
