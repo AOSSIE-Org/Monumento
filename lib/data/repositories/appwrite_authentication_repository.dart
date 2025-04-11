@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
+import 'package:monumento/utils/constants.dart';
 
 class AppwriteAuthenticationRepository implements AuthenticationRepository {
   final Account _account;
@@ -237,9 +240,30 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
     );
   }
 
+  Future<String> fetchUserProfilePicture(String accessToken) async {
+  final url = Uri.parse('https://www.googleapis.com/oauth2/v2/userinfo');
+
+  final response = await http.get(
+    url,
+    headers: {
+      'Authorization': 'Bearer $accessToken',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    return data['picture'];
+  } else {
+    return defaultProfilePicture;
+  }
+}
+
   Future<void> createUserDocument(User user) async {
     final searchParams = getSearchParams(userName: user.name, name: user.name);
     try {
+      final session = await _account.getSession(sessionId: "current");
+      final profilePictureUrl = await fetchUserProfilePicture(session.providerAccessToken);
+      
       await _database.createDocument(
         databaseId: dotenv.env['APPWRITE_DATABASE_ID']!,
         collectionId: dotenv.env['APPWRITE_USER_ID']!,
@@ -250,6 +274,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
           'email': user.email,
           'username': user.name,
           'searchParams': searchParams,
+          'profilePictureUrl':profilePictureUrl
         },
       );
       print('New user document created for: ${user.email}');

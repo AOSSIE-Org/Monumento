@@ -79,12 +79,12 @@ dependencies:
   timeago: ^3.7.0
   geolocator:
   url_launcher: ^6.3.0
-  http:
+  http: ^1.3.0
   flutter_gen: ^5.8.0
   device_preview: ^1.2.0 #Approximate how your Flutter app looks and performs on another device.
 
   # SVG / Vector Graphics
-  flutter_svg: ^2.0.10+1
+  flutter_svg: ^2.0.17
 
   # Fonts
   google_fonts: ^6.2.1
