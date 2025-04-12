@@ -39,6 +39,8 @@ cat .env.template > .env
 - Add a Flutter platform under "Platforms" in your project settings
   - For Web: Enter your website domain
   - For Android/iOS: Enter your application ID
+- Additionally add a **Web** platform with '*' in the Hostname.
+  - This enables our app to access model via model-webview on Android and iOS. 
 
 ### 2. 🗝️ Create API Key
 
@@ -81,7 +83,8 @@ APPWRITE_LIKES_ID=postLikes
 APPWRITE_CHECKIN_ID=checkIn
 APPWRITE_LOCALEXPERTS_COLLECTION_ID=localExperts
 APPWRITE_API_ENDPOINT=https://cloud.appwrite.io/v1
-APPWRITE_BUCKET_ID=bucketmonumento
+APPWRITE_IMAGES_BUCKET_ID=imagesBucket
+APPWRITE_MODELS_BUCKET_ID=modelsBucket
 APPWRITE_PROJECT_ID=         # Your Appwrite Project ID
 ```
 
