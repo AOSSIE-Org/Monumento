@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
@@ -16,13 +17,13 @@ class _MonumentModelViewMobileState extends State<MonumentModelViewMobile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(widget.monument.name),
-      // ),
       appBar: CustomMobileAppBar(
         actions: [
-          Text(
-            widget.monument.name,
+          SizedBox(
+            width: kIsWeb ? null : 300,
+            child: Text(
+              widget.monument.name,
+            ),
           ),
         ],
       ),
