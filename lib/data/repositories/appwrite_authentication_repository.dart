@@ -172,7 +172,7 @@ class AppwriteAuthenticationRepository implements AuthenticationRepository {
       ;
       await _account.createRecovery(
         email: email,
-        url: "http://localhost:3000/recovery", // Replace with your frontend URL
+        url: (dotenv.env['APPWRITE_PASSWORD_FUNCTION_URL'] ?? "http://localhost:3000/") + "recovery", // Replace with your frontend URL
       );
       //TODO: Update with production URL
     } catch (e) {

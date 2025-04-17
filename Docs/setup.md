@@ -67,6 +67,25 @@ This script will automatically create:
 - 📊 Database and collections
 - 🖼️ Storage bucket for images
 - 🗿 Sample monument data
+- appwrite function for forget passwords 
+
+**Note**: After creating the Appwrite function for password reset, there's an additional step required to make the "Forgot Password" functionality work properly.
+
+You need to register the domain where the password reset will be triggered. To do this:
+
+1. Go to your Appwrite Console.
+
+2. Navigate to your project Overview.
+
+3. Scroll down and click “Add Platform”.
+
+4. Choose Web App.
+
+5. In the domain field, enter your app’s domain (make sure to remove the https:// prefix and any trailing /).
+
+Once your domain is added and registered, the "Forgot Password" feature will work correctly.
+If this step is skipped, you may encounter an error like:
+Invalid URL: must be appwrite.io or *.appwrite.io.
 
 ### 4. ⚙️ Configure Environment Variables
 
