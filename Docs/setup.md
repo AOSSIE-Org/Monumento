@@ -80,6 +80,8 @@ You need to register the domain where the password reset will be triggered. To d
 4. Choose Web App.
 
 5. In the domain field, enter your app’s domain (make sure to remove the https:// prefix and any trailing /).
+   
+6. Add the link to the function in your .env file 
 
 Once your domain is added and registered, the "Forgot Password" feature will work correctly.
 If this step is skipped, you may encounter an error like:
