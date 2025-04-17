@@ -89,6 +89,8 @@ Once your domain is added and registered, the "Forgot Password" feature will wor
 If this step is skipped, you may encounter an error like:
 Invalid URL: must be appwrite.io or *.appwrite.io.
 
+**Note**: To view the implementation details of the function, you can check out the source code here: [GitHub - reset_and_verifyemail_node_appwrite](https://github.com/HelloSniperMonkey/reset_and_verifyemail_node_appwrite)
+
 ### 4. ⚙️ Configure Environment Variables
 
 Fill in the following values in your `.env` file:
