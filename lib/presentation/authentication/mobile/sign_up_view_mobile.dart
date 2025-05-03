@@ -232,8 +232,8 @@ class _SignUpViewMobileState extends State<SignUpViewMobile> {
                                   validateFunction: (value) {
                                     if (value!.isEmpty) {
                                       return 'Password cannot be empty';
-                                    } else if (value.length < 6) {
-                                      return 'Password must be at least 6 characters';
+                                    } else if (value.length < 8) {
+                                      return 'Password must be at least 8 characters';
                                     }
                                     return null;
                                   },

@@ -39,6 +39,8 @@ cat .env.template > .env
 - Add a Flutter platform under "Platforms" in your project settings
   - For Web: Enter your website domain
   - For Android/iOS: Enter your application ID
+- Additionally add a **Web** platform with '*' in the Hostname.
+  - This enables our app to access model via model-webview on Android and iOS. 
 
 ### 2. 🗝️ Create API Key
 
@@ -65,6 +67,29 @@ This script will automatically create:
 - 📊 Database and collections
 - 🖼️ Storage bucket for images
 - 🗿 Sample monument data
+- appwrite function for forget passwords 
+
+**Note**: After creating the Appwrite function for password reset, there's an additional step required to make the "Forgot Password" functionality work properly.
+
+You need to register the domain where the password reset will be triggered. To do this:
+
+1. Go to your Appwrite Console.
+
+2. Navigate to your project Overview.
+
+3. Scroll down and click “Add Platform”.
+
+4. Choose Web App.
+
+5. In the domain field, enter your app’s domain (make sure to remove the https:// prefix and any trailing /).
+   
+6. Add the link to the function in your .env file 
+
+Once your domain is added and registered, the "Forgot Password" feature will work correctly.
+If this step is skipped, you may encounter an error like:
+Invalid URL: must be appwrite.io or *.appwrite.io.
+
+**Note**: To view the implementation details of the function, you can check out the source code here: [GitHub - reset_and_verifyemail_node_appwrite](https://github.com/HelloSniperMonkey/reset_and_verifyemail_node_appwrite)
 
 ### 4. ⚙️ Configure Environment Variables
 
@@ -81,7 +106,8 @@ APPWRITE_LIKES_ID=postLikes
 APPWRITE_CHECKIN_ID=checkIn
 APPWRITE_LOCALEXPERTS_COLLECTION_ID=localExperts
 APPWRITE_API_ENDPOINT=https://cloud.appwrite.io/v1
-APPWRITE_BUCKET_ID=bucketmonumento
+APPWRITE_IMAGES_BUCKET_ID=imagesBucket
+APPWRITE_MODELS_BUCKET_ID=modelsBucket
 APPWRITE_PROJECT_ID=         # Your Appwrite Project ID
 ```
 
