@@ -28,15 +28,38 @@ class AuthenticationBloc
   _mapAppStartedToState(
       AuthenticationEvent event, Emitter<AuthenticationState> emit) async {
     try {
-      final (userLoggedIn, user) = await _authRepository.getUser();
-      log('User: $userLoggedIn, $user');
-      if (userLoggedIn && user != null) {
-        emit(Authenticated(user.toEntity()));
-      } else if (userLoggedIn && user == null) {
-        emit(OnboardingIncomplete());
-      } else {
-        emit(Unauthenticated());
+      
+      int retries = 0;
+      const maxRetries = 3;
+      const retryDelay = Duration(milliseconds: 300);
+      
+      while (retries < maxRetries) {
+        final (userLoggedIn, user) = await _authRepository.getUser();
+        log('User: $userLoggedIn, $user (attempt ${retries + 1})');
+        
+        if (userLoggedIn && user != null) {
+          
+          emit(Authenticated(user.toEntity()));
+          return;
+        } else if (userLoggedIn && user == null) {
+          if (retries == maxRetries - 1) {
+            
+            emit(OnboardingIncomplete());
+            return;
+          }
+        } else {
+         
+          emit(Unauthenticated());
+          return;
+        }
+        
+        
+        retries++;
+        await Future.delayed(retryDelay);
       }
+      
+      
+      emit(Unauthenticated());
     } catch (_) {
       emit(Unauthenticated());
     }
@@ -44,15 +67,37 @@ class AuthenticationBloc
 
   _mapLoggedInToState(
       AuthenticationEvent event, Emitter<AuthenticationState> emit) async {
-    final (userLoggedIn, user) = await _authRepository.getUser();
-
-    if (userLoggedIn && user != null) {
-      emit(Authenticated(user.toEntity()));
-    } else if (userLoggedIn && user == null) {
-      emit(OnboardingIncomplete());
-    } else {
-      emit(Unauthenticated());
+   
+    int retries = 0;
+    const maxRetries = 3;
+    const retryDelay = Duration(milliseconds: 300);
+    
+    while (retries < maxRetries) {
+      final (userLoggedIn, user) = await _authRepository.getUser();
+      
+      if (userLoggedIn && user != null) {
+      
+        emit(Authenticated(user.toEntity()));
+        return;
+      } else if (userLoggedIn && user == null) {
+        if (retries == maxRetries - 1) {
+          
+          emit(OnboardingIncomplete());
+          return;
+        }
+      } else {
+       
+        emit(Unauthenticated());
+        return;
+      }
+      
+     
+      retries++;
+      await Future.delayed(retryDelay);
     }
+    
+   
+    emit(Unauthenticated());
   }
 
   _mapLogOutToState(

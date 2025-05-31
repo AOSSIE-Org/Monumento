@@ -80,31 +80,56 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
   }
 
   @override
-  Future<UserModel?> signUp(
-      {required String email,
-      required String password,
-      required String name,
-      required String status,
-      required String username,
-      required String profilePictureUrl}) async {
-    final UserCredential userCredential = await _firebaseAuth
-        .createUserWithEmailAndPassword(email: email, password: password);
-    final User? currentUser = userCredential.user;
-    if (currentUser == null) {
-      throw Exception("Failed to create user");
+  Future<UserModel?> signUp({
+    required String email,
+    required String password,
+    required String name,
+    required String username,
+    required String status,
+    required String profilePictureUrl,
+  }) async {
+    try {
+      // 1. Create Firebase Auth user
+      final UserCredential userCredential = 
+          await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final User? user = userCredential.user;
+      if (user == null) throw Exception("User creation failed");
+
+      // 2. Generate search parameters
+      List<String> searchParams = getSearchParams(name: name, userName: username);
+
+      // 3. Create user data map
+      final userData = {
+        'uid': user.uid,
+        'email': email,
+        'name': name,
+        'username': username,
+        'status': status,
+        'profilePictureUrl': profilePictureUrl,
+        'searchParams': searchParams,
+        'followers': [],
+        'following': [],
+      };
+
+      // 4. Force synchronous document creation
+      await _database.collection('users').doc(user.uid).set(userData);
+      
+      // 5. Add a short delay to allow Firestore propagation
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      // 6. Return UserModel directly without fetching again
+      return UserModel.fromJson(userData);
+    } on FirebaseAuthException catch (e) {
+      throw AuthenticationFailure(e.message ?? 'Authentication failed');
+    } catch (e) {
+      throw AuthenticationFailure('Sign up failed: $e');
     }
-
-    DocumentSnapshot userDocSnap = await getOrCreateUserDocForEmailSignup(
-      status: status,
-      name: name,
-      username: username,
-      email: email,
-      profilePictureUrl: profilePictureUrl,
-      uid: currentUser.uid,
-    );
-
-    return UserModel.fromJson(userDocSnap.data() as Map<String, dynamic>);
   }
+
 
   @override
   Future<void> signOut() async {
@@ -153,34 +178,7 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
     }
   }
 
-  Future<DocumentSnapshot> getOrCreateUserDocForEmailSignup({
-    required String uid,
-    required String name,
-    String? status,
-    required String username,
-    required String email,
-    String? profilePictureUrl,
-  }) async {
-    DocumentSnapshot userDocSnap =
-        await _database.collection("users").doc(uid).get();
-    if (userDocSnap.exists) {
-      return userDocSnap;
-    }
-    List<String> searchParams = getSearchParams(name: name, userName: username);
-
-    await _database.collection("users").doc(uid).set({
-      'name': name,
-      'uid': uid,
-      'profilePictureUrl': profilePictureUrl ?? "",
-      'email': email,
-      'status': status ?? "",
-      'username': username,
-      'searchParams': searchParams
-    });
-    DocumentSnapshot newUserDocSnap =
-        await _database.collection("users").doc(uid).get();
-    return newUserDocSnap;
-  }
+  // Removed getOrCreateUserDocForEmailSignup method
 
   @override
   Future<UserModel> getOrCreateUserDocForGoogleSignIn(
@@ -244,4 +242,13 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
   Future<String> getEmail() async {
     return _firebaseAuth.currentUser!.email!;
   }
+}
+
+class AuthenticationFailure implements Exception {
+  final String message;
+  
+  AuthenticationFailure(this.message);
+  
+  @override
+  String toString() => message;
 }

@@ -14,11 +14,13 @@ class UserModel {
   final List<String> following;
   final List<String> followers;
   final List<String> posts;
+  final List<String> searchParams;
 
   const UserModel({
     this.following = const [],
     this.followers = const [],
     this.posts = const [],
+    this.searchParams = const [],
     required this.email,
     required this.uid,
     this.name = "Monumento User",
@@ -44,6 +46,7 @@ class UserModel {
       followers: entity.followers,
       following: entity.following,
       posts: entity.posts,
+      searchParams: entity.searchParams,
     );
   }
 
@@ -58,6 +61,7 @@ class UserModel {
       followers: followers,
       following: following,
       posts: posts,
+      searchParams: searchParams,
     );
   }
 
@@ -71,6 +75,9 @@ class UserModel {
     List<String> mappedPosts = data['posts'] != null
         ? (data['posts'] as List).map<String>((e) => e).toList()
         : [];
+    List<String> mappedSearchParams = data['searchParams'] != null
+        ? (data['searchParams'] as List).map<String>((e) => e).toList()
+        : [];
 
     return UserModel(
       uid: data['uid'] as String,
@@ -82,6 +89,7 @@ class UserModel {
       followers: mappedFollowers,
       following: mappedFollowing,
       posts: mappedPosts,
+      searchParams: mappedSearchParams,
     );
   }
 
@@ -96,6 +104,7 @@ class UserModel {
       'followers': followers,
       'following': following,
       'posts': posts,
+      'searchParams': searchParams,
     };
   }
 }

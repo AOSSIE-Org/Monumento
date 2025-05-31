@@ -13,11 +13,13 @@ class UserEntity extends Equatable {
   final List<String> following;
   final List<String> followers;
   final List<String> posts;
+  final List<String> searchParams;
 
   const UserEntity({
     this.following = const [],
     this.followers = const [],
     this.posts = const [],
+    this.searchParams = const [],
     required this.email,
     required this.uid,
     this.name = "Monumento User",
@@ -41,6 +43,9 @@ class UserEntity extends Equatable {
     List<String> mappedPosts = data['posts'] != null
         ? (data['posts'] as List).map<String>((e) => e).toList()
         : [];
+    List<String> mappedSearchParams = data['searchParams'] != null
+        ? (data['searchParams'] as List).map<String>((e) => e).toList()
+        : [];
 
     return UserEntity(
         uid: data['uid'] as String,
@@ -51,7 +56,8 @@ class UserEntity extends Equatable {
         username: data['username'] as String,
         followers: mappedFollowers,
         following: mappedFollowing,
-        posts: mappedPosts);
+        posts: mappedPosts,
+        searchParams: mappedSearchParams);
   }
 
   factory UserEntity.fromSnapshot(DocumentSnapshot snap) {
@@ -65,6 +71,9 @@ class UserEntity extends Equatable {
     List<String> mappedPosts = data['posts'] != null
         ? (data['posts'] as List).map<String>((e) => e).toList()
         : [];
+    List<String> mappedSearchParams = data['searchParams'] != null
+        ? (data['searchParams'] as List).map<String>((e) => e).toList()
+        : [];
 
     return UserEntity(
         uid: data['uid'],
@@ -75,7 +84,8 @@ class UserEntity extends Equatable {
         username: data['username'],
         followers: mappedFollowers,
         following: mappedFollowing,
-        posts: mappedPosts);
+        posts: mappedPosts,
+        searchParams: mappedSearchParams);
   }
 
   factory UserEntity.fromJson(String source) =>
@@ -92,6 +102,7 @@ class UserEntity extends Equatable {
       'following': following,
       'followers': followers,
       'posts': posts,
+      'searchParams': searchParams,
     };
   }
 
