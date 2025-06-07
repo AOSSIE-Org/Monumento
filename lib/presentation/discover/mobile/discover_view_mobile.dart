@@ -1,211 +1,14 @@
-import 'dart:ui';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:monumento/application/authentication/authentication_bloc.dart';
-import 'package:monumento/application/discover/discover_posts/discover_posts_bloc.dart';
-import 'package:monumento/application/discover/search/search_bloc.dart';
-import 'package:monumento/domain/entities/post_entity.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/gen/assets.gen.dart';
-import 'package:monumento/presentation/discover/mobile/discover_profile_view_mobile.dart';
-import 'package:monumento/presentation/discover/mobile/widgets/discover_post_card_mobile.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
-import 'package:monumento/presentation/profile_screen/mobile/profile_screen_mobile.dart';
-import 'package:monumento/service_locator.dart';
-import 'package:monumento/utils/app_colors.dart';
-import 'package:monumento/utils/app_text_styles.dart';
-import 'package:monumento/utils/constants.dart';
 import 'package:monumento/utils/custom_mobile_appBar.dart';
-import 'package:monumento/utils/debouncer.dart';
 
-class DiscoverViewMobile extends StatefulWidget {
-  const DiscoverViewMobile({super.key});
-
-  @override
-  State<DiscoverViewMobile> createState() => _DiscoverViewMobileState();
-}
-
-class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
-  List<PostEntity> posts = [];
-
-  @override
-  void initState() {
-    locator<DiscoverPostsBloc>().add(LoadInitialDiscoverPosts());
-    super.initState();
-  }
-
-  OverlayEntry? overlayEntry;
-  final LayerLink layerLink = LayerLink();
-  final TextEditingController searchController = TextEditingController();
-
-  void showOverlay(BuildContext context) {
-    if (overlayEntry != null) {
-      return;
-    }
-    overlayEntry = createOverlayEntry(context);
-    Overlay.of(context).insert(overlayEntry!);
-  }
-
-  OverlayEntry createOverlayEntry(BuildContext context) {
-    RenderBox renderBox = context.findRenderObject() as RenderBox;
-    Offset offset = renderBox.localToGlobal(Offset.zero);
-    final _debouncer = Debouncer(delay: const Duration(milliseconds: 600));
-
-    return OverlayEntry(
-      builder: (context) => BlocBuilder<SearchBloc, SearchState>(
-        bloc: locator<SearchBloc>(),
-        builder: (context, state) {
-          return Positioned(
-            // top: offset.dy + 60, // Adjust according to your UI
-            left: offset.dx,
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: GestureDetector(
-              onTap: hideOverlay,
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: ClipRRect(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          color: Colors.black.withOpacity(0.5),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: Row(
-                      children: [
-                        const Spacer(
-                          flex: 1,
-                        ),
-                        Material(
-                          elevation: 8.0,
-                          borderRadius: BorderRadius.circular(8),
-                          child: SizedBox(
-                            width: 350,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: TextField(
-                                    controller: searchController,
-                                    autofocus: true,
-                                    decoration: const InputDecoration(
-                                      prefixIcon: Icon(
-                                        Icons.search,
-                                        color: AppColor.appLightGrey,
-                                      ),
-                                      hintText:
-                                          'Search for people to connect with',
-                                      border: InputBorder.none,
-                                    ),
-                                    onChanged: (query) {
-                                      _debouncer.run(() {
-                                        locator<SearchBloc>().add(
-                                          SearchPeople(searchQuery: query),
-                                        );
-                                        overlayEntry?.markNeedsBuild();
-                                      });
-                                    },
-                                  ),
-                                ),
-                                if (state is LoadingPeople)
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: LinearProgressIndicator(
-                                      color: AppColor.appPrimary,
-                                      backgroundColor: AppColor.appSecondary,
-                                    ),
-                                  ),
-                                if (state is SearchedPeople)
-                                  Container(
-                                    constraints: const BoxConstraints(
-                                      maxHeight: 200,
-                                    ),
-                                    child: ListView.builder(
-                                      shrinkWrap: true,
-                                      itemCount: state.searchedUsers.length,
-                                      itemBuilder: (context, index) {
-                                        // add the authbloc to check whether the currentuser is the same as the user being searched for/clicked on
-                                        return BlocBuilder<AuthenticationBloc,
-                                            AuthenticationState>(
-                                          bloc: locator<AuthenticationBloc>(),
-                                          builder: (context, authState) {
-                                            authState as Authenticated;
-                                            return ListTile(
-                                              leading: CircleAvatar(
-                                                backgroundImage:
-                                                    CachedNetworkImageProvider(
-                                                  state.searchedUsers[index]
-                                                          .profilePictureUrl ??
-                                                      defaultProfilePicture,
-                                                ),
-                                              ),
-                                              title: Text(state
-                                                  .searchedUsers[index].name),
-                                              subtitle: Text(
-                                                state.searchedUsers[index]
-                                                        .username ??
-                                                    '',
-                                              ),
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                      builder: (context) {
-                                                    return (authState
-                                                                .user.uid ==
-                                                            state
-                                                                .searchedUsers[
-                                                                    index]
-                                                                .uid)
-                                                        ? ProfileScreenMobile()
-                                                        : DiscoverProfileViewMobile(
-                                                            user: state
-                                                                    .searchedUsers[
-                                                                index],
-                                                          );
-                                                  }),
-                                                );
-                                                hideOverlay();
-                                              },
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const Spacer(
-                          flex: 2,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  void hideOverlay() {
-    overlayEntry?.remove();
-    overlayEntry = null;
-  }
+class DiscoverViewMobile extends StatelessWidget {
+  const DiscoverViewMobile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _debouncer = Debouncer(delay: const Duration(milliseconds: 600));
     return Scaffold(
       appBar: CustomMobileAppBar(
         logoPath: Assets.mobile.logoDiscover.path,
@@ -227,179 +30,320 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
           ),
         ],
       ),
-      body: CompositedTransformTarget(
-        link: layerLink,
-        child: BlocBuilder<DiscoverPostsBloc, DiscoverPostsState>(
-          bloc: locator<DiscoverPostsBloc>(),
-          builder: (context, state) {
-            if (state is InitialDiscoverPostsLoaded) {
-              posts = [];
-              posts.insertAll(posts.length, state.initialPosts);
-            }
-            if (state is MoreDiscoverPostsLoaded) {
-              posts.insertAll(posts.length, state.posts);
-            }
-            return posts.isEmpty
-                ? NoPostsYet()
-                : SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          color: AppColor.appWhite,
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-                          child: BlocBuilder<SearchBloc, SearchState>(
-                            bloc: locator<SearchBloc>(),
-                            builder: (context, searchState) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  // Search input field
-                                  Container(
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: AppColor.appLightGrey),
-                                      borderRadius: const BorderRadius.all(Radius.circular(6))
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: TextField(
-                                            controller: searchController,
-                                            decoration: const InputDecoration(
-                                              prefixIcon: Icon(
-                                                Icons.search,
-                                                color: AppColor.appLightGrey,
-                                              ),
-                                              hintText: 'Search for people to connect with',
-                                              border: InputBorder.none,
-                                              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                                            ),
-                                            onChanged: (query) {
-                                              _debouncer.run(() {
-                                                locator<SearchBloc>().add(
-                                                  SearchPeople(searchQuery: query),
-                                                );
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                        // Loading indicator inside the search box
-                                        if (searchState is LoadingPeople)
-                                          const Padding(
-                                            padding: EdgeInsets.only(right: 12),
-                                            child: SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child: CircularProgressIndicator(
-                                                color: AppColor.appPrimary,
-                                                strokeWidth: 2,
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                  
-                                  // Search results list - appears BELOW the search box
-                                  if (searchState is SearchedPeople && searchState.searchedUsers.isNotEmpty)
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(0.1),
-                                            blurRadius: 8,
-                                            offset: Offset(0, 3),
-                                          )
-                                        ],
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(6),
-                                          bottomRight: Radius.circular(6),
-                                        ),
-                                      ),
-                                      constraints: const BoxConstraints(
-                                        maxHeight: 300,
-                                      ),
-                                      child: ListView.separated(
-                                        shrinkWrap: true,
-                                        padding: EdgeInsets.zero,
-                                        separatorBuilder: (context, index) => Divider(height: 1),
-                                        itemCount: searchState.searchedUsers.length,
-                                        itemBuilder: (context, index) {
-                                          return BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                                            bloc: locator<AuthenticationBloc>(),
-                                            builder: (context, authState) {
-                                              authState as Authenticated;
-                                              return ListTile(
-                                                leading: CircleAvatar(
-                                                  backgroundImage: CachedNetworkImageProvider(
-                                                    searchState.searchedUsers[index].profilePictureUrl ??
-                                                        defaultProfilePicture,
-                                                  ),
-                                                ),
-                                                title: Text(searchState.searchedUsers[index].name),
-                                                subtitle: Text(
-                                                  searchState.searchedUsers[index].username ?? '',
-                                                ),
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(builder: (context) {
-                                                      return (authState.user.uid ==
-                                                              searchState.searchedUsers[index].uid)
-                                                          ? ProfileScreenMobile()
-                                                          : DiscoverProfileViewMobile(
-                                                              user: searchState.searchedUsers[index],
-                                                            );
-                                                    }),
-                                                  );
-                                                  // No need to hide overlay here since we're not using it
-                                                },
-                                              );
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: StaggeredGrid.count(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
-                            children: posts.map((post) {
-                              return StaggeredGridTile.count(
-                                  crossAxisCellCount: 1,
-                                  mainAxisCellCount: 1,
-                                  child: DiscoverPostCardMobile(
-                                    post: post,
-                                  ));
-                            }).toList(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-          },
+      backgroundColor: Colors.grey[50],
+      body: Column(
+        children: [
+          SizedBox(height: 24.h),
+          // Search Bar
+          const SearchBarWidget(),
+
+          // Content
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  // Popular Monuments Section
+                  SectionHeader(
+                    title: 'Popular Monuments',
+                    onSeeAllTap: () {
+                      print('See all monuments tapped');
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  GridSection(
+                    items: [
+                      DiscoverGridItemTile(
+                        image: 'assets/monument_nicholas.jpg',
+                        title: 'Monument to Nicholas I',
+                        onTap: () => print('Monument to Nicholas I tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/stonehenge.jpg',
+                        title: 'Stonehenge',
+                        onTap: () => print('Stonehenge tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/colosseum.jpg',
+                        title: 'Colosseum',
+                        onTap: () => print('Colosseum tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/colosseum.jpg',
+                        title: 'Colosseum',
+                        onTap: () => print('Colosseum tapped'),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Public Itineraries Section
+                  SectionHeader(
+                    title: 'Public Itineraries',
+                    onSeeAllTap: () {
+                      print('See all itineraries tapped');
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  GridSection(
+                    items: [
+                      DiscoverGridItemTile(
+                        image: 'assets/egyptian_flag.jpg',
+                        title: 'Egyptian Adventure',
+                        onTap: () => print('Egyptian Adventure tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/indian_flag.jpg',
+                        title: 'Indian Adventure',
+                        onTap: () => print('Indian Adventure tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/india_gate.jpg',
+                        title: 'Indian Adventure',
+                        onTap: () => print('Indian Adventure 2 tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/australian_flag.jpg',
+                        title: 'Australian Adventure',
+                        onTap: () => print('Australian Adventure tapped'),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Popular Communities Section
+                  SectionHeader(
+                    title: 'Popular Communities',
+                    onSeeAllTap: () {
+                      print('See all communities tapped');
+                    },
+                  ),
+                  const SizedBox(height: 12),
+                  GridSection(
+                    items: [
+                      DiscoverGridItemTile(
+                        image: 'assets/adventure_canada.jpg',
+                        title: 'Adventure Canada',
+                        onTap: () => print('Adventure Canada tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/traveling_friends.jpg',
+                        title: 'Traveling Friends',
+                        onTap: () => print('Traveling Friends tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/westmeath.jpg',
+                        title: 'WestMeath Community',
+                        onTap: () => print('WestMeath Community tapped'),
+                      ),
+                      DiscoverGridItemTile(
+                        image: 'assets/adventure_canada2.jpg',
+                        title: 'Adventure Canada',
+                        onTap: () => print('Adventure Canada 2 tapped'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// Search Bar Widget
+class SearchBarWidget extends StatelessWidget {
+  const SearchBarWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Search events, monuments, itineraries',
+          hintStyle: TextStyle(
+            color: Colors.grey[500],
+            fontSize: 16,
+          ),
+          prefixIcon: Icon(
+            Icons.search,
+            color: Colors.grey[500],
+            size: 24,
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.grey[300]!),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Colors.orange[300]!),
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         ),
       ),
     );
   }
+}
 
-  Widget NoPostsYet() {
-    return Center(
-      child: Text(
-        "You have no posts yet",
-        style: AppTextStyles.s14(
-          color: AppColor.appLightGrey,
-          fontType: FontType.REGULAR,
+// Section Header Widget
+class SectionHeader extends StatelessWidget {
+  final String title;
+  final VoidCallback onSeeAllTap;
+
+  const SectionHeader({
+    Key? key,
+    required this.title,
+    required this.onSeeAllTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
         ),
+        GestureDetector(
+          onTap: onSeeAllTap,
+          child: Text(
+            'See all',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+// Grid Section Widget
+class GridSection extends StatelessWidget {
+  final List<DiscoverGridItemTile> items;
+
+  const GridSection({
+    Key? key,
+    required this.items,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 100.h, // Fixed height for the scrollable section
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return Container(
+            width: 60.w,
+            margin: EdgeInsets.only(
+              right: index == items.length - 1 ? 0 : 12,
+            ),
+            child: GridItemWidget(
+              item: items[index],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+// Grid Item Model
+class DiscoverGridItemTile {
+  final String image;
+  final String title;
+  final VoidCallback onTap;
+
+  DiscoverGridItemTile({
+    required this.image,
+    required this.title,
+    required this.onTap,
+  });
+}
+
+// Grid Item Widget
+class GridItemWidget extends StatelessWidget {
+  final DiscoverGridItemTile item;
+
+  const GridItemWidget({
+    Key? key,
+    required this.item,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: item.onTap,
+      child: Column(
+        children: [
+          // Image Container
+          Container(
+            height: 60.h,
+            width: 60.w,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.r),
+              color: Colors.grey[300],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.asset(
+                item.image,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: LinearGradient(
+                        colors: [Colors.orange[200]!, Colors.orange[400]!],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    child: const Icon(
+                      Icons.image,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Title
+          Text(
+            item.title,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
