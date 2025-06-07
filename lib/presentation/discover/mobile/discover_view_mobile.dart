@@ -1,11 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/gen/assets.gen.dart';
+import 'package:monumento/presentation/discover/mobile/widgets/discover_generic_grid_section.dart';
+import 'package:monumento/presentation/discover/mobile/widgets/discover_section_header_widget.dart';
+import 'package:monumento/presentation/discover/mobile/widgets/popular_monuments_section_bloc_builder.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
+import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/custom_mobile_appBar.dart';
 
-class DiscoverViewMobile extends StatelessWidget {
+class DiscoverViewMobile extends StatefulWidget {
   const DiscoverViewMobile({Key? key}) : super(key: key);
+
+  @override
+  State<DiscoverViewMobile> createState() => _DiscoverViewMobileState();
+}
+
+class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
+  void initState() {
+    locator<PopularMonumentsBloc>().add(GetPopularMonuments());
+    super.initState();
+  }
+
+  // Dummy data methods for static sections
+  List<ItineraryEntity> _getDummyItineraries() {
+    return [
+      ItineraryEntity(
+        title: 'Indian Adventure',
+        image:
+            'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=400',
+        id: '2',
+        description: 'Discover incredible India',
+      ),
+      ItineraryEntity(
+        title: 'European Journey',
+        image:
+            'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=400',
+        id: '3',
+        description: 'Historic European cities',
+      ),
+      ItineraryEntity(
+        title: 'Australian Adventure',
+        image:
+            'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
+        id: '4',
+        description: 'Outback and cities',
+      ),
+    ];
+  }
+
+  List<CommunityEntity> _getDummyCommunities() {
+    return [
+      CommunityEntity(
+        name: 'Traveling Friends',
+        image:
+            'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400',
+        id: '2',
+        memberCount: 890,
+      ),
+      CommunityEntity(
+        name: 'WestMeath Community',
+        image:
+            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400',
+        id: '3',
+        memberCount: 567,
+      ),
+      CommunityEntity(
+        name: 'Global Explorers',
+        image:
+            'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400',
+        id: '4',
+        memberCount: 2100,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,107 +111,66 @@ class DiscoverViewMobile extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  // Popular Monuments Section
-                  SectionHeader(
+                  // Popular Monuments Section (Dynamic with Bloc)
+                  DiscoverSectionHeaderWidget(
                     title: 'Popular Monuments',
                     onSeeAllTap: () {
                       print('See all monuments tapped');
                     },
                   ),
                   const SizedBox(height: 12),
-                  GridSection(
-                    items: [
-                      DiscoverGridItemTile(
-                        image: 'assets/monument_nicholas.jpg',
-                        title: 'Monument to Nicholas I',
-                        onTap: () => print('Monument to Nicholas I tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/stonehenge.jpg',
-                        title: 'Stonehenge',
-                        onTap: () => print('Stonehenge tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/colosseum.jpg',
-                        title: 'Colosseum',
-                        onTap: () => print('Colosseum tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/colosseum.jpg',
-                        title: 'Colosseum',
-                        onTap: () => print('Colosseum tapped'),
-                      ),
-                    ],
-                  ),
+                  PopularMonumentsSectionBodyBlocBuilder(),
 
                   const SizedBox(height: 24),
 
-                  // Public Itineraries Section
-                  SectionHeader(
+                  // Public Itineraries Section (Static for now)
+                  DiscoverSectionHeaderWidget(
                     title: 'Public Itineraries',
                     onSeeAllTap: () {
                       print('See all itineraries tapped');
                     },
                   ),
                   const SizedBox(height: 12),
-                  GridSection(
-                    items: [
-                      DiscoverGridItemTile(
-                        image: 'assets/egyptian_flag.jpg',
-                        title: 'Egyptian Adventure',
-                        onTap: () => print('Egyptian Adventure tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/indian_flag.jpg',
-                        title: 'Indian Adventure',
-                        onTap: () => print('Indian Adventure tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/india_gate.jpg',
-                        title: 'Indian Adventure',
-                        onTap: () => print('Indian Adventure 2 tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/australian_flag.jpg',
-                        title: 'Australian Adventure',
-                        onTap: () => print('Australian Adventure tapped'),
-                      ),
-                    ],
+                  GenericGridSection<ItineraryEntity>(
+                    items: _getDummyItineraries(),
+                    itemWidth: 60.w,
+                    itemHeight: 100.h,
+                    itemBuilder: (item) =>
+                        GenericGridItemWidget<ItineraryEntity>(
+                      item: item,
+                      getTitle: (itinerary) => itinerary.title,
+                      getImage: (itinerary) => itinerary.image,
+                      onTapBuilder: (itinerary) => () {
+                        print('${itinerary.title} tapped');
+                        // TODO: Navigate to itinerary details
+                      },
+                    ),
                   ),
 
                   const SizedBox(height: 24),
 
-                  // Popular Communities Section
-                  SectionHeader(
+                  // Popular Communities Section (Static for now)
+                  DiscoverSectionHeaderWidget(
                     title: 'Popular Communities',
                     onSeeAllTap: () {
                       print('See all communities tapped');
                     },
                   ),
                   const SizedBox(height: 12),
-                  GridSection(
-                    items: [
-                      DiscoverGridItemTile(
-                        image: 'assets/adventure_canada.jpg',
-                        title: 'Adventure Canada',
-                        onTap: () => print('Adventure Canada tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/traveling_friends.jpg',
-                        title: 'Traveling Friends',
-                        onTap: () => print('Traveling Friends tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/westmeath.jpg',
-                        title: 'WestMeath Community',
-                        onTap: () => print('WestMeath Community tapped'),
-                      ),
-                      DiscoverGridItemTile(
-                        image: 'assets/adventure_canada2.jpg',
-                        title: 'Adventure Canada',
-                        onTap: () => print('Adventure Canada 2 tapped'),
-                      ),
-                    ],
+                  GenericGridSection<CommunityEntity>(
+                    items: _getDummyCommunities(),
+                    itemWidth: 60.w,
+                    itemHeight: 100.h,
+                    itemBuilder: (item) =>
+                        GenericGridItemWidget<CommunityEntity>(
+                      item: item,
+                      getTitle: (community) => community.name,
+                      getImage: (community) => community.image,
+                      onTapBuilder: (community) => () {
+                        print('${community.name} tapped');
+                        // TODO: Navigate to community details
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -197,154 +224,47 @@ class SearchBarWidget extends StatelessWidget {
   }
 }
 
-// Section Header Widget
-class SectionHeader extends StatelessWidget {
+// Entity Classes (Add these to your entities file)
+class ItineraryEntity {
+  final String id;
   final String title;
-  final VoidCallback onSeeAllTap;
-
-  const SectionHeader({
-    Key? key,
-    required this.title,
-    required this.onSeeAllTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-        ),
-        GestureDetector(
-          onTap: onSeeAllTap,
-          child: Text(
-            'See all',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// Grid Section Widget
-class GridSection extends StatelessWidget {
-  final List<DiscoverGridItemTile> items;
-
-  const GridSection({
-    Key? key,
-    required this.items,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 100.h, // Fixed height for the scrollable section
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Container(
-            width: 60.w,
-            margin: EdgeInsets.only(
-              right: index == items.length - 1 ? 0 : 12,
-            ),
-            child: GridItemWidget(
-              item: items[index],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-// Grid Item Model
-class DiscoverGridItemTile {
   final String image;
-  final String title;
-  final VoidCallback onTap;
+  final String description;
 
-  DiscoverGridItemTile({
-    required this.image,
+  ItineraryEntity({
+    required this.id,
     required this.title,
-    required this.onTap,
+    required this.image,
+    required this.description,
   });
 }
 
-// Grid Item Widget
-class GridItemWidget extends StatelessWidget {
-  final DiscoverGridItemTile item;
+class CommunityEntity {
+  final String id;
+  final String name;
+  final String image;
+  final int memberCount;
 
-  const GridItemWidget({
-    Key? key,
-    required this.item,
-  }) : super(key: key);
+  CommunityEntity({
+    required this.id,
+    required this.name,
+    required this.image,
+    required this.memberCount,
+  });
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: item.onTap,
-      child: Column(
-        children: [
-          // Image Container
-          Container(
-            height: 60.h,
-            width: 60.w,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.r),
-              color: Colors.grey[300],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                item.image,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      gradient: LinearGradient(
-                        colors: [Colors.orange[200]!, Colors.orange[400]!],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    child: const Icon(
-                      Icons.image,
-                      color: Colors.white,
-                      size: 32,
-                    ),
-                  );
-                },
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          // Title
-          Text(
-            item.title,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
+class MonumentEntity {
+  final String id;
+  final String name;
+  final String image;
+  final String location;
+  final double rating;
+
+  MonumentEntity({
+    required this.id,
+    required this.name,
+    required this.image,
+    required this.location,
+    required this.rating,
+  });
 }
