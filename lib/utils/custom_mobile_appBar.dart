@@ -16,7 +16,7 @@ class CustomMobileAppBar extends StatelessWidget
   const CustomMobileAppBar({
     Key? key,
     this.height = kToolbarHeight,
-    this.elevation = 4,
+    this.elevation = 1,
     this.actions,
     this.logoPath,
     this.leading,

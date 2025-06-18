@@ -1,0 +1,14 @@
+// android/app/load-env.gradle
+def loadEnv() {
+    def envFile = rootProject.file('../.env')
+    if (envFile.exists()) {
+        envFile.readLines().each { line ->
+            if (!line.isEmpty() && !line.startsWith("#")) {
+                def (key, value) = line.split("=")
+                project.ext.set(key, value)
+            }
+        }
+    }
+}
+
+loadEnv()

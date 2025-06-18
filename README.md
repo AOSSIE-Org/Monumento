@@ -14,13 +14,14 @@
 ![GitHub Org's stars](https://img.shields.io/github/stars/AOSSIE-Org/monumento?style=social)
 
 </div>
-Monumento is an AR-integrated social app that transforms how you connect with the world’s most iconic landmarks. Through Monumento, you can check in to popular monuments, explore famous sites, and discover new people, all within a social platform dedicated to cultural and historical experiences. Whether you're a traveler or a history enthusiast, Monumento offers an immersive way to engage with the world’s most treasured locations.
+Monumento is an AR-integrated social app that transforms how you connect with the world's most iconic landmarks. Through Monumento, you can check in to popular monuments, explore famous sites, and discover new people, all within a social platform dedicated to cultural and historical experiences. Whether you're a traveler or a history enthusiast, Monumento offers an immersive way to engage with the world's most treasured locations.
 
 ## 💻 Technologies Used
 
 - Dart
 - Flutter
-- Firebase
+- Appwrite (Backend as a Service)
+- Geoapify API (Location Services)
 
 ## **▶️ How to run the Monumento app**
 To get started with Monumento, follow these steps:
@@ -28,18 +29,26 @@ To get started with Monumento, follow these steps:
 ### 🔧 Prerequisites
 
 - Install [Flutter](https://docs.flutter.dev/get-started/install)
-
-- Install [Dart](./Docs/FAQ.md)
-
-- Ensure you have [Firebase CLI](https://firebase.google.com/docs/cli#setup_update_cli) installed
+- Install [Dart](https://dart.dev/get-dart)
+- Install [Node.js](https://nodejs.org/) (required for Appwrite setup script)
+- Create an [Appwrite](https://appwrite.io/) account
 
 ### 🛠 Setup Instructions
-[see setup process](./Docs/setup.md)
+Our detailed step-by-step guide will help you get up and running:
+- [Setup Process](./Docs/setup.md)
+
+## ✌️ Key Features
+
+- **Monument Discovery**: Explore famous landmarks worldwide
+- **Check-in System**: Mark your visits to monuments
+- **3D Model Viewing**: Experience monuments in 3D
+- **Social Platform**: Connect with fellow travelers and cultural enthusiasts
+- **Nearby Places**: Find restaurants, hotels, and amenities near monuments
 
 ## ✌️ Maintainers
 
-- [Jaideep Prasad](https://github.com/jddeep)
-- [Chandan S Gowda](https://github.com/chandansgowda)
+- [Mohammed Mohsin](https://github.com/mdmohsin7)
+- [Aya Nady](https://github.com/AyaNady17)
 
 ## 🙌 Contributing
 
@@ -55,7 +64,7 @@ By following these guidelines, we can maintain a productive and collaborative op
 - If you face any problems during setup or running the project, please refer to the FAQ.
 - If you have encountered an issue and found a solution, we encourage you to share your findings and methods with the community to help others!
 
-Yes, we follow industry-standard security practices to ensure your data is safe. We use Firebase Authentication and Firestore for secure storage.
+We follow industry-standard security practices to ensure your data is safe using Appwrite authentication and database services.
 
 For more details, check the [FAQ section](./Docs/FAQ.md).
 
@@ -67,7 +76,7 @@ Distributed under the [GNU General Public License](https://opensource.org/licens
 
 If you have any questions, need clarifications, or want to discuss ideas, feel free to reach out through the following channels:
 
-[Discord Server](https://discord.com/invite/6mFZ2S846n)\
+[Discord Server](https://discord.com/invite/6mFZ2S846n)  
 [Email](aossie.oss@gmail.com)
 
 ## Made by the Community, with ❤️

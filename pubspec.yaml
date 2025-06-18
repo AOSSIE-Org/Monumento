@@ -31,13 +31,12 @@ dependencies:
   flutter:
     sdk: flutter
   responsive_framework: ^1.4.0
-
+  # Appwrite
+  appwrite: ^14.0.0
   # Firebase
   firebase_core: ^3.3.0
-  firebase_auth: ^5.1.4
   firebase_storage: ^12.1.3
   cloud_firestore: ^5.2.1
-  google_sign_in: ^6.2.1
 
   # State Management
   flutter_bloc: ^8.1.6
@@ -80,25 +79,27 @@ dependencies:
   timeago: ^3.7.0
   geolocator:
   url_launcher: ^6.3.0
-  http:
+  http: ^1.3.0
   flutter_gen: ^5.8.0
   device_preview: ^1.2.0 #Approximate how your Flutter app looks and performs on another device.
 
   # SVG / Vector Graphics
-  flutter_svg: ^2.0.10+1
+  flutter_svg: ^2.0.17
 
   # Fonts
   google_fonts: ^6.2.1
 
   # De/Serialization
   json_serializable: ^6.8.0
-  json_annotation:
+  json_annotation: ^4.9.0
   equatable: ^2.0.5
 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
+dependency_overrides:
+  flutter_web_auth_2: 4.1.0 # <<< this should work.
 
 
 flutter_native_splash:
@@ -157,6 +158,7 @@ flutter:
     - assets/aossie.png
     - assets/google_logo.png
     - assets/monumento_logo.svg
+    - assets/google_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

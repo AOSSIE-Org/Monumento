@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:device_preview/device_preview.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +14,6 @@ import 'package:monumento/utils/bloc_observer_logger.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'application/authentication/authentication_bloc.dart';
-import 'firebase_options.dart';
 import 'presentation/authentication/onboarding_view.dart';
 import 'presentation/home/home_view.dart';
 import 'router.dart';
@@ -27,16 +25,13 @@ void main() async {
   } catch (e) {
     debugPrint('Failed to load .env file: $e');
   }
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   setupLocator();
   Bloc.observer = BlocObserverLogger();
 
-  // runApp(MyApp());
-
   runApp(
     DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(),
+      enabled: !kReleaseMode && kIsWeb,
+      builder: (context) => const MyApp(),
     ),
   );
 }
@@ -88,7 +83,7 @@ class MyApp extends StatelessWidget {
       title: 'Monumento',
       theme: ThemeData(
           useMaterial3: false,
-          tabBarTheme: TabBarTheme(
+          tabBarTheme: const TabBarTheme(
             indicatorColor: AppColor.appPrimary,
           )),
       builder: (context, child) {

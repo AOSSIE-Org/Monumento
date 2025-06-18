@@ -1,34 +1,37 @@
-# FAQ and Issue Reporting Guidelines
+# 📋 FAQ and Issue Reporting Guidelines
 
-## Frequently Asked Questions (FAQ)
+## ❓ Frequently Asked Questions (FAQ)
 
-### General
+### 🌟 General
 
-1. **What is this project about?**  
-   This project aims to transforms how you connect with the world’s most iconic landmarks.
+1. **What is Monumento?**  
+   Monumento is an AR-integrated social app that transforms how you connect with the world's most iconic landmarks. It allows you to check in to popular monuments, explore famous sites, and engage with a community of travelers and history enthusiasts.
 
 2. **How do I get started with this project?**  
-   Refer to the [README.md](./README.md) file for step-by-step instructions to set up the project.
+   Refer to the [setup guide](./setup.md) for step-by-step instructions to set up the project with Appwrite backend.
 
-### Common Errors and Fixes
+### 🔧 Common Errors and Fixes
 
-### Web
-- **Error:**   Image does not load in some places of the app.\
-  **Solution:** (temporary) use flutter run --web-renderer=html 
-  this is just a temporary fix if you want to quickly preview what the app looks like with the new changes in place in the web browser
-  (the flag --web-renderer=html is now deprecated and may not be present in future versions of flutter)
+### 🌐 Web Platform
 
-#### iOS
-- **Error:**   cocoapods and pod install issues.\
+- **Error:** Images do not load in some places of the app.  
+  **Solution:** Use `flutter run -d chrome --web-renderer html` to run the app. This is a temporary fix to preview the app in a web browser.
+
+- **Error:** Google Sign-In does not work on web.  
+  **Solution:** Ensure your Appwrite OAuth settings and Google Cloud console settings are correctly configured with matching redirect URIs and origins.
+
+### 🍏 iOS Platform
+
+- **Error:** CocoaPods and pod install issues.  
   **Solution:**
   1. Ensure CocoaPods is installed: `sudo gem install cocoapods`.
   2. Run `pod install` inside the iOS directory.
 
 - **Error:** App overlaps with the notification bar.  
-  **Solution:**
-  1. Modify `SafeAreaView` or update the top margin in your app layout.
+  **Solution:** Modify `SafeAreaView` or update the top margin in your app layout.
 
-#### Android
+### 🤖 Android Platform
+
 - **Error:** Gradle build fails due to incompatible Java version.  
   **Solution:**
   1. Ensure Java 17 is installed.
@@ -39,25 +42,35 @@
   1. Check your Android SDK installation path.
   2. Verify that the `emulator` and `adb` paths are added to your `PATH` variable.
 
-#### macOS
-- **Error:** `Error: CocoaPods's specs repository is too out-of-date to satisfy dependencies.To update the CocoaPods specs, run:pod repo update Error: Error running pod install` and running pod repo update does not fix it 
-- **Solution:** 
-    1. go to macos directory delete Pods folder and Podfile.lock
-    2. run `pod install` on root of project
-    3. try to run the project using `flutter run` this should start building the macOS project 
+### 🍎 macOS Platform
 
-- **Error:**  An error occurred when accessing the keychain
-- **Solution:** 
-  1. you need to install xcode from apple app store 
-  2. you may need to register to apple developer account if you dont already have one
-  3. follow the video guide
-  
-https://github.com/user-attachments/assets/c3b408cf-aabd-4bf3-9866-32b4982c463c
+- **Error:** `Error: CocoaPods's specs repository is too out-of-date to satisfy dependencies.`  
+  **Solution:** 
+  1. Go to macOS directory, delete Pods folder and Podfile.lock
+  2. Run `pod install` on root of project
+  3. Try to run the project using `flutter run`
 
-- I would like to thank [Andrea Bizzotto](https://github.com/bizz84/simple_auth_flutter_firebase_ui) for his amazing blog on [Flutter & Firebase Auth on macOS: Resolving Common Issues](https://codewithandrea.com/articles/flutter-firebase-auth-macos/) which helped me solve my own issue with the project
+- **Error:** An error occurred when accessing the keychain  
+  **Solution:** 
+  1. Install Xcode from Apple App Store
+  2. You may need to register for an Apple Developer account
+  3. Follow the video guide: [Keychain Access Guide](https://github.com/user-attachments/assets/c3b408cf-aabd-4bf3-9866-32b4982c463c)
 
+### ☁️ Appwrite Specific Issues
 
-## How to Contribute to the FAQ
+- **Error:** Unable to connect to Appwrite services.  
+  **Solution:** Verify your Appwrite endpoint and project ID in the `.env` file.
+
+- **Error:** Authentication issues with Appwrite.  
+  **Solution:** Make sure OAuth providers are properly configured in the Appwrite console.
+
+- **Error:** "Document not found" errors when accessing collections.  
+  **Solution:** Run the setup script again to ensure all collections and documents are created.
+
+- **Error:** Appwrite storage permission issues.  
+  **Solution:** Check that your API key has proper permissions for database and storage operations.
+
+## 🤝 How to Contribute to the FAQ
 
 1. If you encounter an issue and resolve it, consider adding it to this FAQ.
 2. To propose a change, edit this file and submit a pull request.
@@ -66,17 +79,21 @@ https://github.com/user-attachments/assets/c3b408cf-aabd-4bf3-9866-32b4982c463c
    - Steps to reproduce the issue.
    - Your solution or workaround.
 
-## Reporting Issues
+## 📝 Reporting Issues
 
 If you encounter an issue not covered here:
 
-1. **Check Existing Issues**: Before opening a new issue, search the [Issues page](./issues) to avoid duplicates.
+1. **Check Existing Issues**: Before opening a new issue, search the [Issues page](https://github.com/AOSSIE-Org/Monumento/issues) to avoid duplicates.
 2. **Open a New Issue**: If no existing issue matches:
    - Provide a descriptive title.
    - Include a detailed description, including steps to reproduce, expected behavior, and actual behavior.
    - Specify the environment:
      - Operating System (e.g., macOS, Windows, Linux)
-     - Platform (e.g., iOS, Android)
-     - Node.js and npm versions (if applicable).
+     - Platform (e.g., iOS, Android, Web)
+     - Flutter, Dart and Node.js versions (if applicable)
 3. **Use Labels**: Add relevant labels like `bug`, `enhancement`, `question`, etc.
+
+## 📣 Community Support
+
+If you need additional help, join our [Discord community](https://discord.gg/6mFZ2S846n) where fellow developers can assist with your questions.
 
