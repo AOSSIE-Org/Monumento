@@ -293,4 +293,40 @@ class CommunityService {
       throw Exception('Failed to delete community: $e');
     }
   }
+
+  /// Get communities where the current user has joined (member but not necessarily admin)
+  Future<List<Document>> getUserCreatedCommunities() async {
+    try {
+      final user = await account.get();
+      final userId = user.$id;
+
+      // First get the user document to access their joinedCommunities list
+      final userDoc = await databases.getDocument(
+        databaseId: databaseId,
+        collectionId: usersCollectionId,
+        documentId: userId,
+      );
+
+      final createdCommunityIds =
+          List<String>.from(userDoc.data['myCommunities'] ?? []);
+
+      if (createdCommunityIds.isEmpty) {
+        return [];
+      }
+
+      // Fetch all communities where ID is in the user's joinedCommunities list
+      final communities = await databases.listDocuments(
+        databaseId: databaseId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
+        queries: [
+          Query.equal('\$id', createdCommunityIds),
+          Query.orderDesc('createdAt'),
+        ],
+      );
+
+      return communities.documents;
+    } catch (e) {
+      throw Exception('Failed to get user joined communities: $e');
+    }
+  }
 }
