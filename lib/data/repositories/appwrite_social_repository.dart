@@ -23,8 +23,7 @@ class AppwriteSocialRepository implements SocialRepository {
   // Bucket ID for Appwrite storage
   final String _endpoint =
       dotenv.env['APPWRITE_API_ENDPOINT'] ?? 'https://cloud.appwrite.io/v1';
-  final String _imagesBucketId =
-      dotenv.env['APPWRITE_IMAGES_BUCKET_ID'] ?? 'default';
+  final String _imagesBucketId = dotenv.env['APPWRITE_BUCKET_ID'] ?? 'default';
   final String _projectId = dotenv.env['APPWRITE_PROJECT_ID'] ?? 'defalut';
   final String _databaseId =
       dotenv.env['APPWRITE_DATABASE_ID'] ?? 'dbmonumento';

@@ -10,10 +10,9 @@ class CommunityService {
   late Storage storage;
   late Account account;
 
-  static const String databaseId = 'dbmonumento';
-  static const String communitiesCollectionId = 'communities';
-  static const String usersCollectionId = 'users';
-  static const String imagesBucketId = 'bucketmonumento';
+  String databaseId = dotenv.env['APPWRITE_DATABASE_ID']!;
+  String usersCollectionId = dotenv.env['APPWRITE_USER_ID']!;
+  String imagesBucketId = dotenv.env['APPWRITE_BUCKET_ID']!;
 
   CommunityService() {
     client = Client();
@@ -57,7 +56,7 @@ class CommunityService {
 
       final community = await databases.createDocument(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         documentId: ID.unique(),
         data: communityData,
       );
@@ -125,7 +124,7 @@ class CommunityService {
 
       final communities = await databases.listDocuments(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         queries: [
           Query.contains('memberIds', userId),
           Query.orderDesc('createdAt'),
@@ -143,7 +142,7 @@ class CommunityService {
     try {
       return await databases.getDocument(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         documentId: communityId,
       );
     } catch (e) {
@@ -159,7 +158,7 @@ class CommunityService {
 
       final community = await databases.getDocument(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         documentId: communityId,
       );
 
@@ -173,7 +172,7 @@ class CommunityService {
 
       await databases.updateDocument(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         documentId: communityId,
         data: {
           'memberIds': memberIds,
@@ -224,7 +223,7 @@ class CommunityService {
 
       final community = await databases.getDocument(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         documentId: communityId,
       );
 
@@ -234,7 +233,7 @@ class CommunityService {
 
       await databases.updateDocument(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         documentId: communityId,
         data: {
           'memberIds': memberIds,
@@ -273,7 +272,7 @@ class CommunityService {
 
       final community = await databases.getDocument(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         documentId: communityId,
       );
 
@@ -285,7 +284,7 @@ class CommunityService {
 
       await databases.deleteDocument(
         databaseId: databaseId,
-        collectionId: communitiesCollectionId,
+        collectionId: dotenv.env['APPWRITE_COMMUNITIES_COLLECTION_ID']!,
         documentId: communityId,
       );
 
