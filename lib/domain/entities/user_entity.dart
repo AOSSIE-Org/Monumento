@@ -56,7 +56,7 @@ class UserEntity extends Equatable {
       name: data['name'],
       email: data['email'],
       profilePictureUrl: data['profilePictureUrl'],
-      status: data['status'],
+      status: data['status'] ?? 'Status',
       username: data['username'],
       followers: mappedFollowers,
       following: mappedFollowing,

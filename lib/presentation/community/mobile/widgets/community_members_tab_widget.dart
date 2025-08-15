@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:monumento/data/repositories/appwrite_community_services_repository.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
@@ -43,7 +45,7 @@ class _CommunityMembersTabState extends State<CommunityMembersTab> {
       setState(() {
         isLoading = false;
       });
-      print('Error loading community members: $e');
+      log('Error loading community members: $e');
     }
   }
 
