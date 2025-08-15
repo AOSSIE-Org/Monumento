@@ -15,6 +15,7 @@ import 'package:monumento/presentation/popular_monuments/mobile/popular_monument
 import 'package:monumento/presentation/profile_screen/mobile/profile_screen_mobile.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
+import 'package:monumento/utils/custom_mobile_appBar.dart';
 
 class HomeViewMobile extends StatefulWidget {
   const HomeViewMobile({super.key});
@@ -215,29 +216,9 @@ class _CommunitiesViewMobileState extends State<CommunitiesViewMobile> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColor.appWhite,
-      appBar: AppBar(
-        backgroundColor: AppColor.appWhite,
-        elevation: 0,
-        title: const Text(
-          'Communities',
-          style: TextStyle(
-            color: AppColor.appBlack,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: false,
-        actions: [
-          // IconButton(
-          //   icon: SvgPicture.asset(
-          //     Assets.icons.icBookmark,
-          //     color: AppColor.appBlack,
-          //   ),
-          //   onPressed: () {
-          //     // Implement search functionality
-          //   },
-          // ),
-        ],
+      appBar: CustomMobileAppBar(
+        logoPath: 'assets/monumento_logo.svg',
+        title: 'Communities',
       ),
       body: RefreshIndicator(
         onRefresh: _refreshCommunities,

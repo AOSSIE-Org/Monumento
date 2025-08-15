@@ -12,6 +12,7 @@ class CustomMobileAppBar extends StatelessWidget
   /// Accept logo as a string
   final String? logoPath;
   final Widget? leading;
+  final String? title;
 
   const CustomMobileAppBar({
     Key? key,
@@ -20,6 +21,7 @@ class CustomMobileAppBar extends StatelessWidget
     this.actions,
     this.logoPath,
     this.leading,
+    this.title,
   }) : super(key: key);
 
   @override
@@ -32,12 +34,26 @@ class CustomMobileAppBar extends StatelessWidget
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          if (logoPath != null)
-            SvgPicture.asset(
-              logoPath!,
-              height: 25,
-              width: 161,
-            ),
+          Row(
+            spacing: 12,
+            children: [
+              if (logoPath != null)
+                SvgPicture.asset(
+                  logoPath!,
+                  height: 25,
+                  width: 161,
+                ),
+              if (title != null)
+                Text(
+                  title!,
+                  style: const TextStyle(
+                    color: AppColor.appBlack,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+            ],
+          ),
           Row(
             children: [
               if (actions != null) ...actions! else const SizedBox.shrink(),
