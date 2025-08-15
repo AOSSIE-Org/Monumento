@@ -14,6 +14,8 @@ class PostEntity extends Equatable {
   final int? postType;
   final int? commentsCount;
   final bool? isPostLiked;
+  final bool? isFromCommunity;
+  final String? communityId;
 
   const PostEntity({
     required this.postId,
@@ -27,14 +29,16 @@ class PostEntity extends Equatable {
     required this.timeStamp,
     required this.author,
     required this.postByUid,
+    this.isFromCommunity = false,
+    this.communityId,
   });
 
   /// Creates a [PostEntity] from an Appwrite document
   factory PostEntity.fromDocument(Document document, {UserEntity? author}) {
     final data = document.data;
     // Convert timestamp from DateTime to int (milliseconds since epoch)
-    final timestamp = data['timeStamp'] != null 
-        ? DateTime.parse(data['timeStamp']) 
+    final timestamp = data['timeStamp'] != null
+        ? DateTime.parse(data['timeStamp'])
         : DateTime.now();
 
     return PostEntity(
@@ -47,8 +51,10 @@ class PostEntity extends Equatable {
       likesCount: data['likesCount'] ?? 0,
       commentsCount: data['commentsCount'] ?? 0,
       postType: data['postType'] ?? 0,
-      author: author ?? UserEntity.fromDocument(data['author']),
+      author: author ?? UserEntity.fromMap(data['author']),
       isPostLiked: false, // Default value as it's not stored in the document
+      isFromCommunity: data['isFromCommunity'] == 1 ? true : false,
+      communityId: data['communityId'],
     );
   }
 
@@ -64,6 +70,8 @@ class PostEntity extends Equatable {
     int? postType,
     int? commentsCount,
     bool? isPostLiked,
+    bool? isFromCommunity,
+    String? communityId,
   }) {
     return PostEntity(
       postId: postId,
@@ -77,6 +85,8 @@ class PostEntity extends Equatable {
       postType: postType ?? this.postType,
       commentsCount: commentsCount ?? this.commentsCount,
       isPostLiked: isPostLiked ?? this.isPostLiked,
+      isFromCommunity: isFromCommunity ?? this.isFromCommunity,
+      communityId: communityId ?? this.communityId,
     );
   }
 
@@ -92,6 +102,8 @@ class PostEntity extends Equatable {
         likesCount,
         postType,
         commentsCount,
-        isPostLiked
+        isPostLiked,
+        isFromCommunity,
+        communityId,
       ];
 }

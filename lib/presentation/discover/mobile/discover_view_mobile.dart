@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
+import 'package:monumento/data/repositories/appwrite_community_services_repository.dart';
 import 'package:monumento/gen/assets.gen.dart';
+import 'package:monumento/presentation/community/mobile/community_details_view_mobile.dart';
 import 'package:monumento/presentation/discover/mobile/widgets/discover_generic_grid_section.dart';
 import 'package:monumento/presentation/discover/mobile/widgets/discover_section_header_widget.dart';
 import 'package:monumento/presentation/discover/mobile/widgets/popular_monuments_section_bloc_builder.dart';
@@ -49,30 +51,24 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
     ];
   }
 
-  List<CommunityEntity> _getDummyCommunities() {
-    return [
-      CommunityEntity(
-        name: 'Traveling Friends',
-        image:
-            'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400',
-        id: '2',
-        memberCount: 890,
-      ),
-      CommunityEntity(
-        name: 'WestMeath Community',
-        image:
-            'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=400',
-        id: '3',
-        memberCount: 567,
-      ),
-      CommunityEntity(
-        name: 'Global Explorers',
-        image:
-            'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400',
-        id: '4',
-        memberCount: 2100,
-      ),
-    ];
+  Future<List<CommunityEntity>> _fetchCommunities() async {
+    try {
+      final communityService = CommunityService();
+      final communities = await communityService.getAllCommunities();
+
+      // Map CommunityModel → CommunityEntity (UI model)
+      return communities.map((c) {
+        return CommunityEntity(
+          id: c.id,
+          name: c.name,
+          image: c.coverImageUrl ?? '', // handle null
+          memberCount: c.membersCount ?? 0,
+        );
+      }).toList();
+    } catch (e) {
+      debugPrint('Error fetching communities: $e');
+      return [];
+    }
   }
 
   @override
@@ -149,7 +145,6 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
 
                   const SizedBox(height: 24),
 
-                  // Popular Communities Section (Static for now)
                   DiscoverSectionHeaderWidget(
                     title: 'Popular Communities',
                     onSeeAllTap: () {
@@ -157,20 +152,46 @@ class _DiscoverViewMobileState extends State<DiscoverViewMobile> {
                     },
                   ),
                   const SizedBox(height: 12),
-                  GenericGridSection<CommunityEntity>(
-                    items: _getDummyCommunities(),
-                    itemWidth: 60.w,
-                    itemHeight: 100.h,
-                    itemBuilder: (item) =>
-                        GenericGridItemWidget<CommunityEntity>(
-                      item: item,
-                      getTitle: (community) => community.name,
-                      getImage: (community) => community.image,
-                      onTapBuilder: (community) => () {
-                        print('${community.name} tapped');
-                        // TODO: Navigate to community details
-                      },
-                    ),
+
+                  FutureBuilder<List<CommunityEntity>>(
+                    future: _fetchCommunities(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(
+                            child: Text('No communities found.'));
+                      }
+
+                      final communities = snapshot.data!;
+                      return GenericGridSection<CommunityEntity>(
+                        items: communities,
+                        itemWidth: 60.w,
+                        itemHeight: 100.h,
+                        itemBuilder: (item) =>
+                            GenericGridItemWidget<CommunityEntity>(
+                          item: item,
+                          getTitle: (community) => community.name,
+                          getImage: (community) => community.image,
+                          onTapBuilder: (community) => () {
+                            // Navigate to community details
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    CommunityDetailsViewMobile(
+                                  communityId: community.id,
+                                ),
+                              ),
+                            );
+                            print('${community.name} tapped');
+                            // TODO: Navigate to community details
+                          },
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),

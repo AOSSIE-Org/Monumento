@@ -16,6 +16,8 @@ class UserEntity extends Equatable {
   final List<String> followers;
   final List<String> posts;
   final List<MonumentEntity> savedMonuments;
+  final List<String> myCommunities;
+  final List<String> joinedCommunities;
 
   const UserEntity({
     this.following = const [],
@@ -28,6 +30,8 @@ class UserEntity extends Equatable {
     required this.profilePictureUrl,
     this.status = " Status",
     required this.username,
+    this.myCommunities = const [],
+    this.joinedCommunities = const [],
   });
 
   @override
@@ -48,15 +52,48 @@ class UserEntity extends Equatable {
         : [];
 
     return UserEntity(
-        uid: data['uid'],
-        name: data['name'],
-        email: data['email'],
-        profilePictureUrl: data['profilePictureUrl'],
-        status: data['status'],
-        username: data['username'],
-        followers: mappedFollowers,
-        following: mappedFollowing,
-        posts: mappedPosts);
+      uid: data['uid'],
+      name: data['name'],
+      email: data['email'],
+      profilePictureUrl: data['profilePictureUrl'],
+      status: data['status'],
+      username: data['username'],
+      followers: mappedFollowers,
+      following: mappedFollowing,
+      posts: mappedPosts,
+      myCommunities: data['myCommunities'] != null
+          ? (data['myCommunities'] as List).map<String>((e) => e).toList()
+          : [],
+      joinedCommunities: data['joinedCommunities'] != null
+          ? (data['joinedCommunities'] as List).map<String>((e) => e).toList()
+          : [],
+    );
+  }
+  factory UserEntity.fromMap(Map<String, dynamic> data) {
+    return UserEntity(
+      uid: data['uid'] ?? '',
+      name: data['name'] ?? 'Monumento User',
+      email: data['email'] ?? '',
+      profilePictureUrl: data['profilePictureUrl'],
+      status: data['status'] ?? 'Status',
+      username: data['username'],
+      followers:
+          (data['followers'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      following:
+          (data['following'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      posts: (data['posts'] as List?)?.map((e) => e.toString()).toList() ?? [],
+      // savedMonuments: (data['savedMonuments'] as List?)
+      //         ?.map((e) => MonumentEntity.fromMap(Map<String, dynamic>.from(e)))
+      //         .toList()
+      //     ?? [],
+      myCommunities:
+          (data['myCommunities'] as List?)?.map((e) => e.toString()).toList() ??
+              [],
+      joinedCommunities: (data['joinedCommunities'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
+    );
   }
 
   Map<String, Object> toMap() {
@@ -70,6 +107,8 @@ class UserEntity extends Equatable {
       'following': following,
       'followers': followers,
       'posts': posts,
+      'myCommunities': myCommunities,
+      'joinedCommunities': joinedCommunities
     };
   }
 
