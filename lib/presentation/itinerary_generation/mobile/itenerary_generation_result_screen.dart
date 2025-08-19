@@ -1,9 +1,13 @@
 // Modern Clean Itinerary Generation Screen - Mobile Optimized
+
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:monumento/data/models/itenerary_day_model.dart';
 import 'package:monumento/data/models/trip_prefrences_model.dart';
 import 'package:monumento/data/repositories/gemini_itenerary_repository.dart';
 import 'package:monumento/presentation/itinerary_generation/mobile/itenerary_prefrences_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ItineraryGenerationScreen extends StatefulWidget {
   final TripPreferences preferences;
@@ -342,9 +346,7 @@ class _ItineraryGenerationScreenState extends State<ItineraryGenerationScreen>
           actions: [
             IconButton(
               icon: Icon(Icons.share_rounded, color: Colors.blue[600]),
-              onPressed: () {
-                // Share functionality
-              },
+              onPressed: _shareItinerary,
             ),
             IconButton(
               icon:
@@ -699,6 +701,57 @@ class _ItineraryGenerationScreenState extends State<ItineraryGenerationScreen>
         ],
       ),
     );
+  }
+
+  Future<void> _shareItinerary() async {
+    // Ensure the itinerary data is available before trying to share
+    if (_itinerary == null) {
+      return;
+    }
+
+    // Build the shareable text string
+    final StringBuffer itineraryText = StringBuffer();
+
+    // Add the trip title and overview
+    itineraryText.writeln('✈️ My Trip to ${_itinerary!.title}');
+    itineraryText.writeln('📍 Location: ${widget.preferences.location}');
+    itineraryText.writeln('📅 Duration: ${widget.preferences.duration} days');
+    itineraryText.writeln('\n--- Trip Overview ---');
+    itineraryText.writeln(_itinerary!.overview);
+    itineraryText.writeln(
+        '\n💰 Estimated Total Cost: \$${_itinerary!.totalCost.toStringAsFixed(0)}');
+
+    itineraryText.writeln('\n--- Daily Itinerary ---');
+
+    // Loop through each day and its activities
+    for (int i = 0; i < _itinerary!.days.length; i++) {
+      final day = _itinerary!.days[i];
+      itineraryText.writeln('\nDay ${day.day}:');
+      itineraryText.writeln(
+          '  Cost for the day: \$${day.estimatedCost.toStringAsFixed(0)}');
+
+      // Loop through each activity for the current day
+      for (int j = 0; j < day.activities.length; j++) {
+        final activity = day.activities[j];
+        itineraryText.writeln('  ${j + 1}. ${activity.name}');
+        itineraryText.writeln('     - Time: ${activity.timeSlot}');
+        itineraryText.writeln('     - Category: ${activity.category}');
+        itineraryText
+            .writeln('     - Cost: \$${activity.cost.toStringAsFixed(0)}');
+        itineraryText.writeln(
+            '     - Location: ${activity.location.isNotEmpty ? activity.location : 'Not specified'}');
+        itineraryText.writeln('     - Description: ${activity.description}');
+      }
+    }
+
+    try {
+      SharePlus.instance.share(
+        ShareParams(text: itineraryText.toString(), subject: 'My Itinerary'),
+      );
+    } catch (e) {
+      // Handle any errors that might occur during sharing
+      log('Error sharing itinerary: $e');
+    }
   }
 
   Widget _buildActivityTile(Activity activity, bool isLast) {
