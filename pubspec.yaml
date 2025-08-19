@@ -67,6 +67,7 @@ dependencies:
   like_button: ^2.0.5
   model_viewer_plus: ^1.8.0
   responsive_framework: ^1.4.0
+  share_plus: ^11.1.0
   shared_preferences: ^2.5.3
   timeago: ^3.7.0
   url_launcher: ^6.3.0
