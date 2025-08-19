@@ -703,7 +703,6 @@ class _ItineraryGenerationScreenState extends State<ItineraryGenerationScreen>
     );
   }
 
-  // Add this new function inside the _ItineraryGenerationScreenState class
   Future<void> _shareItinerary() async {
     // Ensure the itinerary data is available before trying to share
     if (_itinerary == null) {
@@ -746,14 +745,9 @@ class _ItineraryGenerationScreenState extends State<ItineraryGenerationScreen>
     }
 
     try {
-      // Use the share_plus package to share the formatted text
-      // ignore: deprecated_member_use
-      log('itenerary , $itineraryText');
       SharePlus.instance.share(
         ShareParams(text: itineraryText.toString(), subject: 'My Itinerary'),
       );
-      // await Share.share(itineraryText.toString(),
-      //     subject: 'My ${_itinerary!.title} Itinerary');
     } catch (e) {
       // Handle any errors that might occur during sharing
       log('Error sharing itinerary: $e');
