@@ -18,6 +18,8 @@ class PostModel {
   final int? likesCount;
   final int? postType;
   final int? commentsCount;
+  final bool? isFromCommunity;
+  final String? communityId;
   final bool? isPostLiked;
 
   PostModel({
@@ -25,6 +27,8 @@ class PostModel {
     this.postType = 0,
     this.likesCount = 0,
     this.commentsCount = 0,
+    this.isFromCommunity = false,
+    this.communityId,
     this.isPostLiked = false,
     this.imageUrl,
     required this.title,
@@ -40,13 +44,15 @@ class PostModel {
 
   Map<String, dynamic> toJson() => _$PostModelToJson(this);
 
-  factory PostModel.fromEntity(PostEntity entity,{UserModel? author}) {
+  factory PostModel.fromEntity(PostEntity entity, {UserModel? author}) {
     return PostModel(
       postId: entity.postId,
       imageUrl: entity.imageUrl,
       title: entity.title,
       location: entity.location,
       timeStamp: entity.timeStamp,
+      isFromCommunity: entity.isFromCommunity,
+      communityId: entity.communityId,
       author: author ?? UserModel.fromEntity(entity.author),
       postByUid: entity.postByUid,
       likesCount: entity.likesCount,
@@ -69,6 +75,8 @@ class PostModel {
       postType: postType,
       commentsCount: commentsCount,
       isPostLiked: isPostLiked,
+      isFromCommunity: isFromCommunity,
+      communityId: communityId,
     );
   }
 }

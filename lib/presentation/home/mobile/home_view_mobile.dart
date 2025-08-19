@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/gen/assets.gen.dart';
+import 'package:monumento/presentation/community/mobile/community_view_mobile.dart';
 import 'package:monumento/presentation/discover/mobile/discover_view_mobile.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/new_post_bottom_sheet.dart';
 import 'package:monumento/presentation/feed/mobile/your_feed_view_mobile.dart';
@@ -35,7 +36,10 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
           const PopularMonumentsViewMobile(),
           const YourFeedViewMobile(),
           Container(),
+          const CommunitiesViewMobile(), // ADD THIS LINE
+
           const DiscoverViewMobile(),
+
           const ProfileScreenMobile(),
         ],
       ),
@@ -105,6 +109,21 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
               ),
             ),
           ),
+          // ADD THIS NEW COMMUNITIES TAB
+          BottomNavigationBarItem(
+            label: 'Communities',
+            icon: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Icon(Icons.groups_outlined, color: Colors.grey[600])),
+            activeIcon: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Icon(
+                Icons.groups,
+                color: AppColor.appPrimary,
+              ),
+            ),
+          ),
+
           BottomNavigationBarItem(
               label: 'Discover',
               icon: Padding(

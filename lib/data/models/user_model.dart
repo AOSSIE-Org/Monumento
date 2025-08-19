@@ -2,8 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:monumento/data/models/monument_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 
-import 'post_model.dart';
-
 part 'user_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -18,6 +16,8 @@ class UserModel {
   final List<String> followers;
   final List<String> posts;
   final List<MonumentModel> savedMonuments;
+  final List<String> myCommunities;
+  final List<String> joinedCommunities;
 
   const UserModel({
     this.following = const [],
@@ -30,6 +30,8 @@ class UserModel {
     this.savedMonuments = const [],
     this.status = " Status",
     this.username,
+    this.myCommunities = const [],
+    this.joinedCommunities = const [],
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,8 @@ class UserModel {
       savedMonuments: entity.savedMonuments
           .map((monument) => MonumentModel.fromEntity(monument))
           .toList(),
+      myCommunities: List<String>.from(entity.myCommunities),
+      joinedCommunities: List<String>.from(entity.joinedCommunities),
     );
   }
 
@@ -66,6 +70,8 @@ class UserModel {
       followers: followers,
       following: following,
       posts: posts,
+      myCommunities: List<String>.from(myCommunities),
+      joinedCommunities: List<String>.from(joinedCommunities),
     );
   }
 
@@ -90,6 +96,8 @@ class UserModel {
       followers: mappedFollowers,
       following: mappedFollowing,
       posts: mappedPosts,
+      joinedCommunities: data['joinedCommunities'] as List<String>,
+      myCommunities: data['myCommunities'] as List<String>,
     );
   }
 
@@ -104,6 +112,8 @@ class UserModel {
       'followers': followers,
       'following': following,
       'posts': posts,
+      'myCommunities': myCommunities,
+      'joinedCommunities': joinedCommunities,
     };
   }
 }
