@@ -3,6 +3,7 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:monumento/application/popular_monuments/ai_chat_bot/ai_chat_bot_bloc.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:monumento/application/popular_monuments/nearby_places/nearby_pla
 import 'package:monumento/domain/entities/local_expert_entity.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 import 'package:monumento/gen/assets.gen.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/ai_chat_view_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_model_view_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_more_details_view.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_tile_mobile.dart';
@@ -425,6 +427,10 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                       width: 380,
                       child: Column(
                         children: [
+                          // ADD THIS AI CHAT BUTTON HERE - right after the monument info
+                          _buildAiChatButton(state.wikiData.extract),
+                          const SizedBox(height: 20),
+
                           Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -765,6 +771,49 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
             ],
           ),
         ));
+  }
+
+  Widget _buildAiChatButton(String monumentDescription) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            backgroundColor: AppColor.appSecondary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BlocProvider<AiChatBloc>(
+                  create: (context) => locator<AiChatBloc>(),
+                  child: AiChatViewMobile(
+                    monument: widget.monument,
+                    monumentDescription: monumentDescription,
+                  ),
+                ),
+              ),
+            );
+          },
+          icon: const Icon(
+            Icons.smart_toy,
+            color: AppColor.appPrimary,
+            size: 20,
+          ),
+          label: Text(
+            "Ask AI Assistant",
+            style: AppTextStyles.s16(
+              color: AppColor.appPrimary,
+              fontType: FontType.MEDIUM,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
