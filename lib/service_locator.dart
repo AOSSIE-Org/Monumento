@@ -11,6 +11,7 @@ import 'package:monumento/application/feed/feed_bloc.dart';
 import 'package:monumento/application/feed/new_post/new_post_bloc.dart';
 import 'package:monumento/application/feed/recommended_users/recommended_users_bloc.dart';
 import 'package:monumento/application/notifications/notifications_bloc.dart';
+import 'package:monumento/application/popular_monuments/ai_chat_bot/ai_chat_bot_bloc.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_3d_model/monument_3d_model_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
@@ -19,8 +20,10 @@ import 'package:monumento/application/popular_monuments/popular_monuments_bloc.d
 import 'package:monumento/application/profile/follow/follow_bloc.dart';
 import 'package:monumento/application/profile/profile_posts/profile_posts_bloc.dart';
 import 'package:monumento/application/profile/update_profile/update_profile_bloc.dart';
+import 'package:monumento/data/repositories/ai_chat_repository_impl.dart';
 import 'package:monumento/data/repositories/appwrite_authentication_repository.dart';
 import 'package:monumento/data/repositories/appwrite_social_repository.dart';
+import 'package:monumento/domain/repositories/ai_chat_repository.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/monument_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
@@ -74,6 +77,10 @@ void setupAppRepos() {
             database: locator<Databases>(),
             storage: locator<Storage>(),
           ));
+  // AI Chat Repository
+  locator.registerLazySingleton<AiChatRepository>(
+    () => AiChatRepositoryImpl(),
+  );
 }
 
 void setupAppBlocs() {
@@ -120,4 +127,8 @@ void setupAppBlocs() {
       () => MonumentCheckinBloc(locator<SocialRepository>()));
   locator.registerLazySingleton(
       () => NearbyPlacesBloc(locator<MonumentRepository>()));
+  // AI Chat Bloc
+  locator.registerFactory<AiChatBloc>(
+    () => AiChatBloc(locator<AiChatRepository>()),
+  );
 }
