@@ -82,10 +82,8 @@ class MyApp extends StatelessWidget {
       scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
       title: 'Monumento',
       theme: ThemeData(
-          useMaterial3: false,
-          tabBarTheme: const TabBarTheme(
-            indicatorColor: AppColor.appPrimary,
-          )),
+        useMaterial3: false,
+      ),
       builder: (context, child) {
         return DevicePreview.appBuilder(
           context,

@@ -662,12 +662,6 @@ class AppTheme {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
-        cardTheme: CardTheme(
-          elevation: 0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          color: surface,
-        ),
         appBarTheme: const AppBarTheme(
           elevation: 0,
           centerTitle: true,
