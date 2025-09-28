@@ -12,6 +12,7 @@ import 'package:monumento/domain/entities/monument_entity.dart';
 import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_model_view_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_more_details_view.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_carousel_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_tile_mobile.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
@@ -33,6 +34,8 @@ class MonumentDetailsViewMobile extends StatefulWidget {
 
 class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
   int _selectedPlace = 0;
+  int _currentImageIndex = 0;
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
@@ -51,6 +54,12 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
       ),
     );
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   String _getTruncatedText(String text, int maxLength) {
@@ -145,19 +154,86 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
               const SizedBox(
                 height: 15,
               ),
-              ImageTile(index: 0, images: images, width: 367, height: 225),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: List.generate(
-                  images.length,
-                  (index) => ImageTile(index: index, images: images),
+              Container(
+                height: 225.h,
+                width: 367.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: images.length * 1000, 
+                  onPageChanged: (index) {
+                    setState(() {
+                      _currentImageIndex = index % images.length;
+                    });
+                  },
+                  itemBuilder: (context, index) {
+                    final imageIndex = index % images.length;
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageCarousel(
+                              images: images,
+                              index: imageIndex,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(11),
+                          image: DecorationImage(
+                            image: CachedNetworkImageProvider(images[imageIndex]),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
               const SizedBox(
                 height: 10,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: List.generate(images.length, (index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.sp),
+                        border: _currentImageIndex == index
+                            ? Border.all(
+                                color: AppColor.appPrimary,
+                                width: 2,
+                              )
+                            : null,
+                      ),
+                      child: ImageTile(
+                        index: index,
+                        images: images,
+                        width: 64.w,
+                        height: 64.h,
+                        onTap: () {
+                          setState(() {
+                            _currentImageIndex = index;
+                          });
+                          final currentPage = _pageController.page?.toInt() ?? 0;
+                          final currentActualIndex = currentPage % images.length;
+                          final pagesToJump = index - currentActualIndex;
+                          _pageController.jumpToPage(currentPage + pagesToJump);
+                        },
+                      ),
+                    );
+                  }),
+                ),
+              ),
+              const SizedBox(
+                height: 20,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
