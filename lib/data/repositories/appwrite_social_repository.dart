@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monumento/data/models/comment_model.dart';
 import 'package:monumento/data/models/notification_model.dart';
 import 'package:monumento/data/models/post_model.dart';
+import 'package:monumento/data/models/story_model.dart';
 import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
@@ -2005,6 +2006,268 @@ class AppwriteSocialRepository implements SocialRepository {
     } catch (e) {
       log('Error getting more comments: $e', stackTrace: StackTrace.current);
       throw Exception('Failed to get more comments: $e');
+    }
+  }
+  // Add these methods to AppwriteSocialRepository class
+
+  @override
+  Future<StoryModel> addStory({
+    required File imageFile,
+    String? caption,
+  }) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn || user == null) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      // Upload image to storage
+      String fileName = const Uuid().v4();
+      String newFilename = "$fileName.jpg";
+
+      final fileResult = await _storage.createFile(
+        bucketId: _imagesBucketId,
+        fileId: ID.unique(),
+        file: InputFile.fromPath(
+          path: imageFile.path,
+          filename: newFilename,
+        ),
+      );
+
+      // Construct media URL
+      String mediaUrl =
+          "$_endpoint/storage/buckets/$_imagesBucketId/files/${fileResult.$id}/view?project=$_projectId&mode=admin";
+
+      // Calculate expiry time (24 hours from now)
+      final now = DateTime.now();
+      final expiryDateTime = now.add(const Duration(hours: 24));
+      final expiryTime = expiryDateTime.millisecondsSinceEpoch;
+
+      // Create story document
+      final storyId = ID.unique();
+      final uploadTimestamp = now.millisecondsSinceEpoch;
+
+      final storyData = {
+        'userId': user.uid,
+        'mediaUrl': mediaUrl,
+        'caption': caption ?? '',
+        'mediaType': 'image',
+        'expiryTime': expiryTime,
+        'uploadTimestamp': uploadTimestamp,
+        'views': 0,
+        'viewedBy': <String>[],
+      };
+
+      final result = await _database.createDocument(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_STORIES_ID'] ?? 'stories',
+        documentId: storyId,
+        data: storyData,
+      );
+
+      return StoryModel.fromJson({
+        ...storyData,
+        '\$id': result.$id,
+      });
+    } on AppwriteException catch (e) {
+      log('Error adding story: ${e.message}', stackTrace: StackTrace.current);
+      throw Exception('Failed to add story: ${e.message}');
+    } catch (e) {
+      log('Unexpected error adding story: $e', stackTrace: StackTrace.current);
+      throw Exception('Failed to add story: $e');
+    }
+  }
+
+  @override
+  Future<List<StoryModel>> fetchStories() async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      // Fetch all stories
+      final documents = await _database.listDocuments(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_STORIES_ID'] ?? 'stories',
+        queries: [
+          Query.orderDesc('uploadTimestamp'),
+          Query.limit(100),
+        ],
+      );
+
+      List<StoryModel> stories = [];
+
+      for (var doc in documents.documents) {
+        try {
+          final storyData = Map<String, dynamic>.from(doc.data);
+          storyData['\$id'] = doc.$id;
+
+          final story = StoryModel.fromJson(storyData);
+
+          // Filter out expired stories (simple approach - no background deletion)
+          if (!story.isExpired) {
+            // Fetch author data
+            try {
+              final authorDoc = await _database.getDocument(
+                databaseId: _databaseId,
+                collectionId: dotenv.env['APPWRITE_USER_ID'] ?? 'users',
+                documentId: story.userId,
+              );
+
+              Map<String, dynamic> authorData =
+                  Map<String, dynamic>.from(authorDoc.data);
+              authorData['uid'] = authorData['uid'] ?? authorDoc.$id;
+
+              // Handle posts field for author
+              if (authorData['posts'] == null) {
+                authorData['posts'] = <String>[];
+              } else if (authorData['posts'] is Map) {
+                authorData['posts'] = <String>[];
+              } else if (authorData['posts'] is List) {
+                authorData['posts'] = List<String>.from(
+                    authorData['posts'].map((item) => item.toString()));
+              }
+
+              stories.add(story.copyWith(author: authorData));
+            } catch (e) {
+              log('Error fetching story author: $e');
+              stories.add(story);
+            }
+          }
+        } catch (e) {
+          log('Error processing story: $e');
+          continue;
+        }
+      }
+
+      return stories;
+    } on AppwriteException catch (e) {
+      log('Error fetching stories: ${e.message}',
+          stackTrace: StackTrace.current);
+      throw Exception('Failed to fetch stories: ${e.message}');
+    } catch (e) {
+      log('Unexpected error fetching stories: $e',
+          stackTrace: StackTrace.current);
+      throw Exception('Failed to fetch stories: $e');
+    }
+  }
+
+  @override
+  Future<void> addStoryView({
+    required String storyId,
+    required String userId,
+  }) async {
+    try {
+      final storyDoc = await _database.getDocument(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_STORIES_ID'] ?? 'stories',
+        documentId: storyId,
+      );
+
+      List<String> viewedBy =
+          List<String>.from(storyDoc.data['viewedBy'] ?? []);
+      int viewCount = storyDoc.data['views'] ?? 0;
+
+      // Check if user already viewed
+      if (!viewedBy.contains(userId)) {
+        viewedBy.add(userId);
+        viewCount += 1;
+
+        await _database.updateDocument(
+          databaseId: _databaseId,
+          collectionId: dotenv.env['APPWRITE_STORIES_ID'] ?? 'stories',
+          documentId: storyId,
+          data: {
+            'viewedBy': viewedBy,
+            'views': viewCount,
+          },
+        );
+      }
+    } on AppwriteException catch (e) {
+      log('Error adding story view: ${e.message}',
+          stackTrace: StackTrace.current);
+      throw Exception('Failed to add story view: ${e.message}');
+    } catch (e) {
+      log('Unexpected error adding story view: $e',
+          stackTrace: StackTrace.current);
+      throw Exception('Failed to add story view: $e');
+    }
+  }
+
+  @override
+  Future<void> deleteStory({required String storyId}) async {
+    var (userLoggedIn, user) = await authenticationRepository.getUser();
+    if (!userLoggedIn) {
+      throw Exception("User not logged in");
+    }
+
+    try {
+      final storyDoc = await _database.getDocument(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_STORIES_ID'] ?? 'stories',
+        documentId: storyId,
+      );
+
+      // Verify user owns the story
+      if (storyDoc.data['userId'] != user!.uid) {
+        throw Exception("Unauthorized: You can only delete your own stories");
+      }
+
+      await _database.deleteDocument(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_STORIES_ID'] ?? 'stories',
+        documentId: storyId,
+      );
+    } on AppwriteException catch (e) {
+      log('Error deleting story: ${e.message}', stackTrace: StackTrace.current);
+      throw Exception('Failed to delete story: ${e.message}');
+    } catch (e) {
+      log('Unexpected error deleting story: $e',
+          stackTrace: StackTrace.current);
+      throw Exception('Failed to delete story: $e');
+    }
+  }
+
+  @override
+  Future<List<StoryModel>> getUserStories({required String userId}) async {
+    try {
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      final documents = await _database.listDocuments(
+        databaseId: _databaseId,
+        collectionId: dotenv.env['APPWRITE_STORIES_ID'] ?? 'stories',
+        queries: [
+          Query.equal('userId', userId),
+          Query.orderDesc('uploadTimestamp'),
+        ],
+      );
+
+      List<StoryModel> stories = [];
+
+      for (var doc in documents.documents) {
+        try {
+          final storyData = Map<String, dynamic>.from(doc.data);
+          storyData['\$id'] = doc.$id;
+
+          final story = StoryModel.fromJson(storyData);
+
+          // Only include non-expired stories
+          if (!story.isExpired) {
+            stories.add(story);
+          }
+        } catch (e) {
+          log('Error processing story: $e');
+          continue;
+        }
+      }
+
+      return stories;
+    } catch (e) {
+      log('Error fetching user stories: $e', stackTrace: StackTrace.current);
+      throw Exception('Failed to fetch user stories: $e');
     }
   }
 }
