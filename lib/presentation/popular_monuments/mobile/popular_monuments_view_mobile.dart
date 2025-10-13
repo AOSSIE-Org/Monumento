@@ -44,12 +44,14 @@ class _PopularMonumentsViewMobileState
   Future<void> _loadStories() async {
     try {
       final stories = await _socialRepository.fetchStories();
+      if (!mounted) return;
       setState(() {
         _stories = stories;
         _storiesLoading = false;
       });
     } catch (e) {
       print('Error loading stories: $e');
+      if (!mounted) return;
       setState(() {
         _storiesLoading = false;
       });
