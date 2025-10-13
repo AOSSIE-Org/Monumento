@@ -73,7 +73,7 @@ class _PopularMonumentsViewMobileState
   }
 
   void _viewStory(StoryModel story) async {
-    final result = await Navigator.push<bool>(
+    await Navigator.push<bool>(
       context,
       MaterialPageRoute(
         builder: (ctx) => StoryFullViewScreen(story: story),
@@ -82,11 +82,6 @@ class _PopularMonumentsViewMobileState
       // Reload stories in case view count changed
       _loadStories();
     });
-
-    // Reload stories if a new story was created
-    if (result == true) {
-      _loadStories();
-    }
   }
 
   @override
@@ -140,7 +135,7 @@ class _PopularMonumentsViewMobileState
                     ),
                   ),
                 )
-              else if (_stories.isNotEmpty || true) // Show even if no stories
+              else // Always show stories section (add button available)
                 StoriesSection(
                   stories: _stories,
                   onAddStory: _navigateToCreateStory,
