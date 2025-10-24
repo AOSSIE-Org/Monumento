@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:monumento/data/models/comment_model.dart';
 import 'package:monumento/data/models/notification_model.dart';
 import 'package:monumento/data/models/post_model.dart';
+import 'package:monumento/data/models/story_model.dart';
 import 'package:monumento/data/models/user_model.dart';
 import 'package:monumento/domain/entities/user_entity.dart';
 
@@ -77,4 +78,31 @@ abstract interface class SocialRepository {
   Future<bool> checkInStatus({required String monumentId});
 
   Future<List<UserModel>> loadUser(List<String> userConnections);
+  // Stories methods
+  /// Upload a new story with optional caption
+  /// Returns the created [StoryModel]
+  Future<StoryModel> addStory({
+    required File imageFile,
+    String? caption,
+  });
+
+  /// Fetch all active (non-expired) stories
+  /// Returns a list of [StoryModel] sorted by upload time
+  Future<List<StoryModel>> fetchStories();
+
+  /// Add a view to a story
+  /// Records that a user has viewed the story and increments view count
+  /// Only counts once per user
+  Future<void> addStoryView({
+    required String storyId,
+    required String userId,
+  });
+
+  /// Delete a story (only story owner can delete)
+  /// Throws exception if user doesn't own the story
+  Future<void> deleteStory({required String storyId});
+
+  /// Get all stories from a specific user
+  /// Returns a list of active stories from the specified user
+  Future<List<StoryModel>> getUserStories({required String userId});
 }
