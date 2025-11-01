@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:monumento/data/models/monument_approval_status.dart';
 import 'package:wikipedia/wikipedia.dart' as wiki;
 
 import '../../domain/repositories/authentication_repository.dart';
@@ -28,15 +29,24 @@ class AppwriteMonumentRepository implements MonumentRepository {
 
   final databaseId = dotenv.env['APPWRITE_DATABSE_ID'] ?? 'dbmonumento';
   final userCollectionId = dotenv.env['APPWRITE_USER_COLLECTION_ID'] ?? 'users';
-  final monumentsCollectionId = dotenv.env['APPWRITE_MONUMENTS_COLLECTION_ID'] ?? 'monuments';
-  final postsCollectionId = dotenv.env['APPWRITE_POSTS_COLLECTION_ID'] ?? 'posts';
-  final localExpertsCollectionId = dotenv.env['APPWRITE_LOCALEXPERTS_COLLECTION_ID'] ?? 'localExperts';
+  final monumentsCollectionId =
+      dotenv.env['APPWRITE_MONUMENTS_COLLECTION_ID'] ?? 'monuments';
+  final postsCollectionId =
+      dotenv.env['APPWRITE_POSTS_COLLECTION_ID'] ?? 'posts';
+  final localExpertsCollectionId =
+      dotenv.env['APPWRITE_LOCALEXPERTS_COLLECTION_ID'] ?? 'localExperts';
 
   @override
   Future<List<MonumentModel>> getPopularMonuments() async {
     final response = await _database.listDocuments(
       databaseId: databaseId,
       collectionId: monumentsCollectionId,
+      queries: [
+        Query.equal(
+          'approvalStatus',
+          MonumentApprovalStatus.approved.value,
+        )
+      ],
     );
 
     return response.documents
@@ -122,7 +132,8 @@ class AppwriteMonumentRepository implements MonumentRepository {
       }
 
       if (currentSavedMonuments.contains(monumentId)) {
-        return true;       }
+        return true;
+      }
 
       currentSavedMonuments.add(monumentId);
       await _database.updateDocument(
