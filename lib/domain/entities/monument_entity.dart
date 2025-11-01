@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:monumento/data/models/monument_approval_status.dart';
 
 import 'local_expert_entity.dart';
 
@@ -17,6 +18,14 @@ class MonumentEntity extends Equatable {
   final bool has3DModel;
   final String? modelLink;
   final List<LocalExpertEntity> localExperts;
+  final MonumentApprovalStatus approvalStatus;
+  final int upVotingPoints;
+  final int downVotingPoints;
+  final String? submittedByUserId;
+  final DateTime? submittedAt;
+  final String? reviewNotes;
+  final List<String> upvotedBy;
+  final List<String> downvotedBy;
 
   const MonumentEntity({
     required this.rating,
@@ -33,6 +42,15 @@ class MonumentEntity extends Equatable {
     this.has3DModel = false,
     this.modelLink,
     this.localExperts = const [],
+    // ✅ NEW DEFAULTS
+    this.approvalStatus = MonumentApprovalStatus.pending,
+    this.upVotingPoints = 0,
+    this.downVotingPoints = 0,
+    this.submittedByUserId,
+    this.submittedAt,
+    this.reviewNotes,
+    this.upvotedBy = const [],
+    this.downvotedBy = const [],
   });
 
   /// Creates a [MonumentEntity] from an Appwrite document
@@ -46,7 +64,7 @@ class MonumentEntity extends Equatable {
       name: document['name'] ?? '',
       city: document['city'] ?? '',
       country: document['country'] ?? '',
-      imageUrl: document['image'] ?? '', 
+      imageUrl: document['image'] ?? '',
       image_1x1_: document['image_1x1_'] ?? '',
       wiki: document['wikipediaLink'] ?? '',
       rating: (document['rating'] ?? 0.0).toDouble(),
@@ -60,6 +78,25 @@ class MonumentEntity extends Equatable {
       has3DModel: document['has3DModel'] ?? false,
       modelLink: document['modelLink'],
       localExperts: const [],
+      // ✅ NEW MAPPINGS
+      approvalStatus: MonumentApprovalStatus.values.firstWhere(
+        (e) => e.name == (document['approvalStatus'] ?? 'pending'),
+        orElse: () => MonumentApprovalStatus.pending,
+      ),
+      upVotingPoints: document['upVotingPoints'] ?? 0,
+      downVotingPoints: document['downVotingPoints'] ?? 0,
+      submittedByUserId: document['submittedByUserId'],
+      submittedAt: document['submittedAt'] != null
+          ? DateTime.tryParse(document['submittedAt'])
+          : null,
+      reviewNotes: document['reviewNotes'],
+      upvotedBy:
+          (document['upvotedBy'] as List?)?.map((e) => e.toString()).toList() ??
+              const [],
+      downvotedBy: (document['downvotedBy'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
     );
   }
 
@@ -79,5 +116,14 @@ class MonumentEntity extends Equatable {
         has3DModel,
         modelLink,
         localExperts,
+        // ✅ NEW PROPS
+        approvalStatus,
+        upVotingPoints,
+        downVotingPoints,
+        submittedByUserId,
+        submittedAt,
+        reviewNotes,
+        upvotedBy,
+        downvotedBy,
       ];
 }

@@ -118,8 +118,8 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
             icon: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Icon(Icons.groups_outlined, color: Colors.grey[600])),
-            activeIcon: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+            activeIcon: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
               child: Icon(
                 Icons.groups,
                 color: AppColor.appPrimary,
