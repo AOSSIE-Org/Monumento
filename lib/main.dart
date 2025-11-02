@@ -7,10 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:monumento/application/monument_review_hub/review_hub_provider.dart';
+import 'package:monumento/domain/repositories/review_hub_repository.dart';
 import 'package:monumento/presentation/authentication/login_view.dart';
 import 'package:monumento/service_locator.dart';
 import 'package:monumento/utils/app_colors.dart';
 import 'package:monumento/utils/bloc_observer_logger.dart';
+import 'package:provider/provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'application/authentication/authentication_bloc.dart';
@@ -73,36 +76,44 @@ class MyApp extends StatelessWidget {
         designSize = const Size(360, 690);
       }
     }
+    final reviewHubRepo = locator<ReviewHubRepository>();
 
-    return MaterialApp.router(
-      // ignore: deprecated_member_use
-      useInheritedMediaQuery: true,
-      locale: DevicePreview.locale(context),
-      routerConfig: router,
-      scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
-      title: 'Monumento',
-      theme: ThemeData(
-        useMaterial3: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ReviewHubProvider(reviewHubRepo),
+        ),
+      ],
+      child: MaterialApp.router(
+        // ignore: deprecated_member_use
+        useInheritedMediaQuery: true,
+        locale: DevicePreview.locale(context),
+        routerConfig: router,
+        scrollBehavior: NoThumbScrollBehavior().copyWith(scrollbars: false),
+        title: 'Monumento',
+        theme: ThemeData(
+          useMaterial3: false,
+        ),
+        builder: (context, child) {
+          return DevicePreview.appBuilder(
+            context,
+            ResponsiveBreakpoints.builder(
+              child: ScreenUtilInit(
+                  designSize: designSize,
+                  minTextAdapt: true,
+                  builder: (context, _) {
+                    return child!;
+                  }),
+              breakpoints: [
+                const Breakpoint(start: 0, end: 450, name: MOBILE),
+                const Breakpoint(start: 451, end: 800, name: TABLET),
+                const Breakpoint(start: 801, end: 1920, name: DESKTOP),
+                const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
+              ],
+            ),
+          );
+        },
       ),
-      builder: (context, child) {
-        return DevicePreview.appBuilder(
-          context,
-          ResponsiveBreakpoints.builder(
-            child: ScreenUtilInit(
-                designSize: designSize,
-                minTextAdapt: true,
-                builder: (context, _) {
-                  return child!;
-                }),
-            breakpoints: [
-              const Breakpoint(start: 0, end: 450, name: MOBILE),
-              const Breakpoint(start: 451, end: 800, name: TABLET),
-              const Breakpoint(start: 801, end: 1920, name: DESKTOP),
-              const Breakpoint(start: 1921, end: double.infinity, name: '4K'),
-            ],
-          ),
-        );
-      },
     );
   }
 }

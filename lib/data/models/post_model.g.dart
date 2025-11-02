@@ -11,6 +11,8 @@ PostModel _$PostModelFromJson(Map<String, dynamic> json) => PostModel(
       postType: (json['postType'] as num?)?.toInt() ?? 0,
       likesCount: (json['likesCount'] as num?)?.toInt() ?? 0,
       commentsCount: (json['commentsCount'] as num?)?.toInt() ?? 0,
+      isFromCommunity: json['isFromCommunity'] as bool? ?? false,
+      communityId: json['communityId'] as String?,
       isPostLiked: json['isPostLiked'] as bool? ?? false,
       imageUrl: json['imageUrl'] as String?,
       title: json['title'] as String,
@@ -31,5 +33,7 @@ Map<String, dynamic> _$PostModelToJson(PostModel instance) => <String, dynamic>{
       'likesCount': instance.likesCount,
       'postType': instance.postType,
       'commentsCount': instance.commentsCount,
+      'isFromCommunity': instance.isFromCommunity,
+      'communityId': instance.communityId,
       'isPostLiked': instance.isPostLiked,
     };

@@ -19,6 +19,13 @@ class UserEntity extends Equatable {
   final List<String> myCommunities;
   final List<String> joinedCommunities;
 
+  /// NEW: Contribution & Reward System
+  final int contributionPoints;
+  final bool isTrustedUser;
+  final int monumentsSubmitted;
+  final int reviewsCompleted;
+  final List<String> votedMonuments;
+
   const UserEntity({
     this.following = const [],
     this.followers = const [],
@@ -32,11 +39,33 @@ class UserEntity extends Equatable {
     required this.username,
     this.myCommunities = const [],
     this.joinedCommunities = const [],
+    this.contributionPoints = 0,
+    this.isTrustedUser = false,
+    this.monumentsSubmitted = 0,
+    this.reviewsCompleted = 0,
+    this.votedMonuments = const [],
   });
 
   @override
-  List<Object> get props {
-    return [uid];
+  List<Object?> get props {
+    return [
+      uid,
+      email,
+      name,
+      profilePictureUrl,
+      status,
+      username,
+      followers,
+      following,
+      posts,
+      myCommunities,
+      joinedCommunities,
+      contributionPoints,
+      isTrustedUser,
+      monumentsSubmitted,
+      reviewsCompleted,
+      votedMonuments,
+    ];
   }
 
   factory UserEntity.fromDocument(Document doc) {
@@ -67,6 +96,12 @@ class UserEntity extends Equatable {
       joinedCommunities: data['joinedCommunities'] != null
           ? (data['joinedCommunities'] as List).map<String>((e) => e).toList()
           : [],
+      // NEW
+      contributionPoints: data['contributionPoints'] ?? 0,
+      isTrustedUser: data['isTrustedUser'] ?? false,
+      monumentsSubmitted: data['monumentsSubmitted'] ?? 0,
+      reviewsCompleted: data['reviewsCompleted'] ?? 0,
+      votedMonuments: List<String>.from(data['votedMonuments'] ?? []),
     );
   }
   factory UserEntity.fromMap(Map<String, dynamic> data) {
@@ -93,6 +128,15 @@ class UserEntity extends Equatable {
               ?.map((e) => e.toString())
               .toList() ??
           [],
+      // NEW
+      contributionPoints: data['contributionPoints'] as int? ?? 0,
+      isTrustedUser: data['isTrustedUser'] as bool? ?? false,
+      monumentsSubmitted: data['monumentsSubmitted'] as int? ?? 0,
+      reviewsCompleted: data['reviewsCompleted'] as int? ?? 0,
+      votedMonuments: (data['votedMonuments'] as List?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
     );
   }
 
@@ -108,7 +152,13 @@ class UserEntity extends Equatable {
       'followers': followers,
       'posts': posts,
       'myCommunities': myCommunities,
-      'joinedCommunities': joinedCommunities
+      'joinedCommunities': joinedCommunities,
+      // NEW
+      'contributionPoints': contributionPoints,
+      'isTrustedUser': isTrustedUser,
+      'monumentsSubmitted': monumentsSubmitted,
+      'reviewsCompleted': reviewsCompleted,
+      'votedMonuments': votedMonuments,
     };
   }
 

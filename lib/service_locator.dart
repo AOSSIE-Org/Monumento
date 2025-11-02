@@ -26,6 +26,7 @@ import 'package:monumento/data/repositories/appwrite_social_repository.dart';
 import 'package:monumento/domain/repositories/ai_chat_repository.dart';
 import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/monument_repository.dart';
+import 'package:monumento/domain/repositories/review_hub_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 
 import 'application/popular_monuments/nearby_places/nearby_places_bloc.dart';
@@ -80,6 +81,13 @@ void setupAppRepos() {
   // AI Chat Repository
   locator.registerLazySingleton<AiChatRepository>(
     () => AiChatRepositoryImpl(),
+  );
+  locator.registerLazySingleton<ReviewHubRepository>(
+    () => ReviewHubRepositoryImpl(
+      databases: locator<Databases>(),
+      databaseId: 'dbmonumento',
+      authenticationRepository: locator<AuthenticationRepository>(),
+    ),
   );
 }
 

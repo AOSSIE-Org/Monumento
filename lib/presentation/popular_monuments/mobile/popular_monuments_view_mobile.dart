@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:monumento/application/monument_review_hub/review_hub_screen.dart';
 import 'package:monumento/application/popular_monuments/monument_3d_model/monument_3d_model_bloc.dart';
 import 'package:monumento/data/models/story_model.dart';
-import 'package:monumento/domain/repositories/authentication_repository.dart';
 import 'package:monumento/domain/repositories/social_repository.dart';
 import 'package:monumento/gen/assets.gen.dart';
 import 'package:monumento/presentation/notification/desktop/notification_view_desktop.dart';
@@ -26,7 +26,6 @@ class PopularMonumentsViewMobile extends StatefulWidget {
 class _PopularMonumentsViewMobileState
     extends State<PopularMonumentsViewMobile> {
   late SocialRepository _socialRepository;
-  late AuthenticationRepository _authenticationRepository;
   List<StoryModel> _stories = [];
   bool _storiesLoading = true;
   @override
@@ -34,7 +33,6 @@ class _PopularMonumentsViewMobileState
     locator<Monument3dModelBloc>().add(const ViewMonument3DModel(
         monumentName: "Mount Rushmore National Memorial"));
     _socialRepository = locator<SocialRepository>();
-    _authenticationRepository = locator<AuthenticationRepository>();
 
     _loadStories();
 
@@ -144,26 +142,63 @@ class _PopularMonumentsViewMobileState
 
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.8,
-                child: PopularMonumentsViewMobileBodyBlocBuilder(),
+                child: const PopularMonumentsViewMobileBodyBlocBuilder(),
               ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          await Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const ScanMonumentsScreen()));
-        },
-        label: Text(
-          "Scan Monuments",
-          style: AppTextStyles.textStyle(
-              fontType: FontType.MEDIUM, size: 14, isBody: true),
-        ),
-        backgroundColor: AppColor.appPrimary,
-        extendedPadding:
-            const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton.extended(
+            heroTag: "scanMonumentsFAB",
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const ScanMonumentsScreen()));
+            },
+            label: Text(
+              "Scan Monuments",
+              style: AppTextStyles.textStyle(
+                fontType: FontType.MEDIUM,
+                size: 14,
+                isBody: true,
+              ),
+            ),
+            backgroundColor: AppColor.appPrimary,
+            extendedPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+          const SizedBox(height: 12),
+          FloatingActionButton.extended(
+            heroTag: "reviewHubFAB",
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const ReviewHubScreen(
+                    userId: '',
+                  ),
+                ),
+              );
+            },
+            label: Text(
+              "Review Hub",
+              style: AppTextStyles.textStyle(
+                  fontType: FontType.MEDIUM, size: 14, isBody: true),
+            ),
+            backgroundColor: AppColor.appPrimary,
+            extendedPadding:
+                const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        ],
       ),
     );
   }

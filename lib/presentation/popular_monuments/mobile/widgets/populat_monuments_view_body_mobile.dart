@@ -48,8 +48,7 @@ class PopularMonumentsViewMobileBodyBlocBuilder extends StatelessWidget {
 class PopularMonumentsGridViewWidget extends StatelessWidget {
   final List<MonumentEntity> monuments;
 
-  const PopularMonumentsGridViewWidget({Key? key, required this.monuments})
-      : super(key: key);
+  const PopularMonumentsGridViewWidget({super.key, required this.monuments});
 
   @override
   Widget build(BuildContext context) {

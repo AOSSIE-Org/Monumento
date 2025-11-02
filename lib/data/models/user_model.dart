@@ -19,6 +19,13 @@ class UserModel {
   final List<String> myCommunities;
   final List<String> joinedCommunities;
 
+  // NEW: Contribution & Reward System
+  final int contributionPoints;
+  final bool isTrustedUser;
+  final int monumentsSubmitted;
+  final int reviewsCompleted;
+  final List<String> votedMonuments;
+
   const UserModel({
     this.following = const [],
     this.followers = const [],
@@ -32,6 +39,11 @@ class UserModel {
     this.username,
     this.myCommunities = const [],
     this.joinedCommunities = const [],
+    this.contributionPoints = 0,
+    this.isTrustedUser = false,
+    this.monumentsSubmitted = 0,
+    this.reviewsCompleted = 0,
+    this.votedMonuments = const [],
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -56,6 +68,12 @@ class UserModel {
           .toList(),
       myCommunities: List<String>.from(entity.myCommunities),
       joinedCommunities: List<String>.from(entity.joinedCommunities),
+      // New mappings
+      contributionPoints: entity.contributionPoints,
+      isTrustedUser: entity.isTrustedUser,
+      monumentsSubmitted: entity.monumentsSubmitted,
+      reviewsCompleted: entity.reviewsCompleted,
+      votedMonuments: List<String>.from(entity.votedMonuments),
     );
   }
 
@@ -72,6 +90,14 @@ class UserModel {
       posts: posts,
       myCommunities: List<String>.from(myCommunities),
       joinedCommunities: List<String>.from(joinedCommunities),
+      // New mappings
+      contributionPoints: contributionPoints,
+      isTrustedUser: isTrustedUser,
+      monumentsSubmitted: monumentsSubmitted,
+      reviewsCompleted: reviewsCompleted,
+      votedMonuments: List<String>.from(votedMonuments),
+      savedMonuments:
+          savedMonuments.map((monument) => monument.toEntity()).toList(),
     );
   }
 
@@ -98,6 +124,13 @@ class UserModel {
       posts: mappedPosts,
       joinedCommunities: data['joinedCommunities'] as List<String>,
       myCommunities: data['myCommunities'] as List<String>,
+      // New fields
+      contributionPoints: data['contributionPoints'] as int? ?? 0,
+      isTrustedUser: data['isTrustedUser'] as bool? ?? false,
+      monumentsSubmitted: data['monumentsSubmitted'] as int? ?? 0,
+      reviewsCompleted: data['reviewsCompleted'] as int? ?? 0,
+      votedMonuments: data['votedMonuments'] as List<String>? ??
+          [], // List<String>.from(data['votedMonuments'] ?? []),
     );
   }
 
@@ -114,6 +147,12 @@ class UserModel {
       'posts': posts,
       'myCommunities': myCommunities,
       'joinedCommunities': joinedCommunities,
+      // New mappings
+      'contributionPoints': contributionPoints,
+      'isTrustedUser': isTrustedUser,
+      'monumentsSubmitted': monumentsSubmitted,
+      'reviewsCompleted': reviewsCompleted,
+      'votedMonuments': votedMonuments,
     };
   }
 }
