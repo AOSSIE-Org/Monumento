@@ -869,7 +869,7 @@ class _EditSuggestionDialogState extends State<EditSuggestionDialog> {
 
               // Field selection
               DropdownButtonFormField<String>(
-                initialValue: _selectedField,
+                value: _selectedField,
                 decoration: const InputDecoration(
                   labelText: 'Field to Edit',
                   border: OutlineInputBorder(),
