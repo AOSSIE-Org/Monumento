@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:monumento/data/models/itenerary_day_model.dart';
 import 'package:monumento/data/models/trip_prefrences_model.dart';
 import 'package:monumento/data/repositories/gemini_itenerary_repository.dart';
@@ -42,8 +43,9 @@ class _ItineraryGenerationScreenState extends State<ItineraryGenerationScreen>
       vsync: this,
     );
 
-    _geminiService =
-        GeminiItineraryRepo('AIzaSyBXLOnevgZto1DCcsHIikXbMbPRslVu8Ic');
+    _geminiService = GeminiItineraryRepo(
+      dotenv.env['GOOGLE_API_KEY'] ?? '',
+    );
     _generateItinerary();
   }
 

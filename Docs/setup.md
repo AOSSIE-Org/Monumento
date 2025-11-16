@@ -97,6 +97,7 @@ Fill in the following values in your `.env` file:
 
 ```
 GEOAPIFY_API_KEY=            # From Geoapify.com for location services
+GOOGLE_API_KEY=              # From Google Cloud Console for Gemini AI itinerary generation
 APPWRITE_DATABASE_ID=dbmonumento
 APPWRITE_USER_ID=users
 APPWRITE_POSTS_ID=posts
@@ -139,6 +140,16 @@ In your Appwrite Console:
 1. 📝 Sign up for an account at [Geoapify](https://www.geoapify.com/)
 2. 🔑 Create an API key
 3. ➕ Add the API key to your `.env` file as `GEOAPIFY_API_KEY`
+
+## 🤖 Step 5) Configure Google Gemini API (for AI Itinerary Generation)
+
+1. 📝 Go to [Google AI Studio](https://makersuite.google.com/app/apikey) or [Google Cloud Console](https://console.cloud.google.com/)
+2. 🔑 Create a new API key for Gemini API
+3. 🛡️ **Important**: Add API restrictions:
+   - Restrict to "Generative Language API" only
+   - Add application restrictions (HTTP referrers for web, or Android/iOS app restrictions)
+4. ➕ Add the API key to your `.env` file as `GOOGLE_API_KEY`
+5. ⚠️ **Never commit your `.env` file to version control**
 
 ## 🏃‍♂️ Running the Application
 
