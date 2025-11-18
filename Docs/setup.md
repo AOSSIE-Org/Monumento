@@ -1,115 +1,175 @@
-## Step 1) 🖥️ How to setup Project locally
+# 🏛️ Setup Guide for Monumento
 
-Clone the project
+This guide will walk you through setting up the Monumento app with Appwrite backend services.
 
-```
-  git clone https://github.com/AOSSIE-Org/Monumento.git
-```
+## 🚀 Step 1) Project Setup
 
-Go to the project directory
+### 📥 Clone the project
 
-```
-  cd Monumento
+```bash
+git clone https://github.com/AOSSIE-Org/Monumento.git
 ```
 
-Install dependencies
+### 📁 Navigate to the project directory
 
-```
-  flutter pub get
+```bash
+cd Monumento
 ```
 
-Create `.env` using template `.env.template` and add API keys
+### 📦 Install Flutter dependencies
 
+```bash
+flutter pub get
 ```
+
+### 🔑 Create environment file
+
+Create `.env` file using the template:
+
+```bash
 cat .env.template > .env
 ```
 
-Add the following API keys to the `.env` file
+## ☁️ Step 2) Configure Appwrite
 
-- `SERVER_CLIENT_ID`: Obtain this from the Google Cloud Console for Android configuration.
-- `GOOGLE_SIGNIN_APPLE_CLIENT_ID`: Obtain this from the Google Cloud Console for iOS configuration.
-- `GOOGLE_SIGNIN_WEB_CLIENT_ID`: Obtain this from the Google Cloud Console for web configuration.
-- `GEOAPIFY_API_KEY`: Obtain this from the [Geoapify](https://www.geoapify.com/) website for fetching location.
+### 1. 🔐 Create an Appwrite Account and Project
 
-Refer to the updated guide below for obtaining these API keys:
+- Sign up at [Appwrite Cloud](https://cloud.appwrite.io) or set up a self-hosted instance
+- Create a new project (note your **Project ID**)
+- Add a Flutter platform under "Platforms" in your project settings
+  - For Web: Enter your website domain
+  - For Android/iOS: Enter your application ID
+- Additionally add a **Web** platform with '*' in the Hostname.
+  - This enables our app to access model via model-webview on Android and iOS. 
 
-- [Google Cloud Console Guide](https://developers.google.com/identity) for Google Sign-In or you can reffer to this [youtube video](https://www.youtube.com/watch?v=HtJKUQXmtok) where OAuth setup is done for a react app.
-- [Geoapify API Setup](https://www.geoapify.com/get-started-with-maps-api/)
+### 2. 🗝️ Create API Key
 
-## Step 2) Configure Firebase
+- Go to "API Keys" under Project Settings
+- Create a new API key with the following permissions:
+  - Database (all)
+  - Storage (all)
 
-Follow the official [Firebase guide](https://firebase.google.com/docs/flutter/setup?platform=android) to set it up for this project. This will:
+### 3. 🛠️ Run Setup Script
 
-- Add the `google-services.json` file for Android.
-- Add the `GoogleService-Info.plist` file for iOS and MacOS.
-- Create the `firebase_options.dart` file in the lib folder.
+The project includes a script to set up all required Appwrite resources:
 
-## Step 3)📜 Populating Monument Data
-
-This script allows you to populate your Firestore database with predefined monument data. It’s a standalone tool that you can run once to seed your database—no need to run or modify any Flutter app.
-
-### Prerequisites
-
-1. **Node.js**:
-   Install Node.js from [https://nodejs.org](https://nodejs.org).
-   Verify installation: node -v
-   You should see a version number like i.e:
-
-2. **Firebase Project with Firestore Enabled**:
-
-- Go to [Firebase Console](https://console.firebase.google.com).
-- Create or select a project.
-- Enable Firestore.
-
-3. **Service Account Key**:
-
-- In the Firebase console, go to "Project Settings" → "Service accounts".
-- Click "Generate new private key" to download `serviceAccountKey.json`.
-- Save `serviceAccountKey.json` in app root directory inside scripts folder.
-
-
-
-## **Step 4) Configure Google Sign-In (Web-Based Flutter App)**
-
-To enable Google Sign-In, follow these steps:
-
-1. **Enable Google People API**:
-   - Go to the [Google Cloud Console](https://console.cloud.google.com/).
-   - Enable the **Google People API** under the APIs & Services section.
-   - Ensure you’ve signed up for the necessary services under your project.
-
-2. **Set CORS Rules for Firebase Storage**:
-   - If you encounter a `403 Forbidden` error when attempting to load images from Firebase Storage, configure your Firebase Storage bucket to allow CORS. Refer to this guide for more details: [Handling Firebase Storage 403 Error](https://stackoverflow.com/questions/41943860/getting-403-forbidden-error-when-trying-to-load-image-from-firebase-storage).
-
-3. **Allow Access-Control-Allow-Origin**:
-   - For viewing images on the web, ensure that the Firebase Storage bucket has the appropriate `Access-Control-Allow-Origin` settings. You can follow the steps here: [Configuring Access-Control-Allow-Origin](https://stackoverflow.com/questions/37760695/firebase-storage-and-access-control-allow-origin).
-
----
-
-4. **Install Dependencies**:
-
-- Install the Firebase Admin SDK:
-
-```
-npm install firebase-admin
+```bash
+cd lib/scripts
+npm install node-appwrite
+node setup_appwrite.js
 ```
 
-inside scripts folder, execute the script using the following command:
+Follow the prompts to enter your:
+- Appwrite API key
+- Project ID
+
+This script will automatically create:
+- 📊 Database and collections
+- 🖼️ Storage bucket for images
+- 🗿 Sample monument data
+- appwrite function for forget passwords 
+
+**Note**: After creating the Appwrite function for password reset, there's an additional step required to make the "Forgot Password" functionality work properly.
+
+You need to register the domain where the password reset will be triggered. To do this:
+
+1. Go to your Appwrite Console.
+
+2. Navigate to your project Overview.
+
+3. Scroll down and click “Add Platform”.
+
+4. Choose Web App.
+
+5. In the domain field, enter your app’s domain (make sure to remove the https:// prefix and any trailing /).
+   
+6. Add the link to the function in your .env file 
+
+Once your domain is added and registered, the "Forgot Password" feature will work correctly.
+If this step is skipped, you may encounter an error like:
+Invalid URL: must be appwrite.io or *.appwrite.io.
+
+**Note**: To view the implementation details of the function, you can check out the source code here: [GitHub - reset_and_verifyemail_node_appwrite](https://github.com/HelloSniperMonkey/reset_and_verifyemail_node_appwrite)
+
+### 4. ⚙️ Configure Environment Variables
+
+Fill in the following values in your `.env` file:
 
 ```
-node populate_monuments.js
+GEOAPIFY_API_KEY=            # From Geoapify.com for location services
+GOOGLE_API_KEY=              # From Google Cloud Console for Gemini AI itinerary generation
+APPWRITE_DATABASE_ID=dbmonumento
+APPWRITE_USER_ID=users
+APPWRITE_POSTS_ID=posts
+APPWRITE_MONUMENTS_ID=monuments
+APPWRITE_COMMENTS_ID=comments
+APPWRITE_LIKES_ID=postLikes
+APPWRITE_CHECKIN_ID=checkIn
+APPWRITE_LOCALEXPERTS_COLLECTION_ID=localExperts
+APPWRITE_API_ENDPOINT=https://cloud.appwrite.io/v1
+APPWRITE_IMAGES_BUCKET_ID=imagesBucket
+APPWRITE_MODELS_BUCKET_ID=modelsBucket
+APPWRITE_PROJECT_ID=         # Your Appwrite Project ID
 ```
 
-If everything goes well, you should see:
+## 🔐 Step 3) Configure Google Sign-In 
 
+### 1. 📝 Create OAuth Credentials
+
+- Go to the [Google Cloud Console](https://console.cloud.google.com/)
+- Create a new project or use an existing one
+- Navigate to "APIs & Services" > "Credentials"
+- Create OAuth 2.0 Client IDs for each platform (Web, Android, iOS)
+- Enable the **Google People API** in the API Library
+
+### 2. 🌐 Add Authorized Domains (for Web)
+
+- For web sign-in, add your domain to "Authorized JavaScript origins"
+- For local testing, you can use `http://localhost`
+
+### 3. 🔄 Configure Redirect URIs
+
+In your Appwrite Console:
+- Go to Project Settings > Authentication
+- Under OAuth providers, enable and configure Google
+- Add your OAuth Client ID and Secret
+- Configure redirect URLs properly
+
+## 🗺️ Step 4) Configure Geoapify API
+
+1. 📝 Sign up for an account at [Geoapify](https://www.geoapify.com/)
+2. 🔑 Create an API key
+3. ➕ Add the API key to your `.env` file as `GEOAPIFY_API_KEY`
+
+## 🤖 Step 5) Configure Google Gemini API (for AI Itinerary Generation)
+
+1. 📝 Go to [Google AI Studio](https://makersuite.google.com/app/apikey) or [Google Cloud Console](https://console.cloud.google.com/)
+2. 🔑 Create a new API key for Gemini API
+3. 🛡️ **Important**: Add API restrictions:
+   - Restrict to "Generative Language API" only
+   - Add application restrictions (HTTP referrers for web, or Android/iOS app restrictions)
+4. ➕ Add the API key to your `.env` file as `GOOGLE_API_KEY`
+5. ⚠️ **Never commit your `.env` file to version control**
+
+## 🏃‍♂️ Running the Application
+
+Now you're ready to run the application:
+
+```bash
+flutter run
 ```
-Starting to populate the monuments collection...
-Monuments collection populated successfully.
-```
 
-4. **Verify in firestore**:: Check the Firebase console → Firestore Database → monuments collection. Your data should appear there.
+## ❓ Troubleshooting
 
-Notes:
+If you encounter any issues during setup or running the app, please refer to the [FAQ](./FAQ.md) for common problems and solutions.
 
-- You can rerun this script whenever you need to seed the data.
-- To add more monuments, modify the monumentsData array before running the script again.
+For platform-specific issues:
+- 🌐 **Web**: Use `flutter run -d chrome --web-renderer html` if images don't load correctly
+- 🍎 **iOS/macOS**: See the FAQ section for CocoaPods and keychain access issues
+- 🤖 **Android**: Ensure you've added the proper configurations
+
+## 📚 Additional Resources
+
+- [Appwrite Documentation](https://appwrite.io/docs) 📄
+- [Flutter Documentation](https://docs.flutter.dev) 💙
+- [Geoapify Documentation](https://apidocs.geoapify.com/) 🗺️

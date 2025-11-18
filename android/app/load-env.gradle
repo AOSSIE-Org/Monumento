@@ -1,0 +1,23 @@
+// android/app/load-env.gradle
+
+def loadEnv() {
+    def envFile = rootProject.file('../.env')
+    if (envFile.exists()) {
+        envFile.readLines().each { line ->
+            if (!line.isEmpty() && !line.startsWith("#")) {
+                def parts = line.split("=")
+                if (parts.length >= 2) {
+                    def k = parts[0].trim()
+                    def v = parts[1..-1].join("=").trim() // لو القيمة فيها "="
+                    project.ext.set(k, v)
+                } else {
+                    println "Skipping malformed env line: $line"
+                }
+            }
+        }
+    } else {
+        println ".env file not found at path: ${envFile.path}"
+    }
+}
+
+loadEnv()

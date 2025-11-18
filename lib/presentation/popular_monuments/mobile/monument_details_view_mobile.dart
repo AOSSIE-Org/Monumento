@@ -3,13 +3,16 @@ import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:monumento/application/popular_monuments/ai_chat_bot/ai_chat_bot_bloc.dart';
 import 'package:monumento/application/popular_monuments/bookmark_monuments/bookmark_monuments_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_checkin/monument_checkin_bloc.dart';
 import 'package:monumento/application/popular_monuments/monument_details/monument_details_bloc.dart';
 import 'package:monumento/application/popular_monuments/nearby_places/nearby_places_bloc.dart';
+import 'package:monumento/data/models/monument_approval_status.dart';
 import 'package:monumento/domain/entities/local_expert_entity.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 import 'package:monumento/gen/assets.gen.dart';
+import 'package:monumento/presentation/popular_monuments/mobile/ai_chat_view_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_model_view_mobile.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/monument_more_details_view.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/widgets/image_tile_mobile.dart';
@@ -66,6 +69,224 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
 
     // If no good sentence break, just cut and add ellipsis
     return "${truncated.substring(0, truncated.lastIndexOf(' '))}...";
+  }
+  // Add this widget inside _MonumentDetailsViewMobileState class
+
+  Widget _buildApprovalStatusBanner(MonumentApprovalStatus status) {
+    Color backgroundColor;
+    Color textColor;
+    Color borderColor;
+    IconData icon;
+    String statusText;
+    String description;
+
+    switch (status) {
+      case MonumentApprovalStatus.pending:
+        backgroundColor = Colors.orange[50]!;
+        textColor = Colors.orange[900]!;
+        borderColor = Colors.orange[300]!;
+        icon = Icons.pending_outlined;
+        statusText = 'Pending Review';
+        description = 'This monument is awaiting community approval';
+        break;
+      case MonumentApprovalStatus.approved:
+        backgroundColor = Colors.green[50]!;
+        textColor = Colors.green[900]!;
+        borderColor = Colors.green[300]!;
+        icon = Icons.verified_outlined;
+        statusText = 'Community Verified';
+        description = 'This monument has been approved by the community';
+        break;
+      case MonumentApprovalStatus.rejected:
+        backgroundColor = Colors.red[50]!;
+        textColor = Colors.red[900]!;
+        borderColor = Colors.red[300]!;
+        icon = Icons.cancel_outlined;
+        statusText = 'Rejected';
+        description = 'This submission was not approved';
+        break;
+    }
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: borderColor, width: 1.5),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
+              icon,
+              color: textColor,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  statusText,
+                  style: AppTextStyles.s16(
+                    color: textColor,
+                    fontType: FontType.BOLD,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  description,
+                  style: AppTextStyles.s12(
+                    color: textColor,
+                    fontType: FontType.REGULAR,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+// Add this widget for voting information (if pending)
+  Widget _buildVotingInfo(MonumentEntity monument) {
+    if (monument.approvalStatus != MonumentApprovalStatus.pending) {
+      return const SizedBox.shrink();
+    }
+
+    final netVotes = monument.upVotingPoints - monument.downVotingPoints;
+    final progress = monument.upVotingPoints / 10; // Assuming 10 votes needed
+    final votesNeeded = 10 - monument.upVotingPoints;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey[300]!),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Community Votes',
+                style: AppTextStyles.s14(
+                  color: AppColor.appBlack,
+                  fontType: FontType.BOLD,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: netVotes >= 0 ? Colors.green[100] : Colors.red[100],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      netVotes >= 0 ? Icons.trending_up : Icons.trending_down,
+                      size: 14,
+                      color:
+                          netVotes >= 0 ? Colors.green[700] : Colors.red[700],
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${netVotes >= 0 ? '+' : ''}$netVotes',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color:
+                            netVotes >= 0 ? Colors.green[700] : Colors.red[700],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(Icons.thumb_up_outlined,
+                        size: 16, color: Colors.green[700]),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${monument.upVotingPoints}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green[700],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    Icon(Icons.thumb_down_outlined,
+                        size: 16, color: Colors.red[700]),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${monument.downVotingPoints}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red[700],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progress > 1.0 ? 1.0 : progress,
+              backgroundColor: Colors.grey[200],
+              valueColor: AlwaysStoppedAnimation<Color>(
+                progress >= 1.0 ? Colors.green : Colors.blue,
+              ),
+              minHeight: 6,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            votesNeeded > 0
+                ? '$votesNeeded more ${votesNeeded == 1 ? 'vote' : 'votes'} needed for approval'
+                : 'Ready for approval!',
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -146,6 +367,7 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                 height: 15,
               ),
               ImageTile(index: 0, images: images, width: 367, height: 225),
+
               const SizedBox(
                 height: 10,
               ),
@@ -156,9 +378,15 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                   (index) => ImageTile(index: index, images: images),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
+
+              // ADD APPROVAL STATUS BANNER HERE
+              _buildApprovalStatusBanner(widget.monument.approvalStatus),
+
+              // ADD VOTING INFO (only shows if pending)
+              _buildVotingInfo(widget.monument),
+              const SizedBox(height: 10),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -337,7 +565,8 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                               width: 8.w,
                             ),
                             Text(
-                              state is MonumentCheckedIn
+                              state is MonumentCheckedIn ||
+                                      state is MonumentCheckinSuccess
                                   ? "Checked In"
                                   : "Check In",
                               style: AppTextStyles.s16(
@@ -424,6 +653,10 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
                       width: 380,
                       child: Column(
                         children: [
+                          // ADD THIS AI CHAT BUTTON HERE - right after the monument info
+                          _buildAiChatButton(state.wikiData.extract),
+                          const SizedBox(height: 20),
+
                           Card(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12)),
@@ -764,6 +997,49 @@ class _MonumentDetailsViewMobileState extends State<MonumentDetailsViewMobile> {
             ],
           ),
         ));
+  }
+
+  Widget _buildAiChatButton(String monumentDescription) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            backgroundColor: AppColor.appSecondary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BlocProvider<AiChatBloc>(
+                  create: (context) => locator<AiChatBloc>(),
+                  child: AiChatViewMobile(
+                    monument: widget.monument,
+                    monumentDescription: monumentDescription,
+                  ),
+                ),
+              ),
+            );
+          },
+          icon: const Icon(
+            Icons.smart_toy,
+            color: AppColor.appPrimary,
+            size: 20,
+          ),
+          label: Text(
+            "Ask AI Assistant",
+            style: AppTextStyles.s16(
+              color: AppColor.appPrimary,
+              fontType: FontType.MEDIUM,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

@@ -13,7 +13,7 @@ MonumentModel _$MonumentModelFromJson(Map<String, dynamic> json) =>
       coordinates: (json['coordinates'] as List<dynamic>)
           .map((e) => (e as num).toDouble())
           .toList(),
-      id: json['id'] as String,
+      id: json[r'$id'] as String,
       city: json['city'] as String,
       country: json['country'] as String,
       imageUrl: json['image'] as String,
@@ -30,11 +30,29 @@ MonumentModel _$MonumentModelFromJson(Map<String, dynamic> json) =>
               ?.map((e) => LocalExpertModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      approvalStatus: $enumDecodeNullable(
+              _$MonumentApprovalStatusEnumMap, json['approvalStatus']) ??
+          MonumentApprovalStatus.pending,
+      upVotingPoints: (json['upVotingPoints'] as num?)?.toInt() ?? 0,
+      downVotingPoints: (json['downVotingPoints'] as num?)?.toInt() ?? 0,
+      submittedByUserId: json['submittedByUserId'] as String?,
+      submittedAt: json['submittedAt'] == null
+          ? null
+          : DateTime.parse(json['submittedAt'] as String),
+      reviewNotes: json['reviewNotes'] as String?,
+      upvotedBy: (json['upvotedBy'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
+      downvotedBy: (json['downvotedBy'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$MonumentModelToJson(MonumentModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      r'$id': instance.id,
       'name': instance.name,
       'city': instance.city,
       'country': instance.country,
@@ -48,4 +66,19 @@ Map<String, dynamic> _$MonumentModelToJson(MonumentModel instance) =>
       'modelLink': instance.modelLink,
       'has3DModel': instance.has3DModel,
       'localExperts': instance.localExperts.map((e) => e.toJson()).toList(),
+      'approvalStatus':
+          _$MonumentApprovalStatusEnumMap[instance.approvalStatus]!,
+      'upVotingPoints': instance.upVotingPoints,
+      'downVotingPoints': instance.downVotingPoints,
+      'submittedByUserId': instance.submittedByUserId,
+      'submittedAt': instance.submittedAt?.toIso8601String(),
+      'reviewNotes': instance.reviewNotes,
+      'upvotedBy': instance.upvotedBy,
+      'downvotedBy': instance.downvotedBy,
     };
+
+const _$MonumentApprovalStatusEnumMap = {
+  MonumentApprovalStatus.pending: 'pending',
+  MonumentApprovalStatus.approved: 'approved',
+  MonumentApprovalStatus.rejected: 'rejected',
+};

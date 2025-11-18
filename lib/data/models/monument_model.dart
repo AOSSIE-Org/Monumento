@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:monumento/data/models/monument_approval_status.dart';
 import 'package:monumento/domain/entities/monument_entity.dart';
 
 import 'local_expert_model.dart';
@@ -7,6 +8,7 @@ part 'monument_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class MonumentModel {
+  @JsonKey(name: '\$id')
   final String id;
   final String name;
   final String city;
@@ -24,6 +26,16 @@ class MonumentModel {
   final bool has3DModel;
   final List<LocalExpertModel> localExperts;
 
+  // NEW: Review System Fields
+  final MonumentApprovalStatus approvalStatus;
+  final int upVotingPoints;
+  final int downVotingPoints;
+  final String? submittedByUserId;
+  final DateTime? submittedAt;
+  final String? reviewNotes;
+  final List<String> upvotedBy;
+  final List<String> downvotedBy;
+
   const MonumentModel({
     this.modelLink,
     required this.rating,
@@ -39,6 +51,14 @@ class MonumentModel {
     this.images = const [],
     this.has3DModel = false,
     this.localExperts = const [],
+    this.approvalStatus = MonumentApprovalStatus.pending,
+    this.upVotingPoints = 0,
+    this.downVotingPoints = 0,
+    this.submittedByUserId,
+    this.submittedAt,
+    this.reviewNotes,
+    this.upvotedBy = const [],
+    this.downvotedBy = const [],
   });
 
   factory MonumentModel.fromJson(Map<String, dynamic> json) {
@@ -59,6 +79,17 @@ class MonumentModel {
       rating: entity.rating,
       coordinates: entity.coordinates,
       wikiPageId: entity.wikiPageId,
+
+      // ✅ New fields
+      approvalStatus: entity.approvalStatus,
+      upVotingPoints: entity.upVotingPoints,
+      downVotingPoints: entity.downVotingPoints,
+      submittedByUserId: entity.submittedByUserId,
+      submittedAt: entity.submittedAt,
+      reviewNotes: entity.reviewNotes,
+      upvotedBy: entity.upvotedBy,
+      downvotedBy: entity.downvotedBy,
+      images: entity.images,
     );
   }
 
@@ -78,6 +109,15 @@ class MonumentModel {
       modelLink: modelLink,
       has3DModel: has3DModel,
       localExperts: localExperts.map((e) => e.toEntity()).toList(),
+      // ✅ New fields
+      approvalStatus: approvalStatus,
+      upVotingPoints: upVotingPoints,
+      downVotingPoints: downVotingPoints,
+      submittedByUserId: submittedByUserId,
+      submittedAt: submittedAt,
+      reviewNotes: reviewNotes,
+      upvotedBy: upvotedBy,
+      downvotedBy: downvotedBy,
     );
   }
 }

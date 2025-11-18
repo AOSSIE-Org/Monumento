@@ -184,8 +184,8 @@ class _LoginViewDesktopState extends State<LoginViewDesktop> {
                                       validateFunction: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'Please enter password.';
-                                        } else if (value.length < 6) {
-                                          return 'Password must be at least 6 characters.';
+                                        } else if (value.length < 8) {
+                                          return 'Password must be at least 8 characters.';
                                         }
                                         return null;
                                       },

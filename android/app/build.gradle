@@ -1,7 +1,7 @@
 plugins {
     id "com.android.application"
     // START: FlutterFire Configuration
-    id 'com.google.gms.google-services'
+    // id 'com.google.gms.google-services'
     // END: FlutterFire Configuration
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
@@ -24,10 +24,11 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
+apply from: 'load-env.gradle' // Apply the script
 
 android {
     namespace "org.aossie.monumento"
-    compileSdk 34
+    compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -48,10 +49,16 @@ android {
         applicationId "org.aossie.monumento"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion 23
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        // Added: Define a manifest placeholder for APPWRITE_PROJECT_ID from .env file
+ manifestPlaceholders = [
+            applicationName: "android.app.Application", // Default value for android:name
+            appwriteProjectId: project.hasProperty('APPWRITE_PROJECT_ID') ? project.APPWRITE_PROJECT_ID : "default-project-id"
+        ]
     }
 
     buildTypes {

@@ -94,8 +94,7 @@ class _FeedPostCardMobileState extends State<FeedPostCardMobile>
                     IconButton(
                         onPressed: () {}, icon: const Icon(Icons.more_horiz)),
                     Text(
-                      timeago.format(DateTime.fromMillisecondsSinceEpoch(
-                          widget.post.timeStamp)),
+                      timeago.format(widget.post.timeStamp),
                       style: AppTextStyles.s12(
                         color: AppColor.appTextLightGrey,
                         fontType: FontType.REGULAR,

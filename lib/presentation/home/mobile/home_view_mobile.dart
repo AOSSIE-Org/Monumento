@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:monumento/application/popular_monuments/popular_monuments_bloc.dart';
 import 'package:monumento/gen/assets.gen.dart';
+import 'package:monumento/presentation/community/mobile/community_view_mobile.dart';
 import 'package:monumento/presentation/discover/mobile/discover_view_mobile.dart';
 import 'package:monumento/presentation/feed/mobile/widgets/new_post_bottom_sheet.dart';
 import 'package:monumento/presentation/feed/mobile/your_feed_view_mobile.dart';
+import 'package:monumento/presentation/itinerary_generation/mobile/itenerary_prefrences_screen.dart';
 import 'package:monumento/presentation/popular_monuments/mobile/popular_monuments_view_mobile.dart';
 import 'package:monumento/presentation/profile_screen/mobile/profile_screen_mobile.dart';
 import 'package:monumento/service_locator.dart';
@@ -35,6 +37,7 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
           const PopularMonumentsViewMobile(),
           const YourFeedViewMobile(),
           Container(),
+          const CommunitiesViewMobile(),
           const DiscoverViewMobile(),
           const ProfileScreenMobile(),
         ],
@@ -42,11 +45,15 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
       bottomNavigationBar: BottomNavigationBar(
         onTap: (index) {
           if (index == 2) {
-            NewPostBottomSheet().newPostBottomSheet(context);
+            _showAddOptions(
+              context,
+            ); // show options instead of direct NewPostBottomSheet
           } else {
-            setState(() {
-              selectedIndex = index;
-            });
+            setState(
+              () {
+                selectedIndex = index;
+              },
+            );
           }
         },
         backgroundColor: AppColor.appWhite,
@@ -105,6 +112,21 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
               ),
             ),
           ),
+          // ADD THIS NEW COMMUNITIES TAB
+          BottomNavigationBarItem(
+            label: 'Communities',
+            icon: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Icon(Icons.groups_outlined, color: Colors.grey[600])),
+            activeIcon: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Icon(
+                Icons.groups,
+                color: AppColor.appPrimary,
+              ),
+            ),
+          ),
+
           BottomNavigationBarItem(
               label: 'Discover',
               icon: Padding(
@@ -131,6 +153,44 @@ class _HomeViewMobileState extends State<HomeViewMobile> {
         ],
         currentIndex: selectedIndex,
       ),
+    );
+  }
+
+  void _showAddOptions(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.post_add, color: Colors.blue),
+                title: const Text("Add Post"),
+                onTap: () {
+                  Navigator.pop(context);
+                  NewPostBottomSheet().newPostBottomSheet(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.route, color: Colors.green),
+                title: const Text("AI Itinerary"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ItineraryPreferencesScreen(),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
