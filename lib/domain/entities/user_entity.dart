@@ -99,10 +99,6 @@ class UserEntity extends Equatable {
     );
   }
 
-  factory UserEntity.fromSnapshot(DocumentSnapshot snap) {
-    return UserEntity.fromMap(snap.data() as Map<String, dynamic>);
-  }
-
   factory UserEntity.fromMap(Map<String, dynamic> data) {
     return UserEntity(
       uid: data['uid'],
