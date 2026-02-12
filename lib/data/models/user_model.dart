@@ -15,6 +15,9 @@ class UserModel {
   final List<String> following;
   final List<String> followers;
   final List<String> posts;
+
+  final List<String> searchParams;
+
   final List<MonumentModel> savedMonuments;
   final List<String> myCommunities;
   final List<String> joinedCommunities;
@@ -25,11 +28,11 @@ class UserModel {
   final int monumentsSubmitted;
   final int reviewsCompleted;
   final List<String> votedMonuments;
-
   const UserModel({
     this.following = const [],
     this.followers = const [],
     this.posts = const [],
+    this.searchParams = const [],
     required this.email,
     required this.uid,
     this.name = "Monumento User",
@@ -63,6 +66,9 @@ class UserModel {
       followers: entity.followers,
       following: entity.following,
       posts: entity.posts,
+
+      searchParams: entity.searchParams,
+
       savedMonuments: entity.savedMonuments
           .map((monument) => MonumentModel.fromEntity(monument))
           .toList(),
@@ -74,6 +80,7 @@ class UserModel {
       monumentsSubmitted: entity.monumentsSubmitted,
       reviewsCompleted: entity.reviewsCompleted,
       votedMonuments: List<String>.from(entity.votedMonuments),
+
     );
   }
 
@@ -88,6 +95,9 @@ class UserModel {
       followers: followers,
       following: following,
       posts: posts,
+
+      searchParams: searchParams,
+
       myCommunities: List<String>.from(myCommunities),
       joinedCommunities: List<String>.from(joinedCommunities),
       // New mappings
@@ -98,6 +108,7 @@ class UserModel {
       votedMonuments: List<String>.from(votedMonuments),
       savedMonuments:
           savedMonuments.map((monument) => monument.toEntity()).toList(),
+
     );
   }
 
@@ -111,6 +122,17 @@ class UserModel {
     List<String> mappedPosts = data['posts'] != null
         ? (data['posts'] as List).map<String>((e) => e).toList()
         : [];
+    List<String> mappedSearchParams = data['searchParams'] != null
+        ? (data['searchParams'] as List).map<String>((e) => e).toList()
+        : [];
+
+    List<MonumentModel> mappedSavedMonuments = data['savedMonuments'] != null
+    ? (data['savedMonuments'] as List)
+        .map((e) => MonumentModel.fromJson(e as Map<String, dynamic>))
+        .toList()
+    : [];
+
+
 
     return UserModel(
       uid: data['uid'] as String,
@@ -121,7 +143,9 @@ class UserModel {
       username: data['username'] as String,
       followers: mappedFollowers,
       following: mappedFollowing,
+      savedMonuments: mappedSavedMonuments,
       posts: mappedPosts,
+      searchParams: mappedSearchParams,
       joinedCommunities: data['joinedCommunities'] as List<String>,
       myCommunities: data['myCommunities'] as List<String>,
       // New fields
@@ -145,6 +169,8 @@ class UserModel {
       'followers': followers,
       'following': following,
       'posts': posts,
+      'savedMonuments': savedMonuments.map((m) => m.toJson()).toList(),
+      'searchParams': searchParams,
       'myCommunities': myCommunities,
       'joinedCommunities': joinedCommunities,
       // New mappings

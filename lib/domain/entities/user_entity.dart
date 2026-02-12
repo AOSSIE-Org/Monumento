@@ -15,11 +15,12 @@ class UserEntity extends Equatable {
   final List<String> following;
   final List<String> followers;
   final List<String> posts;
+
+  final List<String> searchParams;
   final List<MonumentEntity> savedMonuments;
   final List<String> myCommunities;
   final List<String> joinedCommunities;
 
-  /// NEW: Contribution & Reward System
   final int contributionPoints;
   final bool isTrustedUser;
   final int monumentsSubmitted;
@@ -30,13 +31,14 @@ class UserEntity extends Equatable {
     this.following = const [],
     this.followers = const [],
     this.posts = const [],
+    this.searchParams = const [],
     this.savedMonuments = const [],
     required this.email,
     required this.uid,
     this.name = "Monumento User",
-    required this.profilePictureUrl,
-    this.status = " Status",
-    required this.username,
+    this.profilePictureUrl,
+    this.status = "Status",
+    this.username,
     this.myCommunities = const [],
     this.joinedCommunities = const [],
     this.contributionPoints = 0,
@@ -47,56 +49,48 @@ class UserEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props {
-    return [
-      uid,
-      email,
-      name,
-      profilePictureUrl,
-      status,
-      username,
-      followers,
-      following,
-      posts,
-      myCommunities,
-      joinedCommunities,
-      contributionPoints,
-      isTrustedUser,
-      monumentsSubmitted,
-      reviewsCompleted,
-      votedMonuments,
-    ];
-  }
+  List<Object?> get props => [
+        uid,
+        email,
+        name,
+        profilePictureUrl,
+        status,
+        username,
+        followers,
+        following,
+        posts,
+        searchParams,
+        savedMonuments,
+        myCommunities,
+        joinedCommunities,
+        contributionPoints,
+        isTrustedUser,
+        monumentsSubmitted,
+        reviewsCompleted,
+        votedMonuments,
+      ];
 
   factory UserEntity.fromDocument(Document doc) {
-    Map<String, dynamic> data = doc.data;
-    List<String> mappedFollowers = data['followers'] != null
-        ? (data['followers'] as List).map<String>((e) => e).toList()
-        : [];
-    List<String> mappedFollowing = data['following'] != null
-        ? (data['following'] as List).map<String>((e) => e).toList()
-        : [];
-    List<String> mappedPosts = data['posts'] != null
-        ? (data['posts'] as List).map<String>((e) => e).toList()
-        : [];
+    final data = doc.data;
 
     return UserEntity(
       uid: data['uid'],
-      name: data['name'],
       email: data['email'],
+      name: data['name'] ?? 'Monumento User',
       profilePictureUrl: data['profilePictureUrl'],
       status: data['status'] ?? 'Status',
       username: data['username'],
-      followers: mappedFollowers,
-      following: mappedFollowing,
-      posts: mappedPosts,
-      myCommunities: data['myCommunities'] != null
-          ? (data['myCommunities'] as List).map<String>((e) => e).toList()
-          : [],
-      joinedCommunities: data['joinedCommunities'] != null
-          ? (data['joinedCommunities'] as List).map<String>((e) => e).toList()
-          : [],
-      // NEW
+      followers: List<String>.from(data['followers'] ?? []),
+      following: List<String>.from(data['following'] ?? []),
+      posts: List<String>.from(data['posts'] ?? []),
+      searchParams: List<String>.from(data['searchParams'] ?? []),
+      savedMonuments: (data['savedMonuments'] as List<dynamic>?)
+              ?.map((e) =>
+                  MonumentEntity.fromMap(Map<String, dynamic>.from(e)))
+              .toList() ??
+          [],
+      myCommunities: List<String>.from(data['myCommunities'] ?? []),
+      joinedCommunities: List<String>.from(data['joinedCommunities'] ?? []),
       contributionPoints: data['contributionPoints'] ?? 0,
       isTrustedUser: data['isTrustedUser'] ?? false,
       monumentsSubmitted: data['monumentsSubmitted'] ?? 0,
@@ -104,56 +98,50 @@ class UserEntity extends Equatable {
       votedMonuments: List<String>.from(data['votedMonuments'] ?? []),
     );
   }
+
   factory UserEntity.fromMap(Map<String, dynamic> data) {
     return UserEntity(
-      uid: data['uid'] ?? '',
+      uid: data['uid'],
+      email: data['email'],
       name: data['name'] ?? 'Monumento User',
-      email: data['email'] ?? '',
       profilePictureUrl: data['profilePictureUrl'],
       status: data['status'] ?? 'Status',
       username: data['username'],
-      followers:
-          (data['followers'] as List?)?.map((e) => e.toString()).toList() ?? [],
-      following:
-          (data['following'] as List?)?.map((e) => e.toString()).toList() ?? [],
-      posts: (data['posts'] as List?)?.map((e) => e.toString()).toList() ?? [],
-      // savedMonuments: (data['savedMonuments'] as List?)
-      //         ?.map((e) => MonumentEntity.fromMap(Map<String, dynamic>.from(e)))
-      //         .toList()
-      //     ?? [],
-      myCommunities:
-          (data['myCommunities'] as List?)?.map((e) => e.toString()).toList() ??
-              [],
-      joinedCommunities: (data['joinedCommunities'] as List?)
-              ?.map((e) => e.toString())
+      followers: List<String>.from(data['followers'] ?? []),
+      following: List<String>.from(data['following'] ?? []),
+      posts: List<String>.from(data['posts'] ?? []),
+      searchParams: List<String>.from(data['searchParams'] ?? []),
+      savedMonuments: (data['savedMonuments'] as List<dynamic>?)
+              ?.map((e) =>
+                  MonumentEntity.fromMap(Map<String, dynamic>.from(e)))
               .toList() ??
           [],
-      // NEW
-      contributionPoints: data['contributionPoints'] as int? ?? 0,
-      isTrustedUser: data['isTrustedUser'] as bool? ?? false,
-      monumentsSubmitted: data['monumentsSubmitted'] as int? ?? 0,
-      reviewsCompleted: data['reviewsCompleted'] as int? ?? 0,
-      votedMonuments: (data['votedMonuments'] as List?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
+      myCommunities: List<String>.from(data['myCommunities'] ?? []),
+      joinedCommunities: List<String>.from(data['joinedCommunities'] ?? []),
+      contributionPoints: data['contributionPoints'] ?? 0,
+      isTrustedUser: data['isTrustedUser'] ?? false,
+      monumentsSubmitted: data['monumentsSubmitted'] ?? 0,
+      reviewsCompleted: data['reviewsCompleted'] ?? 0,
+      votedMonuments: List<String>.from(data['votedMonuments'] ?? []),
     );
   }
 
-  Map<String, Object> toMap() {
+  Map<String, Object?> toMap() {
     return {
       'uid': uid,
-      'name': name,
       'email': email,
-      'profilePictureUrl': profilePictureUrl ?? "",
+      'name': name,
+      'profilePictureUrl': profilePictureUrl,
       'status': status,
-      'username': username ?? "",
+      'username': username,
       'following': following,
       'followers': followers,
       'posts': posts,
+      'searchParams': searchParams,
+      'savedMonuments':
+          savedMonuments.map((monument) => monument.toMap()).toList(),
       'myCommunities': myCommunities,
       'joinedCommunities': joinedCommunities,
-      // NEW
       'contributionPoints': contributionPoints,
       'isTrustedUser': isTrustedUser,
       'monumentsSubmitted': monumentsSubmitted,

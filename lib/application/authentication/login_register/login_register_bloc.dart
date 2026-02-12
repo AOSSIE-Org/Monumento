@@ -99,6 +99,11 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
       emit(LoginRegisterLoading());
 
       final map = await _authRepository.signInWithGoogle();
+      
+      // Add delay before updating authentication state
+      await Future.delayed(const Duration(milliseconds: 200));
+      
+      // Then update authentication state
       _authenticationBloc.add(LoggedIn());
 
       if (map['isNewUser'] as bool) {
@@ -108,8 +113,6 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
             user: map['user'] as UserModel));
       } else {
         UserModel? user = map['user'] as UserModel;
-
-        _authenticationBloc.add(LoggedIn());
         emit(SigninWithGoogleSuccess(isNewUser: false, user: user));
       }
     } catch (e) {
@@ -140,8 +143,14 @@ class LoginRegisterBloc extends Bloc<LoginRegisterEvent, LoginRegisterState> {
             username: event.username,
             profilePictureUrl: url);
         if (user != null) {
-          emit(SignUpSuccess(user));
+          // First wait for a delay to ensure Firestore propagation
+          await Future.delayed(const Duration(milliseconds: 200));
+          
+          // Then add the LoggedIn event
           _authenticationBloc.add(LoggedIn());
+          
+          // Then emit SignUpSuccess
+          emit(SignUpSuccess(user));
         } else {
           emit(const SignUpFailed(message: 'Failed to sign up'));
         }
